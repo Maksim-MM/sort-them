@@ -73,23 +73,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# Локальные рабочие документы (порт/рескин/AI) — между машинами копируются руками
-CLAUDE.md
-ARCHITECTURE.md
-PROGRESS.md
-PC_INPUT_PLAN.md
-INPUT_MAP.md
-LEVELS_PIPELINE.md
-ANIMATION_GOTCHAS.md
-MECHANICS_INVENTORY.md
-MECHANICS_CHECKLIST.md
-ASSETS_PROPS.md
-UI_INVENTORY.md
-MENU_TRANSITIONS_PLAN.md
-UI_STYLE.md
-porting/
-reskinning/
+# Локальные настройки Claude Code
 .claude/
-
-# Отладочные скриншоты Unity (сама папка игнорируется в корневом .gitignore)
-/[Aa]ssets/[Ss]creenshots.meta
