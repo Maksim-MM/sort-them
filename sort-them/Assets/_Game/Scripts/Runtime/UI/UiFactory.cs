@@ -57,10 +57,22 @@ namespace SortThem
             return t;
         }
 
+        public static Image Image(Transform parent, string name, Sprite sprite, Color color, Image.Type type)
+        {
+            var rt = Rect(parent, name);
+            var img = rt.gameObject.AddComponent<Image>();
+            img.sprite = sprite;
+            img.color = color;
+            img.type = type;
+            img.raycastTarget = false;
+            return img;
+        }
+
         public static Button Button(Transform parent, string name, string label, Action onClick, float fontSize = 22f)
         {
             var rt = Panel(parent, name, new Color(0.2f, 0.45f, 0.8f, 1f));
             var btn = rt.gameObject.AddComponent<Button>();
+            btn.navigation = new Navigation { mode = Navigation.Mode.None };
             var colors = btn.colors;
             colors.highlightedColor = new Color(0.3f, 0.6f, 1f, 1f);
             colors.pressedColor = new Color(0.15f, 0.3f, 0.6f, 1f);
@@ -70,6 +82,33 @@ namespace SortThem
             Anchor(t.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             if (onClick != null) btn.onClick.AddListener(() => onClick());
             return btn;
+        }
+
+        public static Slider Slider(Transform parent, string name, float min, float max, float value)
+        {
+            var rt = Rect(parent, name);
+            var bg = Image(rt, "Background", null, new Color(1f, 1f, 1f, 0.15f), UnityEngine.UI.Image.Type.Simple);
+            bg.raycastTarget = true;
+            Anchor(bg.rectTransform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -6f), new Vector2(0f, 6f));
+            var fillArea = Rect(rt, "FillArea");
+            Anchor(fillArea, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -6f), new Vector2(0f, 6f));
+            var fill = Image(fillArea, "Fill", null, new Color(0.3f, 0.6f, 1f, 1f), UnityEngine.UI.Image.Type.Simple);
+            Anchor(fill.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var handleArea = Rect(rt, "HandleArea");
+            Anchor(handleArea, Vector2.zero, Vector2.one, new Vector2(10f, 0f), new Vector2(-10f, 0f));
+            var handle = Image(handleArea, "Handle", null, Color.white, UnityEngine.UI.Image.Type.Simple);
+            handle.raycastTarget = true;
+            handle.rectTransform.sizeDelta = new Vector2(20f, -16f);
+            var slider = rt.gameObject.AddComponent<Slider>();
+            slider.navigation = new Navigation { mode = Navigation.Mode.None };
+            slider.fillRect = fill.rectTransform;
+            slider.handleRect = handle.rectTransform;
+            slider.targetGraphic = handle;
+            slider.direction = UnityEngine.UI.Slider.Direction.LeftToRight;
+            slider.minValue = min;
+            slider.maxValue = max;
+            slider.SetValueWithoutNotify(value);
+            return slider;
         }
 
         public static void Layout(RectTransform rt, float spacing, RectOffset padding, bool vertical = true)

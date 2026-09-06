@@ -125,6 +125,9 @@ namespace SortThem.Editor
             uiGo.AddComponent<UnityEngine.UI.GraphicRaycaster>();
             var ui = uiGo.AddComponent<UiRoot>();
             ui.Abilities = player.GetComponent<PlayerAbilities>();
+            ui.AbilityIcons = new[] { UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[0]), UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[1]), UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[2]) };
+            ui.SlotFrame = UiSpriteSetup.Load(UiSpriteSetup.SlotFrame);
+            ui.KeyFrame = UiSpriteSetup.Load(UiSpriteSetup.KeyFrame);
 
             var es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();

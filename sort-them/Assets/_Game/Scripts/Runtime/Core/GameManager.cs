@@ -36,7 +36,17 @@ namespace SortThem
         public int TotalShelves { get; private set; }
         public int CollectiblesFound { get; private set; }
         public bool Ready { get; private set; }
-        public bool UiBlocking { get; set; }
+        bool _uiBlocking;
+        int _uiReleaseFrame = -1;
+        public bool UiBlocking
+        {
+            get => _uiBlocking || Time.frameCount <= _uiReleaseFrame;
+            set
+            {
+                if (_uiBlocking && !value) _uiReleaseFrame = Time.frameCount + 1;
+                _uiBlocking = value;
+            }
+        }
 
         public event Action StatsChanged;
         public event Action<ShelfController> ShelfClosed;
@@ -50,6 +60,7 @@ namespace SortThem
             Upgrades = new UpgradeService(UpgradeAssets, Economy);
             Save = new SaveService(this, new PlayerPrefsSaveStorage());
             if (InputAsset != null) InputAsset.Enable();
+            Settings.Load();
         }
 
         void OnDestroy()

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 namespace SortThem
@@ -11,17 +12,44 @@ namespace SortThem
         public static UiRoot I { get; private set; }
 
         public PlayerAbilities Abilities;
+        public Sprite[] AbilityIcons = new Sprite[3];
+        public Sprite SlotFrame, KeyFrame;
 
         Canvas _canvas;
-        TMP_Text _carsText, _shelvesText, _collectiblesText, _balanceText, _inventoryText, _inventoryCountText, _abilitiesText, _hintText, _saveText, _toastText;
+        TMP_Text _carsText, _shelvesText, _collectiblesText, _balanceText, _inventoryText, _inventoryCountText, _hintText, _saveText, _toastText;
         CanvasGroup _toast;
         float _toastShownAt = -10f;
         const float ToastFadeIn = 0.15f, ToastHold = 2f, ToastFadeOut = 0.4f;
-        RectTransform _terminal, _pause;
+        RectTransform _terminal, _pause, _settings;
         TMP_Text _terminalBalance;
         readonly List<UpgradeRow> _rows = new List<UpgradeRow>();
-        InputAction _pauseAction;
+        InputAction _pauseAction, _navigateAction, _submitAction, _cancelAction;
+        readonly List<Selectable> _pauseButtons = new List<Selectable>();
+        readonly List<Selectable> _settingsItems = new List<Selectable>();
+        Selectable _focused;
+        Button _vibrationButton;
+        TMP_Text _vibrationLabel;
+        const float SliderStep = 0.05f;
+        float _navRepeatAt;
+        const float NavRepeatFirst = 0.35f, NavRepeatNext = 0.18f;
+        const float PulseAmount = 0.06f, PulseHz = 1.1f;
         float _saveTextUntil;
+
+        class AbilitySlot
+        {
+            public GameObject Root;
+            public Image Icon, Fill;
+            public TMP_Text Key;
+        }
+
+        readonly AbilitySlot[] _abilitySlots = new AbilitySlot[3];
+        static readonly string[] KeyboardKeys = { "1", "2", "3" };
+        static readonly string[] GamepadKeys = { "\u2191", "\u2190", "\u2192" };
+        const float SlotSize = 72f, SlotGap = 12f;
+        static readonly Color SlotColor = new Color(0.13f, 0.12f, 0.14f, 0.92f);
+        static readonly Color FillActive = new Color(0.55f, 0.35f, 1f, 0.55f);
+        static readonly Color FillCooldown = new Color(1f, 1f, 1f, 0.22f);
+        static readonly Color IconCooldown = new Color(0.6f, 0.6f, 0.6f, 1f);
 
         class UpgradeRow
         {
@@ -32,7 +60,8 @@ namespace SortThem
 
         public bool TerminalOpen => _terminal != null && _terminal.gameObject.activeSelf;
         public bool PauseOpen => _pause != null && _pause.gameObject.activeSelf;
-        public bool AnyOpen => TerminalOpen || PauseOpen;
+        public bool SettingsOpen => _settings != null && _settings.gameObject.activeSelf;
+        public bool AnyOpen => TerminalOpen || PauseOpen || SettingsOpen;
 
         void Awake()
         {
@@ -56,6 +85,7 @@ namespace SortThem
             BuildHud();
             BuildTerminal();
             BuildPause();
+            BuildSettings();
             gm.StatsChanged += RefreshStats;
             gm.Economy.Changed += _ => { RefreshStats(); RefreshTerminal(); };
             gm.Upgrades.Changed += _ => { RefreshTerminal(); RefreshInventory(); };
@@ -63,6 +93,15 @@ namespace SortThem
             Messages.Shown += ShowToast;
             gm.Save.Saved += reason => { _saveText.text = Loc.Get("ui.saved", "Сохранено"); _saveTextUntil = Time.time + 2f; };
             _pauseAction = gm.InputAsset.FindActionMap("Player", true).FindAction("Pause", true);
+            var uiMap = gm.InputAsset.FindActionMap("UI", false);
+            if (uiMap != null)
+            {
+                _navigateAction = uiMap.FindAction("Navigate", false);
+                _submitAction = uiMap.FindAction("Submit", false);
+                _cancelAction = uiMap.FindAction("Cancel", false);
+            }
+            var module = FindFirstObjectByType<InputSystemUIInputModule>();
+            if (module != null) { module.move = null; module.submit = null; module.cancel = null; }
             RefreshStats();
             RefreshInventory();
             RefreshTerminal();
@@ -99,11 +138,13 @@ namespace SortThem
             if (_pauseAction != null && _pauseAction.WasPressedThisFrame())
             {
                 if (TerminalOpen) CloseTerminal();
+                else if (SettingsOpen) { CloseSettings(false); }
                 else if (PauseOpen) ClosePause();
                 else OpenPause();
             }
             if (_saveText != null && _saveText.gameObject.activeSelf != Time.time < _saveTextUntil) _saveText.gameObject.SetActive(Time.time < _saveTextUntil);
             RefreshAbilities();
+            UpdateMenuFocus();
         }
 
         void BuildHud()
@@ -134,8 +175,9 @@ namespace SortThem
             _inventoryText.lineSpacing = 8f;
             UiFactory.Anchored(_inventoryText.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 64f), new Vector2(500f, 500f));
 
-            _abilitiesText = UiFactory.Text(hud, "Abilities", "", 20f, TextAlignmentOptions.BottomLeft, Color.white);
-            UiFactory.Anchored(_abilitiesText.rectTransform, new Vector2(0f, 0f), new Vector2(24f, 70f), new Vector2(600f, 80f));
+            var abilities = UiFactory.Rect(hud, "Abilities");
+            UiFactory.Anchored(abilities, Vector2.zero, new Vector2(24f, 24f), new Vector2(3f * SlotSize + 2f * SlotGap, SlotSize + 52f));
+            for (int i = 0; i < 3; i++) _abilitySlots[i] = BuildAbilitySlot(abilities, i);
 
             _hintText = UiFactory.Text(hud, "Hint", Loc.Get("ui.hint", "ЛКМ взять · ПКМ поставить/бросить · колесо выбрать · Esc меню"), 18f, TextAlignmentOptions.Top, new Color(1f, 1f, 1f, 0.6f));
             UiFactory.Anchored(_hintText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -16f), new Vector2(900f, 30f));
@@ -152,6 +194,32 @@ namespace SortThem
             _saveText = UiFactory.Text(hud, "Saved", "", 20f, TextAlignmentOptions.Right, new Color(0.7f, 1f, 0.7f, 1f));
             UiFactory.Anchored(_saveText.rectTransform, new Vector2(1f, 1f), new Vector2(-16f, -80f), new Vector2(240f, 30f));
             _saveText.gameObject.SetActive(false);
+        }
+
+        AbilitySlot BuildAbilitySlot(Transform parent, int index)
+        {
+            var root = UiFactory.Rect(parent, "Ability" + (index + 1));
+            UiFactory.Anchored(root, Vector2.zero, new Vector2(index * (SlotSize + SlotGap), 0f), new Vector2(SlotSize, SlotSize));
+            var frame = UiFactory.Image(root, "Frame", SlotFrame, SlotColor, Image.Type.Sliced);
+            frame.pixelsPerUnitMultiplier = 2.4f;
+            UiFactory.Anchor(frame.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var icon = UiFactory.Image(root, "Icon", index < AbilityIcons.Length ? AbilityIcons[index] : null, Color.white, Image.Type.Simple);
+            icon.preserveAspect = true;
+            UiFactory.Anchor(icon.rectTransform, Vector2.zero, Vector2.one, new Vector2(10f, 10f), new Vector2(-10f, -10f));
+            var fill = UiFactory.Image(root, "Fill", SlotFrame, FillCooldown, Image.Type.Filled);
+            fill.fillMethod = Image.FillMethod.Radial360;
+            fill.fillOrigin = (int)Image.Origin360.Top;
+            fill.fillClockwise = false;
+            fill.fillAmount = 0f;
+            UiFactory.Anchor(fill.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var key = UiFactory.Image(root, "Key", KeyFrame, Color.white, Image.Type.Sliced);
+            key.pixelsPerUnitMultiplier = 3f;
+            UiFactory.Anchored(key.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, 38f), new Vector2(30f, 30f));
+            var keyText = UiFactory.Text(key.transform, "Text", KeyboardKeys[index], 18f, TextAlignmentOptions.Center, new Color(0.12f, 0.12f, 0.14f, 1f));
+            keyText.fontStyle = FontStyles.Bold;
+            UiFactory.Anchor(keyText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            root.gameObject.SetActive(false);
+            return new AbilitySlot { Root = root.gameObject, Icon = icon, Fill = fill, Key = keyText };
         }
 
         void BuildTerminal()
@@ -175,11 +243,15 @@ namespace SortThem
                 var row = UiFactory.Panel(_terminal, "Row_" + data.UpgradeID, new Color(1f, 1f, 1f, 0.06f));
                 UiFactory.Size(row, 0f, 66f);
                 var r = new UpgradeRow { Data = data };
+                var icon = UiFactory.Image(row, "Icon", data.Icon, Color.white, Image.Type.Simple);
+                icon.preserveAspect = true;
+                icon.enabled = data.Icon != null;
+                UiFactory.Anchored(icon.rectTransform, new Vector2(0f, 0.5f), new Vector2(10f, 0f), new Vector2(52f, 52f));
                 r.Name = UiFactory.Text(row, "Name", "", 24f, TextAlignmentOptions.Left, Color.white);
-                UiFactory.Anchor(r.Name.rectTransform, new Vector2(0f, 0.5f), new Vector2(0.5f, 1f), new Vector2(12f, 0f), new Vector2(0f, -4f));
+                UiFactory.Anchor(r.Name.rectTransform, new Vector2(0f, 0.5f), new Vector2(0.5f, 1f), new Vector2(72f, 0f), new Vector2(0f, -4f));
                 r.Desc = UiFactory.Text(row, "Desc", "", 17f, TextAlignmentOptions.Left, new Color(0.8f, 0.8f, 0.85f, 1f));
                 r.Desc.textWrappingMode = TextWrappingModes.Normal;
-                UiFactory.Anchor(r.Desc.rectTransform, new Vector2(0f, 0f), new Vector2(0.62f, 0.5f), new Vector2(12f, 4f), new Vector2(0f, 0f));
+                UiFactory.Anchor(r.Desc.rectTransform, new Vector2(0f, 0f), new Vector2(0.62f, 0.5f), new Vector2(72f, 4f), new Vector2(0f, 0f));
                 r.Level = UiFactory.Text(row, "Level", "", 22f, TextAlignmentOptions.Center, Color.white);
                 UiFactory.Anchor(r.Level.rectTransform, new Vector2(0.62f, 0f), new Vector2(0.74f, 1f), Vector2.zero, Vector2.zero);
                 r.Cost = UiFactory.Text(row, "Cost", "", 24f, TextAlignmentOptions.Center, new Color(1f, 0.9f, 0.5f, 1f));
@@ -195,15 +267,83 @@ namespace SortThem
         void BuildPause()
         {
             _pause = UiFactory.Panel(transform, "Pause", new Color(0.08f, 0.09f, 0.12f, 0.96f));
-            UiFactory.Anchored(_pause, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(420f, 360f));
+            UiFactory.Anchored(_pause, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(420f, 428f));
             UiFactory.Layout(_pause, 12f, new RectOffset(24, 24, 20, 20));
             var title = UiFactory.Text(_pause, "Title", Loc.Get("ui.pause", "Пауза"), 34f, TextAlignmentOptions.Center, Color.white);
             UiFactory.Size(title, 0f, 50f);
-            UiFactory.Size(UiFactory.Button(_pause, "Resume", Loc.Get("ui.resume", "Продолжить"), ClosePause), 0f, 56f);
-            UiFactory.Size(UiFactory.Button(_pause, "Save", Loc.Get("ui.save", "Сохранить"), () => GameManager.I.Save.SaveNow("manual")), 0f, 56f);
-            UiFactory.Size(UiFactory.Button(_pause, "Unstuck", Loc.Get("ui.unstuck", "Вернуть застрявшие машинки"), () => GameManager.I.UnstuckCars()), 0f, 56f);
-            UiFactory.Size(UiFactory.Button(_pause, "NewGame", Loc.Get("ui.newgame", "Сбросить сохранение"), ResetSave), 0f, 56f);
+            _pauseButtons.Add(UiFactory.Button(_pause, "Resume", Loc.Get("ui.resume", "Продолжить"), ClosePause));
+            _pauseButtons.Add(UiFactory.Button(_pause, "Save", Loc.Get("ui.save", "Сохранить"), () => GameManager.I.Save.SaveNow("manual")));
+            _pauseButtons.Add(UiFactory.Button(_pause, "Settings", Loc.Get("ui.settings", "Настройки"), OpenSettings));
+            _pauseButtons.Add(UiFactory.Button(_pause, "Unstuck", Loc.Get("ui.unstuck", "Вернуть застрявшие машинки"), () => GameManager.I.UnstuckCars()));
+            _pauseButtons.Add(UiFactory.Button(_pause, "NewGame", Loc.Get("ui.newgame", "Сбросить сохранение"), ResetSave));
+            foreach (var b in _pauseButtons) UiFactory.Size(b, 0f, 56f);
             _pause.gameObject.SetActive(false);
+        }
+
+        void BuildSettings()
+        {
+            _settings = UiFactory.Panel(transform, "Settings", new Color(0.08f, 0.09f, 0.12f, 0.96f));
+            UiFactory.Anchored(_settings, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(800f, 510f));
+            UiFactory.Layout(_settings, 10f, new RectOffset(24, 24, 20, 20));
+            var title = UiFactory.Text(_settings, "Title", Loc.Get("ui.settings", "Настройки"), 34f, TextAlignmentOptions.Center, Color.white);
+            UiFactory.Size(title, 0f, 50f);
+
+            _settingsItems.Add(SettingsSlider("Music", Loc.Get("ui.music", "Музыка"), 0f, 1f, Settings.MusicVolume, Settings.SetMusicVolume, Percent));
+            _settingsItems.Add(SettingsSlider("Sfx", Loc.Get("ui.sfx", "Эффекты"), 0f, 1f, Settings.SfxVolume, Settings.SetSfxVolume, Percent));
+            _settingsItems.Add(SettingsSlider("SensX", Loc.Get("ui.sens_x", "Чувствительность по горизонтали"), Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityX, Settings.SetSensitivityX, Multiplier));
+            _settingsItems.Add(SettingsSlider("SensY", Loc.Get("ui.sens_y", "Чувствительность по вертикали"), Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityY, Settings.SetSensitivityY, Multiplier));
+
+            var vibRow = UiFactory.Rect(_settings, "Vibration");
+            UiFactory.Size(vibRow, 0f, 52f);
+            var vibLabel = UiFactory.Text(vibRow, "Label", Loc.Get("ui.vibration", "Вибрация"), 21f, TextAlignmentOptions.Left, Color.white);
+            UiFactory.Anchor(vibLabel.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
+            _vibrationButton = UiFactory.Button(vibRow, "Toggle", "", () => { Settings.SetVibration(!Settings.Vibration); RefreshVibration(); }, 20f);
+            _vibrationLabel = _vibrationButton.GetComponentInChildren<TMP_Text>();
+            UiFactory.Anchor(_vibrationButton.GetComponent<RectTransform>(), new Vector2(0.72f, 0.1f), new Vector2(1f, 0.9f), Vector2.zero, Vector2.zero);
+            _settingsItems.Add(_vibrationButton);
+            RefreshVibration();
+
+            var back = UiFactory.Button(_settings, "Back", Loc.Get("ui.back", "Назад"), () => CloseSettings(true));
+            UiFactory.Size(back, 0f, 56f);
+            _settingsItems.Add(back);
+            _settings.gameObject.SetActive(false);
+        }
+
+        static string Percent(float v) => Mathf.RoundToInt(v * 100f) + "%";
+        static string Multiplier(float v) => "×" + v.ToString("0.0");
+
+        Slider SettingsSlider(string name, string label, float min, float max, float value, System.Action<float> apply, System.Func<float, string> format)
+        {
+            var row = UiFactory.Rect(_settings, name);
+            UiFactory.Size(row, 0f, 52f);
+            var text = UiFactory.Text(row, "Label", label, 21f, TextAlignmentOptions.Left, Color.white);
+            UiFactory.Anchor(text.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
+            var slider = UiFactory.Slider(row, "Slider", min, max, value);
+            UiFactory.Anchor(slider.GetComponent<RectTransform>(), new Vector2(0.54f, 0f), new Vector2(0.85f, 1f), Vector2.zero, Vector2.zero);
+            var valueText = UiFactory.Text(row, "Value", format(value), 20f, TextAlignmentOptions.Right, new Color(0.8f, 0.8f, 0.85f, 1f));
+            UiFactory.Anchor(valueText.rectTransform, new Vector2(0.87f, 0f), new Vector2(1f, 1f), Vector2.zero, new Vector2(-8f, 0f));
+            slider.onValueChanged.AddListener(v => { apply(v); valueText.text = format(v); });
+            return slider;
+        }
+
+        void RefreshVibration()
+        {
+            if (_vibrationLabel != null) _vibrationLabel.text = Settings.Vibration ? Loc.Get("ui.on", "Вкл") : Loc.Get("ui.off", "Выкл");
+        }
+
+        void OpenSettings()
+        {
+            _pause.gameObject.SetActive(false);
+            _settings.gameObject.SetActive(true);
+            _focused = FirstCandidate(_settingsItems);
+        }
+
+        void CloseSettings(bool backToPause)
+        {
+            Settings.Flush();
+            _settings.gameObject.SetActive(false);
+            ClearFocus();
+            if (backToPause) OpenPause();
         }
 
         void ResetSave()
@@ -217,11 +357,94 @@ namespace SortThem
         {
             RefreshTerminal();
             _terminal.gameObject.SetActive(true);
+            _focused = FirstCandidate(TerminalCandidates());
         }
 
-        public void CloseTerminal() => _terminal.gameObject.SetActive(false);
-        public void OpenPause() => _pause.gameObject.SetActive(true);
-        public void ClosePause() => _pause.gameObject.SetActive(false);
+        public void CloseTerminal() { _terminal.gameObject.SetActive(false); ClearFocus(); }
+        public void OpenPause() { _pause.gameObject.SetActive(true); _focused = FirstCandidate(_pauseButtons); }
+        public void ClosePause() { _pause.gameObject.SetActive(false); ClearFocus(); }
+
+        static bool GamepadActive()
+        {
+            var pad = Gamepad.current;
+            if (pad == null) return false;
+            double t = pad.lastUpdateTime;
+            if (Keyboard.current != null && Keyboard.current.lastUpdateTime > t) return false;
+            if (Mouse.current != null && Mouse.current.lastUpdateTime > t) return false;
+            return true;
+        }
+
+        IEnumerable<Selectable> TerminalCandidates()
+        {
+            foreach (var r in _rows) yield return r.Buy;
+        }
+
+        static Selectable FirstCandidate(IEnumerable<Selectable> buttons)
+        {
+            foreach (var b in buttons) if (b.interactable) return b;
+            return null;
+        }
+
+        void ClearFocus()
+        {
+            if (_focused != null) _focused.transform.localScale = Vector3.one;
+            _focused = null;
+        }
+
+        void UpdateMenuFocus()
+        {
+            if (!AnyOpen) return;
+            var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SettingsOpen ? _settingsItems : _pauseButtons);
+            if (_focused != null && !_focused.interactable) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
+            if (_focused == null) _focused = FirstCandidate(list);
+
+            if (_cancelAction != null && _cancelAction.WasPressedThisFrame())
+            {
+                if (TerminalOpen) CloseTerminal(); else if (SettingsOpen) CloseSettings(true); else ClosePause();
+                return;
+            }
+            if (_navigateAction != null)
+            {
+                var nav = _navigateAction.ReadValue<Vector2>();
+                int dir = nav.y > 0.5f ? -1 : nav.y < -0.5f ? 1 : 0;
+                int side = nav.x > 0.5f ? 1 : nav.x < -0.5f ? -1 : 0;
+                if (dir == 0 && side == 0) _navRepeatAt = 0f;
+                else if (_navRepeatAt == 0f || Time.unscaledTime >= _navRepeatAt)
+                {
+                    bool repeat = _navRepeatAt != 0f;
+                    _navRepeatAt = Time.unscaledTime + (repeat ? NavRepeatNext : NavRepeatFirst);
+                    if (dir != 0)
+                    {
+                        var next = Step(list, _focused, dir);
+                        if (next != null && next != _focused) { if (_focused != null) _focused.transform.localScale = Vector3.one; _focused = next; }
+                    }
+                    else if (_focused is Slider slider)
+                        slider.value = Mathf.Clamp(slider.value + side * SliderStep * (slider.maxValue - slider.minValue), slider.minValue, slider.maxValue);
+                    else if (_focused == _vibrationButton && !repeat) _vibrationButton.onClick.Invoke();
+                }
+            }
+            if (_submitAction != null && _submitAction.WasPressedThisFrame() && _focused is Button button && button.interactable)
+                button.onClick.Invoke();
+
+            bool pulse = GamepadActive();
+            foreach (var b in list)
+            {
+                float scale = pulse && b == _focused ? 1f + PulseAmount * (0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * PulseHz * Mathf.PI * 2f)) : 1f;
+                if (b.transform.localScale.x != scale) b.transform.localScale = new Vector3(scale, scale, 1f);
+            }
+        }
+
+        static Selectable Step(List<Selectable> list, Selectable from, int dir)
+        {
+            if (list.Count == 0) return null;
+            int start = from != null ? list.IndexOf(from) : -1;
+            for (int k = 1; k <= list.Count; k++)
+            {
+                int i = ((start + dir * k) % list.Count + list.Count) % list.Count;
+                if (list[i].interactable) return list[i];
+            }
+            return null;
+        }
 
         void RefreshStats()
         {
@@ -257,20 +480,37 @@ namespace SortThem
 
         void RefreshAbilities()
         {
-            if (Abilities == null || _abilitiesText == null) return;
-            var sb = new System.Text.StringBuilder();
-            string[] names = { Loc.Get("ui.ab1", "Поиск"), Loc.Get("ui.ab2", "Автосбор"), Loc.Get("ui.ab3", "Стеллаж") };
+            if (Abilities == null) return;
+            bool pad = Gamepad.current != null && (Keyboard.current == null || Gamepad.current.lastUpdateTime > Keyboard.current.lastUpdateTime);
             for (int i = 0; i < 3; i++)
             {
-                if (!Abilities.IsUnlocked(i)) continue;
-                float cd = Abilities.CooldownRemaining(i);
+                var slot = _abilitySlots[i];
+                if (slot == null) continue;
+                bool unlocked = Abilities.IsUnlocked(i);
+                if (slot.Root.activeSelf != unlocked) slot.Root.SetActive(unlocked);
+                if (!unlocked) continue;
                 float active = Abilities.ActiveRemaining(i);
-                sb.Append(i + 1).Append(": ").Append(names[i]);
-                if (active > 0f) sb.Append(" <color=#7FFF7F>").Append(Mathf.CeilToInt(active)).Append("s</color>");
-                else if (cd > 0f) sb.Append(" (").Append(Mathf.CeilToInt(cd)).Append(')');
-                sb.Append('\n');
+                float cd = Abilities.CooldownRemaining(i);
+                if (active > 0f)
+                {
+                    slot.Fill.color = FillActive;
+                    slot.Fill.fillAmount = active / Mathf.Max(0.01f, Abilities.ActiveTotal(i));
+                    slot.Icon.color = Color.white;
+                }
+                else if (cd > 0f)
+                {
+                    slot.Fill.color = FillCooldown;
+                    slot.Fill.fillAmount = cd / Mathf.Max(0.01f, Abilities.CooldownTotal(i));
+                    slot.Icon.color = IconCooldown;
+                }
+                else
+                {
+                    slot.Fill.fillAmount = 0f;
+                    slot.Icon.color = Color.white;
+                }
+                string key = pad ? GamepadKeys[i] : KeyboardKeys[i];
+                if (slot.Key.text != key) slot.Key.text = key;
             }
-            _abilitiesText.text = sb.ToString();
         }
 
         void RefreshTerminal()

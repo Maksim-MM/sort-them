@@ -12,7 +12,7 @@ namespace SortThem
         InputAction _move, _look, _jump, _sprint, _crouch;
         float _yaw, _pitch, _verticalVelocity, _camY, _camYVelocity;
         bool _camInit;
-        bool _crouching;
+        bool _crouching, _wantCrouch;
 
         public bool IsCrouching => _crouching;
 
@@ -62,13 +62,16 @@ namespace SortThem
                 Vector2 look = _look.ReadValue<Vector2>();
                 bool gamepad = _look.activeControl != null && _look.activeControl.device is Gamepad;
                 look *= gamepad ? cfg.GamepadLookSpeed * Time.deltaTime : cfg.MouseSensitivity;
+                look.x *= Settings.SensitivityX;
+                look.y *= Settings.SensitivityY;
                 _yaw += look.x;
                 _pitch = Mathf.Clamp(_pitch - look.y, -89f, 89f);
             }
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
             if (CameraPivot != null) CameraPivot.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
 
-            bool wantCrouch = !blocked && _crouch.IsPressed() && gm.Upgrades.Has(UpgradeKind.Crouch);
+            if (!blocked && _crouch.WasPressedThisFrame() && gm.Upgrades.Has(UpgradeKind.Crouch)) _wantCrouch = !_wantCrouch;
+            bool wantCrouch = _wantCrouch && gm.Upgrades.Has(UpgradeKind.Crouch);
             if (wantCrouch != _crouching)
             {
                 if (wantCrouch || CanStand())

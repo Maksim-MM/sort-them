@@ -87,10 +87,16 @@ namespace SortThem.Editor
             LocUtil.Set("ui.saved", "Сохранено", "Saved");
             LocUtil.Set("ui.unstuck", "Вернуть застрявшие машинки", "Return stuck cars");
             LocUtil.Set("ui.newgame", "Сбросить сохранение", "Reset save");
+            LocUtil.Set("ui.settings", "Настройки", "Settings");
+            LocUtil.Set("ui.music", "Музыка", "Music");
+            LocUtil.Set("ui.sfx", "Эффекты", "Effects");
+            LocUtil.Set("ui.sens_x", "Чувствительность по горизонтали", "Horizontal sensitivity");
+            LocUtil.Set("ui.sens_y", "Чувствительность по вертикали", "Vertical sensitivity");
+            LocUtil.Set("ui.vibration", "Вибрация", "Vibration");
+            LocUtil.Set("ui.on", "Вкл", "On");
+            LocUtil.Set("ui.off", "Выкл", "Off");
+            LocUtil.Set("ui.back", "Назад", "Back");
             LocUtil.Set("ui.hint", "ЛКМ взять · ПКМ поставить/бросить · колесо выбрать · Esc меню", "LMB take · RMB place/throw · wheel select · Esc menu");
-            LocUtil.Set("ui.ab1", "Поиск", "Find");
-            LocUtil.Set("ui.ab2", "Автосбор", "Auto-collect");
-            LocUtil.Set("ui.ab3", "Стеллаж", "Rack");
             LocUtil.Set("msg.ability_not_ready", "Способность ещё не готова", "Ability is not ready yet");
             LocUtil.Set("msg.need_item_in_hands", "Возьми что-нибудь в руки", "Take something in your hands");
         }

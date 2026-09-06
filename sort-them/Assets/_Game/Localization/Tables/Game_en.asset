@@ -606,6 +606,42 @@ MonoBehaviour:
     m_Localized: Take something in your hands
     m_Metadata:
       m_Items: []
+  - m_Id: 334676991401984
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373504
+    m_Localized: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373505
+    m_Localized: Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373506
+    m_Localized: Horizontal sensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373507
+    m_Localized: Vertical sensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373508
+    m_Localized: Vibration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373509
+    m_Localized: On
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373510
+    m_Localized: Off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373511
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

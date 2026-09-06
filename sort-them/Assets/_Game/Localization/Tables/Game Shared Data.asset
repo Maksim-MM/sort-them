@@ -603,6 +603,42 @@ MonoBehaviour:
     m_Key: msg.need_item_in_hands
     m_Metadata:
       m_Items: []
+  - m_Id: 334676991401984
+    m_Key: ui.settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373504
+    m_Key: ui.music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373505
+    m_Key: ui.sfx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373506
+    m_Key: ui.sens_x
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373507
+    m_Key: ui.sens_y
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373508
+    m_Key: ui.vibration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373509
+    m_Key: ui.on
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373510
+    m_Key: ui.off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373511
+    m_Key: ui.back
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

@@ -51,6 +51,20 @@ namespace SortThem.Editor
             Button(map, "Ability3", "<Keyboard>/3", "<Gamepad>/dpad/right");
             Button(map, "Pause", "<Keyboard>/escape", "<Gamepad>/start");
 
+            var ui = asset.AddActionMap("UI");
+            var navigate = ui.AddAction("Navigate", InputActionType.Value);
+            navigate.expectedControlType = "Vector2";
+            navigate.AddBinding("<Gamepad>/dpad").WithGroup("Gamepad");
+            navigate.AddBinding("<Gamepad>/leftStick").WithGroup("Gamepad");
+            navigate.AddCompositeBinding("2DVector")
+                .With("Up", "<Keyboard>/upArrow", "KeyboardMouse")
+                .With("Down", "<Keyboard>/downArrow", "KeyboardMouse")
+                .With("Left", "<Keyboard>/leftArrow", "KeyboardMouse")
+                .With("Right", "<Keyboard>/rightArrow", "KeyboardMouse");
+            Button(ui, "Submit", "<Keyboard>/enter", "<Gamepad>/buttonSouth");
+            var cancel = ui.AddAction("Cancel", InputActionType.Button);
+            cancel.AddBinding("<Gamepad>/buttonEast").WithGroup("Gamepad");
+
             asset.AddControlScheme("KeyboardMouse").WithRequiredDevice("<Keyboard>").WithRequiredDevice("<Mouse>");
             asset.AddControlScheme("Gamepad").WithRequiredDevice("<Gamepad>");
 

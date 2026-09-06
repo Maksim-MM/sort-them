@@ -34,7 +34,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 566e5c271d5f44e02956df5f041927c0, type: 3}
   CostPerLevel: 64000000
   ValuePerLevel:
   - 1

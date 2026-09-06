@@ -34,6 +34,16 @@ namespace SortThem
 
         public float CooldownRemaining(int index) => index >= 0 && index < 3 ? Mathf.Max(0f, _cooldown[index]) : 0f;
         public bool IsUnlocked(int index) => GameManager.I != null && GameManager.I.Upgrades.Has(Kinds[index]);
+        public float CooldownTotal(int index)
+        {
+            var c = GameManager.I.Config;
+            return index == 0 ? c.FindCooldown : index == 1 ? c.AutoCollectCooldown : c.RackHighlightCooldown;
+        }
+        public float ActiveTotal(int index)
+        {
+            var c = GameManager.I.Config;
+            return index == 0 ? c.FindDuration : index == 1 ? c.AutoCollectDuration : c.RackHighlightDuration;
+        }
         public float ActiveRemaining(int index)
         {
             float until = index == 0 ? _findUntil : index == 1 ? _collectUntil : _rackUntil;
