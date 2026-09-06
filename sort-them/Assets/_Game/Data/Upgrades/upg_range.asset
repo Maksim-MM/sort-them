@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8493a1fc19cfd402e8ebb06793ae3cc7, type: 3}
+  m_Name: upg_range
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.UpgradeData
+  UpgradeID: upg_range
+  DevName: Longer reach
+  DevDescription: Interaction range x1.25/1.5/1.8/2.2
+  Kind: 1
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: upg_range.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Description:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: upg_range.desc
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Icon: {fileID: 0}
+  CostPerLevel: 140000001e0000002d00000046000000
+  ValuePerLevel:
+  - 1.25
+  - 1.5
+  - 1.8
+  - 2.2
+  references:
+    version: 2
+    RefIds: []

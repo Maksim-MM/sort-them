@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e57634ad78d4dbd84f813c5bf182f1, type: 3}
+  m_Name: car_supercars_00
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
+  CarID: car_supercars_00
+  DevName: Red short supercar
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: car.car_supercars_00
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Category: {fileID: 11400000, guid: 85c5259347bd140c5bde20381985ee65, type: 2}
+  Prefab: {fileID: 7314528276392113570, guid: f7abcd11d4eef40cb83f5945c3556c5c, type: 3}
+  DisplayPrice: 32.5
+  references:
+    version: 2
+    RefIds: []

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e57634ad78d4dbd84f813c5bf182f1, type: 3}
+  m_Name: car_buses_06
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
+  CarID: car_buses_06
+  DevName: White short school bus
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: car.car_buses_06
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Category: {fileID: 11400000, guid: 92386d13ec10f43e58b51ac61d4d20ab, type: 2}
+  Prefab: {fileID: 4649253414176973871, guid: f87958afe978c4f928a8edef9a18e862, type: 3}
+  DisplayPrice: 34.5
+  references:
+    version: 2
+    RefIds: []

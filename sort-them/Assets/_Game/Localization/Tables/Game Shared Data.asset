@@ -1,0 +1,621 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Game Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Game
+  m_TableCollectionNameGuidString: da8bec3d2347743d38ff54005dee7ab6
+  m_Entries:
+  - m_Id: 405790720
+    m_Key: ui.cars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762240
+    m_Key: ui.shelves
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762241
+    m_Key: ui.collectibles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762242
+    m_Key: ui.terminal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762243
+    m_Key: ui.close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762244
+    m_Key: ui.buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762245
+    m_Key: ui.max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762246
+    m_Key: ui.pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762247
+    m_Key: ui.resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762248
+    m_Key: ui.save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762249
+    m_Key: ui.saved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762250
+    m_Key: ui.unstuck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956544
+    m_Key: ui.newgame
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956545
+    m_Key: ui.hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956546
+    m_Key: ui.ab1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956547
+    m_Key: ui.ab2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956548
+    m_Key: ui.ab3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61369999360
+    m_Key: cat.cat_muscle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61764263936
+    m_Key: car.car_muscle_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62083031040
+    m_Key: car.car_muscle_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62431158272
+    m_Key: car.car_muscle_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62766702592
+    m_Key: car.car_muscle_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63106441216
+    m_Key: car.car_muscle_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63437791232
+    m_Key: car.car_muscle_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63802695680
+    m_Key: car.car_muscle_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64184377344
+    m_Key: car.car_muscle_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64649945088
+    m_Key: car.car_muscle_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64977100800
+    m_Key: car.car_muscle_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65077764096
+    m_Key: cat.cat_supercars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65396531200
+    m_Key: car.car_supercars_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65715298304
+    m_Key: car.car_supercars_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66038259712
+    m_Key: car.car_supercars_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66361221120
+    m_Key: car.car_supercars_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66684182528
+    m_Key: car.car_supercars_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67002949632
+    m_Key: car.car_supercars_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67330105344
+    m_Key: car.car_supercars_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67653066752
+    m_Key: car.car_supercars_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67980222464
+    m_Key: car.car_supercars_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68307378176
+    m_Key: car.car_supercars_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68433207296
+    m_Key: cat.cat_trucks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68777140224
+    m_Key: car.car_trucks_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69112684544
+    m_Key: car.car_trucks_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69444034560
+    m_Key: car.car_trucks_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69779578880
+    m_Key: car.car_trucks_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70115123200
+    m_Key: car.car_trucks_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70438084608
+    m_Key: car.car_trucks_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70777823232
+    m_Key: car.car_trucks_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71113367552
+    m_Key: car.car_trucks_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71444717568
+    m_Key: car.car_trucks_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71788650496
+    m_Key: car.car_trucks_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71889313792
+    m_Key: cat.cat_emergency
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72237441024
+    m_Key: car.car_emergency_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72581373952
+    m_Key: car.car_emergency_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72921112576
+    m_Key: car.car_emergency_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73260851200
+    m_Key: car.car_emergency_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73592201216
+    m_Key: car.car_emergency_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73927745536
+    m_Key: car.car_emergency_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74275872768
+    m_Key: car.car_emergency_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74611417088
+    m_Key: car.car_emergency_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74942767104
+    m_Key: car.car_emergency_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75265728512
+    m_Key: car.car_emergency_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75374780416
+    m_Key: cat.cat_construction
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75710324736
+    m_Key: car.car_construction_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76050063360
+    m_Key: car.car_construction_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76385607680
+    m_Key: car.car_construction_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76721152000
+    m_Key: car.car_construction_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77052502016
+    m_Key: car.car_construction_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77379657728
+    m_Key: car.car_construction_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77715202048
+    m_Key: car.car_construction_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78050746368
+    m_Key: car.car_construction_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78386290688
+    m_Key: car.car_construction_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78713446400
+    m_Key: car.car_construction_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78818304000
+    m_Key: cat.cat_buses
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79149654016
+    m_Key: car.car_buses_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79476809728
+    m_Key: car.car_buses_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79816548352
+    m_Key: car.car_buses_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80143704064
+    m_Key: car.car_buses_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80475054080
+    m_Key: car.car_buses_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80814792704
+    m_Key: car.car_buses_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81158725632
+    m_Key: car.car_buses_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81506852864
+    m_Key: car.car_buses_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81880145920
+    m_Key: car.car_buses_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82224078848
+    m_Key: car.car_buses_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82345713664
+    m_Key: cat.cat_pickups
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82693840896
+    m_Key: car.car_pickups_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83033579520
+    m_Key: car.car_pickups_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83381706752
+    m_Key: car.car_pickups_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83729833984
+    m_Key: car.car_pickups_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84061184000
+    m_Key: car.car_pickups_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84417699840
+    m_Key: car.car_pickups_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84774215680
+    m_Key: car.car_pickups_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85126537216
+    m_Key: car.car_pickups_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85453692928
+    m_Key: car.car_pickups_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85793431552
+    m_Key: car.car_pickups_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85898289152
+    m_Key: cat.cat_racing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86233833472
+    m_Key: car.car_racing_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86586155008
+    m_Key: car.car_racing_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86946865152
+    m_Key: car.car_racing_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87303380992
+    m_Key: car.car_racing_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87643119616
+    m_Key: car.car_racing_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87999635456
+    m_Key: car.car_racing_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88351956992
+    m_Key: car.car_racing_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88721055744
+    m_Key: car.car_racing_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89081765888
+    m_Key: car.car_racing_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89429893120
+    m_Key: car.car_racing_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89543139328
+    m_Key: cat.cat_retro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89887072256
+    m_Key: car.car_retro_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90243588096
+    m_Key: car.car_retro_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90587521024
+    m_Key: car.car_retro_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90927259648
+    m_Key: car.car_retro_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91287969792
+    m_Key: car.car_retro_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91636097024
+    m_Key: car.car_retro_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91988418560
+    m_Key: car.car_retro_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92349128704
+    m_Key: car.car_retro_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92718227456
+    m_Key: car.car_retro_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93078937600
+    m_Key: car.car_retro_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93183795200
+    m_Key: cat.cat_monster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93531922432
+    m_Key: car.car_monster_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93884243968
+    m_Key: car.car_monster_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94240759808
+    m_Key: car.car_monster_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94584692736
+    m_Key: car.car_monster_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94953791488
+    m_Key: car.car_monster_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95297724416
+    m_Key: car.car_monster_05
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95645851648
+    m_Key: car.car_monster_06
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96019144704
+    m_Key: car.car_monster_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96388243456
+    m_Key: car.car_monster_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96757342208
+    m_Key: car.car_monster_09
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565202378752
+    m_Key: upg_inventory.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565210767360
+    m_Key: upg_inventory.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013568
+    m_Key: upg_range.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013569
+    m_Key: upg_range.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065472
+    m_Key: upg_sprint.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065473
+    m_Key: upg_sprint.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923072
+    m_Key: upg_crouch.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923073
+    m_Key: upg_crouch.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565642780672
+    m_Key: upg_throw.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565646974976
+    m_Key: upg_throw.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026880
+    m_Key: upg_autoplace.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026881
+    m_Key: upg_autoplace.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884480
+    m_Key: upg_shelf_highlight.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884481
+    m_Key: upg_shelf_highlight.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936384
+    m_Key: upg_dup_highlight.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936385
+    m_Key: upg_dup_highlight.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793984
+    m_Key: upg_autocollect.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793985
+    m_Key: upg_autocollect.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509851127808
+    m_Key: msg.ability_not_ready
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509872099328
+    m_Key: msg.need_item_in_hands
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items:
+    - rid: 5306512629804826721
+  m_KeyGenerator:
+    rid: 5306512629804826720
+  references:
+    version: 2
+    RefIds:
+    - rid: 5306512629804826720
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1788655599295
+    - rid: 5306512629804826721
+      type: {class: PreloadAssetTableMetadata, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_PreloadBehaviour: 1

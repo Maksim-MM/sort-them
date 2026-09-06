@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 241d91afe8c5f4cda9dd9130fde1d416, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.GameConfig
+  WalkSpeed: 4
+  SprintSpeed: 7
+  CrouchSpeed: 2
+  JumpHeight: 1
+  Gravity: -20
+  MouseSensitivity: 0.12
+  GamepadLookSpeed: 180
+  StandHeight: 1.8
+  PlayerRadius: 0.45
+  CameraHeightSmoothTime: 0.12
+  CrouchHeight: 1
+  BaseInteractRange: 2.2
+  BaseThrowDistance: 1.5
+  ThrowArc: 0.4
+  BaseInventoryCapacity: 5
+  BounceSpeed: 3
+  MagnetDuration: 0.25
+  AbilityCooldown: 20
+  AbilityDuration: 8
+  AutoCollectRadius: 15
+  AutoCollectCooldown: 60
+  AutoCollectDuration: 10
+  AutoCollectInterval: 0.35
+  AutoCollectFlightTime: 0.4
+  ScrollThreshold: 0.6
+  ScrollMinInterval: 0.12
+  ScrollIdleReset: 0.25
+  LevitateHeight: 1.4
+  LevitateSpeed: 3
+  ActivationRadius: 3
+  ActivationUpdateInterval: 0.25
+  UnstuckCenter: {x: 0, y: 2.5, z: 0}
+  FloorY: 0
+  LevelHalfExtents: {x: 12, y: 5, z: 9}
+  CollectiblesTotal: 10
+  AutosaveInterval: 60

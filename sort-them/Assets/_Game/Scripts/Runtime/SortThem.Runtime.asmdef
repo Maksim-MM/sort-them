@@ -1,0 +1,19 @@
+{
+    "name": "SortThem.Runtime",
+    "rootNamespace": "SortThem",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.Localization",
+        "Unity.TextMeshPro",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

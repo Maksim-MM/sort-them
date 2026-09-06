@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbde9667ed9e148778b151f261414711, type: 3}
+  m_Name: Rack_cat_buses
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.RackData
+  Category: {fileID: 11400000, guid: 92386d13ec10f43e58b51ac61d4d20ab, type: 2}
+  ShelfCount: 10
+  Shelf: {fileID: 11400000, guid: 89a7b7900fb4447de953b5bd91bdf56c, type: 2}

@@ -1,0 +1,611 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Game_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: da8bec3d2347743d38ff54005dee7ab6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 405790720
+    m_Localized: Cars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762240
+    m_Localized: Shelves
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762241
+    m_Localized: Collectibles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762242
+    m_Localized: Upgrade Terminal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762243
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762244
+    m_Localized: Buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762245
+    m_Localized: Max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762246
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762247
+    m_Localized: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762248
+    m_Localized: Save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762249
+    m_Localized: Saved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762250
+    m_Localized: Return stuck cars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956544
+    m_Localized: Reset save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956545
+    m_Localized: "LMB take \xB7 RMB place/throw \xB7 wheel select \xB7 Esc menu"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956546
+    m_Localized: Find
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956547
+    m_Localized: Auto-collect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956548
+    m_Localized: Rack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61369999360
+    m_Localized: Muscle Cars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61764263936
+    m_Localized: Red short muscle car
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62083031040
+    m_Localized: Blue muscle car
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62431158272
+    m_Localized: Green long muscle car
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62766702592
+    m_Localized: Yellow short muscle car with spoiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63106441216
+    m_Localized: Orange muscle car with spoiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63437791232
+    m_Localized: Purple long muscle car with spoiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63802695680
+    m_Localized: White short muscle car with hood scoop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64184377344
+    m_Localized: Black muscle car with hood scoop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64649945088
+    m_Localized: Teal long muscle car with hood scoop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64977100800
+    m_Localized: Pink muscle convertible
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65077764096
+    m_Localized: Supercars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65396531200
+    m_Localized: Red short supercar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65715298304
+    m_Localized: Blue supercar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66038259712
+    m_Localized: Green long supercar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66361221120
+    m_Localized: Yellow short supercar with rear wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66684182528
+    m_Localized: Orange supercar with rear wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67002949632
+    m_Localized: Purple long supercar with rear wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67330105344
+    m_Localized: White short supercar with roof scoop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67653066752
+    m_Localized: Black supercar with roof scoop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67980222464
+    m_Localized: Teal long supercar with roof scoop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68307378176
+    m_Localized: Pink supercar with fins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68433207296
+    m_Localized: Trucks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68777140224
+    m_Localized: Red short container truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69112684544
+    m_Localized: Blue container truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69444034560
+    m_Localized: Green long container truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69779578880
+    m_Localized: Yellow short tanker truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70115123200
+    m_Localized: Orange tanker truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70438084608
+    m_Localized: Purple long tanker truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70777823232
+    m_Localized: White short log truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71113367552
+    m_Localized: Black log truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71444717568
+    m_Localized: Teal long log truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71788650496
+    m_Localized: Pink dump truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71889313792
+    m_Localized: Emergency
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72237441024
+    m_Localized: Red short police sedan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72581373952
+    m_Localized: Blue police sedan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72921112576
+    m_Localized: Green long police sedan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73260851200
+    m_Localized: Yellow short ambulance van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73592201216
+    m_Localized: Orange ambulance van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73927745536
+    m_Localized: Purple long ambulance van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74275872768
+    m_Localized: White short fire truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74611417088
+    m_Localized: Black fire truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74942767104
+    m_Localized: Teal long fire truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75265728512
+    m_Localized: Pink emergency SUV
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75374780416
+    m_Localized: Construction
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75710324736
+    m_Localized: Red short excavator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76050063360
+    m_Localized: Blue excavator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76385607680
+    m_Localized: Green long excavator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76721152000
+    m_Localized: Yellow short bulldozer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77052502016
+    m_Localized: Orange bulldozer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77379657728
+    m_Localized: Purple long bulldozer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77715202048
+    m_Localized: White short mobile crane
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78050746368
+    m_Localized: Black mobile crane
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78386290688
+    m_Localized: Teal long mobile crane
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78713446400
+    m_Localized: Pink road roller
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78818304000
+    m_Localized: Buses
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79149654016
+    m_Localized: Red short city bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79476809728
+    m_Localized: Blue city bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79816548352
+    m_Localized: Green long city bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80143704064
+    m_Localized: Yellow short double-decker bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80475054080
+    m_Localized: Orange double-decker bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80814792704
+    m_Localized: Purple long double-decker bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81158725632
+    m_Localized: White short school bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81506852864
+    m_Localized: Black school bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81880145920
+    m_Localized: Teal long school bus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82224078848
+    m_Localized: Pink bus with roof rack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82345713664
+    m_Localized: Pickups & Vans
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82693840896
+    m_Localized: Red short pickup truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83033579520
+    m_Localized: Blue pickup truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83381706752
+    m_Localized: Green long pickup truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83729833984
+    m_Localized: Yellow short panel van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84061184000
+    m_Localized: Orange panel van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84417699840
+    m_Localized: Purple long panel van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84774215680
+    m_Localized: White short pickup with camper shell
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85126537216
+    m_Localized: Black pickup with camper shell
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85453692928
+    m_Localized: Teal long pickup with camper shell
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85793431552
+    m_Localized: Pink van with roof rails
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85898289152
+    m_Localized: Racing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86233833472
+    m_Localized: Red short racing car
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86586155008
+    m_Localized: Blue racing car
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86946865152
+    m_Localized: Green long racing car
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87303380992
+    m_Localized: Yellow short racing car with big wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87643119616
+    m_Localized: Orange racing car with big wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87999635456
+    m_Localized: Purple long racing car with big wing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88351956992
+    m_Localized: White short racing car with airbox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88721055744
+    m_Localized: Black racing car with airbox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89081765888
+    m_Localized: Teal long racing car with airbox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89429893120
+    m_Localized: Pink twin-nose racing car
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89543139328
+    m_Localized: Retro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89887072256
+    m_Localized: Red short retro sedan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90243588096
+    m_Localized: Blue retro sedan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90587521024
+    m_Localized: Green long retro sedan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90927259648
+    m_Localized: Yellow short retro roadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91287969792
+    m_Localized: Orange retro roadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91636097024
+    m_Localized: Purple long retro roadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91988418560
+    m_Localized: White short retro station wagon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92349128704
+    m_Localized: Black retro station wagon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92718227456
+    m_Localized: Teal long retro station wagon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93078937600
+    m_Localized: Pink retro sedan with luggage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93183795200
+    m_Localized: Monster Trucks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93531922432
+    m_Localized: Red short monster truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93884243968
+    m_Localized: Blue monster truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94240759808
+    m_Localized: Green long monster truck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94584692736
+    m_Localized: Yellow short monster van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94953791488
+    m_Localized: Orange monster van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95297724416
+    m_Localized: Purple long monster van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95645851648
+    m_Localized: White short monster truck with flags
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96019144704
+    m_Localized: Black monster truck with flags
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96388243456
+    m_Localized: Teal long monster truck with flags
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96757342208
+    m_Localized: Pink monster truck with light bar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565202378752
+    m_Localized: Bigger inventory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565210767360
+    m_Localized: 'Carry more cars: +2, +4, +7, +10 slots'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013568
+    m_Localized: Longer reach
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013569
+    m_Localized: Take and place cars from farther away
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065472
+    m_Localized: Unlock sprint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065473
+    m_Localized: Hold Shift to run
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923072
+    m_Localized: Unlock crouch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923073
+    m_Localized: Hold Ctrl to crouch under shelves
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565642780672
+    m_Localized: Stronger throw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565646974976
+    m_Localized: Cars fly farther
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026880
+    m_Localized: Auto-place on throw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026881
+    m_Localized: A thrown car snaps into a matching shelf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884480
+    m_Localized: Rack highlight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884481
+    m_Localized: 'Key 3: highlights the rack for the car in hand'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936384
+    m_Localized: Find matches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936385
+    m_Localized: 'Key 1: matching cars in the pile glow and float up'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793984
+    m_Localized: Auto-collect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793985
+    m_Localized: 'Key 2: pulls the same cars nearby into your inventory'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509851127808
+    m_Localized: Ability is not ready yet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509872099328
+    m_Localized: Take something in your hands
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
