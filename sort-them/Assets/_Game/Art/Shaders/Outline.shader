@@ -4,6 +4,8 @@ Shader "SortThem/Outline"
     {
         _Color("Color", Color) = (1,1,1,1)
         _Width("Width", Float) = 0.012
+        [Enum(UnityEngine.Rendering.CompareFunction)] _ZTest("ZTest", Float) = 4
+        [Enum(Off, 0, On, 1)] _ZWrite("ZWrite", Float) = 1
     }
     SubShader
     {
@@ -13,7 +15,8 @@ Shader "SortThem/Outline"
             Name "Outline"
             Tags { "LightMode"="UniversalForward" }
             Cull Front
-            ZWrite On
+            ZWrite [_ZWrite]
+            ZTest [_ZTest]
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

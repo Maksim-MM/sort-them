@@ -29,16 +29,20 @@ namespace SortThem
         public bool IsFull => Items.Count >= Capacity;
         public CarInstance Active => Items.Count > 0 ? Items[Mathf.Clamp(ActiveIndex, 0, Items.Count - 1)] : null;
 
-        public bool Add(CarInstance car)
+        public bool Add(CarInstance car, bool makeActive = true)
         {
             if (car == null || IsFull) return false;
-            LastAdded = car;
-            LastAddedPosition = car.transform.position;
-            LastAddedRotation = car.transform.rotation;
-            AddCount++;
+            bool takeSlot = makeActive || Items.Count == 0;
+            if (takeSlot)
+            {
+                LastAdded = car;
+                LastAddedPosition = car.transform.position;
+                LastAddedRotation = car.transform.rotation;
+                AddCount++;
+            }
             car.SetHeld();
             Items.Add(car);
-            ActiveIndex = Items.Count - 1;
+            if (takeSlot) ActiveIndex = Items.Count - 1;
             Changed?.Invoke();
             return true;
         }

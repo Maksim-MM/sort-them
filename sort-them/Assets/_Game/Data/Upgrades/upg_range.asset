@@ -35,7 +35,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Icon: {fileID: 0}
-  CostPerLevel: 140000001e0000002d00000046000000
+  CostPerLevel: 140000001e0000002800000032000000
   ValuePerLevel:
   - 1.25
   - 1.5

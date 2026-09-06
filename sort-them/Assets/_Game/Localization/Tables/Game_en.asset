@@ -531,7 +531,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 565210767360
-    m_Localized: 'Carry more cars: +2, +4, +7, +10 slots'
+    m_Localized: +1 slot per level, up to 20
     m_Metadata:
       m_Items: []
   - m_Id: 565324013568
@@ -571,7 +571,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 565756026881
-    m_Localized: A thrown car snaps into a matching shelf
+    m_Localized: A car thrown into its rack snaps onto a shelf
     m_Metadata:
       m_Items: []
   - m_Id: 565860884480

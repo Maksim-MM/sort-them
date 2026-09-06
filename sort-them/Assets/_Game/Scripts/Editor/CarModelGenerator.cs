@@ -206,7 +206,7 @@ namespace SortThem.Editor
             return prefab;
         }
 
-        const float MaxHeight = 0.32f;
+        const float MaxHeight = 0.32f, MaxLength = 0.42f;
 
         static Mesh Combine(List<Part> parts, string name, out Bounds bounds)
         {
@@ -238,7 +238,7 @@ namespace SortThem.Editor
                 max = Vector3.Max(max, v);
             }
             var center = (min + max) * 0.5f;
-            float fit = Mathf.Min(1f, MaxHeight / Mathf.Max(0.001f, max.y - min.y));
+            float fit = Mathf.Min(1f, MaxHeight / Mathf.Max(0.001f, max.y - min.y), MaxLength / Mathf.Max(0.001f, max.z - min.z));
             for (int i = 0; i < verts.Count; i++) verts[i] = (verts[i] - center) * fit;
             bounds = new Bounds(Vector3.zero, (max - min) * fit);
 

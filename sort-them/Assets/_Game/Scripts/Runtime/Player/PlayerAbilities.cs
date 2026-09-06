@@ -8,6 +8,7 @@ namespace SortThem
     public class PlayerAbilities : MonoBehaviour
     {
         public Inventory Inventory;
+        public float StackDepth = 0.12f;
         public Material LevitateOutlineMaterial;
 
         InputAction[] _actions;
@@ -15,13 +16,18 @@ namespace SortThem
         float _findUntil, _rackUntil, _collectUntil, _collectNextPull;
         bool _rackActive;
         CarItemData _collectModel;
+        CarItemData _findModel;
         int _collectBudget;
         Camera _cam;
+        HeldItemView _heldView;
         readonly List<CarInstance> _pulls = new List<CarInstance>();
         readonly List<Vector3> _pullFrom = new List<Vector3>();
         readonly List<float> _pullStart = new List<float>();
+        readonly List<Quaternion> _pullRot = new List<Quaternion>();
         readonly List<CarInstance> _levitating = new List<CarInstance>();
         readonly List<float> _levitateY = new List<float>();
+        readonly List<float> _levitateBase = new List<float>();
+        PlayerInteraction _interaction;
         readonly List<MeshGhost> _outlines = new List<MeshGhost>();
 
         static readonly UpgradeKind[] Kinds = { UpgradeKind.DuplicateHighlight, UpgradeKind.AutoCollect, UpgradeKind.ShelfHighlight };
@@ -39,6 +45,10 @@ namespace SortThem
             var map = GameManager.I.InputAsset.FindActionMap("Player", true);
             _actions = new[] { map.FindAction("Ability1", true), map.FindAction("Ability2", true), map.FindAction("Ability3", true) };
             _cam = Camera.main;
+            _heldView = FindFirstObjectByType<HeldItemView>();
+            _interaction = GetComponent<PlayerInteraction>();
+            if (LevitateOutlineMaterial != null && LevitateOutlineMaterial.HasProperty("_XRayZTest"))
+                LevitateOutlineMaterial.SetFloat("_XRayZTest", (float)(SystemInfo.usesReversedZBuffer ? UnityEngine.Rendering.CompareFunction.Less : UnityEngine.Rendering.CompareFunction.Greater));
         }
 
         void Update()
@@ -68,28 +78,44 @@ namespace SortThem
             if (_cooldown[0] > 0f) { NotReady(); return; }
             var held = Inventory.Active;
             if (held == null) { NeedItem(); return; }
+            _findUntil = Time.time + gm.Config.FindDuration;
+            _cooldown[0] = gm.Config.FindCooldown;
+            _findModel = held.Data;
+            StartLevitation(gm, held.Data);
+        }
+
+        void StartLevitation(GameManager gm, CarItemData model)
+        {
             EndLevitation();
-            float targetY = transform.position.y + gm.Config.LevitateHeight;
             foreach (var car in gm.Cars)
             {
-                if (car.State != CarState.Loose || car.Levitating || car.Data != held.Data) continue;
+                if (car.State != CarState.Loose || car.Levitating || car.Data != model) continue;
                 car.Levitating = true;
                 car.Body.isKinematic = true;
-                float y = targetY;
-                if (Physics.Raycast(car.transform.position, Vector3.up, out var hit, targetY - car.transform.position.y + car.HalfExtents.y, Layers.InteractMask, QueryTriggerInteraction.Ignore))
+                float y = car.transform.position.y + gm.Config.LevitateHeight;
+                if (Physics.Raycast(car.transform.position, Vector3.up, out var hit, gm.Config.LevitateHeight + car.HalfExtents.y, Layers.InteractMask & ~(1 << Layers.LooseItems), QueryTriggerInteraction.Ignore))
                     y = Mathf.Max(car.transform.position.y, hit.point.y - car.HalfExtents.y - 0.05f);
                 _levitating.Add(car);
                 _levitateY.Add(y);
+                _levitateBase.Add(car.transform.position.y);
             }
-            if (_levitating.Count == 0) return;
-            _findUntil = Time.time + gm.Config.AbilityDuration;
-            _cooldown[0] = gm.Config.AbilityCooldown;
         }
 
         void UpdateLevitation(GameManager gm)
         {
+            bool active = Time.time < _findUntil;
+            if (!active)
+            {
+                if (_levitating.Count > 0 || _findModel != null) { EndLevitation(); _findModel = null; }
+                return;
+            }
+            var model = Inventory.Active != null ? Inventory.Active.Data : null;
+            if (model != _findModel)
+            {
+                _findModel = model;
+                if (model != null) StartLevitation(gm, model); else EndLevitation();
+            }
             if (_levitating.Count == 0) return;
-            if (Time.time >= _findUntil) { EndLevitation(); return; }
             float step = gm.Config.LevitateSpeed * Time.deltaTime;
             int shown = 0;
             for (int i = _levitating.Count - 1; i >= 0; i--)
@@ -100,13 +126,17 @@ namespace SortThem
                     if (car != null) car.Levitating = false;
                     _levitating.RemoveAt(i);
                     _levitateY.RemoveAt(i);
+                    _levitateBase.RemoveAt(i);
                     continue;
                 }
                 var t = car.transform;
+                _levitateBase[i] = Mathf.MoveTowards(_levitateBase[i], _levitateY[i], step);
                 var pos = t.position;
-                pos.y = Mathf.MoveTowards(pos.y, _levitateY[i], step);
+                float bob = Mathf.Sin(Time.time * gm.Config.LevitateBobSpeed + i * 1.3f) * gm.Config.LevitateBobAmplitude;
+                pos.y = _levitateBase[i] + bob;
                 t.position = pos;
                 t.Rotate(0f, 45f * Time.deltaTime, 0f, Space.World);
+                if (_interaction != null && _interaction.HoverCar == car) continue;
                 Outline(shown++).Show(car.Filter.sharedMesh, t.position, t.rotation, t.lossyScale);
             }
             for (int i = shown; i < _outlines.Count; i++) _outlines[i].Hide();
@@ -122,6 +152,7 @@ namespace SortThem
             }
             _levitating.Clear();
             _levitateY.Clear();
+            _levitateBase.Clear();
             foreach (var o in _outlines) o.Hide();
         }
 
@@ -158,16 +189,24 @@ namespace SortThem
             _cooldown[1] = gm.Config.AutoCollectCooldown;
         }
 
-        Vector3 HandTarget()
+        void StackTarget(out Vector3 position, out Quaternion rotation)
         {
             var c = _cam != null ? _cam.transform : transform;
-            return c.position + c.forward * 0.5f + c.right * 0.25f - c.up * 0.2f;
+            if (_heldView != null && _heldView.TryGetModelWorldPose(out var heldPos, out var heldRot))
+            {
+                var dir = heldPos - c.position;
+                position = heldPos + (dir.sqrMagnitude > 0.0001f ? dir.normalized : c.forward) * StackDepth;
+                rotation = heldRot;
+                return;
+            }
+            position = c.position + c.forward * 0.5f + c.right * 0.25f - c.up * 0.2f;
+            rotation = c.rotation;
         }
 
         void UpdateAutoCollect(GameManager gm)
         {
             float flight = Mathf.Max(0.05f, gm.Config.AutoCollectFlightTime);
-            Vector3 hand = HandTarget();
+            StackTarget(out var hand, out var handRot);
             for (int i = _pulls.Count - 1; i >= 0; i--)
             {
                 var car = _pulls[i];
@@ -181,14 +220,14 @@ namespace SortThem
                 if (t >= 1f)
                 {
                     car.Levitating = false;
-                    if (!Inventory.Add(car)) car.Unfreeze();
+                    if (!Inventory.Add(car, false)) car.Unfreeze();
                     RemovePull(i);
                     continue;
                 }
                 var pos = Vector3.Lerp(_pullFrom[i], hand, t);
                 pos.y += Mathf.Sin(t * Mathf.PI) * 0.4f;
                 car.transform.position = pos;
-                car.transform.Rotate(0f, 360f * Time.deltaTime, 0f, Space.World);
+                car.transform.rotation = Quaternion.Slerp(_pullRot[i], handRot, t);
             }
 
             if (Time.time >= _collectUntil || Time.time < _collectNextPull) return;
@@ -208,6 +247,7 @@ namespace SortThem
             best.Body.isKinematic = true;
             _pulls.Add(best);
             _pullFrom.Add(best.transform.position);
+            _pullRot.Add(best.transform.rotation);
             _pullStart.Add(Time.time);
             _collectBudget--;
             _collectNextPull = Time.time + gm.Config.AutoCollectInterval;
@@ -217,6 +257,7 @@ namespace SortThem
         {
             _pulls.RemoveAt(i);
             _pullFrom.RemoveAt(i);
+            _pullRot.RemoveAt(i);
             _pullStart.RemoveAt(i);
         }
 
@@ -225,8 +266,8 @@ namespace SortThem
             if (!gm.Upgrades.Has(UpgradeKind.ShelfHighlight)) return;
             if (_cooldown[2] > 0f) { NotReady(); return; }
             if (Inventory.Active == null) { NeedItem(); return; }
-            _rackUntil = Time.time + gm.Config.AbilityDuration;
-            _cooldown[2] = gm.Config.AbilityCooldown;
+            _rackUntil = Time.time + gm.Config.RackHighlightDuration;
+            _cooldown[2] = gm.Config.RackHighlightCooldown;
         }
 
         void UpdateRackHighlight(GameManager gm)

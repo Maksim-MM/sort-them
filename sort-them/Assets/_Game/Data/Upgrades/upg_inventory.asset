@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.UpgradeData
   UpgradeID: upg_inventory
   DevName: Bigger inventory
-  DevDescription: +2/+4/+7/+10 slots
+  DevDescription: +1 slot per level, 15 levels, max 20
   Kind: 0
   DisplayName:
     m_TableReference:
@@ -35,12 +35,23 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Icon: {fileID: 0}
-  CostPerLevel: 1e0000003c00000078000000fa000000
+  CostPerLevel: 1e00000028000000320000003c00000046000000500000005a000000640000006e00000078000000820000008c00000096000000a0000000aa000000
   ValuePerLevel:
+  - 1
   - 2
+  - 3
   - 4
+  - 5
+  - 6
   - 7
+  - 8
+  - 9
   - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
   references:
     version: 2
     RefIds: []

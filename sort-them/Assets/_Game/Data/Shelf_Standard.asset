@@ -15,4 +15,5 @@ MonoBehaviour:
   Rows: 2
   Columns: 5
   SlotPitch: 0.45
-  RowPitch: 0.5
+  RowPitch: 0.48
+  SlotYaw: 35

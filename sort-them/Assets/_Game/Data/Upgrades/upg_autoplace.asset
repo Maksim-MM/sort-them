@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.UpgradeData
   UpgradeID: upg_autoplace
   DevName: Auto-place on throw
-  DevDescription: Thrown car snaps into a matching shelf
+  DevDescription: Thrown car snaps into its category rack
   Kind: 5
   DisplayName:
     m_TableReference:

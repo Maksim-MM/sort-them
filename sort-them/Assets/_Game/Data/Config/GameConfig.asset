@@ -24,23 +24,32 @@ MonoBehaviour:
   CameraHeightSmoothTime: 0.12
   CrouchHeight: 1
   BaseInteractRange: 2.2
-  BaseThrowDistance: 1.5
+  BaseThrowDistance: 0.75
   ThrowArc: 0.4
   BaseInventoryCapacity: 5
   BounceSpeed: 3
   MagnetDuration: 0.25
-  AbilityCooldown: 20
-  AbilityDuration: 8
+  PlaceFlightDuration: 0.3
+  PopScale: 1.15
+  PopDuration: 0.25
+  ShelfCompleteClip: {fileID: 0}
+  RackHighlightCooldown: 60
+  RackHighlightDuration: 30
   AutoCollectRadius: 15
   AutoCollectCooldown: 60
   AutoCollectDuration: 10
   AutoCollectInterval: 0.35
   AutoCollectFlightTime: 0.4
-  ScrollThreshold: 0.6
-  ScrollMinInterval: 0.12
+  ScrollThreshold: 2
+  ScrollNotchThreshold: 0.9
+  ScrollMinInterval: 0.15
   ScrollIdleReset: 0.25
+  FindCooldown: 60
+  FindDuration: 30
   LevitateHeight: 1.4
   LevitateSpeed: 3
+  LevitateBobAmplitude: 0.06
+  LevitateBobSpeed: 2.5
   ActivationRadius: 3
   ActivationUpdateInterval: 0.25
   UnstuckCenter: {x: 0, y: 2.5, z: 0}

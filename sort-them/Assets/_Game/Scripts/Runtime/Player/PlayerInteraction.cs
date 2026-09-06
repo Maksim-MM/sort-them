@@ -40,6 +40,16 @@ namespace SortThem
             if (Time.time - _lastScrollInput > cfg.ScrollIdleReset) _scrollAccum = 0f;
             if (Mathf.Abs(delta) < 0.001f) return;
             _lastScrollInput = Time.time;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.lKey.isPressed) Debug.Log($"scroll delta {delta:F3}");
+#endif
+            if (Mathf.Abs(delta) >= cfg.ScrollNotchThreshold)
+            {
+                _scrollAccum = 0f;
+                if (delta > 0f) Inventory.Next(); else Inventory.Prev();
+                _lastScrollSwitch = Time.time;
+                return;
+            }
             _scrollAccum += delta;
             if (Mathf.Abs(_scrollAccum) < cfg.ScrollThreshold) return;
             if (Time.time - _lastScrollSwitch < cfg.ScrollMinInterval) { _scrollAccum = Mathf.Sign(_scrollAccum) * cfg.ScrollThreshold; return; }
@@ -191,8 +201,11 @@ namespace SortThem
             if (car == null) return;
             if (CanPlace && HoverShelf != null && HoverShelf.Accepts(car.Data))
             {
+                Vector3 fromPos = Cam.transform.position + Cam.transform.forward * 0.5f;
+                Quaternion fromRot = car.transform.rotation;
+                if (_heldView != null && _heldView.TryGetModelWorldPose(out var handPos, out var handRot)) { fromPos = handPos; fromRot = handRot; }
                 Inventory.RemoveActive();
-                if (!HoverShelf.TryPlace(car, HoverSlot)) Inventory.Add(car);
+                if (!HoverShelf.TryPlaceAnimated(car, HoverSlot, fromPos, fromRot, GameManager.I.Config.PlaceFlightDuration)) Inventory.Add(car);
                 return;
             }
             Throw(car);

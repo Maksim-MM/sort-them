@@ -17,7 +17,8 @@ namespace SortThem.Editor
         const float BoardT = 0.04f, DividerT = 0.05f, ShelfPitch = 0.42f;
         static float RackW = 2.45f, RackD = 1.1f;
         const int ShelvesPerSection = 5, Sections = 2;
-        static readonly float[] ShelfHeights = { 0.25f, 0.67f, 1.09f, 1.51f, 1.93f };
+        const float BottomShelfHeight = 0.55f;
+        static readonly float[] ShelfHeights = { BottomShelfHeight, BottomShelfHeight + ShelfPitch, BottomShelfHeight + ShelfPitch * 2f, BottomShelfHeight + ShelfPitch * 3f, BottomShelfHeight + ShelfPitch * 4f };
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
 
@@ -42,10 +43,6 @@ namespace SortThem.Editor
 
             CreateMaterials();
             var shelfData = EditorAssets.LoadOrCreate<ShelfData>(Paths.Data + "/Shelf_Standard.asset");
-            shelfData.Rows = 2;
-            shelfData.Columns = 5;
-            shelfData.SlotPitch = 0.45f;
-            shelfData.RowPitch = 0.5f;
             RackW = shelfData.Columns * shelfData.SlotPitch + 0.2f;
             RackD = shelfData.Rows * shelfData.RowPitch + 0.1f;
             EditorUtility.SetDirty(shelfData);
@@ -54,7 +51,7 @@ namespace SortThem.Editor
             gameConfig.LevelHalfExtents = new Vector3(RoomX * 0.5f + 1f, RoomH, RoomZ * 0.5f + 1f);
             EditorUtility.SetDirty(gameConfig);
             var economy = EditorAssets.LoadOrCreate<EconomyConfig>(Paths.Config + "/EconomyConfig.asset");
-            var upgrades = UpgradeSetup.CreateAll();
+            var upgrades = UpgradeSetup.CreateAll(false);
 
             EditorAssets.EnsureFolder(Paths.Scenes);
             var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
@@ -155,8 +152,11 @@ namespace SortThem.Editor
             _ghost = EditorAssets.LoadOrCreateMaterial("Ghost", "SortThem/Ghost", new Color(0.2f, 1f, 0.3f, 0.55f), "_Color");
             _outline = EditorAssets.LoadOrCreateMaterial("Outline", "SortThem/Outline", Color.white, "_Color");
             _highlight = EditorAssets.LoadOrCreateMaterial("HighlightThroughWalls", "SortThem/HighlightThroughWalls", new Color(1f, 0.85f, 0.2f, 0.85f), "_Color");
-            _levOutline = EditorAssets.LoadOrCreateMaterial("OutlinePurple", "SortThem/Outline", new Color(0.72f, 0.3f, 1f), "_Color");
+            _levOutline = EditorAssets.LoadOrCreateMaterial("OutlinePurple", "SortThem/OutlineXRay", new Color(0.72f, 0.3f, 1f), "_Color");
+            _levOutline.shader = Shader.Find("SortThem/OutlineXRay");
             _levOutline.SetFloat("_Width", 0.02f);
+            _levOutline.SetColor("_XRayColor", new Color(0.72f, 0.3f, 1f, 0.55f));
+            _levOutline.renderQueue = 3000;
             EditorUtility.SetDirty(_levOutline);
             _heldCars = EditorAssets.LoadOrCreateMaterial("CarsHeld", "SortThem/VertexColorLitOverlay", Color.white);
         }
@@ -235,12 +235,22 @@ namespace SortThem.Editor
                 for (int d = 1; d < Sections; d++)
                     Block("Divider_" + d, rackGo.transform, new Vector3(-totalW * 0.5f + d * (RackW + DividerT) - DividerT * 0.5f, RackH * 0.5f, 0f), new Vector3(DividerT, RackH, RackD), _rack);
                 Block("Top", rackGo.transform, new Vector3(0f, RackH + 0.02f, 0f), new Vector3(totalW + 0.1f, BoardT, RackD), _rack);
+                float plinthH = BottomShelfHeight - BoardT;
+                if (plinthH > 0.02f) Block("Plinth", rackGo.transform, new Vector3(0f, plinthH * 0.5f, 0f), new Vector3(totalW + 0.1f, plinthH, RackD), _rack);
 
                 var sign = Block("Sign", rackGo.transform, new Vector3(0f, RackH + 0.45f, 0.05f), new Vector3(Mathf.Min(totalW - 0.2f, 3f), 0.55f, 0.04f), EditorAssets.Unlit("Sign_" + cat.CategoryID, cat.CategoryColor));
                 Object.DestroyImmediate(sign.GetComponent<Collider>());
                 sign.isStatic = false;
                 rack.SignPlate = sign.GetComponent<Renderer>();
                 rack.SignText = Text3D(rackGo.transform, "SignText", cat.DevName, 2.2f, new Vector3(0f, RackH + 0.45f, 0.08f), Quaternion.Euler(0f, 180f, 0f), new Vector2(Mathf.Min(totalW - 0.3f, 2.9f), 0.5f), Color.white);
+                var rackZoneGo = new GameObject("RackZone");
+                rackZoneGo.transform.SetParent(rackGo.transform, false);
+                rackZoneGo.transform.localPosition = new Vector3(0f, RackH * 0.5f + 0.15f, 0f);
+                var rackZone = rackZoneGo.AddComponent<BoxCollider>();
+                rackZone.isTrigger = true;
+                rackZone.size = new Vector3(totalW + 0.3f, RackH + 0.5f, RackD + 0.3f);
+                rackZoneGo.AddComponent<RackZone>().Rack = rack;
+                rack.Zone = rackZone;
                 rack.HighlightFrame = BuildFrame(rackGo.transform, new Vector3(0f, RackH * 0.5f + 0.02f, 0f), new Vector3(totalW + 0.16f, RackH + 0.1f, RackD + 0.1f));
 
                 var rackShelves = new ShelfController[ShelvesPerSection * Sections];
@@ -282,7 +292,7 @@ namespace SortThem.Editor
                             var pt = new GameObject("Slot_" + k).transform;
                             pt.SetParent(shelfGo.transform, false);
                             pt.localPosition = new Vector3(x0 + col * pitch, 0f, z0 + row * shelfData.RowPitch);
-                            pt.localRotation = Quaternion.identity;
+                            pt.localRotation = Quaternion.Euler(0f, shelfData.SlotYaw, 0f);
                             points[k] = pt;
                         }
                         shelf.SlotPoints = points;

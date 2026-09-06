@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.UpgradeData
   UpgradeID: upg_throw
   DevName: Stronger throw
-  DevDescription: Throw speed x1.5/2.0
+  DevDescription: Throw distance x1.5/2.0/2.5
   Kind: 4
   DisplayName:
     m_TableReference:
@@ -35,10 +35,11 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Icon: {fileID: 0}
-  CostPerLevel: 1400000028000000
+  CostPerLevel: 140000003200000046000000
   ValuePerLevel:
   - 1.5
   - 2
+  - 2.5
   references:
     version: 2
     RefIds: []

@@ -16,6 +16,7 @@ namespace SortThem
 
         public CarItemData TargetCar;
         public int Count { get; private set; }
+        bool _celebrated;
 
         CarInstance[] _slots;
 
@@ -114,6 +115,7 @@ namespace SortThem
 
         public void Remove(CarInstance car)
         {
+            _celebrated = false;
             EnsureSlots();
             if (car == null || car.Shelf != this || car.SlotIndex < 0 || car.SlotIndex >= _slots.Length) return;
             if (_slots[car.SlotIndex] != car) return;
@@ -141,19 +143,18 @@ namespace SortThem
             var gm = GameManager.I;
             if (gm == null) return;
 
-            if (gm.Upgrades.Has(UpgradeKind.AutoPlace) && Rack != null && Rack.Category != null && car.Data != null && car.Data.Category == Rack.Category)
-            {
-                var target = Rack.FindAutoPlaceShelf(car.Data);
-                int slot = target != null ? target.FirstFreeSlot() : -1;
-                if (slot >= 0)
-                {
-                    target.StartCoroutine(target.Magnet(car, slot));
-                    return;
-                }
-            }
+            if (Rack != null) Rack.OnLooseCarInside(car);
+            if (car.State != CarState.Loose) return;
 
             if (TargetCar != null && (TargetCar != car.Data || Count >= Capacity))
                 Bounce(car);
+        }
+
+        public bool TryPlaceAnimated(CarInstance car, int slot, Vector3 fromPos, Quaternion fromRot, float duration)
+        {
+            if (!TryPlace(car, slot)) return false;
+            StartCoroutine(Fly(car, fromPos, fromRot, duration));
+            return true;
         }
 
         public IEnumerator Magnet(CarInstance car, int slot)
@@ -161,9 +162,14 @@ namespace SortThem
             Vector3 fromPos = car.transform.position;
             Quaternion fromRot = car.transform.rotation;
             if (!TryPlace(car, slot)) yield break;
+            float duration = GameManager.I != null ? GameManager.I.Config.MagnetDuration : 0.25f;
+            yield return Fly(car, fromPos, fromRot, duration);
+        }
+
+        IEnumerator Fly(CarInstance car, Vector3 fromPos, Quaternion fromRot, float duration)
+        {
             Vector3 toPos = car.transform.position;
             Quaternion toRot = car.transform.rotation;
-            float duration = GameManager.I != null ? GameManager.I.Config.MagnetDuration : 0.25f;
             float t = 0f;
             while (t < duration && car.State == CarState.Placed && car.Shelf == this)
             {
@@ -172,8 +178,41 @@ namespace SortThem
                 car.transform.SetPositionAndRotation(Vector3.Lerp(fromPos, toPos, k), Quaternion.Slerp(fromRot, toRot, k));
                 yield return null;
             }
-            if (car.State == CarState.Placed && car.Shelf == this)
-                car.transform.SetPositionAndRotation(toPos, toRot);
+            if (car.State != CarState.Placed || car.Shelf != this) yield break;
+            car.transform.SetPositionAndRotation(toPos, toRot);
+            OnArrived(car);
+        }
+
+        void OnArrived(CarInstance car)
+        {
+            if (IsClosed && !_celebrated)
+            {
+                _celebrated = true;
+                for (int i = 0; i < Capacity; i++)
+                    if (_slots[i] != null) StartCoroutine(Pop(_slots[i]));
+                var gm = GameManager.I;
+                if (gm != null) Sfx.Play(gm.Config.ShelfCompleteClip, transform.position);
+                return;
+            }
+            StartCoroutine(Pop(car));
+        }
+
+        IEnumerator Pop(CarInstance car)
+        {
+            var gm = GameManager.I;
+            float amount = gm != null ? gm.Config.PopScale - 1f : 0.15f;
+            float duration = gm != null ? gm.Config.PopDuration : 0.25f;
+            var t = car.transform;
+            Vector3 baseScale = t.localScale;
+            float time = 0f;
+            while (time < duration && car.State == CarState.Placed && car.Shelf == this)
+            {
+                time += Time.deltaTime;
+                float s = 1f + amount * Mathf.Sin(Mathf.Clamp01(time / duration) * Mathf.PI);
+                t.localScale = baseScale * s;
+                yield return null;
+            }
+            t.localScale = baseScale;
         }
 
         void Bounce(CarInstance car)

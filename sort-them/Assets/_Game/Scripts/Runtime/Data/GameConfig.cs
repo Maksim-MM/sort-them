@@ -25,20 +25,29 @@ namespace SortThem
         public int BaseInventoryCapacity = 5;
         public float BounceSpeed = 3f;
         public float MagnetDuration = 0.25f;
+        public float PlaceFlightDuration = 0.3f;
+        public float PopScale = 1.15f;
+        public float PopDuration = 0.25f;
+        public AudioClip ShelfCompleteClip;
 
         [Header("Abilities")]
-        public float AbilityCooldown = 20f;
-        public float AbilityDuration = 8f;
+        public float RackHighlightCooldown = 60f;
+        public float RackHighlightDuration = 30f;
         public float AutoCollectRadius = 15f;
         public float AutoCollectCooldown = 60f;
         public float AutoCollectDuration = 10f;
         public float AutoCollectInterval = 0.35f;
         public float AutoCollectFlightTime = 0.4f;
-        public float ScrollThreshold = 0.6f;
-        public float ScrollMinInterval = 0.12f;
+        public float ScrollThreshold = 2f;
+        public float ScrollNotchThreshold = 0.9f;
+        public float ScrollMinInterval = 0.15f;
         public float ScrollIdleReset = 0.25f;
+        public float FindCooldown = 60f;
+        public float FindDuration = 30f;
         public float LevitateHeight = 1.4f;
         public float LevitateSpeed = 3f;
+        public float LevitateBobAmplitude = 0.06f;
+        public float LevitateBobSpeed = 2.5f;
 
         [Header("Physics")]
         public float ActivationRadius = 3f;
