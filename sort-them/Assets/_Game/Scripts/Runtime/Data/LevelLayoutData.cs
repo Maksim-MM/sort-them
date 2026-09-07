@@ -14,7 +14,16 @@ namespace SortThem
             public Quaternion Rotation;
         }
 
+        [Serializable]
+        public struct PoseEntry
+        {
+            public Vector3 Position;
+            public Quaternion Rotation;
+        }
+
         public CarCatalog Catalog;
         public Entry[] Instances = Array.Empty<Entry>();
+        public GameObject CollectiblePrefab;
+        public PoseEntry[] Collectibles = Array.Empty<PoseEntry>();
     }
 }

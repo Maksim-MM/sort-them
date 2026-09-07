@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 426762241
-    m_Localized: Collectibles
+    m_Localized: Canisters
     m_Metadata:
       m_Items: []
   - m_Id: 426762242
@@ -67,7 +67,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 430956544
-    m_Localized: Reset save
+    m_Localized: Reset progress
     m_Metadata:
       m_Items: []
   - m_Id: 430956545
@@ -640,6 +640,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 334677012373511
     m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 342033133723648
+    m_Localized: 'Canister found: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 350177448681472
+    m_Localized: 'Radio: {0}/{1}'
     m_Metadata:
       m_Items: []
   references:

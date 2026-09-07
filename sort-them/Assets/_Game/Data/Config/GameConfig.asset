@@ -32,7 +32,24 @@ MonoBehaviour:
   PlaceFlightDuration: 0.3
   PopScale: 1.15
   PopDuration: 0.25
-  ShelfCompleteClip: {fileID: 0}
+  ShelfCompleteClip: {fileID: 8300000, guid: 2fe200c9515c848fdb1da16a237bab00, type: 3}
+  CollectibleClip: {fileID: 8300000, guid: b225bdc37bc724de184c6229d5f7a70b, type: 3}
+  PlaceClip: {fileID: 8300000, guid: bafffeabbfa5a4132a980ff3a1802354, type: 3}
+  BounceClip: {fileID: 0}
+  ThrowClip: {fileID: 0}
+  PickupClip: {fileID: 8300000, guid: 028a460628ff34a9fb8db1a47266adf9, type: 3}
+  AbilityClip: {fileID: 0}
+  AbilityNotReadyClip: {fileID: 0}
+  PurchaseClip: {fileID: 8300000, guid: acc88dcd28ffe4c84a80e01092bacd34, type: 3}
+  UiMoveClip: {fileID: 8300000, guid: dd27946c9641f4c259480164a4ab25bd, type: 3}
+  UiClickClip: {fileID: 0}
+  FootstepWalkClip: {fileID: 8300000, guid: da61d87bb6f394c45a7295f01e200e47, type: 3}
+  FootstepRunClip: {fileID: 8300000, guid: 15fbb1ea2ffd144ebba5139300f0ad78, type: 3}
+  FootstepWalkInterval: 0.5
+  FootstepRunInterval: 0.33
+  MusicClips:
+  - {fileID: 8300000, guid: 78713402fae4a4cd3bdc106351c48f89, type: 3}
+  - {fileID: 8300000, guid: d8b10fe2900704571a046ed0417a60e2, type: 3}
   RackHighlightCooldown: 60
   RackHighlightDuration: 30
   AutoCollectRadius: 15

@@ -24,6 +24,7 @@ namespace SortThem
         TMP_Text _terminalBalance;
         readonly List<UpgradeRow> _rows = new List<UpgradeRow>();
         InputAction _pauseAction, _navigateAction, _submitAction, _cancelAction;
+        readonly List<(TMP_Text Text, string Key, string Fallback)> _bound = new List<(TMP_Text, string, string)>();
         readonly List<Selectable> _pauseButtons = new List<Selectable>();
         readonly List<Selectable> _settingsItems = new List<Selectable>();
         Selectable _focused;
@@ -91,6 +92,7 @@ namespace SortThem
             gm.Upgrades.Changed += _ => { RefreshTerminal(); RefreshInventory(); };
             gm.Inventory.Changed += RefreshInventory;
             Messages.Shown += ShowToast;
+            Loc.Changed += OnLocChanged;
             gm.Save.Saved += reason => { _saveText.text = Loc.Get("ui.saved", "Сохранено"); _saveTextUntil = Time.time + 2f; };
             _pauseAction = gm.InputAsset.FindActionMap("Player", true).FindAction("Pause", true);
             var uiMap = gm.InputAsset.FindActionMap("UI", false);
@@ -110,6 +112,29 @@ namespace SortThem
         void OnDestroy()
         {
             Messages.Shown -= ShowToast;
+            Loc.Changed -= OnLocChanged;
+        }
+
+        void OnLocChanged()
+        {
+            foreach (var b in _bound) if (b.Text != null) b.Text.text = Loc.Get(b.Key, b.Fallback);
+            RefreshStats();
+            RefreshInventory();
+            RefreshTerminal();
+            RefreshVibration();
+        }
+
+        TMP_Text Bind(TMP_Text text, string key, string fallback)
+        {
+            _bound.Add((text, key, fallback));
+            text.text = Loc.Get(key, fallback);
+            return text;
+        }
+
+        Button Bind(Button button, string key, string fallback)
+        {
+            Bind(button.GetComponentInChildren<TMP_Text>(), key, fallback);
+            return button;
         }
 
         void ShowToast(string text)
@@ -179,7 +204,7 @@ namespace SortThem
             UiFactory.Anchored(abilities, Vector2.zero, new Vector2(24f, 24f), new Vector2(3f * SlotSize + 2f * SlotGap, SlotSize + 52f));
             for (int i = 0; i < 3; i++) _abilitySlots[i] = BuildAbilitySlot(abilities, i);
 
-            _hintText = UiFactory.Text(hud, "Hint", Loc.Get("ui.hint", "ЛКМ взять · ПКМ поставить/бросить · колесо выбрать · Esc меню"), 18f, TextAlignmentOptions.Top, new Color(1f, 1f, 1f, 0.6f));
+            _hintText = Bind(UiFactory.Text(hud, "Hint", "", 18f, TextAlignmentOptions.Top, new Color(1f, 1f, 1f, 0.6f)), "ui.hint", "ЛКМ взять · ПКМ поставить/бросить · колесо выбрать · Esc меню");
             UiFactory.Anchored(_hintText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -16f), new Vector2(900f, 30f));
 
             var toast = UiFactory.Panel(hud, "Toast", new Color(0f, 0f, 0f, 0.6f));
@@ -230,11 +255,11 @@ namespace SortThem
 
             var header = UiFactory.Rect(_terminal, "Header");
             UiFactory.Size(header, 0f, 48f);
-            var title = UiFactory.Text(header, "Title", Loc.Get("ui.terminal", "Терминал улучшений"), 34f, TextAlignmentOptions.Left, Color.white);
+            var title = Bind(UiFactory.Text(header, "Title", "", 34f, TextAlignmentOptions.Left, Color.white), "ui.terminal", "Терминал улучшений");
             UiFactory.Anchor(title.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             _terminalBalance = UiFactory.Text(header, "Balance", "", 30f, TextAlignmentOptions.Right, Color.white);
             UiFactory.Anchor(_terminalBalance.rectTransform, Vector2.zero, Vector2.one, new Vector2(0f, 0f), new Vector2(-160f, 0f));
-            var close = UiFactory.Button(header, "Close", Loc.Get("ui.close", "Закрыть"), CloseTerminal, 20f);
+            var close = Bind(UiFactory.Button(header, "Close", "", CloseTerminal, 20f), "ui.close", "Закрыть");
             UiFactory.Anchor(close.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-140f, 4f), new Vector2(0f, -4f));
 
             var gm = GameManager.I;
@@ -257,7 +282,7 @@ namespace SortThem
                 r.Cost = UiFactory.Text(row, "Cost", "", 24f, TextAlignmentOptions.Center, new Color(1f, 0.9f, 0.5f, 1f));
                 UiFactory.Anchor(r.Cost.rectTransform, new Vector2(0.74f, 0f), new Vector2(0.86f, 1f), Vector2.zero, Vector2.zero);
                 var captured = data;
-                r.Buy = UiFactory.Button(row, "Buy", Loc.Get("ui.buy", "Купить"), () => { if (gm.Upgrades.TryBuy(captured)) gm.Save.SaveNow("purchase"); }, 20f);
+                r.Buy = Bind(UiFactory.Button(row, "Buy", "", () => { if (gm.Upgrades.TryBuy(captured)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); } }, 20f), "ui.buy", "Купить");
                 UiFactory.Anchor(r.Buy.GetComponent<RectTransform>(), new Vector2(0.87f, 0.15f), new Vector2(0.99f, 0.85f), Vector2.zero, Vector2.zero);
                 _rows.Add(r);
             }
@@ -269,13 +294,13 @@ namespace SortThem
             _pause = UiFactory.Panel(transform, "Pause", new Color(0.08f, 0.09f, 0.12f, 0.96f));
             UiFactory.Anchored(_pause, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(420f, 428f));
             UiFactory.Layout(_pause, 12f, new RectOffset(24, 24, 20, 20));
-            var title = UiFactory.Text(_pause, "Title", Loc.Get("ui.pause", "Пауза"), 34f, TextAlignmentOptions.Center, Color.white);
+            var title = Bind(UiFactory.Text(_pause, "Title", "", 34f, TextAlignmentOptions.Center, Color.white), "ui.pause", "Пауза");
             UiFactory.Size(title, 0f, 50f);
-            _pauseButtons.Add(UiFactory.Button(_pause, "Resume", Loc.Get("ui.resume", "Продолжить"), ClosePause));
-            _pauseButtons.Add(UiFactory.Button(_pause, "Save", Loc.Get("ui.save", "Сохранить"), () => GameManager.I.Save.SaveNow("manual")));
-            _pauseButtons.Add(UiFactory.Button(_pause, "Settings", Loc.Get("ui.settings", "Настройки"), OpenSettings));
-            _pauseButtons.Add(UiFactory.Button(_pause, "Unstuck", Loc.Get("ui.unstuck", "Вернуть застрявшие машинки"), () => GameManager.I.UnstuckCars()));
-            _pauseButtons.Add(UiFactory.Button(_pause, "NewGame", Loc.Get("ui.newgame", "Сбросить сохранение"), ResetSave));
+            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Resume", "", ClosePause), "ui.resume", "Продолжить"));
+            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Save", "", () => GameManager.I.Save.SaveNow("manual")), "ui.save", "Сохранить"));
+            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Settings", "", OpenSettings), "ui.settings", "Настройки"));
+            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Unstuck", "", () => GameManager.I.UnstuckCars()), "ui.unstuck", "Вернуть застрявшие машинки"));
+            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "NewGame", "", ResetSave), "ui.newgame", "Сбросить прогресс"));
             foreach (var b in _pauseButtons) UiFactory.Size(b, 0f, 56f);
             _pause.gameObject.SetActive(false);
         }
@@ -285,17 +310,17 @@ namespace SortThem
             _settings = UiFactory.Panel(transform, "Settings", new Color(0.08f, 0.09f, 0.12f, 0.96f));
             UiFactory.Anchored(_settings, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(800f, 510f));
             UiFactory.Layout(_settings, 10f, new RectOffset(24, 24, 20, 20));
-            var title = UiFactory.Text(_settings, "Title", Loc.Get("ui.settings", "Настройки"), 34f, TextAlignmentOptions.Center, Color.white);
+            var title = Bind(UiFactory.Text(_settings, "Title", "", 34f, TextAlignmentOptions.Center, Color.white), "ui.settings", "Настройки");
             UiFactory.Size(title, 0f, 50f);
 
-            _settingsItems.Add(SettingsSlider("Music", Loc.Get("ui.music", "Музыка"), 0f, 1f, Settings.MusicVolume, Settings.SetMusicVolume, Percent));
-            _settingsItems.Add(SettingsSlider("Sfx", Loc.Get("ui.sfx", "Эффекты"), 0f, 1f, Settings.SfxVolume, Settings.SetSfxVolume, Percent));
-            _settingsItems.Add(SettingsSlider("SensX", Loc.Get("ui.sens_x", "Чувствительность по горизонтали"), Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityX, Settings.SetSensitivityX, Multiplier));
-            _settingsItems.Add(SettingsSlider("SensY", Loc.Get("ui.sens_y", "Чувствительность по вертикали"), Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityY, Settings.SetSensitivityY, Multiplier));
+            _settingsItems.Add(SettingsSlider("Music", "ui.music", "Музыка", 0f, 1f, Settings.MusicVolume, Settings.SetMusicVolume, Percent));
+            _settingsItems.Add(SettingsSlider("Sfx", "ui.sfx", "Эффекты", 0f, 1f, Settings.SfxVolume, Settings.SetSfxVolume, Percent));
+            _settingsItems.Add(SettingsSlider("SensX", "ui.sens_x", "Чувствительность по горизонтали", Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityX, Settings.SetSensitivityX, Multiplier));
+            _settingsItems.Add(SettingsSlider("SensY", "ui.sens_y", "Чувствительность по вертикали", Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityY, Settings.SetSensitivityY, Multiplier));
 
             var vibRow = UiFactory.Rect(_settings, "Vibration");
             UiFactory.Size(vibRow, 0f, 52f);
-            var vibLabel = UiFactory.Text(vibRow, "Label", Loc.Get("ui.vibration", "Вибрация"), 21f, TextAlignmentOptions.Left, Color.white);
+            var vibLabel = Bind(UiFactory.Text(vibRow, "Label", "", 21f, TextAlignmentOptions.Left, Color.white), "ui.vibration", "Вибрация");
             UiFactory.Anchor(vibLabel.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
             _vibrationButton = UiFactory.Button(vibRow, "Toggle", "", () => { Settings.SetVibration(!Settings.Vibration); RefreshVibration(); }, 20f);
             _vibrationLabel = _vibrationButton.GetComponentInChildren<TMP_Text>();
@@ -303,7 +328,7 @@ namespace SortThem
             _settingsItems.Add(_vibrationButton);
             RefreshVibration();
 
-            var back = UiFactory.Button(_settings, "Back", Loc.Get("ui.back", "Назад"), () => CloseSettings(true));
+            var back = Bind(UiFactory.Button(_settings, "Back", "", () => CloseSettings(true)), "ui.back", "Назад");
             UiFactory.Size(back, 0f, 56f);
             _settingsItems.Add(back);
             _settings.gameObject.SetActive(false);
@@ -312,11 +337,11 @@ namespace SortThem
         static string Percent(float v) => Mathf.RoundToInt(v * 100f) + "%";
         static string Multiplier(float v) => "×" + v.ToString("0.0");
 
-        Slider SettingsSlider(string name, string label, float min, float max, float value, System.Action<float> apply, System.Func<float, string> format)
+        Slider SettingsSlider(string name, string labelKey, string labelFallback, float min, float max, float value, System.Action<float> apply, System.Func<float, string> format)
         {
             var row = UiFactory.Rect(_settings, name);
             UiFactory.Size(row, 0f, 52f);
-            var text = UiFactory.Text(row, "Label", label, 21f, TextAlignmentOptions.Left, Color.white);
+            var text = Bind(UiFactory.Text(row, "Label", "", 21f, TextAlignmentOptions.Left, Color.white), labelKey, labelFallback);
             UiFactory.Anchor(text.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
             var slider = UiFactory.Slider(row, "Slider", min, max, value);
             UiFactory.Anchor(slider.GetComponent<RectTransform>(), new Vector2(0.54f, 0f), new Vector2(0.85f, 1f), Vector2.zero, Vector2.zero);
@@ -394,6 +419,7 @@ namespace SortThem
         void UpdateMenuFocus()
         {
             if (!AnyOpen) return;
+            var gm = GameManager.I;
             var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SettingsOpen ? _settingsItems : _pauseButtons);
             if (_focused != null && !_focused.interactable) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
             if (_focused == null) _focused = FirstCandidate(list);
@@ -416,7 +442,12 @@ namespace SortThem
                     if (dir != 0)
                     {
                         var next = Step(list, _focused, dir);
-                        if (next != null && next != _focused) { if (_focused != null) _focused.transform.localScale = Vector3.one; _focused = next; }
+                        if (next != null && next != _focused)
+                        {
+                            if (_focused != null) _focused.transform.localScale = Vector3.one;
+                            _focused = next;
+                            Sfx.PlayUi(gm.Config.UiMoveClip);
+                        }
                     }
                     else if (_focused is Slider slider)
                         slider.value = Mathf.Clamp(slider.value + side * SliderStep * (slider.maxValue - slider.minValue), slider.minValue, slider.maxValue);
@@ -452,7 +483,7 @@ namespace SortThem
             if (gm == null) return;
             _carsText.text = Loc.Get("ui.cars", "Машинки") + ": " + gm.PlacedValid + "/" + gm.TotalCars;
             _shelvesText.text = Loc.Get("ui.shelves", "Полки") + ": " + gm.ClosedShelves + "/" + gm.TotalShelves;
-            _collectiblesText.text = Loc.Get("ui.collectibles", "Коллекция") + ": " + gm.CollectiblesFound + "/" + gm.Config.CollectiblesTotal;
+            _collectiblesText.text = Loc.Get("ui.collectibles", "Канистры") + ": " + gm.CollectiblesFound + "/" + gm.Config.CollectiblesTotal;
             float b = gm.Economy.Balance;
             _balanceText.text = FormatMoney(b);
             _balanceText.color = b < 0f ? new Color(1f, 0.35f, 0.35f) : Color.white;

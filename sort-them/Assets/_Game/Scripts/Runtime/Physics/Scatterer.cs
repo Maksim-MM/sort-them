@@ -20,6 +20,18 @@ namespace SortThem
             car.Launch(pos, rot, RandomVelocity(rng));
         }
 
+        public void LaunchBody(Rigidbody body, System.Random rng, float speedScale = 1f)
+        {
+            var pos = SourcePosition + new Vector3(Range(rng, -SpawnJitter, SpawnJitter), Range(rng, 0f, SpawnJitter), Range(rng, -SpawnJitter, SpawnJitter));
+            var rot = Quaternion.Euler(Range(rng, 0f, 360f), Range(rng, 0f, 360f), Range(rng, 0f, 360f));
+            body.isKinematic = false;
+            body.position = pos;
+            body.rotation = rot;
+            body.transform.SetPositionAndRotation(pos, rot);
+            body.linearVelocity = RandomVelocity(rng) * speedScale;
+            body.angularVelocity = new Vector3(Range(rng, -3f, 3f), Range(rng, -3f, 3f), Range(rng, -3f, 3f));
+        }
+
         public Vector3 RandomVelocity(System.Random rng)
         {
             float angle = Range(rng, 0f, ConeHalfAngle) * Mathf.Deg2Rad;

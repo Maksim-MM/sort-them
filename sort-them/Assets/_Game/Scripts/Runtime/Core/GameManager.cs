@@ -25,16 +25,22 @@ namespace SortThem
         public EconomyService Economy { get; private set; }
         public UpgradeService Upgrades { get; private set; }
         public SaveService Save { get; private set; }
+        public MusicPlayer Music { get; private set; }
 
         public readonly List<CarInstance> Cars = new List<CarInstance>();
         public readonly List<ShelfController> Shelves = new List<ShelfController>();
         public readonly List<RackController> Racks = new List<RackController>();
+        public readonly List<Collectible> Collectibles = new List<Collectible>();
 
         public int PlacedValid { get; private set; }
         public int TotalCars { get; private set; }
         public int ClosedShelves { get; private set; }
         public int TotalShelves { get; private set; }
-        public int CollectiblesFound { get; private set; }
+        public int CollectiblesMask { get; private set; }
+        public int CollectiblesFound
+        {
+            get { int n = 0, m = CollectiblesMask; while (m != 0) { n += m & 1; m >>= 1; } return n; }
+        }
         public bool Ready { get; private set; }
         bool _uiBlocking;
         int _uiReleaseFrame = -1;
@@ -66,6 +72,7 @@ namespace SortThem
         void OnDestroy()
         {
             if (I == this) I = null;
+            LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
         }
 
         IEnumerator Start()
@@ -83,7 +90,10 @@ namespace SortThem
 
             CarSpawner.SpawnFromLayout(Layout, CarsRoot, Cars);
             TotalCars = Cars.Count;
+            SpawnCollectibles();
 
+            Music = gameObject.AddComponent<MusicPlayer>();
+            Music.Play(Config.MusicClips, Settings.MusicTrack);
             bool loaded = Save.Load();
             Debug.Log(loaded ? "SortThem: save loaded" : "SortThem: new game");
             RecountStats();
@@ -103,7 +113,14 @@ namespace SortThem
             while (!op.IsDone && Time.realtimeSinceStartup < timeout) yield return null;
             Loc.Ready = op.IsDone && op.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded;
             if (!Loc.Ready) Debug.LogWarning("SortThem: localization not ready, using dev names");
+            else
+            {
+                LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+                LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+            }
         }
+
+        static void OnLocaleChanged(UnityEngine.Localization.Locale locale) => Loc.NotifyChanged();
 
         void Update()
         {
@@ -129,6 +146,46 @@ namespace SortThem
         {
             ShelfClosed?.Invoke(shelf);
             if (Ready) Save.SaveNow("shelf closed");
+        }
+
+        void SpawnCollectibles()
+        {
+            Collectibles.Clear();
+            if (Layout == null || Layout.CollectiblePrefab == null) return;
+            for (int i = 0; i < Layout.Collectibles.Length && i < 32; i++)
+            {
+                var e = Layout.Collectibles[i];
+                var go = Instantiate(Layout.CollectiblePrefab, e.Position, e.Rotation, CarsRoot);
+                go.name = "Collectible_" + i;
+                var c = go.GetComponent<Collectible>();
+                if (c == null) c = go.AddComponent<Collectible>();
+                c.Index = i;
+                var rb = go.GetComponent<Rigidbody>();
+                if (rb != null) rb.isKinematic = true;
+                Collectibles.Add(c);
+            }
+        }
+
+        public void ApplyCollectiblesMask(int mask)
+        {
+            CollectiblesMask = mask;
+            foreach (var c in Collectibles)
+            {
+                bool found = (mask & (1 << c.Index)) != 0;
+                if (c.gameObject.activeSelf == found) c.gameObject.SetActive(!found);
+            }
+            StatsChanged?.Invoke();
+        }
+
+        public void Collect(Collectible c)
+        {
+            if (c == null || (CollectiblesMask & (1 << c.Index)) != 0) return;
+            CollectiblesMask |= 1 << c.Index;
+            Sfx.Play(Config.CollectibleClip, c.transform.position);
+            c.gameObject.SetActive(false);
+            Messages.Show(string.Format(Loc.Get("msg.collectible_found", "Канистра найдена: {0}/{1}"), CollectiblesFound, Config.CollectiblesTotal));
+            StatsChanged?.Invoke();
+            if (Ready) Save.SaveNow("collectible");
         }
 
         public void RecountStats()

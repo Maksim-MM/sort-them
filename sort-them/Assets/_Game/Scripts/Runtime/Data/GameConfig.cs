@@ -29,6 +29,21 @@ namespace SortThem
         public float PopScale = 1.15f;
         public float PopDuration = 0.25f;
         public AudioClip ShelfCompleteClip;
+        public AudioClip CollectibleClip;
+        public AudioClip PlaceClip;
+        public AudioClip BounceClip;
+        public AudioClip ThrowClip;
+        public AudioClip PickupClip;
+        public AudioClip AbilityClip;
+        public AudioClip AbilityNotReadyClip;
+        public AudioClip PurchaseClip;
+        public AudioClip UiMoveClip;
+        public AudioClip UiClickClip;
+        public AudioClip FootstepWalkClip;
+        public AudioClip FootstepRunClip;
+        public float FootstepWalkInterval = 0.5f;
+        public float FootstepRunInterval = 0.33f;
+        public AudioClip[] MusicClips = System.Array.Empty<AudioClip>();
 
         [Header("Abilities")]
         public float RackHighlightCooldown = 60f;

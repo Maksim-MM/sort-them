@@ -14,6 +14,8 @@ namespace SortThem
         public ShelfController HoverShelf { get; private set; }
         public int HoverSlot { get; private set; } = -1;
         public UpgradeTerminal HoverTerminal { get; private set; }
+        public Collectible HoverCollectible { get; private set; }
+        public Radio HoverRadio { get; private set; }
         public bool CanPlace { get; private set; }
         public float Range { get; private set; }
 
@@ -84,6 +86,8 @@ namespace SortThem
             HoverShelf = null;
             HoverSlot = -1;
             HoverTerminal = null;
+            HoverCollectible = null;
+            HoverRadio = null;
             CanPlace = false;
             if (Outline != null) Outline.Hide();
             if (Ghost != null) Ghost.Hide();
@@ -95,6 +99,8 @@ namespace SortThem
             HoverShelf = null;
             HoverSlot = -1;
             HoverTerminal = null;
+            HoverCollectible = null;
+            HoverRadio = null;
             CanPlace = false;
 
             var ray = new Ray(Cam.transform.position, Cam.transform.forward);
@@ -136,10 +142,22 @@ namespace SortThem
                     HoverCar = car;
                     break;
                 }
+                var collectible = col.GetComponentInParent<Collectible>();
+                if (collectible != null)
+                {
+                    HoverCollectible = collectible;
+                    break;
+                }
                 var terminal = col.GetComponentInParent<UpgradeTerminal>();
                 if (terminal != null)
                 {
                     HoverTerminal = terminal;
+                    break;
+                }
+                var radio = col.GetComponentInParent<Radio>();
+                if (radio != null)
+                {
+                    HoverRadio = radio;
                     break;
                 }
                 break;
@@ -163,8 +181,12 @@ namespace SortThem
             {
                 if (HoverCar != null && HoverCar.Filter != null)
                     Outline.Show(HoverCar.Filter.sharedMesh, HoverCar.transform.position, HoverCar.transform.rotation, HoverCar.transform.lossyScale);
+                else if (HoverCollectible != null && HoverCollectible.TryGetComponent<MeshFilter>(out var collMesh))
+                    Outline.Show(collMesh.sharedMesh, HoverCollectible.transform.position, HoverCollectible.transform.rotation, HoverCollectible.transform.lossyScale);
                 else if (HoverTerminal != null && HoverTerminal.TryGetComponent<MeshFilter>(out var termMesh))
                     Outline.Show(termMesh.sharedMesh, HoverTerminal.transform.position, HoverTerminal.transform.rotation, HoverTerminal.transform.lossyScale);
+                else if (HoverRadio != null && HoverRadio.TryGetComponent<MeshFilter>(out var radioMesh))
+                    Outline.Show(radioMesh.sharedMesh, HoverRadio.transform.position, HoverRadio.transform.rotation, HoverRadio.transform.lossyScale);
                 else
                     Outline.Hide();
             }
@@ -181,9 +203,24 @@ namespace SortThem
 
         void Interact()
         {
+            if (HoverCollectible != null)
+            {
+                GameManager.I.Collect(HoverCollectible);
+                return;
+            }
             if (HoverTerminal != null)
             {
                 if (UiRoot.I != null) UiRoot.I.OpenTerminal();
+                return;
+            }
+            if (HoverRadio != null)
+            {
+                var music = GameManager.I.Music;
+                if (music != null && music.TrackCount > 0)
+                {
+                    music.Next();
+                    Messages.Show(string.Format(Loc.Get("msg.radio_track", "Радио: {0}/{1}"), music.Current + 1, music.TrackCount));
+                }
                 return;
             }
             if (HoverCar != null && !Inventory.IsFull) Take(HoverCar);
@@ -192,6 +229,7 @@ namespace SortThem
         public void Take(CarInstance car)
         {
             if (car.State == CarState.Placed && car.Shelf != null) car.Shelf.Remove(car);
+            Sfx.Play(GameManager.I.Config.PickupClip, car.transform.position, 1f, Random.Range(0.94f, 1.06f));
             Inventory.Add(car);
         }
 
@@ -229,6 +267,7 @@ namespace SortThem
             float distance = gm.Config.BaseThrowDistance * gm.Upgrades.Value(UpgradeKind.ThrowPower, 1f);
             float speed = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y) * Mathf.Max(0.1f, distance));
             Vector3 dir = (Cam.transform.forward + Vector3.up * gm.Config.ThrowArc).normalized;
+            Sfx.Play(gm.Config.ThrowClip, origin);
             car.Launch(origin, rotation, dir * speed);
         }
     }

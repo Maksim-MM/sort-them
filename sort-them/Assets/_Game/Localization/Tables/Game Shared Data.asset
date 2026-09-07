@@ -639,6 +639,14 @@ MonoBehaviour:
     m_Key: ui.back
     m_Metadata:
       m_Items: []
+  - m_Id: 342033133723648
+    m_Key: msg.collectible_found
+    m_Metadata:
+      m_Items: []
+  - m_Id: 350177448681472
+    m_Key: msg.radio_track
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

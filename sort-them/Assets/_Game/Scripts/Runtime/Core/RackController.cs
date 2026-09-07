@@ -42,6 +42,9 @@ namespace SortThem
             if (HighlightFrame != null && HighlightFrame.activeSelf != on) HighlightFrame.SetActive(on);
         }
 
+        void OnEnable() => Loc.Changed += RefreshSign;
+        void OnDisable() => Loc.Changed -= RefreshSign;
+
         public void RefreshSign()
         {
             if (Category == null) return;

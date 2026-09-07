@@ -185,6 +185,8 @@ namespace SortThem
 
         void OnArrived(CarInstance car)
         {
+            var cfg = GameManager.I != null ? GameManager.I.Config : null;
+            if (cfg != null) Sfx.Play(cfg.PlaceClip, car.transform.position, 1f, UnityEngine.Random.Range(0.95f, 1.05f));
             if (IsClosed && !_celebrated)
             {
                 _celebrated = true;
@@ -218,6 +220,7 @@ namespace SortThem
         void Bounce(CarInstance car)
         {
             float speed = GameManager.I != null ? GameManager.I.Config.BounceSpeed : 3f;
+            if (GameManager.I != null) Sfx.Play(GameManager.I.Config.BounceClip, car.transform.position);
             Vector3 dir = (transform.forward + Vector3.up * 0.7f).normalized;
             car.Body.linearVelocity = dir * speed;
         }

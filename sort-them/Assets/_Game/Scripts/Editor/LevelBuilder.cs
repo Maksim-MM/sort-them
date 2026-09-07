@@ -22,7 +22,7 @@ namespace SortThem.Editor
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
 
-        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _heldCars;
+        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _cabinet, _radio, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _heldCars;
 
         [MenuItem("SortThem/4. Build Level Scene")]
         public static void Build()
@@ -91,6 +91,37 @@ namespace SortThem.Editor
             var termText = Text3D(terminal.transform, "Label", "UPGRADES", 1.2f, new Vector3(0f, 0.6f, 0.52f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.5f, 0.3f), Color.white);
             termText.transform.localScale = new Vector3(1f / 0.9f, 1f / 1.6f, 1f / 0.5f);
 
+            var cabinet = Block("Cabinet", null, new Vector3(-RoomX / 6f, 0.4f, -RoomZ * 0.5f + 0.3f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
+            var radio = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            radio.name = "Radio";
+            radio.transform.position = new Vector3(-RoomX / 6f, 0.8f + 0.13f, -RoomZ * 0.5f + 0.3f);
+            radio.transform.localScale = new Vector3(0.44f, 0.26f, 0.18f);
+            radio.GetComponent<Renderer>().sharedMaterial = _radio;
+            radio.AddComponent<Radio>();
+            var grille = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            grille.name = "Grille";
+            grille.transform.SetParent(radio.transform, false);
+            grille.transform.localPosition = new Vector3(-0.18f, 0f, 0.52f);
+            grille.transform.localScale = new Vector3(0.5f, 0.7f, 0.06f);
+            grille.GetComponent<Renderer>().sharedMaterial = _terminal;
+            Object.DestroyImmediate(grille.GetComponent<Collider>());
+            var dial = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            dial.name = "Dial";
+            dial.transform.SetParent(radio.transform, false);
+            dial.transform.localPosition = new Vector3(0.25f, 0f, 0.52f);
+            dial.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            dial.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            dial.GetComponent<Renderer>().sharedMaterial = _marker;
+            Object.DestroyImmediate(dial.GetComponent<Collider>());
+            var antenna = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            antenna.name = "Antenna";
+            antenna.transform.SetParent(radio.transform, false);
+            antenna.transform.localPosition = new Vector3(0.35f, 1.1f, 0f);
+            antenna.transform.localRotation = Quaternion.Euler(0f, 0f, -20f);
+            antenna.transform.localScale = new Vector3(0.04f, 0.7f, 0.1f);
+            antenna.GetComponent<Renderer>().sharedMaterial = _terminal;
+            Object.DestroyImmediate(antenna.GetComponent<Collider>());
+
             var gmGo = new GameObject("GameManager");
             var gm = gmGo.AddComponent<GameManager>();
             gm.Config = gameConfig;
@@ -148,6 +179,8 @@ namespace SortThem.Editor
             _board = EditorAssets.Lit("ShelfBoard", new Color(0.6f, 0.48f, 0.36f));
             _podium = EditorAssets.Lit("Podium", new Color(0.5f, 0.5f, 0.55f));
             _terminal = EditorAssets.Lit("Terminal", new Color(0.15f, 0.15f, 0.18f));
+            _cabinet = EditorAssets.Lit("Cabinet", new Color(0.42f, 0.28f, 0.16f));
+            _radio = EditorAssets.Lit("Radio", new Color(0.75f, 0.55f, 0.3f));
             _plateWhite = EditorAssets.Unlit("PlateWhite", Color.white);
             _plateRed = EditorAssets.Unlit("PlateRed", new Color(0.85f, 0.12f, 0.12f));
             _plateGold = EditorAssets.Unlit("PlateGold", new Color(1f, 0.78f, 0.2f));

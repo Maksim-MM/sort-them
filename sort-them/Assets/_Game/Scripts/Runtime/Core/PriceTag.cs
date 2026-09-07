@@ -18,13 +18,17 @@ namespace SortThem
         void OnEnable()
         {
             if (Shelf != null) Shelf.Changed += Refresh;
+            Loc.Changed += OnLocChanged;
             Refresh(Shelf);
         }
 
         void OnDisable()
         {
             if (Shelf != null) Shelf.Changed -= Refresh;
+            Loc.Changed -= OnLocChanged;
         }
+
+        void OnLocChanged() => Refresh(Shelf);
 
         public void Refresh(ShelfController shelf)
         {

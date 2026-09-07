@@ -1,3 +1,4 @@
+using System;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
@@ -6,7 +7,15 @@ namespace SortThem
     public static class Loc
     {
         public const string Table = "Game";
-        public static bool Ready;
+        static bool _ready;
+        public static bool Ready
+        {
+            get => _ready;
+            set { bool was = _ready; _ready = value; if (value && !was) Changed?.Invoke(); }
+        }
+
+        public static event Action Changed;
+        public static void NotifyChanged() => Changed?.Invoke();
 
         public static string Get(LocalizedString ls, string fallback)
         {

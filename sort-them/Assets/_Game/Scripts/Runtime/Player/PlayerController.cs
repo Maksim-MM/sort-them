@@ -13,6 +13,7 @@ namespace SortThem
         float _yaw, _pitch, _verticalVelocity, _camY, _camYVelocity;
         bool _camInit;
         bool _crouching, _wantCrouch;
+        float _stepTimer;
 
         public bool IsCrouching => _crouching;
 
@@ -97,6 +98,19 @@ namespace SortThem
 
             Vector3 velocity = dir * speed + Vector3.up * _verticalVelocity;
             _cc.Move(velocity * Time.deltaTime);
+            Footsteps(cfg, dir.sqrMagnitude > 0.01f && _cc.isGrounded, sprint);
+        }
+
+        void Footsteps(GameConfig cfg, bool moving, bool sprint)
+        {
+            if (!moving) { _stepTimer = 0.1f; return; }
+            _stepTimer -= Time.deltaTime;
+            if (_stepTimer > 0f) return;
+            float interval = sprint ? cfg.FootstepRunInterval : cfg.FootstepWalkInterval;
+            if (_crouching) interval *= 1.4f;
+            _stepTimer = interval;
+            var clip = sprint ? cfg.FootstepRunClip : cfg.FootstepWalkClip;
+            Sfx.Play(clip, transform.position, _crouching ? 0.5f : 1f, Random.Range(0.92f, 1.08f));
         }
 
         bool CanStand()

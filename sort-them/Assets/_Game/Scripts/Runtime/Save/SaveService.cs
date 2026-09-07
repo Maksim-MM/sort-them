@@ -72,7 +72,7 @@ namespace SortThem
             w.Write(Magic);
             w.Write(Version);
             w.Write(_gm.Economy.Balance);
-            w.Write(_gm.CollectiblesFound);
+            w.Write(_gm.CollectiblesMask);
 
             var upgrades = _gm.Upgrades.All;
             w.Write((byte)upgrades.Count);
@@ -122,7 +122,7 @@ namespace SortThem
             int version = r.ReadInt32();
             if (version != Version) return false;
             float balance = r.ReadSingle();
-            int collectibles = r.ReadInt32();
+            int collectiblesMask = r.ReadInt32();
 
             int upgradeCount = r.ReadByte();
             for (int i = 0; i < upgradeCount; i++)
@@ -204,6 +204,7 @@ namespace SortThem
                 if (car.State == CarState.Held && (inv == null || !inv.Items.Contains(car))) Unstick(car);
 
             _gm.Economy.SetBalance(balance);
+            _gm.ApplyCollectiblesMask(collectiblesMask);
             _gm.UnstuckCars();
             return true;
         }

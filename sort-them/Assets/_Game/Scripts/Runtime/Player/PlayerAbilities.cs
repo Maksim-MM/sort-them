@@ -79,7 +79,11 @@ namespace SortThem
             UpdateRackHighlight(gm);
         }
 
-        static void NotReady() => Messages.Show(Loc.Get("msg.ability_not_ready", "Способность ещё не готова"));
+        static void NotReady()
+        {
+            Messages.Show(Loc.Get("msg.ability_not_ready", "Способность ещё не готова"));
+            if (GameManager.I != null) Sfx.PlayUi(GameManager.I.Config.AbilityNotReadyClip);
+        }
         static void NeedItem() => Messages.Show(Loc.Get("msg.need_item_in_hands", "Возьми что-нибудь в руки"));
 
         void TryFindMatches(GameManager gm)
@@ -89,6 +93,7 @@ namespace SortThem
             var held = Inventory.Active;
             if (held == null) { NeedItem(); return; }
             _findUntil = Time.time + gm.Config.FindDuration;
+            Sfx.PlayUi(gm.Config.AbilityClip);
             _cooldown[0] = gm.Config.FindCooldown;
             _findModel = held.Data;
             StartLevitation(gm, held.Data);
@@ -195,6 +200,7 @@ namespace SortThem
             _collectModel = held.Data;
             _collectBudget = Inventory.Capacity - Inventory.Items.Count;
             _collectUntil = Time.time + gm.Config.AutoCollectDuration;
+            Sfx.PlayUi(gm.Config.AbilityClip);
             _collectNextPull = Time.time;
             _cooldown[1] = gm.Config.AutoCollectCooldown;
         }
@@ -277,6 +283,7 @@ namespace SortThem
             if (_cooldown[2] > 0f) { NotReady(); return; }
             if (Inventory.Active == null) { NeedItem(); return; }
             _rackUntil = Time.time + gm.Config.RackHighlightDuration;
+            Sfx.PlayUi(gm.Config.AbilityClip);
             _cooldown[2] = gm.Config.RackHighlightCooldown;
         }
 

@@ -76,7 +76,7 @@ namespace SortThem.Editor
         {
             LocUtil.Set("ui.cars", "Машинки", "Cars");
             LocUtil.Set("ui.shelves", "Полки", "Shelves");
-            LocUtil.Set("ui.collectibles", "Коллекция", "Collectibles");
+            LocUtil.Set("ui.collectibles", "Канистры", "Canisters");
             LocUtil.Set("ui.terminal", "Терминал улучшений", "Upgrade Terminal");
             LocUtil.Set("ui.close", "Закрыть", "Close");
             LocUtil.Set("ui.buy", "Купить", "Buy");
@@ -86,7 +86,7 @@ namespace SortThem.Editor
             LocUtil.Set("ui.save", "Сохранить", "Save");
             LocUtil.Set("ui.saved", "Сохранено", "Saved");
             LocUtil.Set("ui.unstuck", "Вернуть застрявшие машинки", "Return stuck cars");
-            LocUtil.Set("ui.newgame", "Сбросить сохранение", "Reset save");
+            LocUtil.Set("ui.newgame", "Сбросить прогресс", "Reset progress");
             LocUtil.Set("ui.settings", "Настройки", "Settings");
             LocUtil.Set("ui.music", "Музыка", "Music");
             LocUtil.Set("ui.sfx", "Эффекты", "Effects");
@@ -99,6 +99,8 @@ namespace SortThem.Editor
             LocUtil.Set("ui.hint", "ЛКМ взять · ПКМ поставить/бросить · колесо выбрать · Esc меню", "LMB take · RMB place/throw · wheel select · Esc menu");
             LocUtil.Set("msg.ability_not_ready", "Способность ещё не готова", "Ability is not ready yet");
             LocUtil.Set("msg.need_item_in_hands", "Возьми что-нибудь в руки", "Take something in your hands");
+            LocUtil.Set("msg.collectible_found", "Канистра найдена: {0}/{1}", "Canister found: {0}/{1}");
+            LocUtil.Set("msg.radio_track", "Радио: {0}/{1}", "Radio: {0}/{1}");
         }
     }
 }

@@ -156,6 +156,56 @@ namespace SortThem.Editor
 
         static string Capitalize(string s) => string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s.Substring(1);
 
+        static readonly Color Olive = new Color(0.36f, 0.45f, 0.2f);
+        static readonly Color Yellow = new Color(0.95f, 0.8f, 0.2f);
+
+        [MenuItem("SortThem/3e. Generate Canister")]
+        public static void GenerateCanister()
+        {
+            LoadPrimitives();
+            EditorAssets.EnsureFolder(Paths.Prefabs);
+            EditorAssets.EnsureFolder(Paths.Meshes);
+            var material = EditorAssets.LoadOrCreateMaterial("Cars", "SortThem/VertexColorLit", Color.white);
+            var p = new List<Part>();
+            Box(p, 0f, 0.13f, 0f, 0.20f, 0.26f, 0.11f, Olive);
+            Box(p, 0f, 0.13f, 0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, 45f);
+            Box(p, 0f, 0.13f, 0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, -45f);
+            Box(p, 0f, 0.13f, -0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, 45f);
+            Box(p, 0f, 0.13f, -0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, -45f);
+            Box(p, 0f, 0.29f, 0f, 0.16f, 0.03f, 0.03f, Olive);
+            Box(p, -0.065f, 0.275f, 0f, 0.03f, 0.03f, 0.03f, Olive);
+            Box(p, 0.065f, 0.275f, 0f, 0.03f, 0.03f, 0.03f, Olive);
+            Cyl(p, 0.07f, 0.285f, 0f, 0.02f, 0.05f, 'Y', Yellow);
+            var mesh = Combine(p, "Canister", out var bounds);
+            mesh = SaveMesh(mesh, Paths.Meshes + "/Canister.asset");
+
+            var go = new GameObject("Canister");
+            go.layer = LayerMask.NameToLayer("LooseItems");
+            var mf = go.AddComponent<MeshFilter>();
+            mf.sharedMesh = mesh;
+            var mr = go.AddComponent<MeshRenderer>();
+            mr.sharedMaterial = material;
+            mr.shadowCastingMode = ShadowCastingMode.Off;
+            mr.lightProbeUsage = LightProbeUsage.Off;
+            mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
+            var bc = go.AddComponent<BoxCollider>();
+            bc.size = bounds.size;
+            var rb = go.AddComponent<Rigidbody>();
+            rb.mass = 0.5f;
+            rb.angularDamping = 0.5f;
+            rb.isKinematic = true;
+            go.AddComponent<Collectible>();
+            string prefabPath = Paths.Prefabs + "/Canister.prefab";
+            var prefab = PrefabUtility.SaveAsPrefabAsset(go, prefabPath);
+            UnityEngine.Object.DestroyImmediate(go);
+
+            var layout = EditorAssets.LoadOrCreate<LevelLayoutData>(Paths.Layout);
+            layout.CollectiblePrefab = prefab;
+            EditorUtility.SetDirty(layout);
+            AssetDatabase.SaveAssets();
+            Debug.Log("SortThem: canister generated, bounds=" + bounds.size);
+        }
+
         static void LoadPrimitives()
         {
             _cube = Resources.GetBuiltinResource<Mesh>("Cube.fbx");

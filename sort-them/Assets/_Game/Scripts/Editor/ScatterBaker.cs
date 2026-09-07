@@ -89,6 +89,75 @@ namespace SortThem.Editor
             }
         }
 
+        [MenuItem("SortThem/5b. Bake Collectibles")]
+        public static void BakeCollectibles()
+        {
+            var gm = Object.FindFirstObjectByType<GameManager>();
+            var layout = AssetDatabase.LoadAssetAtPath<LevelLayoutData>(Paths.Layout);
+            if (gm == null || gm.Scatterer == null || layout == null || layout.CollectiblePrefab == null)
+            {
+                Debug.LogError("SortThem: need Main scene with GameManager, baked layout and canister prefab (menu 3e)");
+                return;
+            }
+            int count = Mathf.Clamp(gm.Config.CollectiblesTotal, 1, 32);
+            var rng = new System.Random(gm.Scatterer.Seed + 777);
+            var prevMode = Physics.simulationMode;
+            Physics.simulationMode = SimulationMode.Script;
+            var root = new GameObject("__CollectibleBake").transform;
+            var bodies = new List<Rigidbody>(count);
+            try
+            {
+                var cars = new List<CarInstance>();
+                CarSpawner.SpawnFromLayout(layout, root, cars);
+                for (int i = 0; i < count; i++)
+                {
+                    var go = (GameObject)PrefabUtility.InstantiatePrefab(layout.CollectiblePrefab, root);
+                    var rb = go.GetComponent<Rigidbody>();
+                    gm.Scatterer.LaunchBody(rb, rng, 1f);
+                    float elevation = Mathf.Deg2Rad * (20f + (float)rng.NextDouble() * 20f);
+                    float azimuth = (float)rng.NextDouble() * Mathf.PI * 2f;
+                    float speed = 10f + (float)rng.NextDouble() * 5f;
+                    rb.linearVelocity = new Vector3(Mathf.Cos(elevation) * Mathf.Cos(azimuth), Mathf.Sin(elevation), Mathf.Cos(elevation) * Mathf.Sin(azimuth)) * speed;
+                    bodies.Add(rb);
+                }
+                const float dt = 0.02f;
+                int steps = 0;
+                for (; steps < 3000; steps++)
+                {
+                    Physics.Simulate(dt);
+                    if (steps % 25 == 0)
+                    {
+                        bool sleeping = true;
+                        foreach (var b in bodies) if (!b.IsSleeping()) { sleeping = false; break; }
+                        if (steps > 100 && sleeping) break;
+                    }
+                }
+                var half = gm.Config.LevelHalfExtents;
+                var entries = new LevelLayoutData.PoseEntry[count];
+                int rescued = 0;
+                for (int i = 0; i < count; i++)
+                {
+                    var t = bodies[i].transform;
+                    var pos = t.position;
+                    if (pos.y < gm.Config.FloorY - 0.2f || Mathf.Abs(pos.x) > half.x || Mathf.Abs(pos.z) > half.z)
+                    {
+                        pos = gm.Config.UnstuckCenter + new Vector3((float)rng.NextDouble() * 2f - 1f, (float)rng.NextDouble(), (float)rng.NextDouble() * 2f - 1f);
+                        rescued++;
+                    }
+                    entries[i] = new LevelLayoutData.PoseEntry { Position = pos, Rotation = t.rotation };
+                }
+                layout.Collectibles = entries;
+                EditorUtility.SetDirty(layout);
+                AssetDatabase.SaveAssets();
+                Debug.Log("SortThem: baked " + count + " collectibles in " + steps + " steps, rescued " + rescued);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+                Physics.simulationMode = prevMode;
+            }
+        }
+
         static bool AllSleeping(List<CarInstance> cars)
         {
             foreach (var c in cars)
