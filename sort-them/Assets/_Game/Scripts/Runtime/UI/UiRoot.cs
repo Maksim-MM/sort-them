@@ -29,6 +29,7 @@ namespace SortThem
         readonly List<Selectable> _settingsItems = new List<Selectable>();
         Selectable _focused;
         Button _vibrationButton;
+        GameObject _vibrationRow;
         TMP_Text _vibrationLabel;
         const float SliderStep = 0.05f;
         float _navRepeatAt;
@@ -319,6 +320,7 @@ namespace SortThem
             _settingsItems.Add(SettingsSlider("SensY", "ui.sens_y", "Чувствительность по вертикали", Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityY, Settings.SetSensitivityY, Multiplier));
 
             var vibRow = UiFactory.Rect(_settings, "Vibration");
+            _vibrationRow = vibRow.gameObject;
             UiFactory.Size(vibRow, 0f, 52f);
             var vibLabel = Bind(UiFactory.Text(vibRow, "Label", "", 21f, TextAlignmentOptions.Left, Color.white), "ui.vibration", "Вибрация");
             UiFactory.Anchor(vibLabel.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
@@ -359,6 +361,7 @@ namespace SortThem
         void OpenSettings()
         {
             _pause.gameObject.SetActive(false);
+            if (_vibrationRow != null) _vibrationRow.SetActive(!Platform.IsMobile);
             _settings.gameObject.SetActive(true);
             _focused = FirstCandidate(_settingsItems);
         }
@@ -404,9 +407,11 @@ namespace SortThem
             foreach (var r in _rows) yield return r.Buy;
         }
 
+        static bool Selectable_(Selectable b) => b != null && b.interactable && b.gameObject.activeInHierarchy;
+
         static Selectable FirstCandidate(IEnumerable<Selectable> buttons)
         {
-            foreach (var b in buttons) if (b.interactable) return b;
+            foreach (var b in buttons) if (Selectable_(b)) return b;
             return null;
         }
 
@@ -421,7 +426,7 @@ namespace SortThem
             if (!AnyOpen) return;
             var gm = GameManager.I;
             var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SettingsOpen ? _settingsItems : _pauseButtons);
-            if (_focused != null && !_focused.interactable) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
+            if (_focused != null && !Selectable_(_focused)) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
             if (_focused == null) _focused = FirstCandidate(list);
 
             if (_cancelAction != null && _cancelAction.WasPressedThisFrame())
@@ -447,6 +452,7 @@ namespace SortThem
                             if (_focused != null) _focused.transform.localScale = Vector3.one;
                             _focused = next;
                             Sfx.PlayUi(gm.Config.UiMoveClip);
+                            Rumble.UiMove();
                         }
                     }
                     else if (_focused is Slider slider)
@@ -454,7 +460,7 @@ namespace SortThem
                     else if (_focused == _vibrationButton && !repeat) _vibrationButton.onClick.Invoke();
                 }
             }
-            if (_submitAction != null && _submitAction.WasPressedThisFrame() && _focused is Button button && button.interactable)
+            if (_submitAction != null && _submitAction.WasPressedThisFrame() && _focused is Button button && Selectable_(button))
                 button.onClick.Invoke();
 
             bool pulse = GamepadActive();
@@ -472,7 +478,7 @@ namespace SortThem
             for (int k = 1; k <= list.Count; k++)
             {
                 int i = ((start + dir * k) % list.Count + list.Count) % list.Count;
-                if (list[i].interactable) return list[i];
+                if (Selectable_(list[i])) return list[i];
             }
             return null;
         }

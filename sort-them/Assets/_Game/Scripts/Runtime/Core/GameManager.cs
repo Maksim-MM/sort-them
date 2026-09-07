@@ -124,6 +124,7 @@ namespace SortThem
 
         void Update()
         {
+            Rumble.Tick();
             if (!Ready) return;
             _activationTimer -= Time.deltaTime;
             if (_activationTimer <= 0f)

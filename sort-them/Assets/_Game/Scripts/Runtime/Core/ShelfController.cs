@@ -194,6 +194,7 @@ namespace SortThem
                     if (_slots[i] != null) StartCoroutine(Pop(_slots[i]));
                 var gm = GameManager.I;
                 if (gm != null) Sfx.Play(gm.Config.ShelfCompleteClip, transform.position);
+                Rumble.ShelfComplete();
                 return;
             }
             StartCoroutine(Pop(car));

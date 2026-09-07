@@ -65,7 +65,16 @@ namespace SortThem
         {
             var gm = GameManager.I;
             if (gm == null || !gm.Ready || _actions == null) return;
-            for (int i = 0; i < 3; i++) _cooldown[i] -= Time.deltaTime;
+            for (int i = 0; i < 3; i++)
+            {
+                bool wasCooling = _cooldown[i] > 0f;
+                _cooldown[i] -= Time.deltaTime;
+                if (wasCooling && _cooldown[i] <= 0f && IsUnlocked(i))
+                {
+                    Sfx.PlayUi(gm.Config.AbilityReadyClip);
+                    Rumble.AbilityReady();
+                }
+            }
 
             if (!gm.UiBlocking)
             {

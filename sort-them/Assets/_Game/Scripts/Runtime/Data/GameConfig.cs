@@ -36,6 +36,7 @@ namespace SortThem
         public AudioClip PickupClip;
         public AudioClip AbilityClip;
         public AudioClip AbilityNotReadyClip;
+        public AudioClip AbilityReadyClip;
         public AudioClip PurchaseClip;
         public AudioClip UiMoveClip;
         public AudioClip UiClickClip;
@@ -43,6 +44,8 @@ namespace SortThem
         public AudioClip FootstepRunClip;
         public float FootstepWalkInterval = 0.5f;
         public float FootstepRunInterval = 0.33f;
+        public float SprintFovBoost = 8f;
+        public float FovSmoothTime = 0.2f;
         public AudioClip[] MusicClips = System.Array.Empty<AudioClip>();
 
         [Header("Abilities")]

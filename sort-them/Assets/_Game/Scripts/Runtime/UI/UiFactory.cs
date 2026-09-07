@@ -80,7 +80,7 @@ namespace SortThem
             btn.colors = colors;
             var t = Text(rt, "Label", label, fontSize, TextAlignmentOptions.Center, Color.white);
             Anchor(t.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            btn.onClick.AddListener(() => { var gm = GameManager.I; if (gm != null) Sfx.PlayUi(gm.Config.UiClickClip); });
+            btn.onClick.AddListener(() => { var gm = GameManager.I; if (gm != null) Sfx.PlayUi(gm.Config.UiClickClip); Rumble.UiClick(); });
             if (onClick != null) btn.onClick.AddListener(() => onClick());
             return btn;
         }

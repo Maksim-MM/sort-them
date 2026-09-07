@@ -14,6 +14,8 @@ namespace SortThem
         bool _camInit;
         bool _crouching, _wantCrouch;
         float _stepTimer;
+        Camera _cam;
+        float _baseFov = 70f, _fovVelocity;
 
         public bool IsCrouching => _crouching;
 
@@ -99,6 +101,19 @@ namespace SortThem
             Vector3 velocity = dir * speed + Vector3.up * _verticalVelocity;
             _cc.Move(velocity * Time.deltaTime);
             Footsteps(cfg, dir.sqrMagnitude > 0.01f && _cc.isGrounded, sprint);
+            UpdateFov(cfg, sprint && dir.sqrMagnitude > 0.01f);
+        }
+
+        void UpdateFov(GameConfig cfg, bool sprinting)
+        {
+            if (_cam == null)
+            {
+                _cam = CameraPivot != null ? CameraPivot.GetComponentInChildren<Camera>() : null;
+                if (_cam == null) return;
+                _baseFov = _cam.fieldOfView;
+            }
+            float target = _baseFov + (sprinting ? cfg.SprintFovBoost : 0f);
+            _cam.fieldOfView = Mathf.SmoothDamp(_cam.fieldOfView, target, ref _fovVelocity, cfg.FovSmoothTime);
         }
 
         void Footsteps(GameConfig cfg, bool moving, bool sprint)
