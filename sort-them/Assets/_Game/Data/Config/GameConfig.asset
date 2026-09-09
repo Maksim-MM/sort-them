@@ -28,6 +28,8 @@ MonoBehaviour:
   ThrowArc: 0.4
   BaseInventoryCapacity: 5
   SlotSpinCost: 100
+  RegisterClicksRequired: 10
+  RegisterPayout: 10
   BounceSpeed: 3
   MagnetDuration: 0.25
   PlaceFlightDuration: 0.3
@@ -46,6 +48,8 @@ MonoBehaviour:
   SlotLeverClip: {fileID: 8300000, guid: da8b91c2e43ca46a682326848a447886, type: 3}
   SlotReelClip: {fileID: 8300000, guid: d148faa8b39854ad88c89c83e60ea9f5, type: 3}
   SlotWinClip: {fileID: 8300000, guid: 6815527fbff9f491182861f7b34d84c5, type: 3}
+  RegisterClickClip: {fileID: 8300000, guid: bc775915bd01141c49bec2bb760f3592, type: 3}
+  RegisterPayClip: {fileID: 8300000, guid: fd50dd82d169949b2981fff6f83df51e, type: 3}
   UiMoveClip: {fileID: 8300000, guid: dd27946c9641f4c259480164a4ab25bd, type: 3}
   UiClickClip: {fileID: 0}
   FootstepWalkClip: {fileID: 8300000, guid: da61d87bb6f394c45a7295f01e200e47, type: 3}

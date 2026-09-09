@@ -710,6 +710,18 @@ MonoBehaviour:
     m_Localized: Auto-collect reaches farther
     m_Metadata:
       m_Items: []
+  - m_Id: 1321637906472960
+    m_Localized: 'Register: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055872
+    m_Localized: 'Register: +${0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055873
+    m_Localized: Register is empty
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

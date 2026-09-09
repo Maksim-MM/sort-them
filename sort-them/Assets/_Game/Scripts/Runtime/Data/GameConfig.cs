@@ -24,6 +24,8 @@ namespace SortThem
         public float ThrowArc = 0.4f;
         public int BaseInventoryCapacity = 5;
         public int SlotSpinCost = 100;
+        public int RegisterClicksRequired = 10;
+        public float RegisterPayout = 10f;
         public float BounceSpeed = 3f;
         public float MagnetDuration = 0.25f;
         public float PlaceFlightDuration = 0.3f;
@@ -42,6 +44,8 @@ namespace SortThem
         public AudioClip SlotLeverClip;
         public AudioClip SlotReelClip;
         public AudioClip SlotWinClip;
+        public AudioClip RegisterClickClip;
+        public AudioClip RegisterPayClip;
         public AudioClip UiMoveClip;
         public AudioClip UiClickClip;
         public AudioClip FootstepWalkClip;

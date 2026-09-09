@@ -37,6 +37,8 @@ namespace SortThem
         public int ClosedShelves { get; private set; }
         public int TotalShelves { get; private set; }
         public int CollectiblesMask { get; private set; }
+        public bool RegisterPaid { get; set; }
+        int _registerClicks;
         public int CollectiblesFound
         {
             get { int n = 0, m = CollectiblesMask; while (m != 0) { n += m & 1; m >>= 1; } return n; }
@@ -188,6 +190,26 @@ namespace SortThem
             StatsChanged?.Invoke();
             if (Ready) Save.SaveNow("collectible");
         }
+
+        public void ClickRegister(CashRegister register)
+        {
+            if (register == null) return;
+            var pos = register.transform.position;
+            if (RegisterPaid) return;
+            _registerClicks++;
+            if (_registerClicks < Config.RegisterClicksRequired)
+            {
+                Sfx.Play(Config.RegisterClickClip, pos);
+                return;
+            }
+            RegisterPaid = true;
+            _registerClicks = 0;
+            Economy.Add(Config.RegisterPayout);
+            Sfx.Play(Config.RegisterPayClip, pos);
+            Messages.Show(string.Format(Loc.Get("msg.register_paid", "Касса: +${0}"), Config.RegisterPayout));
+        }
+
+        public void ResetRegisterClicks() => _registerClicks = 0;
 
         public void RecountStats()
         {

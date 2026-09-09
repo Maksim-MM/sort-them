@@ -92,6 +92,7 @@ namespace SortThem.Editor
             termText.transform.localScale = new Vector3(1f / 0.9f, 1f / 1.6f, 1f / 0.5f);
 
             BuildSlotMachine();
+            BuildCashRegister();
 
             var cabinet = Block("Cabinet", null, new Vector3(-RoomX / 6f, 0.4f, -RoomZ * 0.5f + 0.3f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
             var radio = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -180,6 +181,43 @@ namespace SortThem.Editor
             CreateMaterials();
             BuildSlotMachine();
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        [MenuItem("SortThem/4c. Add Cash Register")]
+        public static void AddCashRegister()
+        {
+            CreateMaterials();
+            BuildCashRegister();
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        static void BuildCashRegister()
+        {
+            var existing = GameObject.Find("CashDesk");
+            if (existing != null) Object.DestroyImmediate(existing);
+            var desk = Block("CashDesk", null, new Vector3(RoomX * 0.5f - WallT - 0.45f, 0.45f, 0f), new Vector3(0.6f, 0.9f, 1.4f), _cabinet);
+            var register = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            register.name = "CashRegister";
+            register.transform.SetParent(desk.transform, false);
+            register.transform.localPosition = new Vector3(-0.05f, 0.5f + 0.19f, 0f);
+            register.transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
+            register.transform.localScale = new Vector3(0.45f / 1.4f, 0.34f / 0.9f, 0.36f / 0.6f);
+            register.GetComponent<Renderer>().sharedMaterial = _terminal;
+            register.AddComponent<CashRegister>();
+            var display = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            display.name = "Display";
+            display.transform.SetParent(register.transform, false);
+            display.transform.localPosition = new Vector3(0f, 0.25f, 0.52f);
+            display.transform.localScale = new Vector3(0.7f, 0.3f, 0.05f);
+            display.GetComponent<Renderer>().sharedMaterial = _marker;
+            Object.DestroyImmediate(display.GetComponent<Collider>());
+            var keys = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            keys.name = "Keys";
+            keys.transform.SetParent(register.transform, false);
+            keys.transform.localPosition = new Vector3(0f, -0.2f, 0.52f);
+            keys.transform.localScale = new Vector3(0.8f, 0.4f, 0.05f);
+            keys.GetComponent<Renderer>().sharedMaterial = _plateWhite;
+            Object.DestroyImmediate(keys.GetComponent<Collider>());
         }
 
         static void BuildSlotMachine()

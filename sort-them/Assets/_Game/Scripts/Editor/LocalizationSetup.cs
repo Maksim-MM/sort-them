@@ -109,6 +109,7 @@ namespace SortThem.Editor
             LocUtil.Set("ui.slot_bonus_cd", "откат ×{0}", "cooldown ×{0}");
             LocUtil.Set("ui.slot_bonus_radius", "радиус ×{0}", "radius ×{0}");
             LocUtil.Set("msg.slot_reward", "Выпало: {0}", "You got: {0}");
+            LocUtil.Set("msg.register_paid", "Касса: +${0}", "Register: +${0}");
             LocUtil.Set("msg.rotate_device", "Поверните телефон горизонтально", "Rotate your phone to landscape");
         }
     }

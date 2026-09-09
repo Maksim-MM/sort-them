@@ -707,6 +707,18 @@ MonoBehaviour:
     m_Key: slot_radius.desc
     m_Metadata:
       m_Items: []
+  - m_Id: 1321637906472960
+    m_Key: msg.register_progress
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055872
+    m_Key: msg.register_paid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055873
+    m_Key: msg.register_empty
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721
