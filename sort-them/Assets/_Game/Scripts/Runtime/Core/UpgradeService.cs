@@ -62,5 +62,37 @@ namespace SortThem
         }
 
         public IEnumerable<KeyValuePair<UpgradeKind, int>> Levels => _levels;
+
+        public int SlotRemaining
+        {
+            get
+            {
+                int n = 0;
+                foreach (var u in _all) if (u.Source == UpgradeSource.Slot) n += Math.Max(0, u.MaxLevel - Level(u));
+                return n;
+            }
+        }
+
+        public bool CanSpin(int cost) => SlotRemaining > 0 && _economy != null && _economy.CanAfford(cost);
+
+        public UpgradeData TrySpin(int cost)
+        {
+            if (!CanSpin(cost) || !_economy.TrySpend(cost)) return null;
+            int pick = UnityEngine.Random.Range(0, SlotRemaining);
+            foreach (var u in _all)
+            {
+                if (u.Source != UpgradeSource.Slot) continue;
+                int left = u.MaxLevel - Level(u);
+                if (left <= 0) continue;
+                if (pick < left)
+                {
+                    _levels[u.Kind] = Level(u) + 1;
+                    Changed?.Invoke(u);
+                    return u;
+                }
+                pick -= left;
+            }
+            return null;
+        }
     }
 }

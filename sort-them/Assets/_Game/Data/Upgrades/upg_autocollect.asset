@@ -16,6 +16,7 @@ MonoBehaviour:
   DevName: Auto-collect
   DevDescription: 'Key 2: pulls same cars nearby into inventory'
   Kind: 8
+  Source: 0
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6

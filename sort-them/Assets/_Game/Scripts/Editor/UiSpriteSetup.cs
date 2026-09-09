@@ -7,7 +7,9 @@ namespace SortThem.Editor
     {
         public const string Dir = Paths.Root + "/Art/UI";
         public static readonly string[] AbilityIcons = { Dir + "/ab_find.png", Dir + "/ab_collect.png", Dir + "/ab_rack.png" };
+        public static readonly string[] TouchIcons = { Dir + "/tc_take.png", Dir + "/tc_throw.png", Dir + "/tc_jump.png", Dir + "/tc_pause.png", Dir + "/tc_prev.png", Dir + "/tc_next.png", Dir + "/up_sprint.png", Dir + "/up_crouch.png" };
         public const string SlotFrame = Dir + "/frame_slot.png";
+        public const string Circle = Dir + "/circle.png";
         public const string KeyFrame = Dir + "/frame_key.png";
         static readonly (UpgradeKind Kind, string Path)[] UpgradeIcons =
         {
@@ -20,14 +22,19 @@ namespace SortThem.Editor
             (UpgradeKind.DuplicateHighlight, AbilityIcons[0]),
             (UpgradeKind.AutoCollect, AbilityIcons[1]),
             (UpgradeKind.ShelfHighlight, AbilityIcons[2]),
+            (UpgradeKind.InventoryOverCap, Dir + "/up_inventory.png"),
+            (UpgradeKind.AbilityCooldown, Dir + "/up_cooldown.png"),
+            (UpgradeKind.AutoCollectRadius, AbilityIcons[1]),
         };
 
         [MenuItem("SortThem/3d. Import UI Sprites")]
         public static void ImportAll()
         {
             foreach (var p in AbilityIcons) Import(p, Vector4.zero);
+            foreach (var p in TouchIcons) if (p.Contains("/tc_")) Import(p, Vector4.zero);
             Import(SlotFrame, new Vector4(28f, 28f, 28f, 28f));
             Import(KeyFrame, new Vector4(24f, 24f, 24f, 24f));
+            Import(Circle, Vector4.zero);
             foreach (var (_, path) in UpgradeIcons) if (System.Array.IndexOf(AbilityIcons, path) < 0) Import(path, Vector4.zero);
             AssignUpgradeIcons();
             AssetDatabase.SaveAssets();

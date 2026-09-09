@@ -36,8 +36,16 @@ namespace SortThem
         public bool IsUnlocked(int index) => GameManager.I != null && GameManager.I.Upgrades.Has(Kinds[index]);
         public float CooldownTotal(int index)
         {
-            var c = GameManager.I.Config;
-            return index == 0 ? c.FindCooldown : index == 1 ? c.AutoCollectCooldown : c.RackHighlightCooldown;
+            var gm = GameManager.I;
+            var c = gm.Config;
+            float baseValue = index == 0 ? c.FindCooldown : index == 1 ? c.AutoCollectCooldown : c.RackHighlightCooldown;
+            return baseValue * gm.Upgrades.Value(UpgradeKind.AbilityCooldown, 1f);
+        }
+        public bool IsBoosted(int index)
+        {
+            var up = GameManager.I != null ? GameManager.I.Upgrades : null;
+            if (up == null) return false;
+            return up.Has(UpgradeKind.AbilityCooldown) || (index == 1 && up.Has(UpgradeKind.AutoCollectRadius));
         }
         public float ActiveTotal(int index)
         {
@@ -78,9 +86,9 @@ namespace SortThem
 
             if (!gm.UiBlocking)
             {
-                if (_actions[0].WasPressedThisFrame()) TryFindMatches(gm);
-                if (_actions[1].WasPressedThisFrame()) TryAutoCollect(gm);
-                if (_actions[2].WasPressedThisFrame()) TryRackHighlight(gm);
+                if (_actions[0].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability1)) TryFindMatches(gm);
+                if (_actions[1].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability2)) TryAutoCollect(gm);
+                if (_actions[2].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability3)) TryRackHighlight(gm);
             }
 
             UpdateLevitation(gm);
@@ -103,7 +111,7 @@ namespace SortThem
             if (held == null) { NeedItem(); return; }
             _findUntil = Time.time + gm.Config.FindDuration;
             Sfx.PlayUi(gm.Config.AbilityClip);
-            _cooldown[0] = gm.Config.FindCooldown;
+            _cooldown[0] = CooldownTotal(0);
             _findModel = held.Data;
             StartLevitation(gm, held.Data);
         }
@@ -211,7 +219,7 @@ namespace SortThem
             _collectUntil = Time.time + gm.Config.AutoCollectDuration;
             Sfx.PlayUi(gm.Config.AbilityClip);
             _collectNextPull = Time.time;
-            _cooldown[1] = gm.Config.AutoCollectCooldown;
+            _cooldown[1] = CooldownTotal(1);
         }
 
         void StackTarget(out Vector3 position, out Quaternion rotation)
@@ -258,7 +266,8 @@ namespace SortThem
             if (Time.time >= _collectUntil || Time.time < _collectNextPull) return;
             if (_collectBudget <= 0 || Inventory.Capacity - Inventory.Items.Count - _pulls.Count <= 0) { _collectUntil = 0f; return; }
 
-            float r2 = gm.Config.AutoCollectRadius * gm.Config.AutoCollectRadius;
+            float radius = gm.Config.AutoCollectRadius * gm.Upgrades.Value(UpgradeKind.AutoCollectRadius, 1f);
+            float r2 = radius * radius;
             Vector3 p = transform.position;
             CarInstance best = null; float bestD = float.MaxValue;
             foreach (var car in gm.Cars)
@@ -293,7 +302,7 @@ namespace SortThem
             if (Inventory.Active == null) { NeedItem(); return; }
             _rackUntil = Time.time + gm.Config.RackHighlightDuration;
             Sfx.PlayUi(gm.Config.AbilityClip);
-            _cooldown[2] = gm.Config.RackHighlightCooldown;
+            _cooldown[2] = CooldownTotal(2);
         }
 
         void UpdateRackHighlight(GameManager gm)

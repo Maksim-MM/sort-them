@@ -16,6 +16,7 @@ namespace SortThem
         public UpgradeTerminal HoverTerminal { get; private set; }
         public Collectible HoverCollectible { get; private set; }
         public Radio HoverRadio { get; private set; }
+        public SlotMachine HoverSlotMachine { get; private set; }
         public bool CanPlace { get; private set; }
         public float Range { get; private set; }
 
@@ -73,11 +74,18 @@ namespace SortThem
             Range = gm.Config.BaseInteractRange * gm.Upgrades.Value(UpgradeKind.Range, 1f);
             Scan();
 
-            if (_next.WasPressedThisFrame()) Inventory.Next();
-            if (_prev.WasPressedThisFrame()) Inventory.Prev();
+            if (_next.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Next)) Inventory.Next();
+            if (_prev.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Prev)) Inventory.Prev();
             HandleScroll(gm.Config);
-            if (_interact.WasPressedThisFrame()) Interact();
-            if (_place.WasPressedThisFrame()) PlaceOrThrow();
+            if (Pressed(_interact) || TouchInput.Consume(TouchButton.Interact)) Interact();
+            if (Pressed(_place) || TouchInput.Consume(TouchButton.Place)) PlaceOrThrow();
+        }
+
+        static bool Pressed(InputAction action)
+        {
+            if (!action.WasPressedThisFrame()) return false;
+            if (TouchInput.Active && action.activeControl != null && action.activeControl.device is Mouse) return false;
+            return true;
         }
 
         void ClearHover()
@@ -88,6 +96,7 @@ namespace SortThem
             HoverTerminal = null;
             HoverCollectible = null;
             HoverRadio = null;
+            HoverSlotMachine = null;
             CanPlace = false;
             if (Outline != null) Outline.Hide();
             if (Ghost != null) Ghost.Hide();
@@ -101,6 +110,7 @@ namespace SortThem
             HoverTerminal = null;
             HoverCollectible = null;
             HoverRadio = null;
+            HoverSlotMachine = null;
             CanPlace = false;
 
             var ray = new Ray(Cam.transform.position, Cam.transform.forward);
@@ -160,6 +170,12 @@ namespace SortThem
                     HoverRadio = radio;
                     break;
                 }
+                var slotMachine = col.GetComponentInParent<SlotMachine>();
+                if (slotMachine != null)
+                {
+                    HoverSlotMachine = slotMachine;
+                    break;
+                }
                 break;
             }
 
@@ -187,6 +203,8 @@ namespace SortThem
                     Outline.Show(termMesh.sharedMesh, HoverTerminal.transform.position, HoverTerminal.transform.rotation, HoverTerminal.transform.lossyScale);
                 else if (HoverRadio != null && HoverRadio.TryGetComponent<MeshFilter>(out var radioMesh))
                     Outline.Show(radioMesh.sharedMesh, HoverRadio.transform.position, HoverRadio.transform.rotation, HoverRadio.transform.lossyScale);
+                else if (HoverSlotMachine != null && HoverSlotMachine.TryGetComponent<MeshFilter>(out var slotMesh))
+                    Outline.Show(slotMesh.sharedMesh, HoverSlotMachine.transform.position, HoverSlotMachine.transform.rotation, HoverSlotMachine.transform.lossyScale);
                 else
                     Outline.Hide();
             }
@@ -211,6 +229,11 @@ namespace SortThem
             if (HoverTerminal != null)
             {
                 if (UiRoot.I != null) UiRoot.I.OpenTerminal();
+                return;
+            }
+            if (HoverSlotMachine != null)
+            {
+                if (UiRoot.I != null) UiRoot.I.OpenSlot();
                 return;
             }
             if (HoverRadio != null)

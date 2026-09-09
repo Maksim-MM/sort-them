@@ -22,7 +22,7 @@ namespace SortThem
             {
                 var gm = GameManager.I;
                 if (gm == null) return 5;
-                return gm.Config.BaseInventoryCapacity + Mathf.RoundToInt(gm.Upgrades.Value(UpgradeKind.Inventory, 0f));
+                return gm.Config.BaseInventoryCapacity + Mathf.RoundToInt(gm.Upgrades.Value(UpgradeKind.Inventory, 0f)) + Mathf.RoundToInt(gm.Upgrades.Value(UpgradeKind.InventoryOverCap, 0f));
             }
         }
 

@@ -23,6 +23,7 @@ namespace SortThem
         public float BaseThrowDistance = 1.5f;
         public float ThrowArc = 0.4f;
         public int BaseInventoryCapacity = 5;
+        public int SlotSpinCost = 100;
         public float BounceSpeed = 3f;
         public float MagnetDuration = 0.25f;
         public float PlaceFlightDuration = 0.3f;
@@ -38,6 +39,9 @@ namespace SortThem
         public AudioClip AbilityNotReadyClip;
         public AudioClip AbilityReadyClip;
         public AudioClip PurchaseClip;
+        public AudioClip SlotLeverClip;
+        public AudioClip SlotReelClip;
+        public AudioClip SlotWinClip;
         public AudioClip UiMoveClip;
         public AudioClip UiClickClip;
         public AudioClip FootstepWalkClip;
@@ -45,6 +49,7 @@ namespace SortThem
         public float FootstepWalkInterval = 0.5f;
         public float FootstepRunInterval = 0.33f;
         public float SprintFovBoost = 8f;
+        public float TouchLookSpeed = 160f;
         public float FovSmoothTime = 0.2f;
         public AudioClip[] MusicClips = System.Array.Empty<AudioClip>();
 

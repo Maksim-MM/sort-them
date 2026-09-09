@@ -76,7 +76,7 @@ namespace SortThem.Editor
 
             var terminal = GameObject.CreatePrimitive(PrimitiveType.Cube);
             terminal.name = "UpgradeTerminal";
-            terminal.transform.position = new Vector3(RoomX / 6f, 0.8f, -RoomZ * 0.5f + 0.3f);
+            terminal.transform.position = new Vector3(RoomX / 6f - 0.57f, 0.8f, -RoomZ * 0.5f + 0.3f);
             terminal.transform.rotation = Quaternion.identity;
             terminal.transform.localScale = new Vector3(0.9f, 1.6f, 0.5f);
             terminal.GetComponent<Renderer>().sharedMaterial = _terminal;
@@ -90,6 +90,8 @@ namespace SortThem.Editor
             Object.DestroyImmediate(screen.GetComponent<Collider>());
             var termText = Text3D(terminal.transform, "Label", "UPGRADES", 1.2f, new Vector3(0f, 0.6f, 0.52f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.5f, 0.3f), Color.white);
             termText.transform.localScale = new Vector3(1f / 0.9f, 1f / 1.6f, 1f / 0.5f);
+
+            BuildSlotMachine();
 
             var cabinet = Block("Cabinet", null, new Vector3(-RoomX / 6f, 0.4f, -RoomZ * 0.5f + 0.3f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
             var radio = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -152,13 +154,15 @@ namespace SortThem.Editor
             var scaler = uiGo.AddComponent<UnityEngine.UI.CanvasScaler>();
             scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1600f, 900f);
-            scaler.matchWidthOrHeight = 0.5f;
+            scaler.matchWidthOrHeight = 1f;
             uiGo.AddComponent<UnityEngine.UI.GraphicRaycaster>();
             var ui = uiGo.AddComponent<UiRoot>();
             ui.Abilities = player.GetComponent<PlayerAbilities>();
             ui.AbilityIcons = new[] { UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[0]), UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[1]), UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[2]) };
             ui.SlotFrame = UiSpriteSetup.Load(UiSpriteSetup.SlotFrame);
             ui.KeyFrame = UiSpriteSetup.Load(UiSpriteSetup.KeyFrame);
+            ui.TouchIcons = System.Array.ConvertAll(UiSpriteSetup.TouchIcons, UiSpriteSetup.Load);
+            ui.Circle = UiSpriteSetup.Load(UiSpriteSetup.Circle);
 
             var es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();
@@ -168,6 +172,50 @@ namespace SortThem.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(Paths.MainScene, true) };
             AssetDatabase.SaveAssets();
             Debug.Log("SortThem: level built, shelves=" + shelves.Count);
+        }
+
+        [MenuItem("SortThem/4b. Add Slot Machine")]
+        public static void AddSlotMachine()
+        {
+            CreateMaterials();
+            BuildSlotMachine();
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        static void BuildSlotMachine()
+        {
+            var existing = GameObject.Find("SlotMachine");
+            if (existing != null) Object.DestroyImmediate(existing);
+            var slot = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            slot.name = "SlotMachine";
+            slot.transform.position = new Vector3(RoomX / 6f + 0.58f, 0.8f, -RoomZ * 0.5f + 0.3f);
+            slot.transform.rotation = Quaternion.identity;
+            slot.transform.localScale = new Vector3(0.8f, 1.6f, 0.5f);
+            slot.GetComponent<Renderer>().sharedMaterial = _radio;
+            slot.AddComponent<SlotMachine>();
+            var screen = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            screen.name = "Screen";
+            screen.transform.SetParent(slot.transform, false);
+            screen.transform.localPosition = new Vector3(0f, 0.15f, 0.52f);
+            screen.transform.localScale = new Vector3(0.8f, 0.3f, 0.05f);
+            screen.GetComponent<Renderer>().sharedMaterial = _plateGold;
+            Object.DestroyImmediate(screen.GetComponent<Collider>());
+            var lever = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            lever.name = "Lever";
+            lever.transform.SetParent(slot.transform, false);
+            lever.transform.localPosition = new Vector3(0.52f, 0.2f, 0.44f);
+            lever.transform.localScale = new Vector3(0.08f, 0.22f, 0.12f);
+            lever.GetComponent<Renderer>().sharedMaterial = _terminal;
+            Object.DestroyImmediate(lever.GetComponent<Collider>());
+            var knob = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            knob.name = "Knob";
+            knob.transform.SetParent(slot.transform, false);
+            knob.transform.localPosition = new Vector3(0.52f, 0.45f, 0.44f);
+            knob.transform.localScale = new Vector3(0.14f, 0.07f, 0.22f);
+            knob.GetComponent<Renderer>().sharedMaterial = _plateRed;
+            Object.DestroyImmediate(knob.GetComponent<Collider>());
+            var label = Text3D(slot.transform, "Label", "CAR POT", 1.2f, new Vector3(0f, 0.6f, 0.52f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.5f, 0.3f), Color.white);
+            label.transform.localScale = new Vector3(1f / 0.8f, 1f / 1.6f, 1f / 0.5f);
         }
 
         static void CreateMaterials()

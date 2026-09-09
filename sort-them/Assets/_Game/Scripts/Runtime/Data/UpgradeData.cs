@@ -13,7 +13,16 @@ namespace SortThem
         AutoPlace,
         ShelfHighlight,
         DuplicateHighlight,
-        AutoCollect
+        AutoCollect,
+        InventoryOverCap,
+        AbilityCooldown,
+        AutoCollectRadius
+    }
+
+    public enum UpgradeSource
+    {
+        Terminal,
+        Slot
     }
 
     [CreateAssetMenu(menuName = "SortThem/Upgrade")]
@@ -23,6 +32,7 @@ namespace SortThem
         public string DevName;
         public string DevDescription;
         public UpgradeKind Kind;
+        public UpgradeSource Source;
         public LocalizedString DisplayName;
         public LocalizedString Description;
         public Sprite Icon;

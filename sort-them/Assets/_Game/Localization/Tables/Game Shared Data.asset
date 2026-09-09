@@ -647,6 +647,66 @@ MonoBehaviour:
     m_Key: msg.radio_track
     m_Metadata:
       m_Items: []
+  - m_Id: 1260479111487488
+    m_Key: msg.rotate_device
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670345895936
+    m_Key: ui.slot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867456
+    m_Key: ui.spin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867457
+    m_Key: ui.slot_remaining
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867458
+    m_Key: ui.slot_empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867459
+    m_Key: ui.slot_idle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867460
+    m_Key: ui.slot_bonus_cd
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867461
+    m_Key: ui.slot_bonus_radius
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867462
+    m_Key: msg.slot_reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612800
+    m_Key: slot_inventory.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612801
+    m_Key: slot_inventory.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830528
+    m_Key: slot_cooldown.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830529
+    m_Key: slot_cooldown.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659648
+    m_Key: slot_radius.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659649
+    m_Key: slot_radius.desc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

@@ -531,7 +531,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 565210767360
-    m_Localized: +1 slot per level, up to 20
+    m_Localized: +1 slot per level, up to 15
     m_Metadata:
       m_Items: []
   - m_Id: 565324013568
@@ -648,6 +648,66 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 350177448681472
     m_Localized: 'Radio: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1260479111487488
+    m_Localized: Rotate your phone to landscape
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670345895936
+    m_Localized: Slot Machine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867456
+    m_Localized: "Spin \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867457
+    m_Localized: 'Rewards left: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867458
+    m_Localized: Empty. All rewards are out
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867459
+    m_Localized: Every spin gives a reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867460
+    m_Localized: "cooldown \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867461
+    m_Localized: "radius \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867462
+    m_Localized: 'You got: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612800
+    m_Localized: Extra slot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612801
+    m_Localized: +1 inventory slot beyond the terminal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830528
+    m_Localized: Faster cooldown
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830529
+    m_Localized: Abilities recharge faster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659648
+    m_Localized: Wider auto-collect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659649
+    m_Localized: Auto-collect reaches farther
     m_Metadata:
       m_Items: []
   references:

@@ -101,6 +101,15 @@ namespace SortThem.Editor
             LocUtil.Set("msg.need_item_in_hands", "Возьми что-нибудь в руки", "Take something in your hands");
             LocUtil.Set("msg.collectible_found", "Канистра найдена: {0}/{1}", "Canister found: {0}/{1}");
             LocUtil.Set("msg.radio_track", "Радио: {0}/{1}", "Radio: {0}/{1}");
+            LocUtil.Set("ui.slot", "Слот-машина", "Slot Machine");
+            LocUtil.Set("ui.spin", "Крутить · ${0}", "Spin · ${0}");
+            LocUtil.Set("ui.slot_remaining", "Осталось наград: {0}", "Rewards left: {0}");
+            LocUtil.Set("ui.slot_empty", "Пусто. Все награды выданы", "Empty. All rewards are out");
+            LocUtil.Set("ui.slot_idle", "Каждое вращение даёт награду", "Every spin gives a reward");
+            LocUtil.Set("ui.slot_bonus_cd", "откат ×{0}", "cooldown ×{0}");
+            LocUtil.Set("ui.slot_bonus_radius", "радиус ×{0}", "radius ×{0}");
+            LocUtil.Set("msg.slot_reward", "Выпало: {0}", "You got: {0}");
+            LocUtil.Set("msg.rotate_device", "Поверните телефон горизонтально", "Rotate your phone to landscape");
         }
     }
 }

@@ -16,6 +16,7 @@ MonoBehaviour:
   DevName: Longer reach
   DevDescription: Interaction range x1.25/1.5/1.8/2.2
   Kind: 1
+  Source: 0
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6

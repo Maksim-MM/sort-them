@@ -27,6 +27,7 @@ MonoBehaviour:
   BaseThrowDistance: 0.75
   ThrowArc: 0.4
   BaseInventoryCapacity: 5
+  SlotSpinCost: 100
   BounceSpeed: 3
   MagnetDuration: 0.25
   PlaceFlightDuration: 0.3
@@ -42,6 +43,9 @@ MonoBehaviour:
   AbilityNotReadyClip: {fileID: 0}
   AbilityReadyClip: {fileID: 8300000, guid: bc5ea2b50d95648c9bf7c240d025496b, type: 3}
   PurchaseClip: {fileID: 8300000, guid: acc88dcd28ffe4c84a80e01092bacd34, type: 3}
+  SlotLeverClip: {fileID: 8300000, guid: da8b91c2e43ca46a682326848a447886, type: 3}
+  SlotReelClip: {fileID: 8300000, guid: d148faa8b39854ad88c89c83e60ea9f5, type: 3}
+  SlotWinClip: {fileID: 8300000, guid: 6815527fbff9f491182861f7b34d84c5, type: 3}
   UiMoveClip: {fileID: 8300000, guid: dd27946c9641f4c259480164a4ab25bd, type: 3}
   UiClickClip: {fileID: 0}
   FootstepWalkClip: {fileID: 8300000, guid: da61d87bb6f394c45a7295f01e200e47, type: 3}
@@ -49,6 +53,7 @@ MonoBehaviour:
   FootstepWalkInterval: 0.5
   FootstepRunInterval: 0.33
   SprintFovBoost: 8
+  TouchLookSpeed: 160
   FovSmoothTime: 0.2
   MusicClips:
   - {fileID: 8300000, guid: 78713402fae4a4cd3bdc106351c48f89, type: 3}

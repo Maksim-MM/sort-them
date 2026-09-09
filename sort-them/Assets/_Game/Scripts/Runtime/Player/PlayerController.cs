@@ -57,14 +57,16 @@ namespace SortThem
             var cfg = gm.Config;
             bool blocked = gm.UiBlocking;
 
-            Cursor.lockState = blocked ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = blocked;
+            bool touch = TouchInput.Active;
+            Cursor.lockState = blocked || touch ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = blocked || touch;
 
             if (!blocked)
             {
-                Vector2 look = _look.ReadValue<Vector2>();
+                Vector2 look = touch ? Vector2.zero : _look.ReadValue<Vector2>();
                 bool gamepad = _look.activeControl != null && _look.activeControl.device is Gamepad;
                 look *= gamepad ? cfg.GamepadLookSpeed * Time.deltaTime : cfg.MouseSensitivity;
+                if (touch) look += TouchInput.ConsumeLook();
                 look.x *= Settings.SensitivityX;
                 look.y *= Settings.SensitivityY;
                 _yaw += look.x;
@@ -73,7 +75,7 @@ namespace SortThem
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
             if (CameraPivot != null) CameraPivot.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
 
-            if (!blocked && _crouch.WasPressedThisFrame() && gm.Upgrades.Has(UpgradeKind.Crouch)) _wantCrouch = !_wantCrouch;
+            if (!blocked && (_crouch.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Crouch)) && gm.Upgrades.Has(UpgradeKind.Crouch)) _wantCrouch = !_wantCrouch;
             bool wantCrouch = _wantCrouch && gm.Upgrades.Has(UpgradeKind.Crouch);
             if (wantCrouch != _crouching)
             {
@@ -84,8 +86,9 @@ namespace SortThem
                 }
             }
 
-            Vector2 moveInput = blocked ? Vector2.zero : _move.ReadValue<Vector2>();
-            bool sprint = !blocked && _sprint.IsPressed() && gm.Upgrades.Has(UpgradeKind.Sprint) && !_crouching;
+            Vector2 moveInput = blocked ? Vector2.zero : Vector2.ClampMagnitude(_move.ReadValue<Vector2>() + TouchInput.Move, 1f);
+            if (TouchInput.SprintToggled && !gm.Upgrades.Has(UpgradeKind.Sprint)) TouchInput.SprintToggled = false;
+            bool sprint = !blocked && (_sprint.IsPressed() || TouchInput.SprintToggled) && gm.Upgrades.Has(UpgradeKind.Sprint) && !_crouching;
             float speed = _crouching ? cfg.CrouchSpeed : sprint ? cfg.SprintSpeed : cfg.WalkSpeed;
             Vector3 dir = transform.right * moveInput.x + transform.forward * moveInput.y;
             if (dir.sqrMagnitude > 1f) dir.Normalize();
@@ -93,7 +96,7 @@ namespace SortThem
             if (_cc.isGrounded)
             {
                 if (_verticalVelocity < 0f) _verticalVelocity = -2f;
-                if (!blocked && _jump.WasPressedThisFrame() && !_crouching)
+                if (!blocked && (_jump.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Jump)) && !_crouching)
                     _verticalVelocity = Mathf.Sqrt(2f * -cfg.Gravity * cfg.JumpHeight);
             }
             _verticalVelocity += cfg.Gravity * Time.deltaTime;

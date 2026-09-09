@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8493a1fc19cfd402e8ebb06793ae3cc7, type: 3}
+  m_Name: slot_radius
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.UpgradeData
+  UpgradeID: slot_radius
+  DevName: Wider auto-collect
+  DevDescription: 'Slot machine: auto-collect radius x1.2/1.4/1.6'
+  Kind: 11
+  Source: 1
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: slot_radius.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Description:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: slot_radius.desc
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Icon: {fileID: 21300000, guid: c9edcd927fccf4817bd83dd7ec32d775, type: 3}
+  CostPerLevel: 000000000000000000000000
+  ValuePerLevel:
+  - 1.2
+  - 1.4
+  - 1.6
+  references:
+    version: 2
+    RefIds: []
