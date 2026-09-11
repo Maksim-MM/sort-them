@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: car_supercars_06
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
   CarID: car_supercars_06
-  DevName: White short supercar with roof scoop
+  DevName: Hyas
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -24,7 +24,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: 85c5259347bd140c5bde20381985ee65, type: 2}
-  Prefab: {fileID: 2930445409791142451, guid: 72746c018da164f059afe2e0200a5742, type: 3}
+  Prefab: {fileID: 7120310326163732767, guid: 72746c018da164f059afe2e0200a5742, type: 3}
   DisplayPrice: 34.5
   references:
     version: 2

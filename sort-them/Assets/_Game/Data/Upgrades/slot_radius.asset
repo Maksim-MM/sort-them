@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.UpgradeData
   UpgradeID: slot_radius
   DevName: Wider auto-collect
-  DevDescription: 'Slot machine: auto-collect radius x1.2/1.4/1.6'
+  DevDescription: 'Slot machine: auto-collect radius x1.25/1.5/1.75 (8 -> 10/12/14
+    m)'
   Kind: 11
   Source: 1
   DisplayName:
@@ -38,9 +39,9 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: c9edcd927fccf4817bd83dd7ec32d775, type: 3}
   CostPerLevel: 000000000000000000000000
   ValuePerLevel:
-  - 1.2
-  - 1.4
-  - 1.6
+  - 1.25
+  - 1.5
+  - 1.75
   references:
     version: 2
     RefIds: []

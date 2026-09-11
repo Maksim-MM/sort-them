@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: car_pickups_09
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
   CarID: car_pickups_09
-  DevName: Pink van with roof rails
+  DevName: Vortice
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -24,8 +24,8 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: 6dadcb58cc37442008efa04fd314bea7, type: 2}
-  Prefab: {fileID: 4575299888408179574, guid: a3cf45e392fd14fb68ec4448373cd506, type: 3}
-  DisplayPrice: 6
+  Prefab: {fileID: 2355172050004536455, guid: a3cf45e392fd14fb68ec4448373cd506, type: 3}
+  DisplayPrice: 36
   references:
     version: 2
     RefIds: []

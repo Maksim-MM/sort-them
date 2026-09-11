@@ -31,6 +31,9 @@ namespace SortThem
         public readonly List<ShelfController> Shelves = new List<ShelfController>();
         public readonly List<RackController> Racks = new List<RackController>();
         public readonly List<Collectible> Collectibles = new List<Collectible>();
+        public readonly List<Bomb> Bombs = new List<Bomb>();
+        public Bomb HeldBomb { get; private set; }
+        public int PendingBombs => Bombs.Count;
 
         public int PlacedValid { get; private set; }
         public int TotalCars { get; private set; }
@@ -38,6 +41,7 @@ namespace SortThem
         public int TotalShelves { get; private set; }
         public int CollectiblesMask { get; private set; }
         public bool RegisterPaid { get; set; }
+        public bool TutorialDone { get; set; }
         int _registerClicks;
         public int CollectiblesFound
         {
@@ -73,6 +77,7 @@ namespace SortThem
 
         void OnDestroy()
         {
+            PileOcclusion.Shutdown();
             if (I == this) I = null;
             LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
         }
@@ -100,6 +105,7 @@ namespace SortThem
             Debug.Log(loaded ? "SortThem: save loaded" : "SortThem: new game");
             RecountStats();
             Ready = true;
+            PileOcclusion.Init(Cars, Config);
             StatsChanged?.Invoke();
         }
 
@@ -117,6 +123,12 @@ namespace SortThem
             if (!Loc.Ready) Debug.LogWarning("SortThem: localization not ready, using dev names");
             else
             {
+                Settings.EnsureLoaded();
+                if (!string.IsNullOrEmpty(Settings.Locale))
+                {
+                    var saved = LocalizationSettings.AvailableLocales.GetLocale(Settings.Locale);
+                    if (saved != null && LocalizationSettings.SelectedLocale != saved) LocalizationSettings.SelectedLocale = saved;
+                }
                 LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
                 LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
             }
@@ -132,9 +144,10 @@ namespace SortThem
             if (_activationTimer <= 0f)
             {
                 _activationTimer = Config.ActivationUpdateInterval;
-                if (Player != null) PhysicsActivation.Tick(Cars, Player.transform.position, Config.ActivationRadius);
+                if (Player != null) PhysicsActivation.Tick(Cars, Player.transform.position, Config.ActivationRadius, Config.FreezeSpeed, Config.FreezeDelay, 3, Time.frameCount);
             }
             Save.Tick(Time.deltaTime);
+            PileOcclusion.Tick();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!UiBlocking && Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) Economy.Add(1000f);
 #endif
@@ -211,6 +224,87 @@ namespace SortThem
 
         public void ResetRegisterClicks() => _registerClicks = 0;
 
+        public Bomb SpawnBomb(bool announce = true)
+        {
+            if (Config.BombPrefab == null) return null;
+            Vector3 pos = Config.UnstuckCenter;
+            var candidates = new List<CarInstance>();
+            foreach (var c in Cars)
+                if (c.State == CarState.Loose && c.gameObject.activeSelf && c.transform.position.y < Config.FloorY + 1.5f) candidates.Add(c);
+            if (candidates.Count > 0) pos = candidates[UnityEngine.Random.Range(0, candidates.Count)].transform.position + Vector3.up * 1.5f;
+            var go = Instantiate(Config.BombPrefab, pos, UnityEngine.Random.rotation, CarsRoot);
+            go.name = "Bomb";
+            var bomb = go.GetComponent<Bomb>();
+            if (bomb == null) bomb = go.AddComponent<Bomb>();
+            Bombs.Add(bomb);
+            if (announce) Messages.Show(Loc.Get("msg.bomb_spawned", "Из автомата выпала бомба, ищи в куче"));
+            return bomb;
+        }
+
+        public void SpawnBombs(int count)
+        {
+            for (int i = 0; i < count; i++) SpawnBomb(false);
+        }
+
+        public void PickBomb(Bomb bomb, Transform hand)
+        {
+            if (bomb == null || bomb.Held || HeldBomb != null) return;
+            HeldBomb = bomb;
+            bomb.Hold(hand, Config.BombHandPosition, Quaternion.Euler(Config.BombHandEuler));
+            bomb.Ignite(Config.BombFuseTime, Config.BombFuseClip);
+            Sfx.Play(Config.PickupClip, hand.position);
+        }
+
+        public void ThrowBomb(Vector3 origin, Quaternion rotation, Vector3 velocity)
+        {
+            if (HeldBomb == null) return;
+            var bomb = HeldBomb;
+            HeldBomb = null;
+            bomb.Release(CarsRoot, origin, rotation, velocity);
+            Sfx.Play(Config.ThrowClip, origin);
+        }
+
+        public void ExplodeBomb(Bomb bomb)
+        {
+            if (bomb == null) return;
+            Vector3 pos = bomb.transform.position;
+            float mult = bomb.Held ? Config.BombHandMultiplier : 1f;
+            if (bomb == HeldBomb) HeldBomb = null;
+            Bombs.Remove(bomb);
+            float radius = Config.BombRadius, r2 = radius * radius;
+            foreach (var car in Cars)
+            {
+                if (car.State != CarState.Loose || !car.gameObject.activeSelf) continue;
+                if ((car.transform.position - pos).sqrMagnitude > r2) continue;
+                car.Unfreeze();
+                car.Body.AddExplosionForce(Config.BombForce * mult, pos, radius, Config.BombUpwardModifier, ForceMode.VelocityChange);
+            }
+            Sfx.Play(Config.BombExplodeClip, pos);
+            StartCoroutine(BombFlash(pos, radius * mult));
+            Destroy(bomb.gameObject);
+        }
+
+        IEnumerator BombFlash(Vector3 pos, float radius)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            go.name = "BombFlash";
+            Destroy(go.GetComponent<Collider>());
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            mat.color = new Color(1f, 0.85f, 0.45f, 1f);
+            go.GetComponent<Renderer>().sharedMaterial = mat;
+            const float duration = 0.2f;
+            float t = 0f;
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+                go.transform.position = pos;
+                go.transform.localScale = Vector3.one * Mathf.Lerp(0.1f, radius * 2f, t / duration);
+                yield return null;
+            }
+            Destroy(mat);
+            Destroy(go);
+        }
+
         public void RecountStats()
         {
             int placed = 0, closed = 0;
@@ -222,6 +316,62 @@ namespace SortThem
             PlacedValid = placed;
             ClosedShelves = closed;
             StatsChanged?.Invoke();
+        }
+
+        public bool Shuffling { get; private set; }
+
+        public IEnumerator ShuffleLoose(Action<float> progress = null)
+        {
+            if (Shuffling || !Ready || Scatterer == null) yield break;
+            Shuffling = true;
+            var loose = new List<CarInstance>();
+            foreach (var car in Cars)
+                if (car.State == CarState.Loose && car.gameObject.activeSelf && !car.Levitating) loose.Add(car);
+            var bodies = new List<Rigidbody>();
+            foreach (var bomb in Bombs) if (bomb != null && !bomb.Held) bodies.Add(bomb.Body);
+            var rng = new System.Random(Environment.TickCount);
+            for (int i = loose.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); (loose[i], loose[j]) = (loose[j], loose[i]); }
+
+            var prevMode = Physics.simulationMode;
+            Physics.simulationMode = SimulationMode.Script;
+            try
+            {
+                float dt = Time.fixedDeltaTime;
+                int perStep = Mathf.Max(1, Config.ShuffleCarsPerStep), perFrame = Mathf.Max(1, Config.ShuffleStepsPerFrame), maxSteps = Mathf.Max(1, Config.ShuffleMaxSteps);
+                int next = 0, steps = 0;
+                foreach (var body in bodies) Scatterer.LaunchBody(body, rng);
+                while (steps < maxSteps)
+                {
+                    for (int f = 0; f < perFrame && steps < maxSteps; f++)
+                    {
+                        for (int k = 0; k < perStep && next < loose.Count; k++, next++) Scatterer.LaunchCar(loose[next], rng);
+                        Physics.Simulate(dt);
+                        steps++;
+                    }
+                    progress?.Invoke(next < loose.Count ? 0.6f * next / Mathf.Max(1, loose.Count) : 0.6f + 0.4f * Mathf.Clamp01((steps - loose.Count / (float)perStep) / 600f));
+                    if (next >= loose.Count && steps % 25 == 0 && AllSleeping(loose)) break;
+                    yield return null;
+                }
+                var half = Config.LevelHalfExtents;
+                foreach (var car in loose)
+                {
+                    var p = car.transform.position;
+                    if (p.y < Config.FloorY - 0.2f || Mathf.Abs(p.x) > half.x || Mathf.Abs(p.z) > half.z)
+                        car.SetLoose(Config.UnstuckCenter + new Vector3((float)rng.NextDouble() * 2f - 1f, (float)rng.NextDouble(), (float)rng.NextDouble() * 2f - 1f), UnityEngine.Random.rotation, true);
+                    else car.Freeze();
+                }
+            }
+            finally
+            {
+                Physics.simulationMode = prevMode;
+                Shuffling = false;
+            }
+        }
+
+        static bool AllSleeping(List<CarInstance> cars)
+        {
+            foreach (var car in cars) if (!car.Body.isKinematic && !car.Body.IsSleeping()) return false;
+            return true;
         }
 
         public int UnstuckCars()

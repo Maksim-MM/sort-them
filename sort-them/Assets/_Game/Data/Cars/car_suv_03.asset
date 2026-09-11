@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e57634ad78d4dbd84f813c5bf182f1, type: 3}
+  m_Name: car_suv_03
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
+  CarID: car_suv_03
+  DevName: Mimas
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: car.car_suv_03
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Category: {fileID: 11400000, guid: 2c324a0a8aa084cd68af5b724fab1535, type: 2}
+  Prefab: {fileID: 2653394144348249609, guid: 55e4d3440d8de411eaab4a741081a5ef, type: 3}
+  DisplayPrice: 4
+  references:
+    version: 2
+    RefIds: []

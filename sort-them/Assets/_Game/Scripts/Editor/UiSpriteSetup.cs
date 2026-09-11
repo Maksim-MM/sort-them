@@ -10,6 +10,7 @@ namespace SortThem.Editor
         public static readonly string[] TouchIcons = { Dir + "/tc_take.png", Dir + "/tc_throw.png", Dir + "/tc_jump.png", Dir + "/tc_pause.png", Dir + "/tc_prev.png", Dir + "/tc_next.png", Dir + "/up_sprint.png", Dir + "/up_crouch.png" };
         public const string SlotFrame = Dir + "/frame_slot.png";
         public const string Circle = Dir + "/circle.png";
+        public const string BombIcon = Dir + "/up_bomb.png";
         public const string KeyFrame = Dir + "/frame_key.png";
         static readonly (UpgradeKind Kind, string Path)[] UpgradeIcons =
         {
@@ -25,6 +26,7 @@ namespace SortThem.Editor
             (UpgradeKind.InventoryOverCap, Dir + "/up_inventory.png"),
             (UpgradeKind.AbilityCooldown, Dir + "/up_cooldown.png"),
             (UpgradeKind.AutoCollectRadius, AbilityIcons[1]),
+            (UpgradeKind.AbilityDuration, Dir + "/up_duration.png"),
         };
 
         [MenuItem("SortThem/3d. Import UI Sprites")]
@@ -35,6 +37,7 @@ namespace SortThem.Editor
             Import(SlotFrame, new Vector4(28f, 28f, 28f, 28f));
             Import(KeyFrame, new Vector4(24f, 24f, 24f, 24f));
             Import(Circle, Vector4.zero);
+            Import(BombIcon, Vector4.zero);
             foreach (var (_, path) in UpgradeIcons) if (System.Array.IndexOf(AbilityIcons, path) < 0) Import(path, Vector4.zero);
             AssignUpgradeIcons();
             AssetDatabase.SaveAssets();

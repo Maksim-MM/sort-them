@@ -14,20 +14,18 @@ Shader "SortThem/VertexColorLit"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
-            #pragma multi_compile_fragment _ _SHADOWS_SOFT
+            #pragma multi_compile_instancing
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-            CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
-            CBUFFER_END
 
             struct Attributes
             {
                 float4 positionOS : POSITION;
                 float3 normalOS : NORMAL;
                 float4 color : COLOR;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
@@ -41,6 +39,7 @@ Shader "SortThem/VertexColorLit"
             Varyings vert(Attributes IN)
             {
                 Varyings o;
+                UNITY_SETUP_INSTANCE_ID(IN);
                 VertexPositionInputs p = GetVertexPositionInputs(IN.positionOS.xyz);
                 o.positionCS = p.positionCS;
                 o.positionWS = p.positionWS;
@@ -52,11 +51,11 @@ Shader "SortThem/VertexColorLit"
             half4 frag(Varyings IN) : SV_Target
             {
                 float3 n = normalize(IN.normalWS);
-                Light mainLight = GetMainLight(TransformWorldToShadowCoord(IN.positionWS));
+                Light mainLight = GetMainLight();
                 half ndl = saturate(dot(n, mainLight.direction));
                 half3 ambient = SampleSH(n);
                 half3 albedo = IN.color.rgb * _BaseColor.rgb;
-                half3 col = albedo * (mainLight.color * ndl * mainLight.shadowAttenuation + ambient);
+                half3 col = albedo * (mainLight.color * ndl + ambient);
                 return half4(col, 1);
             }
             ENDHLSL
@@ -71,13 +70,12 @@ Shader "SortThem/VertexColorLit"
             HLSLPROGRAM
             #pragma vertex vertDepth
             #pragma fragment fragDepth
+            #pragma multi_compile_instancing
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
-            CBUFFER_END
-            struct A { float4 positionOS : POSITION; };
+            struct A { float4 positionOS : POSITION; UNITY_VERTEX_INPUT_INSTANCE_ID };
             struct V { float4 positionCS : SV_POSITION; };
-            V vertDepth(A IN) { V o; o.positionCS = TransformObjectToHClip(IN.positionOS.xyz); return o; }
+            V vertDepth(A IN) { V o; UNITY_SETUP_INSTANCE_ID(IN); o.positionCS = TransformObjectToHClip(IN.positionOS.xyz); return o; }
             half fragDepth(V IN) : SV_Target { return 0; }
             ENDHLSL
         }

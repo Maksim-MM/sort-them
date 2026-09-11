@@ -45,12 +45,13 @@ namespace SortThem
         {
             var up = GameManager.I != null ? GameManager.I.Upgrades : null;
             if (up == null) return false;
-            return up.Has(UpgradeKind.AbilityCooldown) || (index == 1 && up.Has(UpgradeKind.AutoCollectRadius));
+            return up.Has(UpgradeKind.AbilityCooldown) || (index == 1 ? up.Has(UpgradeKind.AutoCollectRadius) : up.Has(UpgradeKind.AbilityDuration));
         }
         public float ActiveTotal(int index)
         {
             var c = GameManager.I.Config;
-            return index == 0 ? c.FindDuration : index == 1 ? c.AutoCollectDuration : c.RackHighlightDuration;
+            float baseValue = index == 0 ? c.FindDuration : index == 1 ? c.AutoCollectDuration : c.RackHighlightDuration;
+            return index == 1 ? baseValue : baseValue * GameManager.I.Upgrades.Value(UpgradeKind.AbilityDuration, 1f);
         }
         public float ActiveRemaining(int index)
         {
@@ -84,7 +85,7 @@ namespace SortThem
                 }
             }
 
-            if (!gm.UiBlocking)
+            if (!gm.UiBlocking && !Tutorial.Running)
             {
                 if (_actions[0].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability1)) TryFindMatches(gm);
                 if (_actions[1].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability2)) TryAutoCollect(gm);
@@ -109,7 +110,7 @@ namespace SortThem
             if (_cooldown[0] > 0f) { NotReady(); return; }
             var held = Inventory.Active;
             if (held == null) { NeedItem(); return; }
-            _findUntil = Time.time + gm.Config.FindDuration;
+            _findUntil = Time.time + ActiveTotal(0);
             Sfx.PlayUi(gm.Config.AbilityClip);
             _cooldown[0] = CooldownTotal(0);
             _findModel = held.Data;
@@ -300,7 +301,7 @@ namespace SortThem
             if (!gm.Upgrades.Has(UpgradeKind.ShelfHighlight)) return;
             if (_cooldown[2] > 0f) { NotReady(); return; }
             if (Inventory.Active == null) { NeedItem(); return; }
-            _rackUntil = Time.time + gm.Config.RackHighlightDuration;
+            _rackUntil = Time.time + ActiveTotal(2);
             Sfx.PlayUi(gm.Config.AbilityClip);
             _cooldown[2] = CooldownTotal(2);
         }

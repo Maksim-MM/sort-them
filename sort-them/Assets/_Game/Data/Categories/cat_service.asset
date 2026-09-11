@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bf8ccebda5924e9e8bb4f39e5c88a3d, type: 3}
+  m_Name: cat_service
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.CategoryData
+  CategoryID: cat_service
+  DevName: Emergency & Service
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: cat.cat_service
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  CategoryColor: {r: 0.9, g: 0.3, b: 0.2, a: 1}
+  references:
+    version: 2
+    RefIds: []

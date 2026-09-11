@@ -60,7 +60,7 @@ namespace SortThem
         [Header("Abilities")]
         public float RackHighlightCooldown = 60f;
         public float RackHighlightDuration = 30f;
-        public float AutoCollectRadius = 15f;
+        public float AutoCollectRadius = 8f;
         public float AutoCollectCooldown = 60f;
         public float AutoCollectDuration = 10f;
         public float AutoCollectInterval = 0.35f;
@@ -78,7 +78,30 @@ namespace SortThem
 
         [Header("Physics")]
         public float ActivationRadius = 3f;
+        public float FreezeSpeed = 0.35f;
+        public bool BuriedCulling = false;
+        public float BuriedRayLength = 0.35f;
+        public bool BuriedSideRays = true;
+        public float BuriedNeighborRadius = 0.5f;
+        public int BuriedPerFrame = 300;
+        public float FreezeDelay = 0.5f;
         public float ActivationUpdateInterval = 0.25f;
+        public int ShuffleCarsPerStep = 4;
+        public int ShuffleStepsPerFrame = 12;
+        public int ShuffleMaxSteps = 1500;
+
+        [Header("Bomb")]
+        public GameObject BombPrefab;
+        public float BombChance = 0.35f;
+        public float BombFuseTime = 3f;
+        public float BombRadius = 1.2f;
+        public float BombForce = 6f;
+        public float BombUpwardModifier = 0.5f;
+        public float BombHandMultiplier = 0.3f;
+        public Vector3 BombHandPosition = new Vector3(-0.3f, -0.22f, 0.55f);
+        public Vector3 BombHandEuler = new Vector3(0f, 0f, 20f);
+        public AudioClip BombFuseClip;
+        public AudioClip BombExplodeClip;
 
         [Header("Level")]
         public Vector3 UnstuckCenter = new Vector3(0f, 2.5f, 0f);

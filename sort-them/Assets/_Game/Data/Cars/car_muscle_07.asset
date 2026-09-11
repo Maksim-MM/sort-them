@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: car_muscle_07
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
   CarID: car_muscle_07
-  DevName: Black muscle car with hood scoop
+  DevName: Kalliope
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -24,7 +24,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: b8ccc3f294351478ebfd02afb60a9850, type: 2}
-  Prefab: {fileID: 4578772541605162901, guid: 311e31b3fa0eb43409673dfbbc5f5c96, type: 3}
+  Prefab: {fileID: 8082299048725793752, guid: 311e31b3fa0eb43409673dfbbc5f5c96, type: 3}
   DisplayPrice: 12
   references:
     version: 2

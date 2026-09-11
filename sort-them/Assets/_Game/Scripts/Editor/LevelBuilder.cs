@@ -13,7 +13,9 @@ namespace SortThem.Editor
 {
     public static class LevelBuilder
     {
-        const float RoomX = 22f, RoomZ = 16f, RoomH = 5f, WallT = 0.3f;
+        const float RoomX = 36f, RoomZ = 20f, RoomH = 5f, WallT = 0.3f;
+        const float ShopGapX = 10.8f;
+        const int RacksTop = 5, RacksBottom = 5, RacksLeft = 3, RacksRight = 2;
         const float BoardT = 0.04f, DividerT = 0.05f, ShelfPitch = 0.42f;
         static float RackW = 2.45f, RackD = 1.1f;
         const int ShelvesPerSection = 5, Sections = 2;
@@ -22,7 +24,7 @@ namespace SortThem.Editor
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
 
-        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _cabinet, _radio, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _heldCars;
+        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _cabinet, _radio, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _tutOutline, _heldCars;
 
         [MenuItem("SortThem/4. Build Level Scene")]
         public static void Build()
@@ -62,7 +64,7 @@ namespace SortThem.Editor
             {
                 light.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
                 light.intensity = 1.2f;
-                light.shadows = LightShadows.Soft;
+                light.shadows = LightShadows.None;
             }
 
             BuildRoom();
@@ -76,7 +78,7 @@ namespace SortThem.Editor
 
             var terminal = GameObject.CreatePrimitive(PrimitiveType.Cube);
             terminal.name = "UpgradeTerminal";
-            terminal.transform.position = new Vector3(RoomX / 6f - 0.57f, 0.8f, -RoomZ * 0.5f + 0.3f);
+            terminal.transform.position = new Vector3(ShopGapX - 0.57f, 0.8f, -RoomZ * 0.5f + 0.3f);
             terminal.transform.rotation = Quaternion.identity;
             terminal.transform.localScale = new Vector3(0.9f, 1.6f, 0.5f);
             terminal.GetComponent<Renderer>().sharedMaterial = _terminal;
@@ -93,11 +95,12 @@ namespace SortThem.Editor
 
             BuildSlotMachine();
             BuildCashRegister();
+            BuildTutorial();
 
-            var cabinet = Block("Cabinet", null, new Vector3(-RoomX / 6f, 0.4f, -RoomZ * 0.5f + 0.3f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
+            var cabinet = Block("Cabinet", null, new Vector3(-ShopGapX, 0.4f, -RoomZ * 0.5f + 0.3f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
             var radio = GameObject.CreatePrimitive(PrimitiveType.Cube);
             radio.name = "Radio";
-            radio.transform.position = new Vector3(-RoomX / 6f, 0.8f + 0.13f, -RoomZ * 0.5f + 0.3f);
+            radio.transform.position = new Vector3(-ShopGapX, 0.8f + 0.13f, -RoomZ * 0.5f + 0.3f);
             radio.transform.localScale = new Vector3(0.44f, 0.26f, 0.18f);
             radio.GetComponent<Renderer>().sharedMaterial = _radio;
             radio.AddComponent<Radio>();
@@ -164,6 +167,7 @@ namespace SortThem.Editor
             ui.KeyFrame = UiSpriteSetup.Load(UiSpriteSetup.KeyFrame);
             ui.TouchIcons = System.Array.ConvertAll(UiSpriteSetup.TouchIcons, UiSpriteSetup.Load);
             ui.Circle = UiSpriteSetup.Load(UiSpriteSetup.Circle);
+            ui.BombIcon = UiSpriteSetup.Load(UiSpriteSetup.BombIcon);
 
             var es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();
@@ -189,6 +193,25 @@ namespace SortThem.Editor
             CreateMaterials();
             BuildCashRegister();
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        [MenuItem("SortThem/4d. Add Tutorial")]
+        public static void AddTutorial()
+        {
+            CreateMaterials();
+            BuildTutorial();
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        static void BuildTutorial()
+        {
+            var existing = GameObject.Find("Tutorial");
+            if (existing != null) Object.DestroyImmediate(existing);
+            var go = new GameObject("Tutorial");
+            var tutorial = go.AddComponent<Tutorial>();
+            var outline = Ghost("TutorialOutline", _tutOutline);
+            outline.transform.SetParent(go.transform, false);
+            tutorial.Outline = outline;
         }
 
         static void BuildCashRegister()
@@ -226,7 +249,7 @@ namespace SortThem.Editor
             if (existing != null) Object.DestroyImmediate(existing);
             var slot = GameObject.CreatePrimitive(PrimitiveType.Cube);
             slot.name = "SlotMachine";
-            slot.transform.position = new Vector3(RoomX / 6f + 0.58f, 0.8f, -RoomZ * 0.5f + 0.3f);
+            slot.transform.position = new Vector3(ShopGapX + 0.58f, 0.8f, -RoomZ * 0.5f + 0.3f);
             slot.transform.rotation = Quaternion.identity;
             slot.transform.localScale = new Vector3(0.8f, 1.6f, 0.5f);
             slot.GetComponent<Renderer>().sharedMaterial = _radio;
@@ -280,6 +303,12 @@ namespace SortThem.Editor
             _levOutline.SetColor("_XRayColor", new Color(0.72f, 0.3f, 1f, 0.55f));
             _levOutline.renderQueue = 3000;
             EditorUtility.SetDirty(_levOutline);
+            _tutOutline = EditorAssets.LoadOrCreateMaterial("OutlineYellow", "SortThem/OutlineXRay", new Color(1f, 0.85f, 0.2f), "_Color");
+            _tutOutline.shader = Shader.Find("SortThem/OutlineXRay");
+            _tutOutline.SetFloat("_Width", 0.02f);
+            _tutOutline.SetColor("_XRayColor", new Color(1f, 0.85f, 0.2f, 0.6f));
+            _tutOutline.renderQueue = 3000;
+            EditorUtility.SetDirty(_tutOutline);
             _heldCars = EditorAssets.LoadOrCreateMaterial("CarsHeld", "SortThem/VertexColorLitOverlay", Color.white);
         }
 
@@ -310,27 +339,30 @@ namespace SortThem.Editor
         {
             var shelves = new List<ShelfController>();
             var slots = new List<(Vector3 pos, float yaw)>();
-            float stepX = RoomX / 3f, stepZ = RoomZ / 2f;
-            for (int i = 0; i < 3; i++)
+            int need = catalog.Categories.Length;
+            if (need > RacksTop + RacksBottom + RacksLeft + RacksRight) Debug.LogError($"SortThem: {need} categories, only {RacksTop + RacksBottom + RacksLeft + RacksRight} rack slots");
+            float sideUsable = RoomZ - 2f * RackD - 0.4f;
+            for (int i = 0; i < RacksTop; i++)
             {
-                float x = -RoomX * 0.5f + stepX * 0.5f + stepX * i;
-                slots.Add((new Vector3(x, 0f, RoomZ * 0.5f - RackD * 0.5f), 180f));
+                float step = RoomX / RacksTop;
+                slots.Add((new Vector3(-RoomX * 0.5f + step * (i + 0.5f), 0f, RoomZ * 0.5f - RackD * 0.5f), 180f));
             }
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < RacksRight; j++)
             {
-                float z = -RoomZ * 0.5f + stepZ * 0.5f + stepZ * j;
-                slots.Add((new Vector3(RoomX * 0.5f - RackD * 0.5f, 0f, z), -90f));
+                float step = sideUsable / RacksRight;
+                slots.Add((new Vector3(RoomX * 0.5f - RackD * 0.5f, 0f, -sideUsable * 0.5f + step * (j + 0.5f)), -90f));
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < RacksBottom; i++)
             {
-                float x = RoomX * 0.5f - stepX * 0.5f - stepX * i;
-                slots.Add((new Vector3(x, 0f, -RoomZ * 0.5f + RackD * 0.5f), 0f));
+                float step = RoomX / RacksBottom;
+                slots.Add((new Vector3(RoomX * 0.5f - step * (i + 0.5f), 0f, -RoomZ * 0.5f + RackD * 0.5f), 0f));
             }
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < RacksLeft; j++)
             {
-                float z = RoomZ * 0.5f - stepZ * 0.5f - stepZ * j;
-                slots.Add((new Vector3(-RoomX * 0.5f + RackD * 0.5f, 0f, z), 90f));
+                float step = sideUsable / RacksLeft;
+                slots.Add((new Vector3(-RoomX * 0.5f + RackD * 0.5f, 0f, sideUsable * 0.5f - step * (j + 0.5f)), 90f));
             }
+            if (slots.Count > need) slots.RemoveRange(need, slots.Count - need);
 
             EditorAssets.EnsureFolder(Paths.Racks);
             var racksRoot = new GameObject("Racks").transform;
@@ -540,6 +572,7 @@ namespace SortThem.Editor
             heldView.Inventory = inventory;
             heldView.Filter = heldFilter;
             heldView.Renderer = heldRenderer;
+            heldView.TexturedOverlayShader = AssetDatabase.LoadAssetAtPath<Shader>(Paths.Root + "/Art/Shaders/TexturedLitOverlay.shader");
             var abilities = player.AddComponent<PlayerAbilities>();
             abilities.Inventory = inventory;
             abilities.LevitateOutlineMaterial = _levOutline;

@@ -7,7 +7,9 @@ namespace SortThem.Editor
     public static class ScatterBaker
     {
         [MenuItem("SortThem/5. Bake Scatter Layout")]
-        public static void Bake()
+        public static void Bake() => Bake(0);
+
+        public static void Bake(int copiesPerModel)
         {
             var gm = Object.FindFirstObjectByType<GameManager>();
             if (gm == null || gm.Catalog == null || gm.Scatterer == null)
@@ -17,7 +19,7 @@ namespace SortThem.Editor
             }
             var catalog = gm.Catalog;
             var shelfData = AssetDatabase.LoadAssetAtPath<ShelfData>(Paths.Data + "/Shelf_Standard.asset");
-            int perModel = shelfData != null ? shelfData.Capacity : 10;
+            int perModel = copiesPerModel > 0 ? copiesPerModel : shelfData != null ? shelfData.Capacity : 10;
 
             var rng = new System.Random(gm.Scatterer.Seed);
             var order = new List<int>();
@@ -31,6 +33,7 @@ namespace SortThem.Editor
 
             var prevMode = Physics.simulationMode;
             Physics.simulationMode = SimulationMode.Script;
+            Physics.SyncTransforms();
             var root = new GameObject("__ScatterBake").transform;
             var spawned = new List<CarInstance>(order.Count);
             int total = order.Count;

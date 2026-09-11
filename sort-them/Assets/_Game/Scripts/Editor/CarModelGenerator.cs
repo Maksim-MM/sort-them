@@ -238,7 +238,7 @@ namespace SortThem.Editor
             var mr = go.AddComponent<MeshRenderer>();
             mr.sharedMaterial = material;
             mr.shadowCastingMode = ShadowCastingMode.Off;
-            mr.receiveShadows = true;
+            mr.receiveShadows = false;
             mr.lightProbeUsage = LightProbeUsage.Off;
             mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
             var bc = go.AddComponent<BoxCollider>();

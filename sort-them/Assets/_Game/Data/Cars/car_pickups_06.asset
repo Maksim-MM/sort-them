@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: car_pickups_06
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
   CarID: car_pickups_06
-  DevName: White short pickup with camper shell
+  DevName: Lyssa
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -24,8 +24,8 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: 6dadcb58cc37442008efa04fd314bea7, type: 2}
-  Prefab: {fileID: 8283114497557833556, guid: cdb4e502dc3b649748073bd3fe45217b, type: 3}
-  DisplayPrice: 24.5
+  Prefab: {fileID: 8802281884613077132, guid: cdb4e502dc3b649748073bd3fe45217b, type: 3}
+  DisplayPrice: 14.5
   references:
     version: 2
     RefIds: []

@@ -110,7 +110,8 @@ namespace SortThem
                         break;
                 }
             }
-            w.Write((byte)(_gm.RegisterPaid ? 1 : 0));
+            w.Write((byte)((_gm.RegisterPaid ? 1 : 0) | (_gm.TutorialDone ? 2 : 0)));
+            w.Write((byte)Mathf.Min(255, _gm.PendingBombs));
             w.Flush();
             return ms.ToArray();
         }
@@ -184,6 +185,7 @@ namespace SortThem
             }
 
             int flags = r.BaseStream.Position < r.BaseStream.Length ? r.ReadByte() : 0;
+            int bombs = r.BaseStream.Position < r.BaseStream.Length ? r.ReadByte() : 0;
 
             var inv = _gm.Inventory;
             if (inv != null)
@@ -209,6 +211,8 @@ namespace SortThem
             _gm.Economy.SetBalance(balance);
             _gm.ApplyCollectiblesMask(collectiblesMask);
             _gm.RegisterPaid = (flags & 1) != 0;
+            _gm.TutorialDone = (flags & 2) != 0;
+            _gm.SpawnBombs(bombs);
             _gm.UnstuckCars();
             return true;
         }

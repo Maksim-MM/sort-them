@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: car_supercars_01
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
   CarID: car_supercars_01
-  DevName: Blue supercar
+  DevName: Atlas
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -24,7 +24,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: 85c5259347bd140c5bde20381985ee65, type: 2}
-  Prefab: {fileID: 6460499281957957153, guid: 755c661f03b0a49c6ae896361a693665, type: 3}
+  Prefab: {fileID: 552763988219814850, guid: 755c661f03b0a49c6ae896361a693665, type: 3}
   DisplayPrice: 40
   references:
     version: 2

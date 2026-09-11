@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: cat_pickups
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CategoryData
   CategoryID: cat_pickups
-  DevName: Pickups & Vans
+  DevName: Pickups
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -23,7 +23,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  CategoryColor: {r: 0.55, g: 0.35, b: 0.2, a: 1}
+  CategoryColor: {r: 0.8, g: 0.5, b: 0.25, a: 1}
   references:
     version: 2
     RefIds: []

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: car_muscle_08
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
   CarID: car_muscle_08
-  DevName: Teal long muscle car with hood scoop
+  DevName: Majoris
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -24,7 +24,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: b8ccc3f294351478ebfd02afb60a9850, type: 2}
-  Prefab: {fileID: 7105992488541800357, guid: d60ff6b7cf46a42a6b196010060b50ef, type: 3}
+  Prefab: {fileID: 6648494809963630416, guid: d60ff6b7cf46a42a6b196010060b50ef, type: 3}
   DisplayPrice: 18.5
   references:
     version: 2

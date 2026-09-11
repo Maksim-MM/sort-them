@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SortThem
@@ -7,6 +8,29 @@ namespace SortThem
         public Inventory Inventory;
         public MeshFilter Filter;
         public MeshRenderer Renderer;
+        public Shader TexturedOverlayShader;
+        readonly Dictionary<Material, Material> _heldMaterials = new Dictionary<Material, Material>();
+        Material _defaultHeld;
+
+        Material[] HeldMaterials(Material[] source)
+        {
+            if (_defaultHeld == null) _defaultHeld = Renderer.sharedMaterial;
+            var result = new Material[Mathf.Max(1, source.Length)];
+            for (int i = 0; i < result.Length; i++)
+            {
+                var m = i < source.Length ? source[i] : null;
+                if (m == null || m.shader == null || m.shader.name != "SortThem/TexturedLit" || TexturedOverlayShader == null) { result[i] = _defaultHeld; continue; }
+                if (!_heldMaterials.TryGetValue(m, out var held))
+                {
+                    held = new Material(TexturedOverlayShader) { name = m.name + "_Held" };
+                    held.SetTexture("_BaseMap", m.GetTexture("_BaseMap"));
+                    held.SetColor("_BaseColor", m.GetColor("_BaseColor"));
+                    _heldMaterials[m] = held;
+                }
+                result[i] = held;
+            }
+            return result;
+        }
         public Vector3 RestPosition = new Vector3(0.36f, -0.26f, 0.8f);
         public Vector3 RestEuler = new Vector3(0f, 145f, 0f);
         public Vector3 EnterOffset = new Vector3(0.35f, -0.4f, 0f);
@@ -86,6 +110,8 @@ namespace SortThem
             }
             var mf = _shown.Prefab.GetComponentInChildren<MeshFilter>();
             Filter.sharedMesh = mf != null ? mf.sharedMesh : null;
+            var srcRend = mf != null ? mf.GetComponent<MeshRenderer>() : null;
+            if (Renderer != null && srcRend != null) Renderer.sharedMaterials = HeldMaterials(srcRend.sharedMaterials);
             _phase = 2;
             _t = 0f;
             _fromWorld = Inventory != null && _pendingInstance != null && _pendingInstance == Inventory.LastAdded && Inventory.AddCount != _seenAddCount;

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e57634ad78d4dbd84f813c5bf182f1, type: 3}
+  m_Name: car_classicsport_01
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
+  CarID: car_classicsport_01
+  DevName: Aura
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: car.car_classicsport_01
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Category: {fileID: 11400000, guid: 8f1bc69f0ce5942fe80e24bbf3ad0946, type: 2}
+  Prefab: {fileID: 3609028926742784343, guid: 33a1a2ee107fc484d8986e64fa59e02b, type: 3}
+  DisplayPrice: 20
+  references:
+    version: 2
+    RefIds: []

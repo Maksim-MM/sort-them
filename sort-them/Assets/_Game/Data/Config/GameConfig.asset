@@ -64,7 +64,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d8b10fe2900704571a046ed0417a60e2, type: 3}
   RackHighlightCooldown: 60
   RackHighlightDuration: 30
-  AutoCollectRadius: 15
+  AutoCollectRadius: 8
   AutoCollectCooldown: 60
   AutoCollectDuration: 10
   AutoCollectInterval: 0.35
@@ -79,10 +79,31 @@ MonoBehaviour:
   LevitateSpeed: 3
   LevitateBobAmplitude: 0.06
   LevitateBobSpeed: 2.5
-  ActivationRadius: 3
+  ActivationRadius: 1.5
+  FreezeSpeed: 0.35
+  BuriedCulling: 0
+  BuriedRayLength: 0.5
+  BuriedSideRays: 1
+  BuriedNeighborRadius: 0.5
+  BuriedPerFrame: 300
+  FreezeDelay: 0.5
   ActivationUpdateInterval: 0.25
+  ShuffleCarsPerStep: 4
+  ShuffleStepsPerFrame: 12
+  ShuffleMaxSteps: 1500
+  BombPrefab: {fileID: 3635098191875021876, guid: aa6357fcfca9a4b6a9e7853ac627be89, type: 3}
+  BombChance: 0.35
+  BombFuseTime: 3
+  BombRadius: 1.2
+  BombForce: 6
+  BombUpwardModifier: 0.5
+  BombHandMultiplier: 0.3
+  BombHandPosition: {x: -0.3, y: -0.22, z: 0.55}
+  BombHandEuler: {x: 0, y: 0, z: 20}
+  BombFuseClip: {fileID: 8300000, guid: 38f1ec9576db04d90aa1295637e41808, type: 3}
+  BombExplodeClip: {fileID: 8300000, guid: 278a3c8aa897e47e0bb38c56827bd144, type: 3}
   UnstuckCenter: {x: 0, y: 2.5, z: 0}
   FloorY: 0
-  LevelHalfExtents: {x: 12, y: 5, z: 9}
+  LevelHalfExtents: {x: 19, y: 5, z: 11}
   CollectiblesTotal: 10
   AutosaveInterval: 60

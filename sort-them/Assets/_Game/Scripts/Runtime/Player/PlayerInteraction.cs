@@ -18,6 +18,7 @@ namespace SortThem
         public Radio HoverRadio { get; private set; }
         public SlotMachine HoverSlotMachine { get; private set; }
         public CashRegister HoverRegister { get; private set; }
+        public Bomb HoverBomb { get; private set; }
         public bool CanPlace { get; private set; }
         public float Range { get; private set; }
 
@@ -75,11 +76,15 @@ namespace SortThem
             Range = gm.Config.BaseInteractRange * gm.Upgrades.Value(UpgradeKind.Range, 1f);
             Scan();
 
-            if (_next.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Next)) Inventory.Next();
-            if (_prev.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Prev)) Inventory.Prev();
-            HandleScroll(gm.Config);
-            if (Pressed(_interact) || TouchInput.Consume(TouchButton.Interact)) Interact();
-            if (Pressed(_place) || TouchInput.Consume(TouchButton.Place)) PlaceOrThrow();
+            bool tutorial = Tutorial.Running;
+            if (!tutorial)
+            {
+                if (_next.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Next)) Inventory.Next();
+                if (_prev.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Prev)) Inventory.Prev();
+                HandleScroll(gm.Config);
+            }
+            if (!Tutorial.BlocksInteract && (Pressed(_interact) || TouchInput.Consume(TouchButton.Interact))) Interact();
+            if (!Tutorial.BlocksPlace && (Pressed(_place) || TouchInput.Consume(TouchButton.Place))) PlaceOrThrow();
         }
 
         static bool Pressed(InputAction action)
@@ -100,6 +105,7 @@ namespace SortThem
             HoverSlotMachine = null;
             if (HoverRegister != null && GameManager.I != null) GameManager.I.ResetRegisterClicks();
             HoverRegister = null;
+            HoverBomb = null;
             CanPlace = false;
             if (Outline != null) Outline.Hide();
             if (Ghost != null) Ghost.Hide();
@@ -116,6 +122,7 @@ namespace SortThem
             HoverRadio = null;
             HoverSlotMachine = null;
             HoverRegister = null;
+            HoverBomb = null;
             CanPlace = false;
 
             var ray = new Ray(Cam.transform.position, Cam.transform.forward);
@@ -155,6 +162,12 @@ namespace SortThem
                 if (car != null)
                 {
                     HoverCar = car;
+                    break;
+                }
+                var bomb = col.GetComponentInParent<Bomb>();
+                if (bomb != null)
+                {
+                    if (!bomb.Held) HoverBomb = bomb;
                     break;
                 }
                 var collectible = col.GetComponentInParent<Collectible>();
@@ -205,6 +218,15 @@ namespace SortThem
                 CanPlace = HoverSlot >= 0;
             }
             if (!CanPlace) HoverShelf = null;
+            if (Tutorial.Running)
+            {
+                HoverTerminal = null;
+                HoverCollectible = null;
+                HoverRadio = null;
+                HoverSlotMachine = null;
+                HoverRegister = null;
+                HoverBomb = null;
+            }
 
             if (Outline != null)
             {
@@ -220,6 +242,8 @@ namespace SortThem
                     Outline.Show(slotMesh.sharedMesh, HoverSlotMachine.transform.position, HoverSlotMachine.transform.rotation, HoverSlotMachine.transform.lossyScale);
                 else if (HoverRegister != null && !GameManager.I.RegisterPaid && HoverRegister.TryGetComponent<MeshFilter>(out var registerMesh))
                     Outline.Show(registerMesh.sharedMesh, HoverRegister.transform.position, HoverRegister.transform.rotation, HoverRegister.transform.lossyScale);
+                else if (HoverBomb != null && GameManager.I.HeldBomb == null && HoverBomb.TryGetComponent<MeshFilter>(out var bombMesh))
+                    Outline.Show(bombMesh.sharedMesh, HoverBomb.transform.position, HoverBomb.transform.rotation, HoverBomb.transform.lossyScale);
                 else
                     Outline.Hide();
             }
@@ -236,6 +260,11 @@ namespace SortThem
 
         void Interact()
         {
+            if (HoverBomb != null && GameManager.I.HeldBomb == null)
+            {
+                GameManager.I.PickBomb(HoverBomb, Cam.transform);
+                return;
+            }
             if (HoverCollectible != null)
             {
                 GameManager.I.Collect(HoverCollectible);
@@ -278,6 +307,11 @@ namespace SortThem
 
         void PlaceOrThrow()
         {
+            if (GameManager.I.HeldBomb != null)
+            {
+                ThrowBomb();
+                return;
+            }
             var car = Inventory.Active;
             if (car == null) return;
             if (CanPlace && HoverShelf != null && HoverShelf.Accepts(car.Data))
@@ -290,6 +324,20 @@ namespace SortThem
                 return;
             }
             Throw(car);
+        }
+
+        void ThrowBomb()
+        {
+            var gm = GameManager.I;
+            Vector3 camPos = Cam.transform.position;
+            Vector3 origin = gm.HeldBomb.transform.position;
+            Vector3 toHand = origin - camPos;
+            if (Physics.Raycast(camPos, toHand.normalized, out var block, toHand.magnitude + 0.05f, Layers.InteractMask, QueryTriggerInteraction.Ignore))
+                origin = camPos + toHand.normalized * Mathf.Max(0.05f, block.distance - 0.05f);
+            float distance = gm.Config.BaseThrowDistance * gm.Upgrades.Value(UpgradeKind.ThrowPower, 1f);
+            float speed = Mathf.Sqrt(Mathf.Abs(Physics.gravity.y) * Mathf.Max(0.1f, distance));
+            Vector3 dir = (Cam.transform.forward + Vector3.up * gm.Config.ThrowArc).normalized;
+            gm.ThrowBomb(origin, Random.rotation, dir * speed);
         }
 
         void Throw(CarInstance car)

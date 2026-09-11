@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: car_supercars_04
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
   CarID: car_supercars_04
-  DevName: Orange supercar with rear wing
+  DevName: Belenus
   DisplayName:
     m_TableReference:
       m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
@@ -24,7 +24,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: 85c5259347bd140c5bde20381985ee65, type: 2}
-  Prefab: {fileID: 7399238175274843267, guid: 4379d2356983045b6ad8af31764e8e41, type: 3}
+  Prefab: {fileID: 1394109040287430784, guid: 4379d2356983045b6ad8af31764e8e41, type: 3}
   DisplayPrice: 20.5
   references:
     version: 2

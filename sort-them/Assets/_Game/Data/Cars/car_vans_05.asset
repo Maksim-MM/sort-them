@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e57634ad78d4dbd84f813c5bf182f1, type: 3}
+  m_Name: car_vans_05
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.CarItemData
+  CarID: car_vans_05
+  DevName: Pan_HotDog
+  DisplayName:
+    m_TableReference:
+      m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: car.car_vans_05
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  Category: {fileID: 11400000, guid: 94a9cc7d4bec34eec9f08923ac94ca4d, type: 2}
+  Prefab: {fileID: 1300282325530216326, guid: 2554176e721194d4ab8d47e18587a69d, type: 3}
+  DisplayPrice: 18
+  references:
+    version: 2
+    RefIds: []

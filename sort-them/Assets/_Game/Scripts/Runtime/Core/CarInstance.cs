@@ -19,6 +19,8 @@ namespace SortThem
         public ShelfController Shelf;
         public int SlotIndex = -1;
         [System.NonSerialized] public bool Levitating;
+        [System.NonSerialized] public float CalmSince = -1f;
+        public bool Hidden { get; private set; }
 
         Rigidbody _body;
         Collider _col;
@@ -63,6 +65,8 @@ namespace SortThem
                 Body.linearVelocity = Vector3.zero;
                 Body.angularVelocity = Vector3.zero;
             }
+            SetVisible(true);
+            PileOcclusion.MarkDirty(this);
         }
 
         public void Launch(Vector3 position, Quaternion rotation, Vector3 velocity)
@@ -77,10 +81,12 @@ namespace SortThem
             Body.WakeUp();
             Body.linearVelocity = velocity;
             Body.angularVelocity = Random.insideUnitSphere * 3f;
+            SetVisible(true);
         }
 
         public void SetHeld()
         {
+            PileOcclusion.MarkDirty(this);
             State = CarState.Held;
             Shelf = null;
             SlotIndex = -1;
@@ -97,6 +103,7 @@ namespace SortThem
             Body.isKinematic = true;
             gameObject.layer = Layers.StaticPlaced;
             transform.SetPositionAndRotation(SlotPose(slotPoint), slotPoint.rotation);
+            SetVisible(true);
         }
 
         public Vector3 SlotPose(Transform slotPoint) => slotPoint.position + slotPoint.up * HalfExtents.y;
@@ -104,6 +111,7 @@ namespace SortThem
         public void Freeze()
         {
             if (!Body.isKinematic) Body.isKinematic = true;
+            PileOcclusion.MarkDirty(this);
         }
 
         public void Unfreeze()
@@ -112,7 +120,16 @@ namespace SortThem
             {
                 Body.isKinematic = false;
                 Body.WakeUp();
+                SetVisible(true);
+                PileOcclusion.MarkDirty(this);
             }
+        }
+
+        public void SetVisible(bool visible)
+        {
+            if (Hidden != !visible) Hidden = !visible;
+            var r = Rend;
+            if (r != null && r.enabled != visible) r.enabled = visible;
         }
     }
 }
