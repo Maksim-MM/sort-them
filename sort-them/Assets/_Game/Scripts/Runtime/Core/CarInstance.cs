@@ -18,6 +18,8 @@ namespace SortThem
         public CarState State = CarState.Loose;
         public ShelfController Shelf;
         public int SlotIndex = -1;
+        public Mesh[] Lods;
+        [System.NonSerialized] public int Lod;
         [System.NonSerialized] public bool Levitating;
         [System.NonSerialized] public float CalmSince = -1f;
         public bool Hidden { get; private set; }

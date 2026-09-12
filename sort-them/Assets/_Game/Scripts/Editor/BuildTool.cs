@@ -8,15 +8,26 @@ namespace SortThem.Editor
     public static class BuildTool
     {
         [MenuItem("SortThem/Build WebGL")]
-        public static void BuildWebGL()
+        public static void BuildWebGL() => Build("Builds/WebGL", BuildOptions.None);
+
+        [MenuItem("SortThem/Build WebGL (Profiler)")]
+        public static void BuildWebGLProfiler()
         {
-            string output = Path.Combine(Directory.GetCurrentDirectory(), "Builds/WebGL");
+            var prev = PlayerSettings.insecureHttpOption;
+            PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
+            try { Build("Builds/WebGL_Profile", BuildOptions.Development | BuildOptions.ConnectWithProfiler); }
+            finally { PlayerSettings.insecureHttpOption = prev; }
+        }
+
+        static void Build(string folder, BuildOptions buildOptions)
+        {
+            string output = Path.Combine(Directory.GetCurrentDirectory(), folder);
             var options = new BuildPlayerOptions
             {
                 scenes = new[] { Paths.MainScene },
                 locationPathName = output,
                 target = BuildTarget.WebGL,
-                options = BuildOptions.None
+                options = buildOptions
             };
             var report = BuildPipeline.BuildPlayer(options);
             var s = report.summary;

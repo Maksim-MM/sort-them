@@ -69,9 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: edf92afb03ddd4114a3312ffbbb7998a, type: 2}
-  - {fileID: 2100000, guid: b40a074fd8e4f491a8654be682773e78, type: 2}
-  - {fileID: 2100000, guid: 77a3a6e5df02c4d26bcd135460cd8acb, type: 2}
+  - {fileID: 2100000, guid: e010a0c5eae26424babb9ca9e7ff8426, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -161,3 +159,7 @@ MonoBehaviour:
   State: 0
   Shelf: {fileID: 0}
   SlotIndex: -1
+  Lods:
+  - {fileID: 4300000, guid: f38ae0cb9182b465cbe6124fc92e555f, type: 2}
+  - {fileID: 4300000, guid: 44dca59003d3a4115bf0a93e7665592b, type: 2}
+  - {fileID: 4300000, guid: 990201d58c30f4254afded933b8121d0, type: 2}

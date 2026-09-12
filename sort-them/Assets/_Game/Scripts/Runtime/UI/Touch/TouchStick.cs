@@ -30,7 +30,7 @@ namespace SortThem
         void Apply(PointerEventData e)
         {
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_rect, e.position, e.pressEventCamera, out var local)) return;
-            var v = Vector2.ClampMagnitude(local / Radius, 1f);
+            var v = Vector2.ClampMagnitude((local - _rect.rect.center) / Radius, 1f);
             TouchInput.Move = v;
             if (Knob != null) Knob.anchoredPosition = v * Radius;
         }

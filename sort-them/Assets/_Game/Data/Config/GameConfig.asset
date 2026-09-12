@@ -88,6 +88,12 @@ MonoBehaviour:
   BuriedPerFrame: 300
   FreezeDelay: 0.5
   ActivationUpdateInterval: 0.25
+  LodDistancesMobile:
+  - 0
+  - 4
+  LodDistancesDesktop:
+  - 10
+  - 20
   ShuffleCarsPerStep: 4
   ShuffleStepsPerFrame: 12
   ShuffleMaxSteps: 1500

@@ -78,6 +78,12 @@ namespace SortThem
 
         [Header("Physics")]
         public float ActivationRadius = 3f;
+        public float MobileActivationRadius = 1f;
+        public float MobileFixedStep = 1f / 30f;
+        public float MobileMaxStep = 2f / 30f;
+        public int MobileSolverIterations = 4;
+        public float DesktopMaxStep = 0.1f;
+        public bool NoDistanceSort = true;
         public float FreezeSpeed = 0.35f;
         public bool BuriedCulling = false;
         public float BuriedRayLength = 0.35f;
@@ -86,6 +92,8 @@ namespace SortThem
         public int BuriedPerFrame = 300;
         public float FreezeDelay = 0.5f;
         public float ActivationUpdateInterval = 0.25f;
+        [UnityEngine.Serialization.FormerlySerializedAs("LodDistances")] public float[] LodDistancesMobile = { 0f, 4f };
+        public float[] LodDistancesDesktop = { 10f, 20f };
         public int ShuffleCarsPerStep = 4;
         public int ShuffleStepsPerFrame = 12;
         public int ShuffleMaxSteps = 1500;

@@ -462,7 +462,8 @@ namespace SortThem
 
             var stickBase = UiFactory.Image(layer, "Stick", Circle, new Color(0.13f, 0.12f, 0.14f, 0.85f), Image.Type.Simple);
             stickBase.raycastTarget = true;
-            UiFactory.Anchored(stickBase.rectTransform, Vector2.zero, new Vector2(60f, 60f), new Vector2(240f, 240f));
+            UiFactory.Anchored(stickBase.rectTransform, Vector2.zero, new Vector2(180f, 180f), new Vector2(240f, 240f));
+            stickBase.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             var knob = UiFactory.Image(stickBase.transform, "Knob", Circle, new Color(1f, 1f, 1f, 0.85f), Image.Type.Simple);
             UiFactory.Anchored(knob.rectTransform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(100f, 100f));
             var stick = stickBase.gameObject.AddComponent<TouchStick>();
