@@ -19,8 +19,11 @@ namespace SortThem.Editor
         const string DefaultMaterial = "Assets/Cars model/ARCADE - Ultimate Vehicles Pack/Materials/Color Variations/ColorVar1_Material.mat";
         static readonly string[] LodTags = { "LOD1", "LOD2" };
         const int AtlasSize = 2048, AtlasCell = 512;
+        const byte BlackFloor = 0x22;
         const float TargetScale = 0.075f, MaxLength = 0.42f, MaxHeight = 0.30f;
 
+        public const string SpecialFolder = PoolRoot + "/16_Special";
+        public const string SpecialId = "special";
         static readonly (string Folder, string Id, string Ru, string En, Color Color)[] Categories =
         {
             ("01_Sedans", "sedans", "Седаны", "Sedans", new Color(0.35f, 0.55f, 0.85f)),
@@ -38,7 +41,14 @@ namespace SortThem.Editor
             ("13_Police", "police", "Полиция", "Police", new Color(0.2f, 0.3f, 0.6f)),
             ("14_Emergency_Service", "service", "Спецслужбы", "Emergency & Service", new Color(0.9f, 0.3f, 0.2f)),
             ("15_Vans_FoodTrucks", "vans", "Фургоны и фудтраки", "Vans & Food Trucks", new Color(0.5f, 0.8f, 0.75f)),
+            ("16_Special", SpecialId, "Особые", "Special", new Color(1f, 0.82f, 0.3f)),
         };
+
+        public static Matrix4x4 FitRoot(Bounds wb)
+        {
+            float s = Mathf.Min(TargetScale, MaxLength / Mathf.Max(wb.size.x, wb.size.z), MaxHeight / wb.size.y);
+            return Matrix4x4.TRS(-wb.center * s, Quaternion.identity, Vector3.one * s);
+        }
 
         class Atlas
         {
@@ -87,7 +97,8 @@ namespace SortThem.Editor
                         .Where(p => Path.GetDirectoryName(p).Replace('\\', '/') == folder)
                         .OrderBy(p => Path.GetFileNameWithoutExtension(p), System.StringComparer.Ordinal)
                         .ToList();
-                    if (prefabPaths.Count != 10) Debug.LogWarning($"SortThem: {Categories[c].Folder} has {prefabPaths.Count} prefabs, expected 10");
+                    int expected = Categories[c].Id == SpecialId ? 5 : 10;
+                    if (prefabPaths.Count != expected) Debug.LogWarning($"SortThem: {Categories[c].Folder} has {prefabPaths.Count} prefabs, expected {expected}");
                     for (int i = 0; i < prefabPaths.Count; i++) sources.Add((c, i, AssetDatabase.LoadAssetAtPath<GameObject>(prefabPaths[i])));
                 }
 
@@ -108,6 +119,7 @@ namespace SortThem.Editor
                     cat.DisplayName = LocUtil.Ref("cat." + catId);
                     EditorUtility.SetDirty(cat);
                     categories.Add(cat);
+                    if (def.Id == SpecialId) catalog.SpecialCategory = cat;
                 }
 
                 foreach (var (c, i, src) in sources)
@@ -123,7 +135,7 @@ namespace SortThem.Editor
                     var lods = new List<Mesh> { mesh };
                     var parts = SourceParts(src);
                     var subCache = new Dictionary<(Mesh, int), int>();
-                    for (int l = 0; l < LodTags.Length; l++)
+                    for (int l = 0; l < LodTags.Length && def.Id != SpecialId; l++)
                     {
                         var lodSrc = LoadLodSource(src, LodTags[l]);
                         if (lodSrc == null) { lodMissing++; break; }
@@ -165,7 +177,7 @@ namespace SortThem.Editor
             DeleteStale(ArcadeMaterials, "*.mat", written);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log($"SortThem: imported {total} ARCADE cars in {categories.Count} categories, 1 atlas material, avg {(total > 0 ? tris / total : 0)} tris, LOD1 avg {(total > 0 ? lodTris1 / total : 0)}, LOD2 avg {(total > 0 ? lodTris2 / total : 0)}, cars without LOD {lodMissing}");
+            Debug.Log($"SortThem: imported {total} cars in {categories.Count} categories, 1 atlas material, avg {(total > 0 ? tris / total : 0)} tris, LOD1 avg {(total > 0 ? lodTris1 / total : 0)}, LOD2 avg {(total > 0 ? lodTris2 / total : 0)}, cars without LOD {lodMissing}");
         }
 
         static Atlas BuildAtlas(IEnumerable<GameObject> sources)
@@ -205,6 +217,10 @@ namespace SortThem.Editor
                 RenderTexture.active = prevActive;
                 RenderTexture.ReleaseTemporary(rt);
             }
+            var px = pixels.GetPixels32();
+            for (int i = 0; i < px.Length; i++)
+                if (px[i].r < BlackFloor && px[i].g < BlackFloor && px[i].b < BlackFloor) px[i] = new Color32(BlackFloor, BlackFloor, BlackFloor, 255);
+            pixels.SetPixels32(px);
             pixels.Apply();
             File.WriteAllBytes(AtlasTexturePath, pixels.EncodeToPNG());
             Object.DestroyImmediate(pixels);
@@ -338,8 +354,7 @@ namespace SortThem.Editor
                 {
                     bool has = false; var wb = new Bounds();
                     foreach (var f in filters) { var b = f.GetComponent<Renderer>().bounds; if (!has) { wb = b; has = true; } else wb.Encapsulate(b); }
-                    float s = Mathf.Min(TargetScale, MaxLength / Mathf.Max(wb.size.x, wb.size.z), MaxHeight / wb.size.y);
-                    root = Matrix4x4.TRS(-wb.center * s, Quaternion.identity, Vector3.one * s);
+                    root = FitRoot(wb);
                 }
 
                 foreach (var f in filters)

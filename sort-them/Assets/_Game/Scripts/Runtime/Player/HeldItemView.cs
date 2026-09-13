@@ -31,10 +31,11 @@ namespace SortThem
             }
             return result;
         }
-        public Vector3 RestPosition = new Vector3(0.36f, -0.26f, 0.8f);
-        public Vector3 RestEuler = new Vector3(0f, 145f, 0f);
-        public Vector3 EnterOffset = new Vector3(0.35f, -0.4f, 0f);
-        public float Scale = 0.85f;
+        public Vector3 RestPosition = new Vector3(0.22f, -0.4f, 0.7f);
+        public Vector3 RestEuler = new Vector3(0f, -115f, 0f);
+        public Vector3 EnterOffset = new Vector3(0.5f, -0.6f, 0f);
+        public float Scale = 2f;
+        public float FitHeight = 0.24f;
         public float ExitDuration = 0.08f;
         public float EnterDuration = 0.28f;
 
@@ -48,6 +49,8 @@ namespace SortThem
         Vector3 _startPos;
         Quaternion _startRot;
         float _startScale;
+        float _fit = 1f;
+        Vector3 _frontLocal;
         int _seenAddCount;
         int _seenRemoveCount;
 
@@ -110,6 +113,14 @@ namespace SortThem
             }
             var mf = _shown.Prefab.GetComponentInChildren<MeshFilter>();
             Filter.sharedMesh = mf != null ? mf.sharedMesh : null;
+            _fit = 1f;
+            _frontLocal = Vector3.zero;
+            if (Filter.sharedMesh != null)
+            {
+                var b = Filter.sharedMesh.bounds;
+                _fit = Mathf.Min(1f, FitHeight / Mathf.Max(0.01f, b.size.y));
+                _frontLocal = new Vector3(b.center.x, b.min.y, b.max.z);
+            }
             var srcRend = mf != null ? mf.GetComponent<MeshRenderer>() : null;
             if (Renderer != null && srcRend != null) Renderer.sharedMaterials = HeldMaterials(srcRend.sharedMaterials);
             _phase = 2;
@@ -159,20 +170,24 @@ namespace SortThem
             return _shown != null && _phase != 1 && t.localScale.x > 0.01f;
         }
 
+        Vector3 RestLocal(float s) => RestPosition - Quaternion.Euler(RestEuler) * (_frontLocal * s);
+
         void ApplyFrom(float k)
         {
             var t = Filter.transform;
-            t.localPosition = Vector3.Lerp(_startPos, RestPosition, k);
+            float s = Scale * _fit;
+            t.localPosition = Vector3.Lerp(_startPos, RestLocal(s), k);
             t.localRotation = Quaternion.Slerp(_startRot, Quaternion.Euler(RestEuler), k);
-            t.localScale = Vector3.one * Mathf.Lerp(_startScale, Scale, k);
+            t.localScale = Vector3.one * Mathf.Lerp(_startScale, s, k);
         }
 
         void Apply(float offset, float scale)
         {
             var t = Filter.transform;
-            t.localPosition = RestPosition + EnterOffset * offset;
-            t.localRotation = Quaternion.Euler(RestEuler + new Vector3(0f, 40f * offset, 0f));
-            t.localScale = Vector3.one * (Scale * scale);
+            float s = Scale * _fit * scale;
+            t.localPosition = RestLocal(s) + EnterOffset * offset;
+            t.localRotation = Quaternion.Euler(RestEuler + new Vector3(0f, -40f * offset, 0f));
+            t.localScale = Vector3.one * s;
         }
     }
 }

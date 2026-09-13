@@ -1382,6 +1382,134 @@ MonoBehaviour:
     m_Localized: Thoth
     m_Metadata:
       m_Items: []
+  - m_Id: 2515147544322048
+    m_Localized: Special
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659379433472
+    m_Localized: Eleanor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659987607552
+    m_Localized: Sunshine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515661333979136
+    m_Localized: Watch Out
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515662369972224
+    m_Localized: Bluesmobile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515663070420992
+    m_Localized: Mater
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952064
+    m_Localized: Headlights
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952065
+    m_Localized: Front bumper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952066
+    m_Localized: Rear bumper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952067
+    m_Localized: Exhaust
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952068
+    m_Localized: Roof lights
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952069
+    m_Localized: Engine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952070
+    m_Localized: Decals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952071
+    m_Localized: Spoiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952072
+    m_Localized: Turbine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146368
+    m_Localized: Wheels
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146369
+    m_Localized: Police light
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932096
+    m_Localized: Parts crates
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932097
+    m_Localized: 'Upgrades: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932098
+    m_Localized: 'Next part: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932099
+    m_Localized: All parts installed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932100
+    m_Localized: Hold to upgrade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932101
+    m_Localized: Maxed out
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932102
+    m_Localized: Reset all progress and start over?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932103
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932104
+    m_Localized: Yes, reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126400
+    m_Localized: 'Parts crate: +1'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126401
+    m_Localized: No parts crates
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126402
+    m_Localized: This car is fully upgraded
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126403
+    m_Localized: All shelves closed. The warehouse is in perfect order!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774336
+    m_Localized: Parts crate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774337
+    m_Localized: +1 crate to upgrade special cars
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

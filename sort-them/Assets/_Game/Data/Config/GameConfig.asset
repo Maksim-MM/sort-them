@@ -37,6 +37,7 @@ MonoBehaviour:
   PopDuration: 0.25
   ShelfCompleteClip: {fileID: 8300000, guid: 2fe200c9515c848fdb1da16a237bab00, type: 3}
   CollectibleClip: {fileID: 8300000, guid: b225bdc37bc724de184c6229d5f7a70b, type: 3}
+  SpecialUpgradeClip: {fileID: 0}
   PlaceClip: {fileID: 8300000, guid: bafffeabbfa5a4132a980ff3a1802354, type: 3}
   BounceClip: {fileID: 0}
   ThrowClip: {fileID: 0}
@@ -80,6 +81,12 @@ MonoBehaviour:
   LevitateBobAmplitude: 0.06
   LevitateBobSpeed: 2.5
   ActivationRadius: 1.5
+  MobileActivationRadius: 1
+  MobileFixedStep: 0.033333335
+  MobileMaxStep: 0.06666667
+  MobileSolverIterations: 4
+  DesktopMaxStep: 0.1
+  NoDistanceSort: 1
   FreezeSpeed: 0.35
   BuriedCulling: 0
   BuriedRayLength: 0.5
@@ -111,5 +118,10 @@ MonoBehaviour:
   UnstuckCenter: {x: 0, y: 2.5, z: 0}
   FloorY: 0
   LevelHalfExtents: {x: 19, y: 5, z: 11}
-  CollectiblesTotal: 10
+  CollectiblesTotal: 40
+  SpecialHoldTime: 1.2
+  SpecialShake: 0.03
+  SpecialRevealDuration: 0.45
+  SpecialGlowDuration: 1.5
+  UpgradeBackdrop: {fileID: 21300000, guid: f384c9693a36c43e794f13e4479c49b2, type: 3}
   AutosaveInterval: 60

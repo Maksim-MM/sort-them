@@ -19,6 +19,7 @@ namespace SortThem
         public SlotMachine HoverSlotMachine { get; private set; }
         public CashRegister HoverRegister { get; private set; }
         public Bomb HoverBomb { get; private set; }
+        public CarInstance HoverSpecial { get; private set; }
         public bool CanPlace { get; private set; }
         public float Range { get; private set; }
 
@@ -106,6 +107,7 @@ namespace SortThem
             if (HoverRegister != null && GameManager.I != null) GameManager.I.ResetRegisterClicks();
             HoverRegister = null;
             HoverBomb = null;
+            HoverSpecial = null;
             CanPlace = false;
             if (Outline != null) Outline.Hide();
             if (Ghost != null) Ghost.Hide();
@@ -123,6 +125,7 @@ namespace SortThem
             HoverSlotMachine = null;
             HoverRegister = null;
             HoverBomb = null;
+            HoverSpecial = null;
             CanPlace = false;
 
             var ray = new Ray(Cam.transform.position, Cam.transform.forward);
@@ -209,6 +212,11 @@ namespace SortThem
                 HoverCar = HoverCar.Shelf.LastPlaced();
             else if (HoverCar == null && zoneShelf != null)
                 HoverCar = zoneShelf.LastPlaced();
+            if (HoverCar != null && HoverCar.State == CarState.Placed && HoverCar.Shelf != null && HoverCar.Shelf.Locked && HoverCar.Shelf.IsClosed)
+            {
+                HoverSpecial = HoverCar;
+                HoverCar = null;
+            }
 
             var active = Inventory.Active;
             if (zoneShelf != null && active != null && zoneShelf.Accepts(active.Data))
@@ -226,12 +234,15 @@ namespace SortThem
                 HoverSlotMachine = null;
                 HoverRegister = null;
                 HoverBomb = null;
+                HoverSpecial = null;
             }
 
             if (Outline != null)
             {
                 if (HoverCar != null && HoverCar.Filter != null)
                     Outline.Show(HoverCar.Filter.sharedMesh, HoverCar.transform.position, HoverCar.transform.rotation, HoverCar.transform.lossyScale);
+                else if (HoverSpecial != null && HoverSpecial.Filter != null)
+                    Outline.Show(HoverSpecial.Filter.sharedMesh, HoverSpecial.transform.position, HoverSpecial.transform.rotation, HoverSpecial.transform.lossyScale);
                 else if (HoverCollectible != null && HoverCollectible.TryGetComponent<MeshFilter>(out var collMesh))
                     Outline.Show(collMesh.sharedMesh, HoverCollectible.transform.position, HoverCollectible.transform.rotation, HoverCollectible.transform.lossyScale);
                 else if (HoverTerminal != null && HoverTerminal.TryGetComponent<MeshFilter>(out var termMesh))
@@ -268,6 +279,11 @@ namespace SortThem
             if (HoverCollectible != null)
             {
                 GameManager.I.Collect(HoverCollectible);
+                return;
+            }
+            if (HoverSpecial != null)
+            {
+                if (UiRoot.I != null) UiRoot.I.OpenUpgrade(HoverSpecial);
                 return;
             }
             if (HoverTerminal != null)

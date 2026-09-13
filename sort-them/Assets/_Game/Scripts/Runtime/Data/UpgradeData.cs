@@ -17,7 +17,8 @@ namespace SortThem
         InventoryOverCap,
         AbilityCooldown,
         AutoCollectRadius,
-        AbilityDuration
+        AbilityDuration,
+        PartsCrate
     }
 
     public enum UpgradeSource

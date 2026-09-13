@@ -24,7 +24,10 @@ namespace SortThem.Editor
             var rng = new System.Random(gm.Scatterer.Seed);
             var order = new List<int>();
             for (int i = 0; i < catalog.Cars.Length; i++)
-                for (int k = 0; k < perModel; k++) order.Add(i);
+            {
+                int copies = catalog.IsSpecial(catalog.Cars[i]) ? 1 : perModel;
+                for (int k = 0; k < copies; k++) order.Add(i);
+            }
             for (int i = order.Count - 1; i > 0; i--)
             {
                 int j = rng.Next(i + 1);
@@ -99,10 +102,10 @@ namespace SortThem.Editor
             var layout = AssetDatabase.LoadAssetAtPath<LevelLayoutData>(Paths.Layout);
             if (gm == null || gm.Scatterer == null || layout == null || layout.CollectiblePrefab == null)
             {
-                Debug.LogError("SortThem: need Main scene with GameManager, baked layout and canister prefab (menu 3e)");
+                Debug.LogError("SortThem: need Main scene with GameManager, baked layout and crate prefab (menu 3e)");
                 return;
             }
-            int count = Mathf.Clamp(gm.Config.CollectiblesTotal, 1, 32);
+            int count = Mathf.Clamp(gm.Config.CollectiblesTotal, 1, 64);
             var rng = new System.Random(gm.Scatterer.Seed + 777);
             var prevMode = Physics.simulationMode;
             Physics.simulationMode = SimulationMode.Script;

@@ -66,8 +66,6 @@ namespace SortThem
             _cam = Camera.main;
             _heldView = FindFirstObjectByType<HeldItemView>();
             _interaction = GetComponent<PlayerInteraction>();
-            if (LevitateOutlineMaterial != null && LevitateOutlineMaterial.HasProperty("_XRayZTest"))
-                LevitateOutlineMaterial.SetFloat("_XRayZTest", (float)(SystemInfo.usesReversedZBuffer ? UnityEngine.Rendering.CompareFunction.Less : UnityEngine.Rendering.CompareFunction.Greater));
         }
 
         void Update()

@@ -10,6 +10,7 @@ namespace SortThem
         public float SlotPitch = 0.45f;
         public float RowPitch = 0.5f;
         public float SlotYaw = 0f;
+        public bool Locked;
 
         public int Capacity => Rows * Columns;
     }

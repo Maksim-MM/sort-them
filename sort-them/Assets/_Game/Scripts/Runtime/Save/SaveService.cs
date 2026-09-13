@@ -7,7 +7,7 @@ namespace SortThem
     public class SaveService
     {
         const int Magic = 0x53545331;
-        const int Version = 1;
+        const int Version = 2;
         const float PosScale = 200f;
 
         readonly GameManager _gm;
@@ -73,6 +73,10 @@ namespace SortThem
             w.Write(Version);
             w.Write(_gm.Economy.Balance);
             w.Write(_gm.CollectiblesMask);
+            w.Write(_gm.Crates);
+            var specials = _gm.Catalog != null ? _gm.Catalog.Specials : null;
+            w.Write((byte)(specials != null ? specials.Length : 0));
+            if (specials != null) foreach (var sp in specials) w.Write((byte)Mathf.Clamp(_gm.SpecialLevel(sp != null ? sp.Car : null), 0, 255));
 
             var upgrades = _gm.Upgrades.All;
             w.Write((byte)upgrades.Count);
@@ -124,7 +128,15 @@ namespace SortThem
             int version = r.ReadInt32();
             if (version != Version) return false;
             float balance = r.ReadSingle();
-            int collectiblesMask = r.ReadInt32();
+            long collectiblesMask = r.ReadInt64();
+            int crates = r.ReadInt32();
+            int specialCount = r.ReadByte();
+            var specials = _gm.Catalog != null ? _gm.Catalog.Specials : null;
+            for (int i = 0; i < specialCount; i++)
+            {
+                int level = r.ReadByte();
+                if (specials != null && i < specials.Length && specials[i] != null) _gm.SetSpecialLevel(specials[i].Car, level);
+            }
 
             int upgradeCount = r.ReadByte();
             for (int i = 0; i < upgradeCount; i++)
@@ -210,6 +222,7 @@ namespace SortThem
 
             _gm.Economy.SetBalance(balance);
             _gm.ApplyCollectiblesMask(collectiblesMask);
+            _gm.SetCrates(crates);
             _gm.RegisterPaid = (flags & 1) != 0;
             _gm.TutorialDone = (flags & 2) != 0;
             _gm.SpawnBombs(bombs);

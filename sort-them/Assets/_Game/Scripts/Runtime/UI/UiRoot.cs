@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace SortThem
 {
-    public class UiRoot : MonoBehaviour
+    public partial class UiRoot : MonoBehaviour
     {
         public static UiRoot I { get; private set; }
 
@@ -105,7 +105,7 @@ namespace SortThem
         public bool SettingsOpen => _settings != null && _settings.gameObject.activeSelf;
         public bool ControlsOpen => _controls != null && _controls.gameObject.activeSelf;
         public bool Fading => _fade != null && _fade.gameObject.activeSelf;
-        public bool AnyOpen => TerminalOpen || SlotOpen || PauseOpen || SettingsOpen || ControlsOpen || Fading;
+        public bool AnyOpen => TerminalOpen || SlotOpen || PauseOpen || SettingsOpen || ControlsOpen || UpgradeOpen || ConfirmOpen || Fading;
 
         void Awake()
         {
@@ -140,6 +140,8 @@ namespace SortThem
             BuildPause();
             BuildSettings();
             BuildControls();
+            BuildUpgrade();
+            BuildConfirm();
             BuildFade();
             gm.StatsChanged += RefreshStats;
             gm.Economy.Changed += _ => { RefreshStats(); RefreshTerminal(); RefreshSlot(); };
@@ -179,6 +181,7 @@ namespace SortThem
             RefreshSlot();
             RefreshVibration();
             RefreshLanguage();
+            RefreshUpgrade();
             _hintGroup = null;
             RefreshHint();
             if (ControlsOpen) RefreshControls();
@@ -225,6 +228,8 @@ namespace SortThem
             {
                 if (TerminalOpen) CloseTerminal();
                 else if (SlotOpen) CloseSlot();
+                else if (UpgradeOpen) CloseUpgrade();
+                else if (ConfirmOpen) CloseConfirm();
                 else if (SettingsOpen) { CloseSettings(false); }
                 else if (ControlsOpen) CloseControls(false);
                 else if (PauseOpen) ClosePause();
@@ -236,6 +241,7 @@ namespace SortThem
             UpdateTutorial();
             UpdateFps();
             UpdateSpin();
+            UpdateUpgrade();
             if (ControlsOpen && ActiveGroup() != _controlsGroup) RefreshControls();
             RefreshTouch();
             if (_rotateOverlay != null) { bool portrait = Screen.height > Screen.width; if (_rotateOverlay.activeSelf != portrait) _rotateOverlay.SetActive(portrait); }
@@ -703,6 +709,7 @@ namespace SortThem
             Sfx.PlayUi(gm.Config.SlotWinClip);
             Rumble.ShelfComplete();
             if (reward != null) Messages.Show(string.Format(Loc.Get("msg.slot_reward", "Выпало: {0}"), RewardText(reward)));
+            if (reward != null && reward.Kind == UpgradeKind.PartsCrate) gm.AddCrates(1);
             if (_spinBomb) gm.SpawnBomb();
             RefreshSlot();
         }
@@ -768,7 +775,7 @@ namespace SortThem
             _pauseButtons.Add(controlsButton);
             _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Unstuck", "", () => GameManager.I.UnstuckCars()), "ui.unstuck", "Вернуть застрявшие машинки"));
             _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Shuffle", "", StartShuffle), "ui.shuffle", "Перемешать кучу"));
-            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "NewGame", "", ResetSave), "ui.newgame", "Сбросить прогресс"));
+            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "NewGame", "", OpenConfirm), "ui.newgame", "Сбросить прогресс"));
             int visible = 0;
             foreach (var b in _pauseButtons) { UiFactory.Size(b, 0f, 56f); if (b.gameObject.activeSelf) visible++; }
             UiFactory.Anchored(_pause, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(420f, 40f + 50f + visible * 68f));
@@ -1071,13 +1078,13 @@ namespace SortThem
         {
             if (!AnyOpen) return;
             var gm = GameManager.I;
-            var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SlotOpen ? _slotButtons : SettingsOpen ? _settingsItems : ControlsOpen ? _controlsItems : _pauseButtons);
+            var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SlotOpen ? _slotButtons : UpgradeOpen ? _upgradeButtons : ConfirmOpen ? _confirmButtons : SettingsOpen ? _settingsItems : ControlsOpen ? _controlsItems : _pauseButtons);
             if (_focused != null && !Selectable_(_focused)) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
             if (_focused == null) _focused = FirstCandidate(list);
 
             if (_cancelAction != null && _cancelAction.WasPressedThisFrame())
             {
-                if (TerminalOpen) CloseTerminal(); else if (SlotOpen) CloseSlot(); else if (SettingsOpen) CloseSettings(true); else if (ControlsOpen) CloseControls(true); else ClosePause();
+                if (TerminalOpen) CloseTerminal(); else if (SlotOpen) CloseSlot(); else if (UpgradeOpen) CloseUpgrade(); else if (ConfirmOpen) CloseConfirm(); else if (SettingsOpen) CloseSettings(true); else if (ControlsOpen) CloseControls(true); else ClosePause();
                 return;
             }
             if (_navigateAction != null)
@@ -1134,7 +1141,8 @@ namespace SortThem
             if (gm == null) return;
             _carsText.text = Loc.Get("ui.cars", "Машинки") + ": " + gm.PlacedValid + "/" + gm.TotalCars;
             _shelvesText.text = Loc.Get("ui.shelves", "Полки") + ": " + gm.ClosedShelves + "/" + gm.TotalShelves;
-            _collectiblesText.text = Loc.Get("ui.collectibles", "Канистры") + ": " + gm.CollectiblesFound + "/" + gm.Config.CollectiblesTotal;
+            _collectiblesText.text = Loc.Get("ui.crates", "Ящики запчастей") + ": " + gm.Crates;
+            RefreshUpgrade();
             float b = gm.Economy.Balance;
             _balanceText.text = FormatMoney(b);
             _balanceText.color = b < 0f ? new Color(1f, 0.35f, 0.35f) : Color.white;

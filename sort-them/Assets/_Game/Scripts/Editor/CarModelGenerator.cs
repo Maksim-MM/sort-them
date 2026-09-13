@@ -159,27 +159,39 @@ namespace SortThem.Editor
         static readonly Color Olive = new Color(0.36f, 0.45f, 0.2f);
         static readonly Color Yellow = new Color(0.95f, 0.8f, 0.2f);
 
-        [MenuItem("SortThem/3e. Generate Canister")]
-        public static void GenerateCanister()
+        static readonly Color Wood = new Color(0.62f, 0.44f, 0.22f);
+        static readonly Color WoodDark = new Color(0.4f, 0.27f, 0.13f);
+        static readonly Color Steel = new Color(0.55f, 0.58f, 0.62f);
+
+        [MenuItem("SortThem/3e. Generate Parts Crate")]
+        public static void GenerateCrate()
         {
             LoadPrimitives();
             EditorAssets.EnsureFolder(Paths.Prefabs);
             EditorAssets.EnsureFolder(Paths.Meshes);
             var material = EditorAssets.LoadOrCreateMaterial("Cars", "SortThem/VertexColorLit", Color.white);
             var p = new List<Part>();
-            Box(p, 0f, 0.13f, 0f, 0.20f, 0.26f, 0.11f, Olive);
-            Box(p, 0f, 0.13f, 0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, 45f);
-            Box(p, 0f, 0.13f, 0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, -45f);
-            Box(p, 0f, 0.13f, -0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, 45f);
-            Box(p, 0f, 0.13f, -0.056f, 0.09f, 0.15f, 0.006f, Olive, 0f, 0f, -45f);
-            Box(p, 0f, 0.29f, 0f, 0.16f, 0.03f, 0.03f, Olive);
-            Box(p, -0.065f, 0.275f, 0f, 0.03f, 0.03f, 0.03f, Olive);
-            Box(p, 0.065f, 0.275f, 0f, 0.03f, 0.03f, 0.03f, Olive);
-            Cyl(p, 0.07f, 0.285f, 0f, 0.02f, 0.05f, 'Y', Yellow);
-            var mesh = Combine(p, "Canister", out var bounds);
-            mesh = SaveMesh(mesh, Paths.Meshes + "/Canister.asset");
+            const float w = 0.24f, h = 0.18f, d = 0.24f, t = 0.012f;
+            Box(p, 0f, h * 0.5f, 0f, w, h, d, Wood);
+            foreach (float sx in new[] { -1f, 1f })
+                foreach (float sz in new[] { -1f, 1f })
+                    Box(p, sx * (w * 0.5f - t * 0.5f), h * 0.5f, sz * (d * 0.5f - t * 0.5f), t * 1.6f, h + 0.004f, t * 1.6f, WoodDark);
+            foreach (float sy in new[] { 0.02f, h - 0.02f })
+            {
+                Box(p, 0f, sy, d * 0.5f + 0.002f, w + 0.004f, 0.02f, 0.006f, WoodDark);
+                Box(p, 0f, sy, -d * 0.5f - 0.002f, w + 0.004f, 0.02f, 0.006f, WoodDark);
+                Box(p, w * 0.5f + 0.002f, sy, 0f, 0.006f, 0.02f, d + 0.004f, WoodDark);
+                Box(p, -w * 0.5f - 0.002f, sy, 0f, 0.006f, 0.02f, d + 0.004f, WoodDark);
+            }
+            Box(p, 0f, h * 0.5f, d * 0.5f + 0.004f, 0.11f, 0.06f, 0.004f, Yellow);
+            Box(p, 0f, h * 0.5f, -d * 0.5f - 0.004f, 0.11f, 0.06f, 0.004f, Yellow);
+            Cyl(p, -0.03f, h + 0.012f, 0.03f, 0.025f, 0.024f, 'Y', Steel);
+            Cyl(p, 0.04f, h + 0.008f, -0.03f, 0.014f, 0.016f, 'Y', Steel);
+            Box(p, 0.045f, h + 0.008f, 0.02f, 0.09f, 0.012f, 0.02f, Steel, 0f, 30f, 0f);
+            var mesh = Combine(p, "PartsCrate", out var bounds);
+            mesh = SaveMesh(mesh, Paths.Meshes + "/PartsCrate.asset");
 
-            var go = new GameObject("Canister");
+            var go = new GameObject("PartsCrate");
             go.layer = LayerMask.NameToLayer("LooseItems");
             var mf = go.AddComponent<MeshFilter>();
             mf.sharedMesh = mesh;
@@ -189,21 +201,24 @@ namespace SortThem.Editor
             mr.lightProbeUsage = LightProbeUsage.Off;
             mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
             var bc = go.AddComponent<BoxCollider>();
+            bc.center = bounds.center;
             bc.size = bounds.size;
             var rb = go.AddComponent<Rigidbody>();
             rb.mass = 0.5f;
             rb.angularDamping = 0.5f;
             rb.isKinematic = true;
             go.AddComponent<Collectible>();
-            string prefabPath = Paths.Prefabs + "/Canister.prefab";
+            string prefabPath = Paths.Prefabs + "/PartsCrate.prefab";
             var prefab = PrefabUtility.SaveAsPrefabAsset(go, prefabPath);
             UnityEngine.Object.DestroyImmediate(go);
+            AssetDatabase.DeleteAsset(Paths.Prefabs + "/Canister.prefab");
+            AssetDatabase.DeleteAsset(Paths.Meshes + "/Canister.asset");
 
             var layout = EditorAssets.LoadOrCreate<LevelLayoutData>(Paths.Layout);
             layout.CollectiblePrefab = prefab;
             EditorUtility.SetDirty(layout);
             AssetDatabase.SaveAssets();
-            Debug.Log("SortThem: canister generated, bounds=" + bounds.size);
+            Debug.Log("SortThem: parts crate generated, bounds=" + bounds.size);
         }
 
         static void LoadPrimitives()

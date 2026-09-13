@@ -1379,6 +1379,134 @@ MonoBehaviour:
     m_Key: car.car_vans_09
     m_Metadata:
       m_Items: []
+  - m_Id: 2515147544322048
+    m_Key: cat.cat_special
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659379433472
+    m_Key: car.car_special_00
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659987607552
+    m_Key: car.car_special_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515661333979136
+    m_Key: car.car_special_02
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515662369972224
+    m_Key: car.car_special_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515663070420992
+    m_Key: car.car_special_04
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952064
+    m_Key: special.step.headlight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952065
+    m_Key: special.step.front_bumper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952066
+    m_Key: special.step.rear_bumper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952067
+    m_Key: special.step.pipe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952068
+    m_Key: special.step.foglight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952069
+    m_Key: special.step.engine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952070
+    m_Key: special.step.decals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952071
+    m_Key: special.step.spoiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952072
+    m_Key: special.step.turbine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146368
+    m_Key: special.step.wheels
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146369
+    m_Key: special.step.policelight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932096
+    m_Key: ui.crates
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932097
+    m_Key: ui.special_level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932098
+    m_Key: ui.special_next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932099
+    m_Key: ui.special_done
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932100
+    m_Key: ui.special_hold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932101
+    m_Key: ui.special_max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932102
+    m_Key: ui.reset_confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932103
+    m_Key: ui.cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932104
+    m_Key: ui.yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126400
+    m_Key: msg.crate_found
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126401
+    m_Key: msg.no_crates
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126402
+    m_Key: msg.special_maxed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126403
+    m_Key: msg.game_complete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774336
+    m_Key: slot_crate.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774337
+    m_Key: slot_crate.desc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

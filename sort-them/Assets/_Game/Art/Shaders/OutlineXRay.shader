@@ -3,9 +3,7 @@ Shader "SortThem/OutlineXRay"
     Properties
     {
         _Color("Color", Color) = (0.72,0.3,1,1)
-        _Width("Width", Float) = 0.02
-        _XRayColor("XRay Color", Color) = (0.72,0.3,1,0.55)
-        [Enum(UnityEngine.Rendering.CompareFunction)] _XRayZTest("XRay ZTest", Float) = 8
+        _Width("Width (px at 900p)", Float) = 7
     }
     SubShader
     {
@@ -13,49 +11,17 @@ Shader "SortThem/OutlineXRay"
 
         Pass
         {
-            Name "Outline"
-            Tags { "LightMode"="UniversalForward" }
-            Cull Front
-            ZWrite On
-            ZTest LEqual
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            CBUFFER_START(UnityPerMaterial)
-            float4 _Color;
-            float _Width;
-            float4 _XRayColor;
-            CBUFFER_END
-            struct A { float4 positionOS : POSITION; float3 normalOS : NORMAL; };
-            struct V { float4 positionCS : SV_POSITION; };
-            V vert(A IN)
-            {
-                V o;
-                float3 pos = IN.positionOS.xyz + normalize(IN.normalOS) * _Width;
-                o.positionCS = TransformObjectToHClip(pos);
-                return o;
-            }
-            half4 frag(V IN) : SV_Target { return _Color; }
-            ENDHLSL
-        }
-
-        Pass
-        {
-            Name "XRay"
-            Cull Back
+            Name "Mask"
+            Tags { "LightMode"="SRPDefaultUnlit" }
+            Cull Off
             ZWrite Off
-            ZTest [_XRayZTest]
-            Blend SrcAlpha OneMinusSrcAlpha
+            ZTest Always
+            ColorMask 0
+            Stencil { Ref 1 Comp Always Pass Replace }
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            CBUFFER_START(UnityPerMaterial)
-            float4 _Color;
-            float _Width;
-            float4 _XRayColor;
-            CBUFFER_END
             struct A { float4 positionOS : POSITION; };
             struct V { float4 positionCS : SV_POSITION; };
             V vert(A IN)
@@ -64,7 +30,44 @@ Shader "SortThem/OutlineXRay"
                 o.positionCS = TransformObjectToHClip(IN.positionOS.xyz);
                 return o;
             }
-            half4 frag(V IN) : SV_Target { return _XRayColor; }
+            half4 frag(V IN) : SV_Target { return 0; }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Outline"
+            Tags { "LightMode"="UniversalForward" }
+            Cull Front
+            ZWrite Off
+            ZTest Always
+            Stencil { Ref 1 Comp NotEqual Pass Keep }
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            CBUFFER_START(UnityPerMaterial)
+            float4 _Color;
+            float _Width;
+            CBUFFER_END
+            struct A { float4 positionOS : POSITION; float3 normalOS : NORMAL; };
+            struct V { float4 positionCS : SV_POSITION; };
+            V vert(A IN)
+            {
+                V o;
+                float4 posCS = TransformObjectToHClip(IN.positionOS.xyz);
+                float3 nWS = TransformObjectToWorldNormal(IN.normalOS);
+                float3 nCS = TransformWorldToHClipDir(nWS);
+                float2 n = nCS.xy;
+                float len = length(n);
+                n = len > 1e-5 ? n / len : float2(0, 0);
+                float2 px = _Width * posCS.w * 2.0 / 900.0;
+                px.x *= _ScreenParams.y / _ScreenParams.x;
+                posCS.xy += n * px;
+                o.positionCS = posCS;
+                return o;
+            }
+            half4 frag(V IN) : SV_Target { return _Color; }
             ENDHLSL
         }
     }

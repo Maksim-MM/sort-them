@@ -22,12 +22,13 @@ def read_png(path):
                 line[i] = (line[i] + pr) & 255
         out += line; prev = line
     return w, h, bpp, bytes(out)
-w1, h1, b1, d1 = read_png(sys.argv[1]); w2, h2, b2, d2 = read_png(sys.argv[2])
-assert (w1, h1) == (w2, h2), 'size mismatch'
-thr = int(sys.argv[3]) if len(sys.argv) > 3 else 40
-n = w1 * h1; changed = 0; total = 0
-for k in range(n):
-    i = k * b1; j = k * b2
-    d = abs(d1[i]-d2[j]) + abs(d1[i+1]-d2[j+1]) + abs(d1[i+2]-d2[j+2]); total += d
-    if d > thr: changed += 1
-print(f"pixels={n} changed>{thr}: {changed} ({100*changed/n:.2f}%) meanAbsDiff={total/n/3:.2f}")
+if __name__ == '__main__':
+    w1, h1, b1, d1 = read_png(sys.argv[1]); w2, h2, b2, d2 = read_png(sys.argv[2])
+    assert (w1, h1) == (w2, h2), 'size mismatch'
+    thr = int(sys.argv[3]) if len(sys.argv) > 3 else 40
+    n = w1 * h1; changed = 0; total = 0
+    for k in range(n):
+        i = k * b1; j = k * b2
+        d = abs(d1[i]-d2[j]) + abs(d1[i+1]-d2[j+1]) + abs(d1[i+2]-d2[j+2]); total += d
+        if d > thr: changed += 1
+    print(f"pixels={n} changed>{thr}: {changed} ({100*changed/n:.2f}%) meanAbsDiff={total/n/3:.2f}")

@@ -77,6 +77,15 @@ namespace SortThem.Editor
             LocUtil.Set("ui.cars", "Машинки", "Cars");
             LocUtil.Set("ui.shelves", "Полки", "Shelves");
             LocUtil.Set("ui.collectibles", "Канистры", "Canisters");
+            LocUtil.Set("ui.crates", "Ящики запчастей", "Parts crates");
+            LocUtil.Set("ui.special_level", "Улучшений: {0}/{1}", "Upgrades: {0}/{1}");
+            LocUtil.Set("ui.special_next", "Следующая деталь: {0}", "Next part: {0}");
+            LocUtil.Set("ui.special_done", "Все детали установлены", "All parts installed");
+            LocUtil.Set("ui.special_hold", "Удерживай, чтобы улучшить", "Hold to upgrade");
+            LocUtil.Set("ui.special_max", "Максимум", "Maxed out");
+            LocUtil.Set("ui.reset_confirm", "Вы точно хотите сбросить весь прогресс и начать заново?", "Reset all progress and start over?");
+            LocUtil.Set("ui.cancel", "Отмена", "Cancel");
+            LocUtil.Set("ui.yes", "Да, сбросить", "Yes, reset");
             LocUtil.Set("ui.terminal", "Терминал улучшений", "Upgrade Terminal");
             LocUtil.Set("ui.close", "Закрыть", "Close");
             LocUtil.Set("ui.buy", "Купить", "Buy");
@@ -126,6 +135,10 @@ namespace SortThem.Editor
             LocUtil.Set("msg.ability_not_ready", "Способность ещё не готова", "Ability is not ready yet");
             LocUtil.Set("msg.need_item_in_hands", "Возьми что-нибудь в руки", "Take something in your hands");
             LocUtil.Set("msg.collectible_found", "Канистра найдена: {0}/{1}", "Canister found: {0}/{1}");
+            LocUtil.Set("msg.crate_found", "Ящик запчастей: +1", "Parts crate: +1");
+            LocUtil.Set("msg.no_crates", "Нет ящиков запчастей", "No parts crates");
+            LocUtil.Set("msg.special_maxed", "Машина прокачана полностью", "This car is fully upgraded");
+            LocUtil.Set("msg.game_complete", "Все полки закрыты. Склад в полном порядке!", "All shelves closed. The warehouse is in perfect order!");
             LocUtil.Set("msg.radio_track", "Радио: {0}/{1}", "Radio: {0}/{1}");
             LocUtil.Set("ui.slot", "Слот-машина", "Slot Machine");
             LocUtil.Set("ui.spin", "Крутить · ${0}", "Spin · ${0}");

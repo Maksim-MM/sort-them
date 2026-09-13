@@ -27,6 +27,7 @@ namespace SortThem
         public bool IsValid => TargetCar != null && Rack != null && Rack.Category != null && TargetCar.Category == Rack.Category;
         public bool IsComplete => TargetCar != null && Count >= Capacity;
         public bool IsClosed => IsComplete && IsValid;
+        public bool Locked => Data != null && Data.Locked;
 
         void Awake()
         {
@@ -115,6 +116,7 @@ namespace SortThem
 
         public void Remove(CarInstance car)
         {
+            if (Locked && IsClosed) return;
             _celebrated = false;
             EnsureSlots();
             if (car == null || car.Shelf != this || car.SlotIndex < 0 || car.SlotIndex >= _slots.Length) return;

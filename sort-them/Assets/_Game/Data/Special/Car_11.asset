@@ -1,0 +1,219 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 659e68c162d5e45bc90eecef65511ab2, type: 3}
+  m_Name: Car_11
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.SpecialCarData
+  Car: {fileID: 11400000, guid: 15ba3a2b112c24928b8a9d8078b81ae9, type: 2}
+  BaseParts:
+  - Prefab: {fileID: 1934476872896465222, guid: dcb08ccefe5b64341ba3fcc069ac6d65, type: 3}
+    LocalPosition: {x: 0, y: 0, z: 0}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 8986347493212774845, guid: 9e7a81550c770e34c99c499f83730677, type: 3}
+    LocalPosition: {x: -0.356, y: 1.453, z: 0.889}
+    LocalEuler: {x: 279.10657, y: 0, z: 0}
+  - Prefab: {fileID: 3965850925839611970, guid: 366fa5e4e98b80e49b93ed6b465d7ed3, type: 3}
+    LocalPosition: {x: 0, y: 0, z: 0}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 585515146807876136, guid: 5b2d61a82a3ff8b4796778c508b2e9be, type: 3}
+    LocalPosition: {x: 0, y: 0, z: 0}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 6994296074511679654, guid: 3dcd80a713c5ffe4d93dd950a09629f4, type: 3}
+    LocalPosition: {x: 0, y: 0, z: 0}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 1269353973675885654, guid: 941690070e23f2c47a9c7286d6c88a0b, type: 3}
+    LocalPosition: {x: 0, y: 0, z: 0}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 3370981959809734577, guid: bfa23faf95b7026478c9eb304a5c98ea, type: 3}
+    LocalPosition: {x: -0.87, y: 0.544, z: 1.417}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 1847370351898764968, guid: 26f196c69d7ef934d8ef8d9c368b0841, type: 3}
+    LocalPosition: {x: 0.87, y: 0.544, z: 1.417}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 8225440871294864445, guid: 052685fb90e2da347a83715246bd9bc8, type: 3}
+    LocalPosition: {x: -0.87, y: 0.544, z: -1.264}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  - Prefab: {fileID: 8556478032611721828, guid: 4444dd0ddcfde9545938dd800262e93c, type: 3}
+    LocalPosition: {x: 0.87, y: 0.544, z: -1.264}
+    LocalEuler: {x: -0, y: -0, z: -0}
+  Steps:
+  - DevName: headlight
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.headlight
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 677006968157008578, guid: a88646bd8b352794fb9a4281d741c881, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove:
+    - {fileID: 1269353973675885654, guid: 941690070e23f2c47a9c7286d6c88a0b, type: 3}
+  - DevName: front_bumper
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.front_bumper
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 6636310959526382650, guid: f72e9457a08c35245aba48c53178103e, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove:
+    - {fileID: 3965850925839611970, guid: 366fa5e4e98b80e49b93ed6b465d7ed3, type: 3}
+  - DevName: rear_bumper
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.rear_bumper
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 9159967043383959461, guid: ccfb6428038817742a042159502a8d8a, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove:
+    - {fileID: 585515146807876136, guid: 5b2d61a82a3ff8b4796778c508b2e9be, type: 3}
+  - DevName: pipe
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.pipe
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 3536826710088049772, guid: dcd00bfa41783044998c3143ac5c76f3, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove:
+    - {fileID: 6994296074511679654, guid: 3dcd80a713c5ffe4d93dd950a09629f4, type: 3}
+  - DevName: foglight
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.foglight
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 1231253229135625466, guid: 08da83b005fb8ea4ea4666ed5b2917ca, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove: []
+  - DevName: engine
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.engine
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 3278347859342299853, guid: dcaec2ddac2cbf746ba2e5bdbc1efc2d, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove: []
+  - DevName: decals
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.decals
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 3377014693019314717, guid: 6fbd0569cfa269f4ab9491e00df3646c, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove: []
+  - DevName: spoiler
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.spoiler
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 3421939475486241599, guid: 04869ef1a04c3634b8a6aa10fe30ab21, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove: []
+  - DevName: turbine
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.turbine
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 6812070951893728076, guid: 5bd37e2f61ccef7489712f6fbafb83c5, type: 3}
+      LocalPosition: {x: 0, y: 0, z: 0}
+      LocalEuler: {x: -0, y: -0, z: -0}
+    Remove: []
+  - DevName: wheels
+    DisplayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:da8bec3d2347743d38ff54005dee7ab6
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: special.step.wheels
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Add:
+    - Prefab: {fileID: 4473048295014899011, guid: f33a61f536a1d914980057c609fe944d, type: 3}
+      LocalPosition: {x: -0.87, y: 0.544, z: 1.417}
+      LocalEuler: {x: 0, y: 270, z: 0}
+    - Prefab: {fileID: 4473048295014899011, guid: f33a61f536a1d914980057c609fe944d, type: 3}
+      LocalPosition: {x: 0.87, y: 0.544, z: 1.417}
+      LocalEuler: {x: 0, y: 90, z: 0}
+    - Prefab: {fileID: 4473048295014899011, guid: f33a61f536a1d914980057c609fe944d, type: 3}
+      LocalPosition: {x: -0.87, y: 0.544, z: -1.264}
+      LocalEuler: {x: 0, y: 270, z: 0}
+    - Prefab: {fileID: 4473048295014899011, guid: f33a61f536a1d914980057c609fe944d, type: 3}
+      LocalPosition: {x: 0.87, y: 0.544, z: -1.264}
+      LocalEuler: {x: 0, y: 90, z: 0}
+    Remove:
+    - {fileID: 3370981959809734577, guid: bfa23faf95b7026478c9eb304a5c98ea, type: 3}
+    - {fileID: 1847370351898764968, guid: 26f196c69d7ef934d8ef8d9c368b0841, type: 3}
+    - {fileID: 8225440871294864445, guid: 052685fb90e2da347a83715246bd9bc8, type: 3}
+    - {fileID: 8556478032611721828, guid: 4444dd0ddcfde9545938dd800262e93c, type: 3}
+  AssemblyOffset: {x: -0.0023475946, y: -0.08835927, z: -0.009303671}
+  AssemblyScale: 0.075
+  references:
+    version: 2
+    RefIds: []

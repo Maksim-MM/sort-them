@@ -195,6 +195,129 @@ namespace SortThem.Editor
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
         }
 
+        [MenuItem("SortThem/4e. Add Special Rack")]
+        public static void AddSpecialRack()
+        {
+            CreateMaterials();
+            var catalog = AssetDatabase.LoadAssetAtPath<CarCatalog>(Paths.Catalog);
+            if (catalog == null || catalog.SpecialCategory == null)
+            {
+                Debug.LogError("SortThem: import special cars first (menu 3h)");
+                return;
+            }
+            BuildSpecialRack(catalog);
+            var gm = Object.FindFirstObjectByType<GameManager>();
+            if (gm != null)
+            {
+                gm.UpgradeAssets = UpgradeSetup.CreateAll(false);
+                EditorUtility.SetDirty(gm);
+            }
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        static void BuildSpecialRack(CarCatalog catalog)
+        {
+            const float tableRadius = 1.1f, tableHeight = 0.9f, slotRadius = 0.55f;
+            var cat = catalog.SpecialCategory;
+            var shelfData = EditorAssets.LoadOrCreate<ShelfData>(Paths.Data + "/Shelf_Special.asset");
+            shelfData.Rows = 1;
+            shelfData.Columns = 1;
+            shelfData.SlotYaw = 0f;
+            shelfData.Locked = true;
+            EditorUtility.SetDirty(shelfData);
+            EditorAssets.EnsureFolder(Paths.Racks);
+            var rackData = EditorAssets.LoadOrCreate<RackData>(Paths.Racks + "/Rack_" + cat.CategoryID + ".asset");
+            rackData.Category = cat;
+            rackData.ShelfCount = catalog.Specials.Length;
+            rackData.Shelf = shelfData;
+            EditorUtility.SetDirty(rackData);
+
+            var existing = GameObject.Find("Rack_" + cat.CategoryID);
+            if (existing != null) Object.DestroyImmediate(existing);
+            int shelfId = 0;
+            foreach (var s in Object.FindObjectsByType<ShelfController>(FindObjectsSortMode.None)) shelfId = Mathf.Max(shelfId, s.ShelfId + 1);
+
+            var racksRoot = GameObject.Find("Racks");
+            var rackGo = new GameObject("Rack_" + cat.CategoryID);
+            if (racksRoot != null) rackGo.transform.SetParent(racksRoot.transform, false);
+            rackGo.transform.SetPositionAndRotation(new Vector3(0f, 0f, 6.3f), Quaternion.identity);
+            var rack = rackGo.AddComponent<RackController>();
+            rack.Category = cat;
+
+            var table = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            table.name = "Table";
+            table.transform.SetParent(rackGo.transform, false);
+            table.transform.localPosition = new Vector3(0f, tableHeight * 0.5f, 0f);
+            table.transform.localScale = new Vector3(tableRadius * 2f, tableHeight * 0.5f, tableRadius * 2f);
+            table.GetComponent<Renderer>().sharedMaterial = _podium;
+            table.isStatic = true;
+            Object.DestroyImmediate(table.GetComponent<Collider>());
+            var tableCollider = table.AddComponent<MeshCollider>();
+            tableCollider.sharedMesh = table.GetComponent<MeshFilter>().sharedMesh;
+            tableCollider.convex = true;
+            var post = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            post.name = "Post";
+            post.transform.SetParent(rackGo.transform, false);
+            post.transform.localPosition = new Vector3(0f, tableHeight + 0.6f, 0f);
+            post.transform.localScale = new Vector3(0.08f, 0.6f, 0.08f);
+            post.GetComponent<Renderer>().sharedMaterial = _rack;
+            Object.DestroyImmediate(post.GetComponent<Collider>());
+            var sign = Block("Sign", rackGo.transform, new Vector3(0f, tableHeight + 1.45f, 0f), new Vector3(1.4f, 0.5f, 0.04f), EditorAssets.Unlit("Sign_" + cat.CategoryID, cat.CategoryColor));
+            Object.DestroyImmediate(sign.GetComponent<Collider>());
+            sign.isStatic = false;
+            rack.SignPlate = sign.GetComponent<Renderer>();
+            rack.SignText = Text3D(rackGo.transform, "SignText", cat.DevName, 2.2f, new Vector3(0f, tableHeight + 1.45f, -0.03f), Quaternion.identity, new Vector2(1.3f, 0.45f), Color.white);
+            var backText = Text3D(rackGo.transform, "SignTextBack", cat.DevName, 2.2f, new Vector3(0f, tableHeight + 1.45f, 0.03f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.3f, 0.45f), Color.white);
+            backText.text = cat.DevName;
+
+            var rackZoneGo = new GameObject("RackZone");
+            rackZoneGo.transform.SetParent(rackGo.transform, false);
+            rackZoneGo.transform.localPosition = new Vector3(0f, tableHeight * 0.5f + 0.3f, 0f);
+            var rackZone = rackZoneGo.AddComponent<BoxCollider>();
+            rackZone.isTrigger = true;
+            rackZone.size = new Vector3(tableRadius * 2f + 0.4f, tableHeight + 0.8f, tableRadius * 2f + 0.4f);
+            rackZoneGo.AddComponent<RackZone>().Rack = rack;
+            rack.Zone = rackZone;
+            rack.HighlightFrame = BuildFrame(rackGo.transform, new Vector3(0f, tableHeight * 0.5f + 0.25f, 0f), new Vector3(tableRadius * 2f + 0.2f, tableHeight + 0.7f, tableRadius * 2f + 0.2f));
+
+            int count = Mathf.Max(1, catalog.Specials.Length);
+            var shelves = new ShelfController[count];
+            for (int i = 0; i < count; i++)
+            {
+                float yaw = 180f + i * 360f / count;
+                var dir = Quaternion.Euler(0f, yaw, 0f) * Vector3.forward;
+                var shelfGo = new GameObject("Shelf_" + i);
+                shelfGo.transform.SetParent(rackGo.transform, false);
+                shelfGo.transform.localPosition = dir * slotRadius + Vector3.up * tableHeight;
+                shelfGo.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+                var shelf = shelfGo.AddComponent<ShelfController>();
+                shelf.ShelfId = shelfId++;
+                shelf.Data = shelfData;
+                shelf.Rack = rack;
+
+                var zoneGo = new GameObject("Zone");
+                zoneGo.transform.SetParent(shelfGo.transform, false);
+                zoneGo.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+                var zone = zoneGo.AddComponent<BoxCollider>();
+                zone.isTrigger = true;
+                zone.size = new Vector3(0.5f, 0.4f, 0.55f);
+                zoneGo.AddComponent<ShelfZone>().Shelf = shelf;
+                shelf.Zone = zone;
+
+                var pt = new GameObject("Slot_0").transform;
+                pt.SetParent(shelfGo.transform, false);
+                pt.localPosition = Vector3.zero;
+                pt.localRotation = Quaternion.identity;
+                shelf.SlotPoints = new[] { pt };
+
+                shelf.Tag = BuildPriceTag(shelf, shelfGo.transform);
+                shelf.Tag.transform.localPosition = new Vector3(0f, -0.02f, tableRadius - slotRadius + 0.045f);
+                shelf.Tag.Root.transform.localScale = new Vector3(0.8f, 0.128f, 0.01f);
+                shelves[i] = shelf;
+            }
+            rack.Shelves = shelves;
+        }
+
         [MenuItem("SortThem/4d. Add Tutorial")]
         public static void AddTutorial()
         {
@@ -299,14 +422,12 @@ namespace SortThem.Editor
             _highlight = EditorAssets.LoadOrCreateMaterial("HighlightThroughWalls", "SortThem/HighlightThroughWalls", new Color(1f, 0.85f, 0.2f, 0.85f), "_Color");
             _levOutline = EditorAssets.LoadOrCreateMaterial("OutlinePurple", "SortThem/OutlineXRay", new Color(0.72f, 0.3f, 1f), "_Color");
             _levOutline.shader = Shader.Find("SortThem/OutlineXRay");
-            _levOutline.SetFloat("_Width", 0.02f);
-            _levOutline.SetColor("_XRayColor", new Color(0.72f, 0.3f, 1f, 0.55f));
+            _levOutline.SetFloat("_Width", 7f);
             _levOutline.renderQueue = 3000;
             EditorUtility.SetDirty(_levOutline);
             _tutOutline = EditorAssets.LoadOrCreateMaterial("OutlineYellow", "SortThem/OutlineXRay", new Color(1f, 0.85f, 0.2f), "_Color");
             _tutOutline.shader = Shader.Find("SortThem/OutlineXRay");
-            _tutOutline.SetFloat("_Width", 0.02f);
-            _tutOutline.SetColor("_XRayColor", new Color(1f, 0.85f, 0.2f, 0.6f));
+            _tutOutline.SetFloat("_Width", 7f);
             _tutOutline.renderQueue = 3000;
             EditorUtility.SetDirty(_tutOutline);
             _heldCars = EditorAssets.LoadOrCreateMaterial("CarsHeld", "SortThem/VertexColorLitOverlay", Color.white);
@@ -573,6 +694,11 @@ namespace SortThem.Editor
             heldView.Filter = heldFilter;
             heldView.Renderer = heldRenderer;
             heldView.TexturedOverlayShader = AssetDatabase.LoadAssetAtPath<Shader>(Paths.Root + "/Art/Shaders/TexturedLitOverlay.shader");
+            heldView.Scale = 2f;
+            heldView.RestPosition = new Vector3(0.22f, -0.4f, 0.7f);
+            heldView.RestEuler = new Vector3(0f, -115f, 0f);
+            heldView.FitHeight = 0.24f;
+            heldView.EnterOffset = new Vector3(0.5f, -0.6f, 0f);
             var abilities = player.AddComponent<PlayerAbilities>();
             abilities.Inventory = inventory;
             abilities.LevitateOutlineMaterial = _levOutline;

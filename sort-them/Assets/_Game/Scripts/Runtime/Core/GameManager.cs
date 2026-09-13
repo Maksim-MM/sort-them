@@ -39,15 +39,19 @@ namespace SortThem
         public int TotalCars { get; private set; }
         public int ClosedShelves { get; private set; }
         public int TotalShelves { get; private set; }
-        public int CollectiblesMask { get; private set; }
+        public long CollectiblesMask { get; private set; }
+        public int Crates { get; private set; }
+        public readonly Dictionary<string, int> SpecialLevels = new Dictionary<string, int>();
+        bool _completeAnnounced;
         public bool RegisterPaid { get; set; }
         public bool TutorialDone { get; set; }
         int _registerClicks;
         public int CollectiblesFound
         {
-            get { int n = 0, m = CollectiblesMask; while (m != 0) { n += m & 1; m >>= 1; } return n; }
+            get { int n = 0; long m = CollectiblesMask; while (m != 0) { n += (int)(m & 1); m >>= 1; } return n; }
         }
         public bool Ready { get; private set; }
+        public bool GameComplete => TotalShelves > 0 && ClosedShelves >= TotalShelves;
         bool _uiBlocking;
         int _uiReleaseFrame = -1;
         public bool UiBlocking
@@ -118,6 +122,7 @@ namespace SortThem
             bool loaded = Save.Load();
             Debug.Log(loaded ? "SortThem: save loaded" : "SortThem: new game");
             RecountStats();
+            _completeAnnounced = GameComplete;
             Ready = true;
             PileOcclusion.Init(Cars, Config);
             StatsChanged?.Invoke();
@@ -171,19 +176,77 @@ namespace SortThem
         public void OnShelfChanged(ShelfController shelf)
         {
             RecountStats();
+            if (shelf != null && shelf.Locked) RefreshSpecialViews(shelf);
         }
 
         public void OnShelfClosed(ShelfController shelf)
         {
+            RecountStats();
             ShelfClosed?.Invoke(shelf);
-            if (Ready) Save.SaveNow("shelf closed");
+            if (!Ready) return;
+            Save.SaveNow("shelf closed");
+            if (GameComplete && !_completeAnnounced)
+            {
+                _completeAnnounced = true;
+                Messages.Show(Loc.Get("msg.game_complete", "Все полки закрыты. Склад в полном порядке!"));
+                Rumble.ShelfComplete();
+            }
         }
+
+        void RefreshSpecialViews(ShelfController shelf)
+        {
+            if (Catalog == null) return;
+            for (int i = 0; i < shelf.Capacity; i++)
+            {
+                var car = shelf.GetSlot(i);
+                if (car == null) continue;
+                var data = Catalog.SpecialFor(car.Data);
+                if (data == null) continue;
+                var view = car.GetComponent<SpecialCarView>();
+                if (view == null) view = car.gameObject.AddComponent<SpecialCarView>();
+                view.Show(data, SpecialLevel(car.Data));
+            }
+        }
+
+        public int SpecialLevel(CarItemData car) => car != null && car.CarID != null && SpecialLevels.TryGetValue(car.CarID, out var level) ? level : 0;
+
+        public void SetSpecialLevel(CarItemData car, int level)
+        {
+            if (car == null || car.CarID == null) return;
+            SpecialLevels[car.CarID] = Mathf.Max(0, level);
+        }
+
+        public bool CanUpgradeSpecial(CarInstance car)
+        {
+            var data = Catalog != null && car != null ? Catalog.SpecialFor(car.Data) : null;
+            return data != null && Crates > 0 && SpecialLevel(car.Data) < data.MaxLevel;
+        }
+
+        public bool UpgradeSpecial(CarInstance car, List<GameObject> newParts)
+        {
+            if (!CanUpgradeSpecial(car)) return false;
+            Crates--;
+            SetSpecialLevel(car.Data, SpecialLevel(car.Data) + 1);
+            var view = car.GetComponent<SpecialCarView>();
+            if (view != null) { view.Level = SpecialLevel(car.Data); view.Rebuild(newParts); }
+            StatsChanged?.Invoke();
+            if (Ready) Save.SaveNow("upgrade");
+            return true;
+        }
+
+        public void SetCrates(int count)
+        {
+            Crates = Mathf.Max(0, count);
+            StatsChanged?.Invoke();
+        }
+
+        public void AddCrates(int count) => SetCrates(Crates + count);
 
         void SpawnCollectibles()
         {
             Collectibles.Clear();
             if (Layout == null || Layout.CollectiblePrefab == null) return;
-            for (int i = 0; i < Layout.Collectibles.Length && i < 32; i++)
+            for (int i = 0; i < Layout.Collectibles.Length && i < 64; i++)
             {
                 var e = Layout.Collectibles[i];
                 var go = Instantiate(Layout.CollectiblePrefab, e.Position, e.Rotation, CarsRoot);
@@ -197,12 +260,12 @@ namespace SortThem
             }
         }
 
-        public void ApplyCollectiblesMask(int mask)
+        public void ApplyCollectiblesMask(long mask)
         {
             CollectiblesMask = mask;
             foreach (var c in Collectibles)
             {
-                bool found = (mask & (1 << c.Index)) != 0;
+                bool found = (mask & (1L << c.Index)) != 0;
                 if (c.gameObject.activeSelf == found) c.gameObject.SetActive(!found);
             }
             StatsChanged?.Invoke();
@@ -210,11 +273,12 @@ namespace SortThem
 
         public void Collect(Collectible c)
         {
-            if (c == null || (CollectiblesMask & (1 << c.Index)) != 0) return;
-            CollectiblesMask |= 1 << c.Index;
+            if (c == null || (CollectiblesMask & (1L << c.Index)) != 0) return;
+            CollectiblesMask |= 1L << c.Index;
+            Crates++;
             Sfx.Play(Config.CollectibleClip, c.transform.position);
             c.gameObject.SetActive(false);
-            Messages.Show(string.Format(Loc.Get("msg.collectible_found", "Канистра найдена: {0}/{1}"), CollectiblesFound, Config.CollectiblesTotal));
+            Messages.Show(Loc.Get("msg.crate_found", "Ящик запчастей: +1"));
             StatsChanged?.Invoke();
             if (Ready) Save.SaveNow("collectible");
         }

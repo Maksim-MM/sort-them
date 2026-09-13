@@ -33,6 +33,7 @@ namespace SortThem
         public float PopDuration = 0.25f;
         public AudioClip ShelfCompleteClip;
         public AudioClip CollectibleClip;
+        public AudioClip SpecialUpgradeClip;
         public AudioClip PlaceClip;
         public AudioClip BounceClip;
         public AudioClip ThrowClip;
@@ -115,7 +116,12 @@ namespace SortThem
         public Vector3 UnstuckCenter = new Vector3(0f, 2.5f, 0f);
         public float FloorY = 0f;
         public Vector3 LevelHalfExtents = new Vector3(20f, 6f, 17f);
-        public int CollectiblesTotal = 10;
+        public int CollectiblesTotal = 40;
+        public float SpecialHoldTime = 1.2f;
+        public float SpecialShake = 0.03f;
+        public float SpecialRevealDuration = 0.45f;
+        public float SpecialGlowDuration = 1.5f;
+        public Sprite UpgradeBackdrop;
 
         [Header("Save")]
         public float AutosaveInterval = 60f;
