@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.ShelfData
   Rows: 2
   Columns: 5
-  SlotPitch: 0.45
-  RowPitch: 0.48
+  SlotPitch: 0.34
+  RowPitch: 0.46
   SlotYaw: 35
   Locked: 0

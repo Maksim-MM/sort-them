@@ -13,16 +13,16 @@ namespace SortThem.Editor
 {
     public static class LevelBuilder
     {
-        const float ArmLen = 34f, WingW = 12f, RoomH = 5f, WallT = 0.3f;
+        const float ArmLen = 28f, WingW = 10f, RoomH = 5f, WallT = 0.3f;
         const float Min = -ArmLen * 0.5f, Max = ArmLen * 0.5f, Inner = Min + WingW;
         const float WestX = (Min + Inner) * 0.5f, SouthZ = (Min + Inner) * 0.5f;
-        static readonly Vector3 FountainPos = new Vector3(WestX, 0f, SouthZ);
-        static readonly Vector3 SpecialRackPos = new Vector3(Inner - 2.4f, 0f, Inner - 2.4f);
+        static readonly Vector3 SpecialRackPos = new Vector3(WestX, 0f, SouthZ);
+        static readonly Vector3 FountainPos = SpecialRackPos + new Vector3(0f, 3.5f, 0f);
         const float ShopX = Max - 0.3f;
-        const float BoardT = 0.04f, DividerT = 0.05f, ShelfPitch = 0.42f;
+        const float BoardT = 0.04f, DividerT = 0.05f, ShelfPitch = 0.34f;
         static float RackW = 2.45f, RackD = 1.1f;
         const int ShelvesPerSection = 5, Sections = 4;
-        const float BottomShelfHeight = 0.55f;
+        const float BottomShelfHeight = 0.4f;
         static readonly float[] ShelfHeights = { BottomShelfHeight, BottomShelfHeight + ShelfPitch, BottomShelfHeight + ShelfPitch * 2f, BottomShelfHeight + ShelfPitch * 3f, BottomShelfHeight + ShelfPitch * 4f };
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
@@ -66,7 +66,7 @@ namespace SortThem.Editor
 
             var gameConfig = EditorAssets.LoadOrCreate<GameConfig>(Paths.Config + "/GameConfig.asset");
             gameConfig.LevelHalfExtents = new Vector3(Max + 1f, RoomH, Max + 1f);
-            gameConfig.UnstuckCenter = FountainPos + Vector3.up * 2.5f;
+            gameConfig.UnstuckCenter = SpecialRackPos + new Vector3(0f, 2.5f, 2.5f);
             EditorUtility.SetDirty(gameConfig);
             var economy = EditorAssets.LoadOrCreate<EconomyConfig>(Paths.Config + "/EconomyConfig.asset");
             var upgrades = UpgradeSetup.CreateAll(false);
@@ -74,13 +74,6 @@ namespace SortThem.Editor
             BuildRoom();
             var shelves = BuildRacks(catalog, shelfData);
             if (catalog.SpecialCategory != null && catalog.Specials != null && catalog.Specials.Length > 0) BuildSpecialRack(catalog);
-            var podium = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            podium.name = "Podium";
-            podium.transform.position = FountainPos + new Vector3(0f, 0.3f, 0f);
-            podium.transform.localScale = new Vector3(4f, 0.3f, 4f);
-            podium.GetComponent<Renderer>().sharedMaterial = _podium;
-            podium.isStatic = true;
-
             var terminal = GameObject.CreatePrimitive(PrimitiveType.Cube);
             terminal.name = "UpgradeTerminal";
             terminal.transform.position = new Vector3(ShopX, 0.8f, SouthZ + 1.75f);
@@ -147,7 +140,7 @@ namespace SortThem.Editor
             var scatterer = gmGo.AddComponent<Scatterer>();
             var source = new GameObject("ScatterSource").transform;
             source.SetParent(gmGo.transform, false);
-            source.position = FountainPos + new Vector3(0f, 1.3f, 0f);
+            source.position = FountainPos;
             scatterer.Source = source;
             scatterer.MinSpeed = 5f;
             scatterer.MaxSpeed = 9f;
@@ -224,7 +217,7 @@ namespace SortThem.Editor
 
         static void BuildSpecialRack(CarCatalog catalog)
         {
-            const float tableRadius = 1.1f, tableHeight = 0.9f, slotRadius = 0.55f;
+            const float tableRadius = 1.1f, tableHeight = 1.2f, slotRadius = 0.55f;
             var cat = catalog.SpecialCategory;
             var shelfData = EditorAssets.LoadOrCreate<ShelfData>(Paths.Data + "/Shelf_Special.asset");
             shelfData.Rows = 1;
@@ -319,7 +312,9 @@ namespace SortThem.Editor
 
                 shelf.Tag = BuildPriceTag(shelf, shelfGo.transform);
                 shelf.Tag.transform.localPosition = new Vector3(0f, -0.02f, tableRadius - slotRadius + 0.045f);
-                shelf.Tag.Root.transform.localScale = new Vector3(0.8f, 0.128f, 0.01f);
+                shelf.Tag.Root.transform.localScale = new Vector3(0.45f, 0.08f, 0.01f);
+                foreach (var txt in new[] { shelf.Tag.NameText, shelf.Tag.PriceText })
+                    txt.transform.localScale = new Vector3(1f / 0.5f * (0.8f / 0.45f), 1f / 0.05f, 1f / 0.01f);
                 shelves[i] = shelf;
             }
             rack.Shelves = shelves;
@@ -478,7 +473,8 @@ namespace SortThem.Editor
             foreach (var c in catalog.Categories) if (c != null && !catalog.IsSpecial(c)) categories.Add(c);
             int need = categories.Count;
             float wallOff = RackD * 0.5f + 0.05f;
-            float[] wallCenters = { 11.5f, 0.5f, -10.5f };
+            float c1 = Max - 0.5f - RackTotalW * 0.5f, c3 = Min + 1.2f + RackTotalW * 0.5f;
+            float[] wallCenters = { c1, (c1 + c3) * 0.5f, c3 };
             float[] wingCenters = { Inner + 0.2f + RackTotalW * 0.5f, Max - 1.2f - RackTotalW * 0.5f };
             foreach (float z in wallCenters) slots.Add((new Vector3(Min + wallOff, 0f, z), 90f));
             foreach (float z in wingCenters)
@@ -618,10 +614,10 @@ namespace SortThem.Editor
         {
             var root = new GameObject("PriceTag");
             root.transform.SetParent(parent, false);
-            root.transform.localPosition = new Vector3(0f, -0.04f, RackD * 0.5f - 0.02f + 0.006f);
+            root.transform.localPosition = new Vector3(0f, -0.02f, RackD * 0.5f - 0.02f + 0.006f);
             var tag = root.AddComponent<PriceTag>();
             tag.Shelf = shelf;
-            var plate = Block("Plate", root.transform, Vector3.zero, new Vector3(0.5f, 0.08f, 0.01f), _plateWhite, false);
+            var plate = Block("Plate", root.transform, Vector3.zero, new Vector3(0.5f, 0.05f, 0.01f), _plateWhite, false);
             Object.DestroyImmediate(plate.GetComponent<Collider>());
             plate.layer = 0;
             tag.Plate = plate.GetComponent<Renderer>();
@@ -629,10 +625,10 @@ namespace SortThem.Editor
             tag.WhiteMaterial = _plateWhite;
             tag.RedMaterial = _plateRed;
             tag.GoldMaterial = _plateGold;
-            tag.NameText = Text3D(plate.transform, "Name", "", 0.32f, new Vector3(0f, 0.22f, 0.6f), Quaternion.Euler(0f, 180f, 0f), new Vector2(0.47f, 0.042f), Color.black);
-            tag.PriceText = Text3D(plate.transform, "Price", "", 0.26f, new Vector3(0f, -0.26f, 0.6f), Quaternion.Euler(0f, 180f, 0f), new Vector2(0.47f, 0.034f), Color.black);
+            tag.NameText = Text3D(plate.transform, "Name", "", 0.32f, new Vector3(0f, 0.22f, 0.6f), Quaternion.Euler(0f, 180f, 0f), new Vector2(0.47f, 0.026f), Color.black);
+            tag.PriceText = Text3D(plate.transform, "Price", "", 0.26f, new Vector3(0f, -0.26f, 0.6f), Quaternion.Euler(0f, 180f, 0f), new Vector2(0.47f, 0.021f), Color.black);
             foreach (var t in new[] { tag.NameText, tag.PriceText })
-                t.transform.localScale = new Vector3(1f / 0.5f, 1f / 0.08f, 1f / 0.01f);
+                t.transform.localScale = new Vector3(1f / 0.5f, 1f / 0.05f, 1f / 0.01f);
             return tag;
         }
 

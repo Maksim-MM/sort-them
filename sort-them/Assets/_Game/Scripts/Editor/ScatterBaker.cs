@@ -182,7 +182,7 @@ namespace SortThem.Editor
             return true;
         }
 
-        const float BlockHeight = 6f;
+        const float BlockHeight = 6f, SpecialBlockRadius = 3.2f, SpecialBlockHeight = 3.3f;
 
         static void BlockRacks(Transform root)
         {
@@ -192,11 +192,43 @@ namespace SortThem.Editor
                 var go = new GameObject("__RackBlock_" + rack.name);
                 go.transform.SetParent(root, false);
                 var center = rack.Zone.transform.TransformPoint(rack.Zone.center);
+                if (rack.Shelves != null && rack.Shelves.Length > 0 && rack.Shelves[0] != null && rack.Shelves[0].Locked)
+                {
+                    go.transform.position = new Vector3(center.x, 0f, center.z);
+                    var cone = go.AddComponent<MeshCollider>();
+                    cone.sharedMesh = ConeMesh(SpecialBlockRadius, SpecialBlockHeight, 24);
+                    cone.convex = true;
+                    cone.sharedMaterial = new PhysicsMaterial("__slippery") { dynamicFriction = 0f, staticFriction = 0f, frictionCombine = PhysicsMaterialCombine.Minimum, bounciness = 0f };
+                    continue;
+                }
                 go.transform.SetPositionAndRotation(new Vector3(center.x, BlockHeight * 0.5f, center.z), rack.Zone.transform.rotation);
                 var size = Vector3.Scale(rack.Zone.size, rack.Zone.transform.lossyScale);
                 go.AddComponent<BoxCollider>().size = new Vector3(size.x, BlockHeight, size.z);
             }
             Physics.SyncTransforms();
+        }
+
+        static Mesh ConeMesh(float radius, float height, int segments)
+        {
+            var verts = new Vector3[segments + 2];
+            verts[0] = new Vector3(0f, height, 0f);
+            verts[1] = Vector3.zero;
+            for (int i = 0; i < segments; i++)
+            {
+                float a = i * Mathf.PI * 2f / segments;
+                verts[2 + i] = new Vector3(Mathf.Cos(a) * radius, 0f, Mathf.Sin(a) * radius);
+            }
+            var tris = new int[segments * 6];
+            for (int i = 0; i < segments; i++)
+            {
+                int a = 2 + i, b = 2 + (i + 1) % segments;
+                tris[i * 6] = 0; tris[i * 6 + 1] = b; tris[i * 6 + 2] = a;
+                tris[i * 6 + 3] = 1; tris[i * 6 + 4] = a; tris[i * 6 + 5] = b;
+            }
+            var mesh = new Mesh { vertices = verts, triangles = tris };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
         }
     }
 }
