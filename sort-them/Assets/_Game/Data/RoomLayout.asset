@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff0703dcb49c849e697d47348103107d, type: 3}
+  m_Name: RoomLayout
+  m_EditorClassIdentifier: SortThem.Runtime::SortThem.RoomLayoutData
+  Racks:
+  - CategoryId: cat_classicsport
+    Position: {x: -9.57, y: 0, z: 9}
+    Yaw: 270
+  - CategoryId: cat_extreme
+    Position: {x: 0.07500005, y: 0, z: -9.57}
+    Yaw: 180
+  - CategoryId: cat_gta
+    Position: {x: -4.56, y: 0, z: 9}
+    Yaw: 270
+  - CategoryId: cat_gtr
+    Position: {x: 0.07500005, y: 0, z: -4.56}
+    Yaw: 180
+  - CategoryId: cat_hatchbacks
+    Position: {x: -13.44, y: 0, z: 0.07500005}
+    Yaw: 90
+  - CategoryId: cat_muscle
+    Position: {x: -9.57, y: 0, z: 0.07500005}
+    Yaw: 270
+  - CategoryId: cat_pickups
+    Position: {x: -8.43, y: 0, z: 0.07500005}
+    Yaw: 90
+  - CategoryId: cat_police
+    Position: {x: -8.48, y: 0, z: -13.44}
+    Yaw: 0
+  - CategoryId: cat_rally
+    Position: {x: 0.07500005, y: 0, z: -8.43}
+    Yaw: 0
+  - CategoryId: cat_sedans
+    Position: {x: -13.44, y: 0, z: 9}
+    Yaw: 90
+  - CategoryId: cat_service
+    Position: {x: 0.08, y: 0, z: -13.44}
+    Yaw: 0
+  - CategoryId: cat_special
+    Position: {x: -9, y: 0, z: -9}
+    Yaw: 0
+  - CategoryId: cat_sportcoupe
+    Position: {x: -8.43, y: 0, z: 9}
+    Yaw: 90
+  - CategoryId: cat_supercars
+    Position: {x: -4.56, y: 0, z: 0.07500005}
+    Yaw: 270
+  - CategoryId: cat_suv
+    Position: {x: -13.44, y: 0, z: -8.37}
+    Yaw: 90
+  - CategoryId: cat_vans
+    Position: {x: 8.717, y: 0, z: -13.44}
+    Yaw: 0
+  Rugs:
+  - Name: Rug_Shop
+    Position: {x: 11.4, y: 0.005, z: -9}
+    Size: {x: 3.6, y: 0.01, z: 6}
+  - Name: Rug_WestAisle
+    Position: {x: -9, y: 0.005, z: -8.952}
+    Size: {x: 4.4, y: 0.01, z: 5}

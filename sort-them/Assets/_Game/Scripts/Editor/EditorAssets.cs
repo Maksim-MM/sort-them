@@ -42,6 +42,22 @@ namespace SortThem.Editor
             return mat;
         }
 
+        public static Material Textured(string name, string texturePath, Color tint, float smoothness = 0.12f, bool unlit = false)
+        {
+            var mat = LoadOrCreateMaterial(name, unlit ? "Universal Render Pipeline/Unlit" : "Universal Render Pipeline/Lit", tint);
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (tex == null) Debug.LogError("SortThem: texture not found " + texturePath + " (run menu 2a)");
+            mat.SetTexture("_BaseMap", tex);
+            if (!unlit)
+            {
+                if (mat.HasProperty("_Smoothness")) mat.SetFloat("_Smoothness", smoothness);
+                if (mat.HasProperty("_Metallic")) mat.SetFloat("_Metallic", 0f);
+                if (mat.HasProperty("_SpecularHighlights")) mat.SetFloat("_SpecularHighlights", 0f);
+            }
+            EditorUtility.SetDirty(mat);
+            return mat;
+        }
+
         public static Material Lit(string name, Color color) => LoadOrCreateMaterial(name, "Universal Render Pipeline/Lit", color);
         public static Material Unlit(string name, Color color) => LoadOrCreateMaterial(name, "Universal Render Pipeline/Unlit", color);
     }

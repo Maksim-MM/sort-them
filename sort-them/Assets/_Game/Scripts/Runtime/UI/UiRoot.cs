@@ -97,7 +97,20 @@ namespace SortThem
             public TMP_Text Name, Desc, Level, Cost;
             public Button Buy;
             public Image Icon;
+            public Image[] Pips;
+            public Image Frame;
         }
+
+        static readonly Color ArcadeBody = new Color(0.09f, 0.10f, 0.14f, 0.98f);
+        static readonly Color ArcadeNeon = new Color(0.25f, 0.88f, 1f, 1f);
+        static readonly Color ArcadeScreen = new Color(0.04f, 0.06f, 0.09f, 1f);
+        static readonly Color ArcadeTitle = new Color(0.90f, 1f, 0.45f, 1f);
+        static readonly Color ArcadeCost = new Color(1f, 0.83f, 0.30f, 1f);
+        static readonly Color ArcadeRed = new Color(0.88f, 0.20f, 0.16f, 1f);
+        static readonly Color ArcadeBlue = new Color(0.20f, 0.44f, 0.90f, 1f);
+        static readonly Color PipOn = new Color(1f, 0.55f, 0.15f, 1f);
+        static readonly Color PipOff = new Color(1f, 1f, 1f, 0.14f);
+        static readonly Color ArcadeFocus = new Color(1f, 0.82f, 0.22f, 1f);
 
         public bool TerminalOpen => _terminal != null && _terminal.gameObject.activeSelf;
         public bool SlotOpen => _slot != null && _slot.gameObject.activeSelf;
@@ -570,82 +583,160 @@ namespace SortThem
             if (_touchCrouch != null) { bool on = gm.Upgrades.Has(UpgradeKind.Crouch); if (_touchCrouch.activeSelf != on) _touchCrouch.SetActive(on); }
         }
 
+        TMP_Text _terminalScore;
+        Button _terminalClose;
+
         void BuildTerminal()
         {
-            _terminal = UiFactory.Panel(transform, "Terminal", new Color(0.08f, 0.09f, 0.12f, 0.96f));
-            UiFactory.Anchored(_terminal, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1100f, 760f));
-            UiFactory.Layout(_terminal, 6f, new RectOffset(20, 20, 16, 16));
+            _terminal = UiFactory.Panel(transform, "Terminal", ArcadeBody);
+            UiFactory.Anchored(_terminal, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1080f, 880f));
 
-            var header = UiFactory.Rect(_terminal, "Header");
-            UiFactory.Size(header, 0f, 48f);
-            var title = Bind(UiFactory.Text(header, "Title", "", 34f, TextAlignmentOptions.Left, Color.white), "ui.terminal", "Терминал улучшений");
+            var marquee = UiFactory.NeonBox(_terminal, "Marquee", ArcadeNeon, new Color(0.05f, 0.07f, 0.11f, 1f), 4f);
+            UiFactory.Anchor(marquee.parent as RectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -96f), new Vector2(-24f, -12f));
+            var title = Bind(UiFactory.Text(marquee, "Title", "", 44f, TextAlignmentOptions.Center, ArcadeTitle), "ui.terminal", "Терминал улучшений");
+            title.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+            title.characterSpacing = 6f;
             UiFactory.Anchor(title.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            _terminalBalance = UiFactory.Text(header, "Balance", "", 30f, TextAlignmentOptions.Right, Color.white);
-            UiFactory.Anchor(_terminalBalance.rectTransform, Vector2.zero, Vector2.one, new Vector2(0f, 0f), new Vector2(-160f, 0f));
-            var close = Bind(UiFactory.Button(header, "Close", "", CloseTerminal, 20f), "ui.close", "Закрыть");
-            UiFactory.Anchor(close.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-140f, 4f), new Vector2(0f, -4f));
+
+            var score = UiFactory.NeonBox(_terminal, "Score", new Color(0.35f, 0.35f, 0.40f, 1f), Color.black, 3f);
+            UiFactory.Anchored(score.parent as RectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -100f), new Vector2(250f, 62f));
+            var scoreLabel = Bind(UiFactory.Text(score, "Label", "", 16f, TextAlignmentOptions.Center, new Color(1f, 0.34f, 0.69f, 1f)), "ui.balance", "Баланс");
+            scoreLabel.fontStyle = FontStyles.UpperCase;
+            UiFactory.Anchor(scoreLabel.rectTransform, new Vector2(0f, 0.58f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
+            _terminalScore = UiFactory.Text(score, "Value", "$0", 34f, TextAlignmentOptions.Center, new Color(1f, 0.23f, 0.18f, 1f));
+            _terminalScore.fontStyle = FontStyles.Bold;
+            UiFactory.Anchor(_terminalScore.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0.62f), Vector2.zero, Vector2.zero);
+
+            var screen = UiFactory.NeonBox(_terminal, "Screen", ArcadeNeon, ArcadeScreen, 4f);
+            UiFactory.Anchor(screen.parent as RectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(40f, 120f), new Vector2(-40f, -170f));
+
+            var header = UiFactory.Rect(screen, "Header");
+            UiFactory.Anchor(header, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(14f, -46f), new Vector2(-14f, -8f));
+            var sub = Bind(UiFactory.Text(header, "Sub", "", 24f, TextAlignmentOptions.Left, Color.white), "ui.terminal", "Терминал улучшений");
+            UiFactory.Anchor(sub.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            var list = UiFactory.Rect(screen, "List");
+            UiFactory.Anchor(list, Vector2.zero, Vector2.one, new Vector2(12f, 30f), new Vector2(-12f, -46f));
+            UiFactory.Layout(list, 4f, new RectOffset(0, 0, 0, 0));
 
             var gm = GameManager.I;
             foreach (var data in gm.Upgrades.All)
             {
                 if (data.Source != UpgradeSource.Terminal) continue;
-                var row = UiFactory.Panel(_terminal, "Row_" + data.UpgradeID, new Color(1f, 1f, 1f, 0.06f));
-                UiFactory.Size(row, 0f, 66f);
-                var r = new UpgradeRow { Data = data };
-                var icon = UiFactory.Image(row, "Icon", data.Icon, Color.white, Image.Type.Simple);
+                var rowFill = UiFactory.NeonBox(list, "Row_" + data.UpgradeID, ArcadeNeon, new Color(0.06f, 0.10f, 0.14f, 1f), 2f);
+                var rowRoot = (RectTransform)rowFill.parent;
+                UiFactory.Size(rowRoot, 0f, 52f);
+                var r = new UpgradeRow { Data = data, Frame = rowRoot.GetComponent<Image>() };
+
+                var icon = UiFactory.Image(rowFill, "Icon", data.Icon, Color.white, Image.Type.Simple);
                 icon.preserveAspect = true;
                 icon.enabled = data.Icon != null;
                 r.Icon = icon;
-                UiFactory.Anchored(icon.rectTransform, new Vector2(0f, 0.5f), new Vector2(10f, 0f), new Vector2(52f, 52f));
-                r.Name = UiFactory.Text(row, "Name", "", 24f, TextAlignmentOptions.Left, Color.white);
-                UiFactory.Anchor(r.Name.rectTransform, new Vector2(0f, 0.5f), new Vector2(0.5f, 1f), new Vector2(72f, 0f), new Vector2(0f, -4f));
-                r.Desc = UiFactory.Text(row, "Desc", "", 17f, TextAlignmentOptions.Left, new Color(0.8f, 0.8f, 0.85f, 1f));
-                r.Desc.textWrappingMode = TextWrappingModes.Normal;
-                UiFactory.Anchor(r.Desc.rectTransform, new Vector2(0f, 0f), new Vector2(0.62f, 0.5f), new Vector2(72f, 4f), new Vector2(0f, 0f));
-                r.Level = UiFactory.Text(row, "Level", "", 22f, TextAlignmentOptions.Center, Color.white);
-                UiFactory.Anchor(r.Level.rectTransform, new Vector2(0.62f, 0f), new Vector2(0.74f, 1f), Vector2.zero, Vector2.zero);
-                r.Cost = UiFactory.Text(row, "Cost", "", 24f, TextAlignmentOptions.Center, new Color(1f, 0.9f, 0.5f, 1f));
-                UiFactory.Anchor(r.Cost.rectTransform, new Vector2(0.74f, 0f), new Vector2(0.86f, 1f), Vector2.zero, Vector2.zero);
+                UiFactory.Anchored(icon.rectTransform, new Vector2(0f, 0.5f), new Vector2(10f, 0f), new Vector2(36f, 36f));
+
+                r.Name = UiFactory.Text(rowFill, "Name", "", 19f, TextAlignmentOptions.Left, Color.white);
+                r.Name.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+                UiFactory.Anchor(r.Name.rectTransform, new Vector2(0f, 0.42f), new Vector2(0.55f, 1f), new Vector2(56f, 0f), new Vector2(0f, -4f));
+
+                var pips = UiFactory.Rect(rowFill, "Pips");
+                UiFactory.Anchor(pips, new Vector2(0f, 0f), new Vector2(0.55f, 0.42f), new Vector2(56f, 8f), new Vector2(0f, -2f));
+                UiFactory.Layout(pips, 3f, new RectOffset(0, 0, 0, 0), false);
+                int steps = Mathf.Clamp(data.MaxLevel, 1, 12);
+                r.Pips = new Image[steps];
+                for (int i = 0; i < steps; i++)
+                {
+                    var pip = UiFactory.Image(pips, "Pip" + i, null, PipOff, Image.Type.Simple);
+                    UiFactory.Size(pip, 10f, 8f);
+                    r.Pips[i] = pip;
+                }
+
+                r.Desc = UiFactory.Text(rowFill, "Desc", "", 1f, TextAlignmentOptions.Left, new Color(0f, 0f, 0f, 0f));
+                r.Desc.gameObject.SetActive(false);
+
+                r.Level = UiFactory.Text(rowFill, "Level", "", 20f, TextAlignmentOptions.Right, Color.white);
+                UiFactory.Anchor(r.Level.rectTransform, new Vector2(0.55f, 0f), new Vector2(0.69f, 1f), Vector2.zero, Vector2.zero);
+
+                r.Cost = UiFactory.Text(rowFill, "Cost", "", 22f, TextAlignmentOptions.Right, ArcadeCost);
+                r.Cost.fontStyle = FontStyles.Bold;
+                UiFactory.Anchor(r.Cost.rectTransform, new Vector2(0.69f, 0f), new Vector2(0.845f, 1f), Vector2.zero, new Vector2(-10f, 0f));
+
                 var captured = data;
-                r.Buy = Bind(UiFactory.Button(row, "Buy", "", () => { if (gm.Upgrades.TryBuy(captured)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); } }, 20f), "ui.buy", "Купить");
-                UiFactory.Anchor(r.Buy.GetComponent<RectTransform>(), new Vector2(0.87f, 0.15f), new Vector2(0.99f, 0.85f), Vector2.zero, Vector2.zero);
+                r.Buy = Bind(UiFactory.NeonButton(rowFill, "Buy", "", () => { if (gm.Upgrades.TryBuy(captured)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); } }, ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 17f), "ui.buy", "Купить");
+                UiFactory.Anchor(r.Buy.GetComponent<RectTransform>(), new Vector2(0.85f, 0.06f), new Vector2(0.995f, 0.94f), Vector2.zero, Vector2.zero);
                 _rows.Add(r);
             }
+
+            var panel = UiFactory.Panel(_terminal, "ControlPanel", new Color(0.13f, 0.15f, 0.21f, 1f));
+            UiFactory.Anchor(panel, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(40f, 18f), new Vector2(-40f, 114f));
+
+            _terminalClose = Bind(UiFactory.NeonButton(panel, "CloseBig", "", CloseTerminal, ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 18f), "ui.close", "Закрыть");
+            var closeBig = _terminalClose;
+            UiFactory.Anchored(closeBig.GetComponent<RectTransform>(), new Vector2(1f, 0.5f), new Vector2(-40f, 0f), new Vector2(150f, 62f));
+
             _terminal.gameObject.SetActive(false);
         }
 
+        Button _slotClose;
+
         void BuildSlot()
         {
-            _slot = UiFactory.Panel(transform, "SlotMachine", new Color(0.08f, 0.09f, 0.12f, 0.96f));
-            UiFactory.Anchored(_slot, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 420f));
-            UiFactory.Layout(_slot, 12f, new RectOffset(24, 24, 16, 20));
+            _slot = UiFactory.Panel(transform, "SlotMachine", ArcadeBody);
+            UiFactory.Anchored(_slot, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1000f, 700f));
 
-            var header = UiFactory.Rect(_slot, "Header");
-            UiFactory.Size(header, 0f, 48f);
-            var title = Bind(UiFactory.Text(header, "Title", "", 34f, TextAlignmentOptions.Left, Color.white), "ui.slot", "Слот-машина");
+            var marquee = UiFactory.NeonBox(_slot, "Marquee", ArcadeNeon, new Color(0.05f, 0.07f, 0.11f, 1f), 4f);
+            UiFactory.Anchor(marquee.parent as RectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -96f), new Vector2(-24f, -12f));
+            var title = Bind(UiFactory.Text(marquee, "Title", "", 44f, TextAlignmentOptions.Center, ArcadeTitle), "ui.slot", "Слот-машина");
+            title.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+            title.characterSpacing = 6f;
             UiFactory.Anchor(title.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            _slotBalance = UiFactory.Text(header, "Balance", "", 30f, TextAlignmentOptions.Right, Color.white);
-            UiFactory.Anchor(_slotBalance.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-160f, 0f));
-            var close = Bind(UiFactory.Button(header, "Close", "", CloseSlot, 20f), "ui.close", "Закрыть");
-            UiFactory.Anchor(close.GetComponent<RectTransform>(), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(-140f, 4f), new Vector2(0f, -4f));
 
-            var drum = UiFactory.Panel(_slot, "Drum", new Color(1f, 1f, 1f, 0.06f));
-            UiFactory.Size(drum, 0f, 150f);
-            _slotIcon = UiFactory.Image(drum, "Icon", null, Gold, Image.Type.Simple);
-            _slotIcon.preserveAspect = true;
+            var score = UiFactory.NeonBox(_slot, "Balance", new Color(0.35f, 0.35f, 0.40f, 1f), Color.black, 3f);
+            UiFactory.Anchored(score.parent as RectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -100f), new Vector2(250f, 62f));
+            var balanceLabel = Bind(UiFactory.Text(score, "Label", "", 16f, TextAlignmentOptions.Center, new Color(1f, 0.34f, 0.69f, 1f)), "ui.balance", "Баланс");
+            balanceLabel.fontStyle = FontStyles.UpperCase;
+            UiFactory.Anchor(balanceLabel.rectTransform, new Vector2(0f, 0.58f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
+            _slotBalance = UiFactory.Text(score, "Value", "", 34f, TextAlignmentOptions.Center, new Color(1f, 0.23f, 0.18f, 1f));
+            _slotBalance.fontStyle = FontStyles.Bold;
+            UiFactory.Anchor(_slotBalance.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0.62f), Vector2.zero, Vector2.zero);
+
+            var screen = UiFactory.NeonBox(_slot, "Screen", ArcadeNeon, ArcadeScreen, 4f);
+            UiFactory.Anchor(screen.parent as RectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(40f, 120f), new Vector2(-40f, -170f));
+
+            var prizes = UiFactory.NeonBox(screen, "PrizeBox", ArcadeNeon, new Color(0.05f, 0.09f, 0.13f, 1f), 2f);
+            UiFactory.Anchor(prizes.parent as RectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(14f, 14f), new Vector2(258f, -14f));
+            BuildPrizeList(prizes);
+
+            var reels = UiFactory.Rect(screen, "Reels");
+            UiFactory.Anchor(reels, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(268f, 74f), new Vector2(-14f, -14f));
+            BuildReels(reels);
+
+            var payline = UiFactory.Panel(reels, "Payline", new Color(1f, 0.85f, 0.25f, 0.55f));
+            UiFactory.Anchor(payline, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-6f, -1.5f), new Vector2(6f, 1.5f));
+            payline.SetAsLastSibling();
+
+            _slotIcon = UiFactory.Image(screen, "HiddenIcon", null, Gold, Image.Type.Simple);
             _slotIcon.enabled = false;
-            UiFactory.Anchored(_slotIcon.rectTransform, new Vector2(0f, 0.5f), new Vector2(27f, 0f), new Vector2(96f, 96f));
-            _slotResult = UiFactory.Text(drum, "Result", "", 28f, TextAlignmentOptions.Left, Color.white);
-            _slotResult.textWrappingMode = TextWrappingModes.Normal;
-            UiFactory.Anchor(_slotResult.rectTransform, Vector2.zero, Vector2.one, new Vector2(150f, 10f), new Vector2(-20f, -10f));
+            UiFactory.Anchored(_slotIcon.rectTransform, new Vector2(0f, 0f), Vector2.zero, Vector2.zero);
 
-            _slotRemaining = UiFactory.Text(_slot, "Remaining", "", 20f, TextAlignmentOptions.Center, new Color(0.8f, 0.8f, 0.85f, 1f));
-            UiFactory.Size(_slotRemaining, 0f, 30f);
+            _slotResult = UiFactory.Text(screen, "Result", "", 22f, TextAlignmentOptions.Center, Color.white);
+            UiFactory.Anchor(_slotResult.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(268f, 38f), new Vector2(-14f, 70f));
 
-            _spinButton = UiFactory.Button(_slot, "Spin", "", Spin, 26f);
+            _slotRemaining = UiFactory.Text(screen, "Remaining", "", 16f, TextAlignmentOptions.Center, new Color(1f, 1f, 1f, 0.55f));
+            UiFactory.Anchor(_slotRemaining.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(268f, 10f), new Vector2(-14f, 36f));
+
+            var panel = UiFactory.Panel(_slot, "ControlPanel", new Color(0.13f, 0.15f, 0.21f, 1f));
+            UiFactory.Anchor(panel, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(40f, 18f), new Vector2(-40f, 114f));
+
+            _spinButton = UiFactory.NeonButton(panel, "Spin", "", Spin, ArcadeCost, new Color(0.14f, 0.10f, 0.04f, 1f), ArcadeCost, 24f);
             _spinLabel = _spinButton.GetComponentInChildren<TMP_Text>();
-            UiFactory.Size(_spinButton, 0f, 64f);
+            _spinLabel.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+            UiFactory.Anchored(_spinButton.GetComponent<RectTransform>(), new Vector2(0f, 0.5f), new Vector2(40f, 0f), new Vector2(320f, 66f));
+
+            _slotClose = Bind(UiFactory.NeonButton(panel, "Close", "", CloseSlot, ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 18f), "ui.close", "Закрыть");
+            UiFactory.Anchored(_slotClose.GetComponent<RectTransform>(), new Vector2(1f, 0.5f), new Vector2(-40f, 0f), new Vector2(150f, 62f));
+
             _slotButtons.Add(_spinButton);
+            _slotButtons.Add(_slotClose);
             _slot.gameObject.SetActive(false);
         }
 
@@ -671,6 +762,7 @@ namespace SortThem
             _spinning = true;
             _spinUntil = Time.unscaledTime + SpinDuration;
             _spinTickAt = 0f;
+            StartReels(reward != null ? reward.Icon : BombIcon);
             Sfx.PlayUi(gm.Config.SlotLeverClip);
             Sfx.PlayUi(gm.Config.SlotReelClip);
             RefreshSlot();
@@ -680,21 +772,10 @@ namespace SortThem
         {
             if (!_spinning) return;
             var gm = GameManager.I;
-            if (Time.unscaledTime < _spinUntil)
+            UpdateReels();
+            if (ReelsRunning())
             {
-                if (Time.unscaledTime < _spinTickAt) return;
-                _spinTickAt = Time.unscaledTime + SpinTick;
-                var pool = new List<UpgradeData>();
-                foreach (var u in gm.Upgrades.All) if (u.Source == UpgradeSource.Slot) pool.Add(u);
-                int n = pool.Count + (gm.Config.BombPrefab != null ? 1 : 0);
-                if (n == 0) return;
-                int pick = Random.Range(0, n);
-                string name = pick < pool.Count ? Loc.Get(pool[pick].DisplayName, pool[pick].DevName) : Loc.Get("ui.slot_bomb", "Бомба!");
-                var sprite = pick < pool.Count ? pool[pick].Icon : BombIcon;
-                _slotResult.text = "<color=#A0A0A8>" + name + "</color>";
-                _slotIcon.sprite = sprite;
-                _slotIcon.enabled = sprite != null;
-                _slotIcon.color = new Color(0.63f, 0.63f, 0.66f, 1f);
+                _slotResult.text = "";
                 return;
             }
             _spinning = false;
@@ -703,9 +784,6 @@ namespace SortThem
             string text = reward != null ? RewardText(reward) : Loc.Get("ui.slot_bomb", "Бомба!");
             var icon = reward != null ? reward.Icon : BombIcon;
             _slotResult.text = "<color=" + GoldHex + ">" + text + "</color>";
-            _slotIcon.sprite = icon;
-            _slotIcon.enabled = icon != null;
-            _slotIcon.color = Gold;
             Sfx.PlayUi(gm.Config.SlotWinClip);
             Rumble.ShelfComplete();
             if (reward != null) Messages.Show(string.Format(Loc.Get("msg.slot_reward", "Выпало: {0}"), RewardText(reward)));
@@ -734,6 +812,7 @@ namespace SortThem
                 _slotResult.text = left > 0 ? Loc.Get("ui.slot_idle", "Каждое вращение даёт награду") : "";
             _spinLabel.text = string.Format(Loc.Get("ui.spin", "Крутить · ${0}"), gm.Config.SlotSpinCost);
             _spinButton.interactable = !_spinning && gm.Economy.CanAfford(gm.Config.SlotSpinCost) && (left > 0 || bombs);
+            RefreshPrizes();
         }
 
         string SlotBonusText(UpgradeKind kind)
@@ -1058,6 +1137,7 @@ namespace SortThem
         IEnumerable<Selectable> TerminalCandidates()
         {
             foreach (var r in _rows) yield return r.Buy;
+            if (_terminalClose != null) yield return _terminalClose;
         }
 
         static bool Selectable_(Selectable b) => b != null && b.interactable && b.gameObject.activeInHierarchy;
@@ -1120,6 +1200,59 @@ namespace SortThem
             {
                 float scale = pulse && b == _focused ? 1f + PulseAmount * (0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * PulseHz * Mathf.PI * 2f)) : 1f;
                 if (b.transform.localScale.x != scale) b.transform.localScale = new Vector3(scale, scale, 1f);
+            }
+            if (TerminalOpen) RefreshTerminalFocus();
+            if (SlotOpen) RefreshSlotFocus();
+        }
+
+        void RefreshSlotFocus()
+        {
+            Paint(_spinButton, ArcadeCost);
+            Paint(_slotClose, ArcadeNeon);
+        }
+
+        void Paint(Button b, Color idle)
+        {
+            if (b == null) return;
+            var want = b == _focused ? ArcadeFocus : idle;
+            var img = b.GetComponent<Image>();
+            if (img != null && img.color != want) img.color = want;
+            var label = b.transform.Find("Fill/Label");
+            if (label != null)
+            {
+                var text = label.GetComponent<TMP_Text>();
+                if (text != null && text.color != want) text.color = want;
+            }
+        }
+
+        void RefreshTerminalFocus()
+        {
+            foreach (var r in _rows)
+            {
+                if (r.Frame == null) continue;
+                bool active = r.Buy == _focused;
+                var want = active ? ArcadeFocus : ArcadeNeon;
+                if (r.Frame.color != want) r.Frame.color = want;
+                var label = r.Buy.transform.Find("Fill/Label") as RectTransform;
+                if (label != null)
+                {
+                    var text = label.GetComponent<TMP_Text>();
+                    if (text != null && text.color != want) text.color = want;
+                }
+                var buyFrame = r.Buy.GetComponent<Image>();
+                if (buyFrame != null && buyFrame.color != want) buyFrame.color = want;
+            }
+            if (_terminalClose != null)
+            {
+                var want = _terminalClose == _focused ? ArcadeFocus : ArcadeNeon;
+                var img = _terminalClose.GetComponent<Image>();
+                if (img != null && img.color != want) img.color = want;
+                var closeLabel = _terminalClose.transform.Find("Fill/Label");
+                if (closeLabel != null)
+                {
+                    var text = closeLabel.GetComponent<TMP_Text>();
+                    if (text != null && text.color != want) text.color = want;
+                }
             }
         }
 
@@ -1208,8 +1341,8 @@ namespace SortThem
         void RefreshTerminal()
         {
             var gm = GameManager.I;
-            if (gm == null || _terminalBalance == null) return;
-            _terminalBalance.text = FormatMoney(gm.Economy.Balance);
+            if (gm == null || _terminalScore == null) return;
+            _terminalScore.text = FormatMoney(gm.Economy.Balance);
             foreach (var r in _rows)
             {
                 int level = gm.Upgrades.Level(r.Data);
@@ -1221,6 +1354,12 @@ namespace SortThem
                 if (r.Icon != null) r.Icon.color = bonus != null ? Gold : Color.white;
                 r.Cost.text = maxed ? Loc.Get("ui.max", "Макс.") : "$" + gm.Upgrades.NextCost(r.Data);
                 r.Buy.interactable = gm.Upgrades.CanBuy(r.Data);
+                if (r.Pips != null)
+                {
+                    float per = r.Data.MaxLevel / (float)r.Pips.Length;
+                    for (int i = 0; i < r.Pips.Length; i++)
+                        r.Pips[i].color = level >= Mathf.CeilToInt((i + 1) * per) ? PipOn : PipOff;
+                }
             }
         }
     }

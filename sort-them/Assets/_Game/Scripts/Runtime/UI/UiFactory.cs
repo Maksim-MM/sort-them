@@ -112,6 +112,35 @@ namespace SortThem
             return slider;
         }
 
+        public static RectTransform NeonBox(Transform parent, string name, Color border, Color fill, float thickness = 3f)
+        {
+            var outer = Panel(parent, name, border);
+            var inner = Panel(outer, "Fill", fill);
+            Anchor(inner, Vector2.zero, Vector2.one, new Vector2(thickness, thickness), new Vector2(-thickness, -thickness));
+            return inner;
+        }
+
+        public static Button NeonButton(Transform parent, string name, string label, Action onClick, Color border, Color fill, Color textColor, float fontSize = 20f)
+        {
+            var outer = Panel(parent, name, border);
+            var btn = outer.gameObject.AddComponent<Button>();
+            btn.navigation = new Navigation { mode = Navigation.Mode.None };
+            var inner = Panel(outer, "Fill", fill);
+            Anchor(inner, Vector2.zero, Vector2.one, new Vector2(2f, 2f), new Vector2(-2f, -2f));
+            inner.GetComponent<Image>().raycastTarget = false;
+            var t = Text(inner, "Label", label, fontSize, TextAlignmentOptions.Center, textColor);
+            Anchor(t.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var colors = btn.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1.6f, 1.6f, 1.6f, 1f);
+            colors.pressedColor = new Color(0.6f, 0.6f, 0.6f, 1f);
+            colors.disabledColor = new Color(0.35f, 0.35f, 0.35f, 1f);
+            btn.colors = colors;
+            btn.onClick.AddListener(() => { var gm = GameManager.I; if (gm != null) Sfx.PlayUi(gm.Config.UiClickClip); Rumble.UiClick(); });
+            if (onClick != null) btn.onClick.AddListener(() => onClick());
+            return btn;
+        }
+
         public static void Layout(RectTransform rt, float spacing, RectOffset padding, bool vertical = true)
         {
             HorizontalOrVerticalLayoutGroup g = vertical ? rt.gameObject.AddComponent<VerticalLayoutGroup>() : rt.gameObject.AddComponent<HorizontalLayoutGroup>();

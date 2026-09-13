@@ -243,18 +243,18 @@ namespace SortThem
                     Outline.Show(HoverCar.Filter.sharedMesh, HoverCar.transform.position, HoverCar.transform.rotation, HoverCar.transform.lossyScale);
                 else if (HoverSpecial != null && HoverSpecial.Filter != null)
                     Outline.Show(HoverSpecial.Filter.sharedMesh, HoverSpecial.transform.position, HoverSpecial.transform.rotation, HoverSpecial.transform.lossyScale);
-                else if (HoverCollectible != null && HoverCollectible.TryGetComponent<MeshFilter>(out var collMesh))
-                    Outline.Show(collMesh.sharedMesh, HoverCollectible.transform.position, HoverCollectible.transform.rotation, HoverCollectible.transform.lossyScale);
-                else if (HoverTerminal != null && HoverTerminal.TryGetComponent<MeshFilter>(out var termMesh))
-                    Outline.Show(termMesh.sharedMesh, HoverTerminal.transform.position, HoverTerminal.transform.rotation, HoverTerminal.transform.lossyScale);
-                else if (HoverRadio != null && HoverRadio.TryGetComponent<MeshFilter>(out var radioMesh))
-                    Outline.Show(radioMesh.sharedMesh, HoverRadio.transform.position, HoverRadio.transform.rotation, HoverRadio.transform.lossyScale);
-                else if (HoverSlotMachine != null && HoverSlotMachine.TryGetComponent<MeshFilter>(out var slotMesh))
-                    Outline.Show(slotMesh.sharedMesh, HoverSlotMachine.transform.position, HoverSlotMachine.transform.rotation, HoverSlotMachine.transform.lossyScale);
-                else if (HoverRegister != null && !GameManager.I.RegisterPaid && HoverRegister.TryGetComponent<MeshFilter>(out var registerMesh))
-                    Outline.Show(registerMesh.sharedMesh, HoverRegister.transform.position, HoverRegister.transform.rotation, HoverRegister.transform.lossyScale);
-                else if (HoverBomb != null && GameManager.I.HeldBomb == null && HoverBomb.TryGetComponent<MeshFilter>(out var bombMesh))
-                    Outline.Show(bombMesh.sharedMesh, HoverBomb.transform.position, HoverBomb.transform.rotation, HoverBomb.transform.lossyScale);
+                else if (HoverCollectible != null && TryMainMesh(HoverCollectible, out var collMesh))
+                    ShowOutline(collMesh);
+                else if (HoverTerminal != null && TryMainMesh(HoverTerminal, out var termMesh))
+                    ShowOutline(termMesh);
+                else if (HoverRadio != null && TryMainMesh(HoverRadio, out var radioMesh))
+                    ShowOutline(radioMesh);
+                else if (HoverSlotMachine != null && TryMainMesh(HoverSlotMachine, out var slotMesh))
+                    ShowOutline(slotMesh);
+                else if (HoverRegister != null && !GameManager.I.RegisterPaid && TryMainMesh(HoverRegister, out var registerMesh))
+                    ShowOutline(registerMesh);
+                else if (HoverBomb != null && GameManager.I.HeldBomb == null && TryMainMesh(HoverBomb, out var bombMesh))
+                    ShowOutline(bombMesh);
                 else
                     Outline.Hide();
             }
@@ -268,6 +268,28 @@ namespace SortThem
                 }
                 else Ghost.Hide();
             }
+        }
+
+        void ShowOutline(MeshFilter filter)
+        {
+            var t = filter.transform;
+            Outline.Show(filter.sharedMesh, t.position, t.rotation, t.lossyScale);
+        }
+
+        static bool TryMainMesh(Component root, out MeshFilter filter)
+        {
+            filter = null;
+            if (root == null) return false;
+            if (root.TryGetComponent<MeshFilter>(out var own) && own.sharedMesh != null) { filter = own; return true; }
+            float best = 0f;
+            foreach (var mf in root.GetComponentsInChildren<MeshFilter>())
+            {
+                if (mf.sharedMesh == null) continue;
+                var size = Vector3.Scale(mf.sharedMesh.bounds.size, mf.transform.lossyScale);
+                float volume = size.x * size.y * size.z;
+                if (volume > best) { best = volume; filter = mf; }
+            }
+            return filter != null;
         }
 
         void Interact()

@@ -27,6 +27,7 @@ namespace SortThem.Editor
             (UpgradeKind.AbilityCooldown, Dir + "/up_cooldown.png"),
             (UpgradeKind.AutoCollectRadius, AbilityIcons[1]),
             (UpgradeKind.AbilityDuration, Dir + "/up_duration.png"),
+            (UpgradeKind.PartsCrate, Dir + "/up_crate.png"),
         };
 
         [MenuItem("SortThem/3d. Import UI Sprites")]

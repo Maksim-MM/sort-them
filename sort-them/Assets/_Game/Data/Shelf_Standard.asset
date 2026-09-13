@@ -18,3 +18,4 @@ MonoBehaviour:
   RowPitch: 0.46
   SlotYaw: 35
   Locked: 0
+  DisplayScale: 1

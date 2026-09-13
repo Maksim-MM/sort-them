@@ -29,6 +29,7 @@ namespace SortThem.Editor
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
 
         static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _cabinet, _radio, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _tutOutline, _heldCars;
+        static Material _woodBeam, _woodPanel, _woodPanelV, _woodFloor, _plaster, _ceilingPlaster, _glass, _sky, _rug, _lampGlow, _rackBack;
 
         [MenuItem("SortThem/4. Build Level Scene")]
         public static void Build()
@@ -51,6 +52,7 @@ namespace SortThem.Editor
                 light.shadows = LightShadows.None;
             }
             catalog = AssetDatabase.LoadAssetAtPath<CarCatalog>(Paths.Catalog);
+            _roomLayout = RoomLayoutCapture.Load();
             var inputAsset = AssetDatabase.LoadAssetAtPath<InputActionAsset>(Paths.InputAsset);
             if (inputAsset == null) inputAsset = InputSetup.Create();
             if (inputAsset == null)
@@ -72,25 +74,12 @@ namespace SortThem.Editor
             var economy = EditorAssets.LoadOrCreate<EconomyConfig>(Paths.Config + "/EconomyConfig.asset");
             var upgrades = UpgradeSetup.CreateAll(false);
 
-            BuildRoom();
-            var shelves = BuildRacks(catalog, shelfData);
+            var placements = ComputeRacks(catalog);
+            BuildRoom(placements);
+            var shelves = BuildRacks(catalog, shelfData, placements);
             if (catalog.SpecialCategory != null && catalog.Specials != null && catalog.Specials.Length > 0) BuildSpecialRack(catalog);
-            var terminal = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            terminal.name = "UpgradeTerminal";
-            terminal.transform.position = new Vector3(ShopX, 0.8f, SouthZ + 1.75f);
-            terminal.transform.rotation = ShopRot;
-            terminal.transform.localScale = new Vector3(0.9f, 1.6f, 0.5f);
-            terminal.GetComponent<Renderer>().sharedMaterial = _terminal;
+            var terminal = BuildArcadeCabinet("UpgradeTerminal", new Vector3(ArcadeX, 0f, SouthZ + 1.75f), 0f);
             terminal.AddComponent<UpgradeTerminal>();
-            var screen = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            screen.name = "Screen";
-            screen.transform.SetParent(terminal.transform, false);
-            screen.transform.localPosition = new Vector3(0f, 0.2f, 0.52f);
-            screen.transform.localScale = new Vector3(0.8f, 0.35f, 0.05f);
-            screen.GetComponent<Renderer>().sharedMaterial = _marker;
-            Object.DestroyImmediate(screen.GetComponent<Collider>());
-            var termText = Text3D(terminal.transform, "Label", "UPGRADES", 1.2f, new Vector3(0f, 0.6f, 0.52f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.5f, 0.3f), Color.white);
-            termText.transform.localScale = new Vector3(1f / 0.9f, 1f / 1.6f, 1f / 0.5f);
 
             BuildSlotMachine();
             BuildCashRegister();
@@ -201,6 +190,7 @@ namespace SortThem.Editor
         {
             CreateMaterials();
             var catalog = AssetDatabase.LoadAssetAtPath<CarCatalog>(Paths.Catalog);
+            _roomLayout = RoomLayoutCapture.Load();
             if (catalog == null || catalog.SpecialCategory == null)
             {
                 Debug.LogError("SortThem: import special cars first (menu 3h)");
@@ -242,7 +232,10 @@ namespace SortThem.Editor
             var racksRoot = GameObject.Find("Racks");
             var rackGo = new GameObject("Rack_" + cat.CategoryID);
             if (racksRoot != null) rackGo.transform.SetParent(racksRoot.transform, false);
-            rackGo.transform.SetPositionAndRotation(SpecialRackPos, Quaternion.identity);
+            var podiumPos = SpecialRackPos;
+            float podiumYaw = 0f;
+            if (_roomLayout != null && _roomLayout.TryGetRack(cat.CategoryID, out var savedPodium, out var savedPodiumYaw)) { podiumPos = savedPodium; podiumYaw = savedPodiumYaw; }
+            rackGo.transform.SetPositionAndRotation(podiumPos, Quaternion.Euler(0f, podiumYaw, 0f));
             var rack = rackGo.AddComponent<RackController>();
             rack.Category = cat;
 
@@ -374,46 +367,89 @@ namespace SortThem.Editor
         {
             var existing = GameObject.Find("SlotMachine");
             if (existing != null) Object.DestroyImmediate(existing);
-            var slot = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            slot.name = "SlotMachine";
-            slot.transform.position = new Vector3(ShopX, 0.8f, SouthZ + 0.6f);
-            slot.transform.rotation = ShopRot;
-            slot.transform.localScale = new Vector3(0.8f, 1.6f, 0.5f);
-            slot.GetComponent<Renderer>().sharedMaterial = _radio;
-            slot.AddComponent<SlotMachine>();
-            var screen = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            screen.name = "Screen";
-            screen.transform.SetParent(slot.transform, false);
-            screen.transform.localPosition = new Vector3(0f, 0.15f, 0.52f);
-            screen.transform.localScale = new Vector3(0.8f, 0.3f, 0.05f);
-            screen.GetComponent<Renderer>().sharedMaterial = _plateGold;
-            Object.DestroyImmediate(screen.GetComponent<Collider>());
-            var lever = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            lever.name = "Lever";
-            lever.transform.SetParent(slot.transform, false);
-            lever.transform.localPosition = new Vector3(0.52f, 0.2f, 0.44f);
-            lever.transform.localScale = new Vector3(0.08f, 0.22f, 0.12f);
-            lever.GetComponent<Renderer>().sharedMaterial = _terminal;
-            Object.DestroyImmediate(lever.GetComponent<Collider>());
-            var knob = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            knob.name = "Knob";
-            knob.transform.SetParent(slot.transform, false);
-            knob.transform.localPosition = new Vector3(0.52f, 0.45f, 0.44f);
-            knob.transform.localScale = new Vector3(0.14f, 0.07f, 0.22f);
-            knob.GetComponent<Renderer>().sharedMaterial = _plateRed;
-            Object.DestroyImmediate(knob.GetComponent<Collider>());
-            var label = Text3D(slot.transform, "Label", "CAR POT", 1.2f, new Vector3(0f, 0.6f, 0.52f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.5f, 0.3f), Color.white);
-            label.transform.localScale = new Vector3(1f / 0.8f, 1f / 1.6f, 1f / 0.5f);
+
+            var floorPos = new Vector3(ArcadeX, 0f, SouthZ + 0.35f);
+            var root = new GameObject("SlotMachine");
+            root.transform.SetPositionAndRotation(floorPos, Quaternion.Euler(0f, SlotYaw, 0f));
+
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(SlotMachinePrefab);
+            if (prefab == null)
+            {
+                Debug.LogError("SortThem: slot machine model not found at " + SlotMachinePrefab);
+                Panel("Stand", root.transform, new Vector3(0f, SlotStandH * 0.5f, 0f), new Vector3(SlotStandW, SlotStandH, SlotStandD), _rack, SlabTile);
+                root.AddComponent<SlotMachine>();
+                return;
+            }
+
+            var machine = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            machine.name = "Machine";
+            machine.transform.SetParent(root.transform, false);
+            machine.transform.localRotation = Quaternion.identity;
+            machine.transform.localPosition = Vector3.zero;
+
+            var body = machine.transform.Find("SlotMachine_Body");
+            var bodyRenderer = body != null ? body.GetComponent<MeshRenderer>() : null;
+            var local = LocalBoundsIn(root.transform, bodyRenderer != null ? bodyRenderer.gameObject : machine);
+            machine.transform.localScale *= SlotStandW / local.size.x;
+
+            local = LocalBoundsIn(root.transform, bodyRenderer != null ? bodyRenderer.gameObject : machine);
+            float standW = local.size.x;
+            float standD = local.size.z + 0.04f;
+
+            Panel("Stand", root.transform, new Vector3(local.center.x, SlotStandH * 0.5f, local.center.z), new Vector3(standW, SlotStandH, standD), _rack, SlabTile);
+            Panel("StandTop", root.transform, new Vector3(local.center.x, SlotStandH + BoardT * 0.5f, local.center.z),
+                new Vector3(standW + CapOverhang * 2f, BoardT, standD + CapOverhang * 2f), _board, SlabTile);
+
+            var all = LocalBoundsIn(root.transform, machine);
+            machine.transform.localPosition += new Vector3(0f, SlotStandH + BoardT - all.min.y, 0f);
+
+            foreach (var t in machine.GetComponentsInChildren<Transform>())
+                t.gameObject.isStatic = !(t.name.Contains("Reel") || t.name.Contains("Lever"));
+
+            root.AddComponent<SlotMachine>();
+        }
+
+        static Bounds LocalBoundsIn(Transform space, GameObject go)
+        {
+            var toLocal = space.worldToLocalMatrix;
+            var b = new Bounds();
+            bool first = true;
+            foreach (var mf in go.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (mf.sharedMesh == null) continue;
+                var mb = mf.sharedMesh.bounds;
+                var m = toLocal * mf.transform.localToWorldMatrix;
+                for (int i = 0; i < 8; i++)
+                {
+                    var corner = mb.center + Vector3.Scale(mb.extents, new Vector3((i & 1) == 0 ? -1f : 1f, (i & 2) == 0 ? -1f : 1f, (i & 4) == 0 ? -1f : 1f));
+                    var pt = m.MultiplyPoint3x4(corner);
+                    if (first) { b = new Bounds(pt, Vector3.zero); first = false; }
+                    else b.Encapsulate(pt);
+                }
+            }
+            return b;
         }
 
         static void CreateMaterials()
         {
+            string tex = RoomTextures.Folder;
+            _woodBeam = EditorAssets.Textured("Room_WoodBeam", tex + "/Wood_Beam.png", Color.white, 0.18f);
+            _woodPanel = EditorAssets.Textured("Room_WoodPanel", tex + "/Wood_Panel.png", Color.white, 0.15f);
+            _woodPanelV = EditorAssets.Textured("Room_WoodPanelV", tex + "/Wood_PlanksV.png", Color.white, 0.15f);
+            _woodFloor = EditorAssets.Textured("Room_WoodFloor", tex + "/Wood_Floor.png", Color.white, 0.22f);
+            _plaster = EditorAssets.Textured("Room_Plaster", tex + "/Plaster_Blue.png", Color.white, 0.05f);
+            _ceilingPlaster = EditorAssets.Textured("Room_Ceiling", tex + "/Plaster_Ceiling.png", Color.white, 0.05f);
+            _glass = EditorAssets.Textured("Room_Window", tex + "/Window_Frost.png", Color.white, 0f, true);
+            _sky = EditorAssets.Textured("Room_WindowSky", tex + "/Window_Sky.png", Color.white, 0f, true);
+            _rug = EditorAssets.Textured("Room_Rug", tex + "/Rug_Check.png", Color.white, 0.04f);
+            _lampGlow = EditorAssets.Unlit("Room_LampGlow", new Color(1f, 0.93f, 0.75f));
             _floor = EditorAssets.Lit("Floor", new Color(0.42f, 0.42f, 0.45f));
             _wall = EditorAssets.Lit("Wall", new Color(0.78f, 0.74f, 0.66f));
             _ceiling = EditorAssets.Lit("Ceiling", new Color(0.85f, 0.85f, 0.85f));
-            _rack = EditorAssets.Lit("Rack", new Color(0.35f, 0.27f, 0.2f));
-            _board = EditorAssets.Lit("ShelfBoard", new Color(0.6f, 0.48f, 0.36f));
-            _podium = EditorAssets.Lit("Podium", new Color(0.5f, 0.5f, 0.55f));
+            _rack = EditorAssets.Textured("Rack", tex + "/Wood_Slab.png", Color.white, 0.16f);
+            _board = EditorAssets.Textured("ShelfBoard", tex + "/Wood_Slab.png", new Color(1.05f, 1.02f, 0.98f), 0.18f);
+            _rackBack = EditorAssets.Textured("RackBack", tex + "/Wood_PlanksV.png", Color.white, 0.12f);
+            _podium = EditorAssets.Textured("Podium", tex + "/Wood_Panel.png", new Color(0.82f, 0.78f, 0.74f), 0.2f);
             _terminal = EditorAssets.Lit("Terminal", new Color(0.15f, 0.15f, 0.18f));
             _cabinet = EditorAssets.Lit("Cabinet", new Color(0.42f, 0.28f, 0.16f));
             _radio = EditorAssets.Lit("Radio", new Color(0.75f, 0.55f, 0.3f));
@@ -437,6 +473,19 @@ namespace SortThem.Editor
             _heldCars = EditorAssets.LoadOrCreateMaterial("CarsHeld", "SortThem/VertexColorLitOverlay", Color.white);
         }
 
+        const float SlabTile = 1.0f;
+        const float PairGap = 0.12f;
+        const float CapOverhang = 0.02f;
+        const float GlassTile = 3.0f;
+        static RoomLayoutData _roomLayout;
+
+        static GameObject Panel(string name, Transform parent, Vector3 center, Vector3 size, Material mat, float metersPerTile)
+        {
+            var go = RoomMesh.Box(name, parent, center, size, mat, metersPerTile);
+            go.AddComponent<BoxCollider>().size = size;
+            return go;
+        }
+
         static GameObject Block(string name, Transform parent, Vector3 center, Vector3 size, Material mat, bool isStatic = true)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -451,23 +500,376 @@ namespace SortThem.Editor
 
         static readonly Quaternion ShopRot = Quaternion.Euler(0f, -90f, 0f);
 
-        static void BuildRoom()
+        const float SocleH = 1.10f, WinBottom = 2.40f, WinTop = 3.90f, CorniceH = 0.12f, SillH = 0.10f;
+        const float PanoBottom = 0.90f, Module = 2.0f;
+        const float TrimDepth = 0.06f, MullionW = 0.05f;
+        const float BeamH = 0.30f, BeamT = 0.22f;
+        const float PostW = BeamT, PostDepth = BeamH;
+
+        struct WallRun
+        {
+            public Vector3 Start;
+            public Vector3 Along;
+            public Vector3 In;
+            public float Length;
+            public int PanoramaFrom;
+            public WallRun(Vector3 start, Vector3 along, Vector3 inward, float length, int panoramaFrom = -1)
+            {
+                Start = start; Along = along; In = inward; Length = length; PanoramaFrom = panoramaFrom;
+            }
+        }
+
+        static void BuildRoom(List<RackPlacement> racks)
         {
             var room = new GameObject("Room").transform;
             float armLen = Max - Inner;
-            Block("Floor_W", room, new Vector3(WestX, -0.1f, 0f), new Vector3(WingW + 2f, 0.2f, ArmLen + 2f), _floor);
-            Block("Floor_S", room, new Vector3((Inner + Max) * 0.5f, -0.1f, SouthZ), new Vector3(armLen + 2f, 0.2f, WingW + 2f), _floor);
-            Block("Ceiling_W", room, new Vector3(WestX, RoomH + 0.15f, 0f), new Vector3(WingW + 2f, 0.3f, ArmLen + 2f), _ceiling);
-            Block("Ceiling_S", room, new Vector3((Inner + Max) * 0.5f, RoomH + 0.15f, SouthZ), new Vector3(armLen + 2f, 0.3f, WingW + 2f), _ceiling);
-            Block("Wall_W", room, new Vector3(Min - WallT * 0.5f, RoomH * 0.5f, 0f), new Vector3(WallT, RoomH, ArmLen + WallT * 2f), _wall);
-            Block("Wall_N", room, new Vector3(WestX, RoomH * 0.5f, Max + WallT * 0.5f), new Vector3(WingW + WallT * 2f, RoomH, WallT), _wall);
-            Block("Wall_IE", room, new Vector3(Inner + WallT * 0.5f, RoomH * 0.5f, (Inner + Max) * 0.5f + WallT * 0.5f), new Vector3(WallT, RoomH, armLen + WallT), _wall);
-            Block("Wall_IN", room, new Vector3((Inner + Max) * 0.5f + WallT * 0.5f, RoomH * 0.5f, Inner + WallT * 0.5f), new Vector3(armLen + WallT, RoomH, WallT), _wall);
-            Block("Wall_E", room, new Vector3(Max + WallT * 0.5f, RoomH * 0.5f, SouthZ), new Vector3(WallT, RoomH, WingW + WallT * 2f), _wall);
-            Block("Wall_S", room, new Vector3(0f, RoomH * 0.5f, Min - WallT * 0.5f), new Vector3(ArmLen + WallT * 2f, RoomH, WallT), _wall);
+
+            float slabW = WingW + 2f;
+            float westEdge = WestX + slabW * 0.5f;
+            float southW = Max + 1f - westEdge;
+            float southCx = westEdge + southW * 0.5f;
+            BuildSlab("Floor_W", room, new Vector3(WestX, -0.1f, 0f), new Vector3(slabW, 0.2f, ArmLen + 2f), _woodFloor, 1.2f);
+            BuildSlab("Floor_S", room, new Vector3(southCx, -0.1f, SouthZ), new Vector3(southW, 0.2f, slabW), _woodFloor, 1.2f);
+            BuildSlab("Ceiling_W", room, new Vector3(WestX, RoomH + 0.15f, 0f), new Vector3(slabW, 0.3f, ArmLen + 2f), _ceilingPlaster, 2.5f);
+            BuildSlab("Ceiling_S", room, new Vector3(southCx, RoomH + 0.15f, SouthZ), new Vector3(southW, 0.3f, slabW), _ceilingPlaster, 2.5f);
+
+            BuildWallCollider("Wall_W", room, new Vector3(Min - WallT * 0.5f, RoomH * 0.5f, 0f), new Vector3(WallT, RoomH, ArmLen + WallT * 2f));
+            BuildWallCollider("Wall_N", room, new Vector3(WestX, RoomH * 0.5f, Max + WallT * 0.5f), new Vector3(WingW + WallT * 2f, RoomH, WallT));
+            BuildWallCollider("Wall_IE", room, new Vector3(Inner + WallT * 0.5f, RoomH * 0.5f, (Inner + Max) * 0.5f + WallT * 0.5f), new Vector3(WallT, RoomH, armLen + WallT));
+            BuildWallCollider("Wall_IN", room, new Vector3((Inner + Max) * 0.5f + WallT * 0.5f, RoomH * 0.5f, Inner + WallT * 0.5f), new Vector3(armLen + WallT, RoomH, WallT));
+            BuildWallCollider("Wall_E", room, new Vector3(Max + WallT * 0.5f, RoomH * 0.5f, SouthZ), new Vector3(WallT, RoomH, WingW + WallT * 2f));
+            BuildWallCollider("Wall_S", room, new Vector3(0f, RoomH * 0.5f, Min - WallT * 0.5f), new Vector3(ArmLen + WallT * 2f, RoomH, WallT));
+
+            var runs = new[]
+            {
+                new WallRun(new Vector3(Min, 0f, Min), Vector3.forward, Vector3.right, ArmLen),
+                new WallRun(new Vector3(Min, 0f, Max), Vector3.right, Vector3.back, WingW, 0),
+                new WallRun(new Vector3(Inner, 0f, Max), Vector3.back, Vector3.left, armLen),
+                new WallRun(new Vector3(Inner, 0f, Inner), Vector3.right, Vector3.back, armLen, 4),
+                new WallRun(new Vector3(Max, 0f, Inner), Vector3.back, Vector3.left, WingW),
+                new WallRun(new Vector3(Max, 0f, Min), Vector3.left, Vector3.forward, ArmLen)
+            };
+            var walls = new GameObject("Walls").transform;
+            walls.SetParent(room, false);
+            for (int i = 0; i < runs.Length; i++) BuildWallRun(walls, runs[i], i, racks);
+
+            BuildCeilingBeams(room);
+            BuildRugs(room);
         }
 
-        static List<ShelfController> BuildRacks(CarCatalog catalog, ShelfData shelfData)
+        static void BuildSlab(string name, Transform parent, Vector3 center, Vector3 size, Material mat, float metersPerTile)
+        {
+            var go = RoomMesh.Box(name, parent, center, size, mat, metersPerTile);
+            go.AddComponent<BoxCollider>().size = size;
+        }
+
+        static void BuildWallCollider(string name, Transform parent, Vector3 center, Vector3 size)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = center;
+            go.AddComponent<BoxCollider>().size = size;
+            go.isStatic = true;
+        }
+
+        static void BuildWallRun(Transform parent, WallRun run, int index, List<RackPlacement> racks)
+        {
+            var root = new GameObject("Run_" + index).transform;
+            root.SetParent(parent, false);
+
+            var spans = RacksOnRun(run, racks);
+            var posts = new List<float> { 0f };
+            for (int i = 0; i + 1 < spans.Count; i++) posts.Add((spans[i].end + spans[i + 1].start) * 0.5f);
+            float panoStart = run.PanoramaFrom >= 0 ? run.PanoramaFrom * Module : -1f;
+            if (panoStart > 0.5f && panoStart < run.Length - 0.5f) posts.Add(panoStart);
+            posts.Sort();
+
+            var bounds = new List<float>(posts) { run.Length };
+            for (int i = 0; i + 1 < bounds.Count; i++)
+            {
+                float a = bounds[i] + PostW * 0.5f;
+                float b = bounds[i + 1] - (i + 2 < bounds.Count ? PostW * 0.5f : 0f);
+                float len = b - a;
+                if (len < 0.1f) continue;
+                float centerT = (a + b) * 0.5f;
+                var mid = run.Start + run.Along * centerT;
+                bool pano = panoStart >= 0f && centerT >= panoStart;
+                bool behindRack = IsBehindRack(spans, a, b);
+                float bottom = pano ? PanoBottom : WinBottom;
+
+                if (behindRack)
+                    Span(root, "WallLow_" + i, mid, run, len, 0f, bottom - SillH, _plaster, 2.5f, 0.02f);
+                else
+                {
+                    float socleTop = Mathf.Min(SocleH, bottom - SillH);
+                    Span(root, "Socle_" + i, mid, run, len, 0f, socleTop, _woodPanelV, 0.9f, TrimDepth, false);
+                    Span(root, "Plaster_" + i, mid, run, len, socleTop, bottom - SillH, _plaster, 2.5f, 0.02f);
+                }
+
+                Span(root, "Sill_" + i, mid, run, len, bottom - SillH, bottom, _woodBeam, 1f, TrimDepth * 1.6f);
+                float rowMid = (bottom + WinTop) * 0.5f;
+                if (pano)
+                {
+                    GlassSpan(root, "GlassLow_" + i, mid, run, len, bottom, rowMid, _glass);
+                    GlassSpan(root, "GlassHigh_" + i, mid, run, len, rowMid, WinTop, _sky);
+                }
+                else GlassSpan(root, "Glass_" + i, mid, run, len, bottom, WinTop, _sky);
+
+                int panes = Mathf.Max(2, Mathf.RoundToInt(len / Module));
+                for (int k = 1; k < panes; k++)
+                {
+                    float t = a + len * k / panes;
+                    AddBar(root, "Mullion_" + i + "_" + k, run.Start + run.Along * t, run, MullionW, bottom, WinTop, _woodBeam);
+                }
+                float midY = (bottom + WinTop) * 0.5f;
+                Span(root, "Transom_" + i, mid, run, len, midY - MullionW * 0.5f, midY + MullionW * 0.5f, _woodBeam, 1f, TrimDepth * 0.9f);
+
+                Span(root, "Cornice_" + i, mid, run, len, WinTop, WinTop + CorniceH, _woodBeam, 1f, TrimDepth * 1.6f);
+                Span(root, "Upper_" + i, mid, run, len, WinTop + CorniceH, RoomH - 0.30f, _plaster, 2.5f, 0.02f);
+                Span(root, "Header_" + i, mid, run, len, RoomH - 0.30f, RoomH, _woodBeam, 1f, TrimDepth * 1.4f);
+            }
+
+            for (int i = 0; i < posts.Count; i++)
+                AddPost(root, "Post_" + i, run.Start + run.Along * posts[i], run);
+        }
+
+        static List<(float start, float end)> RacksOnRun(WallRun run, List<RackPlacement> racks)
+        {
+            var spans = new List<(float start, float end)>();
+            if (racks == null) return spans;
+            float half = RackTotalW * 0.5f + 0.05f;
+            foreach (var r in racks)
+            {
+                var v = r.Pos - run.Start;
+                float depth = Vector3.Dot(v, run.In);
+                if (depth < 0.05f || depth > RackD * 0.9f) continue;
+                var facing = Quaternion.Euler(0f, r.Yaw, 0f) * Vector3.forward;
+                if (Vector3.Dot(facing, run.In) < 0.7f) continue;
+                float t = Vector3.Dot(v, run.Along);
+                float s0 = Mathf.Clamp(t - half, 0f, run.Length);
+                float s1 = Mathf.Clamp(t + half, 0f, run.Length);
+                if (s1 - s0 > 0.2f) spans.Add((s0, s1));
+            }
+            spans.Sort((x, y) => x.start.CompareTo(y.start));
+            return spans;
+        }
+
+        static bool IsBehindRack(List<(float start, float end)> spans, float a, float b)
+        {
+            float covered = 0f;
+            foreach (var s in spans) covered += Mathf.Max(0f, Mathf.Min(b, s.end) - Mathf.Max(a, s.start));
+            return covered > (b - a) * 0.5f;
+        }
+
+        static void AddPost(Transform parent, string name, Vector3 at, WallRun run)
+        {
+            var along = new Vector3(Mathf.Abs(run.Along.x), 0f, Mathf.Abs(run.Along.z));
+            var thick = new Vector3(Mathf.Abs(run.In.x), 0f, Mathf.Abs(run.In.z));
+            var size = along * PostW + thick * PostDepth + Vector3.up * RoomH;
+            var center = at + Vector3.up * (RoomH * 0.5f) + run.In * (PostDepth * 0.5f);
+            RoomMesh.Box(name, parent, center, size, _woodBeam, 1f);
+        }
+
+        static void GlassSpan(Transform parent, string name, Vector3 mid, WallRun run, float width, float y0, float y1, Material mat)
+        {
+            float h = y1 - y0;
+            if (h <= 0.001f || width <= 0.001f) return;
+            var along = new Vector3(Mathf.Abs(run.Along.x), 0f, Mathf.Abs(run.Along.z));
+            var thick = new Vector3(Mathf.Abs(run.In.x), 0f, Mathf.Abs(run.In.z));
+            var size = along * width + thick * 0.012f + Vector3.up * h;
+            var center = mid + Vector3.up * ((y0 + y1) * 0.5f) + run.In * 0.006f;
+            RoomMesh.Box(name, parent, center, size, mat, new Vector2(GlassTile, h), false);
+        }
+
+        static void Span(Transform parent, string name, Vector3 mid, WallRun run, float width, float y0, float y1, Material mat, float metersPerTile, float depth, bool grainAlongLongest = true)
+        {
+            if (y1 - y0 <= 0.001f || width <= 0.001f) return;
+            var along = new Vector3(Mathf.Abs(run.Along.x), 0f, Mathf.Abs(run.Along.z));
+            var thick = new Vector3(Mathf.Abs(run.In.x), 0f, Mathf.Abs(run.In.z));
+            var size = along * width + thick * depth + Vector3.up * (y1 - y0);
+            var center = mid + Vector3.up * ((y0 + y1) * 0.5f) + run.In * (depth * 0.5f);
+            RoomMesh.Box(name, parent, center, size, mat, metersPerTile, grainAlongLongest);
+        }
+
+        static void AddBar(Transform parent, string name, Vector3 at, WallRun run, float width, float y0, float y1, Material mat)
+        {
+            var along = new Vector3(Mathf.Abs(run.Along.x), 0f, Mathf.Abs(run.Along.z));
+            var thick = new Vector3(Mathf.Abs(run.In.x), 0f, Mathf.Abs(run.In.z));
+            float depth = TrimDepth * 1.8f;
+            var size = along * width + thick * depth + Vector3.up * (y1 - y0);
+            var center = at + Vector3.up * ((y0 + y1) * 0.5f) + run.In * (depth * 0.5f);
+            RoomMesh.Box(name, parent, center, size, mat, 1f);
+        }
+
+        static void BuildCeilingBeams(Transform room)
+        {
+            var beams = new GameObject("Beams").transform;
+            beams.SetParent(room, false);
+            float y = RoomH - 0.18f;
+            var beamSize = new Vector3(WingW, BeamH, BeamT);
+            int n = Mathf.RoundToInt(ArmLen / Module);
+            for (int i = 0; i <= n; i++)
+            {
+                float z = Min + i * (ArmLen / n);
+                RoomMesh.Box("Beam_W_" + i, beams, new Vector3(WestX, y, z), beamSize, _woodBeam, 1f);
+                if (i % 2 == 0) AddLamps(beams, new Vector3(WestX, y, z), Vector3.right, WingW, "W" + i);
+            }
+            float armLen = Max - Inner;
+            int m = Mathf.RoundToInt(armLen / Module);
+            var beamSizeS = new Vector3(BeamT, BeamH, WingW);
+            for (int i = 0; i <= m; i++)
+            {
+                float x = Inner + i * (armLen / m);
+                RoomMesh.Box("Beam_S_" + i, beams, new Vector3(x, y, SouthZ), beamSizeS, _woodBeam, 1f);
+                if (i % 2 == 0) AddLamps(beams, new Vector3(x, y, SouthZ), Vector3.forward, WingW, "S" + i);
+            }
+        }
+
+        static void AddLamps(Transform parent, Vector3 beamCenter, Vector3 along, float span, string tag)
+        {
+            for (int k = -1; k <= 1; k += 2)
+            {
+                var at = beamCenter + along * (span * 0.25f * k) + Vector3.down * 0.2f;
+                RoomMesh.Box("LampBody_" + tag + "_" + k, parent, at, new Vector3(0.12f, 0.14f, 0.12f), _woodBeam, 1f);
+                RoomMesh.Box("LampGlow_" + tag + "_" + k, parent, at + Vector3.down * 0.09f, new Vector3(0.14f, 0.03f, 0.14f), _lampGlow, 1f);
+            }
+        }
+
+        const string ArcadePrefab = "Assets/Arcade machine/fbx.fbx";
+        const float ArcadeHeight = 1.75f;
+        const string SlotMachinePrefab = "Assets/_Game/Prefabs/SlotMachine.prefab";
+        const float SlotStandH = 0.9f, SlotStandW = 0.62f, SlotStandD = 0.52f;
+        const float SlotMachineH = 0.62f;
+        const float SlotYaw = 270f;
+        const float ArcadeX = Max - 0.62f;
+
+        static GameObject BuildArcadeCabinet(string name, Vector3 floorPos, float yaw)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ArcadePrefab);
+            if (prefab == null)
+            {
+                Debug.LogError("SortThem: arcade cabinet model not found at " + ArcadePrefab);
+                var fallback = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                fallback.name = name;
+                fallback.transform.SetPositionAndRotation(floorPos + Vector3.up * 0.8f, Quaternion.Euler(0f, yaw, 0f));
+                fallback.transform.localScale = new Vector3(0.9f, 1.6f, 0.5f);
+                fallback.GetComponent<Renderer>().sharedMaterial = _terminal;
+                return fallback;
+            }
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            go.name = name;
+            go.transform.rotation = Quaternion.Euler(0f, yaw, 0f) * prefab.transform.localRotation;
+            go.transform.position = floorPos;
+
+            var world = WorldBounds(go);
+            float scale = ArcadeHeight / world.size.y;
+            go.transform.localScale *= scale;
+            world = WorldBounds(go);
+            go.transform.position += new Vector3(floorPos.x - world.center.x, floorPos.y - world.min.y, floorPos.z - world.center.z);
+
+            var local = LocalBounds(go);
+            var box = go.AddComponent<BoxCollider>();
+            box.center = local.center;
+            box.size = local.size;
+            foreach (var t in go.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
+            return go;
+        }
+
+        static Bounds LocalBounds(GameObject go)
+        {
+            var toLocal = go.transform.worldToLocalMatrix;
+            var b = new Bounds();
+            bool first = true;
+            foreach (var mf in go.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (mf.sharedMesh == null) continue;
+                var mb = mf.sharedMesh.bounds;
+                var m = toLocal * mf.transform.localToWorldMatrix;
+                for (int i = 0; i < 8; i++)
+                {
+                    var corner = mb.center + Vector3.Scale(mb.extents, new Vector3((i & 1) == 0 ? -1f : 1f, (i & 2) == 0 ? -1f : 1f, (i & 4) == 0 ? -1f : 1f));
+                    var p = m.MultiplyPoint3x4(corner);
+                    if (first) { b = new Bounds(p, Vector3.zero); first = false; }
+                    else b.Encapsulate(p);
+                }
+            }
+            return b;
+        }
+
+        static Bounds WorldBounds(GameObject go)
+        {
+            var b = new Bounds();
+            bool first = true;
+            foreach (var r in go.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                if (first) { b = r.bounds; first = false; }
+                else b.Encapsulate(r.bounds);
+            }
+            return b;
+        }
+
+        static void BuildRugs(Transform room)
+        {
+            var rugs = new GameObject("Rugs").transform;
+            rugs.SetParent(room, false);
+            if (_roomLayout != null && _roomLayout.Rugs != null && _roomLayout.Rugs.Length > 0)
+            {
+                foreach (var e in _roomLayout.Rugs)
+                {
+                    var size = new Vector3(e.Size.x, Mathf.Max(0.01f, e.Size.y), e.Size.z);
+                    RoomMesh.Box(e.Name, rugs, e.Position, size, _rug, 2f);
+                }
+                return;
+            }
+            RoomMesh.Box("Rug_Shop", rugs, new Vector3(Max - 2.6f, 0.005f, SouthZ), new Vector3(3.6f, 0.01f, 6.0f), _rug, 2f);
+            RoomMesh.Box("Rug_WestAisle", rugs, new Vector3(WestX, 0.005f, Max - 4.5f), new Vector3(4.4f, 0.01f, 5.0f), _rug, 2f);
+        }
+
+        struct RackPlacement
+        {
+            public CategoryData Cat;
+            public Vector3 Pos;
+            public float Yaw;
+        }
+
+        static List<RackPlacement> ComputeRacks(CarCatalog catalog)
+        {
+            var slots = new List<(Vector3 pos, float yaw)>();
+            var categories = new List<CategoryData>();
+            foreach (var c in catalog.Categories) if (c != null && !catalog.IsSpecial(c)) categories.Add(c);
+            int need = categories.Count;
+            float wallOff = RackD * 0.5f + 0.05f;
+            float pairOff = (RackD + PairGap) * 0.5f;
+            float c1 = Max - 0.5f - RackTotalW * 0.5f, c3 = Min + 1.2f + RackTotalW * 0.5f;
+            float[] wallCenters = { c1, (c1 + c3) * 0.5f, c3 };
+            float[] wingCenters = { Inner + 0.2f + RackTotalW * 0.5f, Max - 1.2f - RackTotalW * 0.5f };
+            foreach (float z in wallCenters) slots.Add((new Vector3(Min + wallOff, 0f, z), 90f));
+            foreach (float z in wingCenters)
+            {
+                slots.Add((new Vector3(WestX + pairOff, 0f, z), 90f));
+                slots.Add((new Vector3(WestX - pairOff, 0f, z), -90f));
+                slots.Add((new Vector3(Inner - wallOff, 0f, z), -90f));
+            }
+            slots.Add((new Vector3(wingCenters[0], 0f, Inner - wallOff), 180f));
+            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ + pairOff), 0f));
+            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ - pairOff), 180f));
+            foreach (float x in wallCenters) slots.Add((new Vector3(-x, 0f, Min + wallOff), 0f));
+            if (slots.Count < need) Debug.LogError($"SortThem: {need} categories, only {slots.Count} rack slots");
+            if (slots.Count > need) slots.RemoveRange(need, slots.Count - need);
+
+            var list = new List<RackPlacement>(slots.Count);
+            for (int i = 0; i < slots.Count; i++)
+            {
+                var cat = categories[i];
+                var pos = slots[i].pos;
+                float yaw = slots[i].yaw;
+                if (_roomLayout != null && _roomLayout.TryGetRack(cat.CategoryID, out var savedPos, out var savedYaw)) { pos = savedPos; yaw = savedYaw; }
+                list.Add(new RackPlacement { Cat = cat, Pos = pos, Yaw = yaw });
+            }
+            return list;
+        }
+
+        static List<ShelfController> BuildRacks(CarCatalog catalog, ShelfData shelfData, List<RackPlacement> placements)
         {
             var shelves = new List<ShelfController>();
             var slots = new List<(Vector3 pos, float yaw)>();
@@ -475,19 +877,20 @@ namespace SortThem.Editor
             foreach (var c in catalog.Categories) if (c != null && !catalog.IsSpecial(c)) categories.Add(c);
             int need = categories.Count;
             float wallOff = RackD * 0.5f + 0.05f;
+            float pairOff = (RackD + PairGap) * 0.5f;
             float c1 = Max - 0.5f - RackTotalW * 0.5f, c3 = Min + 1.2f + RackTotalW * 0.5f;
             float[] wallCenters = { c1, (c1 + c3) * 0.5f, c3 };
             float[] wingCenters = { Inner + 0.2f + RackTotalW * 0.5f, Max - 1.2f - RackTotalW * 0.5f };
             foreach (float z in wallCenters) slots.Add((new Vector3(Min + wallOff, 0f, z), 90f));
             foreach (float z in wingCenters)
             {
-                slots.Add((new Vector3(WestX + RackD * 0.5f, 0f, z), 90f));
-                slots.Add((new Vector3(WestX - RackD * 0.5f, 0f, z), -90f));
+                slots.Add((new Vector3(WestX + pairOff, 0f, z), 90f));
+                slots.Add((new Vector3(WestX - pairOff, 0f, z), -90f));
                 slots.Add((new Vector3(Inner - wallOff, 0f, z), -90f));
             }
             slots.Add((new Vector3(wingCenters[0], 0f, Inner - wallOff), 180f));
-            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ + RackD * 0.5f), 0f));
-            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ - RackD * 0.5f), 180f));
+            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ + pairOff), 0f));
+            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ - pairOff), 180f));
             foreach (float x in wallCenters) slots.Add((new Vector3(-x, 0f, Min + wallOff), 0f));
             if (slots.Count < need) Debug.LogError($"SortThem: {need} categories, only {slots.Count} rack slots");
             if (slots.Count > need) slots.RemoveRange(need, slots.Count - need);
@@ -496,9 +899,9 @@ namespace SortThem.Editor
             var racksRoot = new GameObject("Racks").transform;
             int shelfId = 0;
             float totalW = RackTotalW;
-            for (int r = 0; r < slots.Count; r++)
+            for (int r = 0; r < placements.Count; r++)
             {
-                var cat = categories[r];
+                var cat = placements[r].Cat;
                 var rackData = EditorAssets.LoadOrCreate<RackData>(Paths.Racks + "/Rack_" + cat.CategoryID + ".asset");
                 rackData.Category = cat;
                 rackData.ShelfCount = ShelvesPerSection * Sections;
@@ -507,18 +910,22 @@ namespace SortThem.Editor
 
                 var rackGo = new GameObject("Rack_" + cat.CategoryID);
                 rackGo.transform.SetParent(racksRoot, false);
-                rackGo.transform.SetPositionAndRotation(slots[r].pos, Quaternion.Euler(0f, slots[r].yaw, 0f));
+                rackGo.transform.SetPositionAndRotation(placements[r].Pos, Quaternion.Euler(0f, placements[r].Yaw, 0f));
                 var rack = rackGo.AddComponent<RackController>();
                 rack.Category = cat;
 
-                Block("Back", rackGo.transform, new Vector3(0f, RackH * 0.5f, -RackD * 0.5f + 0.015f), new Vector3(totalW + 0.1f, RackH, 0.03f), _rack);
-                Block("Side_L", rackGo.transform, new Vector3(-totalW * 0.5f - 0.025f, RackH * 0.5f, 0f), new Vector3(0.05f, RackH, RackD), _rack);
-                Block("Side_R", rackGo.transform, new Vector3(totalW * 0.5f + 0.025f, RackH * 0.5f, 0f), new Vector3(0.05f, RackH, RackD), _rack);
-                for (int d = 1; d < Sections; d++)
-                    Block("Divider_" + d, rackGo.transform, new Vector3(-totalW * 0.5f + d * (RackW + DividerT) - DividerT * 0.5f, RackH * 0.5f, 0f), new Vector3(DividerT, RackH, RackD), _rack);
-                Block("Top", rackGo.transform, new Vector3(0f, RackH + 0.02f, 0f), new Vector3(totalW + 0.1f, BoardT, RackD), _rack);
                 float plinthH = BottomShelfHeight - BoardT;
-                if (plinthH > 0.02f) Block("Plinth", rackGo.transform, new Vector3(0f, plinthH * 0.5f, 0f), new Vector3(totalW + 0.1f, plinthH, RackD), _rack);
+                float bodyBottom = plinthH > 0.02f ? plinthH : 0f;
+                float bodyH = RackH - bodyBottom;
+                float bodyMidY = bodyBottom + bodyH * 0.5f;
+
+                Panel("Back", rackGo.transform, new Vector3(0f, bodyMidY, -RackD * 0.5f + 0.015f), new Vector3(totalW, bodyH, 0.03f), _rackBack, 1f);
+                Panel("Side_L", rackGo.transform, new Vector3(-totalW * 0.5f - 0.025f, bodyMidY, 0f), new Vector3(0.05f, bodyH, RackD), _rack, SlabTile);
+                Panel("Side_R", rackGo.transform, new Vector3(totalW * 0.5f + 0.025f, bodyMidY, 0f), new Vector3(0.05f, bodyH, RackD), _rack, SlabTile);
+                for (int d = 1; d < Sections; d++)
+                    Panel("Divider_" + d, rackGo.transform, new Vector3(-totalW * 0.5f + d * (RackW + DividerT) - DividerT * 0.5f, bodyMidY, 0f), new Vector3(DividerT, bodyH, RackD), _rack, SlabTile);
+                Panel("Top", rackGo.transform, new Vector3(0f, RackH + 0.02f, 0f), new Vector3(totalW + 0.1f + CapOverhang * 2f, BoardT, RackD + CapOverhang * 2f), _rack, SlabTile);
+                if (plinthH > 0.02f) Panel("Plinth", rackGo.transform, new Vector3(0f, plinthH * 0.5f, 0f), new Vector3(totalW + 0.1f + CapOverhang * 2f, plinthH, RackD + CapOverhang * 2f), _rack, SlabTile);
 
                 var sign = Block("Sign", rackGo.transform, new Vector3(0f, RackH + 0.45f, 0.05f), new Vector3(Mathf.Min(totalW - 0.2f, 3f), 0.55f, 0.04f), EditorAssets.Unlit("Sign_" + cat.CategoryID, cat.CategoryColor));
                 Object.DestroyImmediate(sign.GetComponent<Collider>());
@@ -550,7 +957,7 @@ namespace SortThem.Editor
                         shelf.Data = shelfData;
                         shelf.Rack = rack;
 
-                        Block("Board", shelfGo.transform, new Vector3(0f, -BoardT * 0.5f, 0f), new Vector3(RackW, BoardT, RackD - 0.04f), _board);
+                        Panel("Board", shelfGo.transform, new Vector3(0f, -BoardT * 0.5f, 0f), new Vector3(RackW, BoardT, RackD - 0.04f), _board, SlabTile);
 
                         float pitchY = ShelfPitch;
                         float zoneH = pitchY - BoardT - 0.02f;

@@ -1510,6 +1510,18 @@ MonoBehaviour:
     m_Localized: +1 crate to upgrade special cars
     m_Metadata:
       m_Items: []
+  - m_Id: 2832435401187328
+    m_Localized: Push buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2834538177748992
+    m_Localized: Balance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2862273583374336
+    m_Localized: Prizes
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

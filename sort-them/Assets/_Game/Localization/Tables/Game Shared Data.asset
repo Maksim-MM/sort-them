@@ -1507,6 +1507,18 @@ MonoBehaviour:
     m_Key: slot_crate.desc
     m_Metadata:
       m_Items: []
+  - m_Id: 2832435401187328
+    m_Key: ui.push_buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2834538177748992
+    m_Key: ui.balance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2862273583374336
+    m_Key: ui.slot_prizes
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721
