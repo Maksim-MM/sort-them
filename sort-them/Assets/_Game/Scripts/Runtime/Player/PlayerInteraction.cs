@@ -263,7 +263,8 @@ namespace SortThem
                 if (CanPlace && active != null && active.Filter != null)
                 {
                     var slot = HoverShelf.SlotPoints[HoverSlot];
-                    Ghost.Show(active.Filter.sharedMesh, active.SlotPose(slot), slot.rotation, active.transform.lossyScale);
+                    float slotScale = HoverShelf.Data != null ? HoverShelf.Data.DisplayScale : 1f;
+                    Ghost.Show(active.Filter.sharedMesh, active.SlotPose(slot, slotScale), slot.rotation, active.transform.lossyScale * slotScale);
                 }
                 else Ghost.Hide();
             }

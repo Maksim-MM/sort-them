@@ -103,7 +103,7 @@ MonoBehaviour:
   - 20
   ShuffleCarsPerStep: 4
   ShuffleStepsPerFrame: 12
-  ShuffleMaxSteps: 1500
+  ShuffleMaxSteps: 3000
   BombPrefab: {fileID: 3635098191875021876, guid: aa6357fcfca9a4b6a9e7853ac627be89, type: 3}
   BombChance: 0.35
   BombFuseTime: 3

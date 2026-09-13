@@ -47,7 +47,7 @@ namespace SortThem.Editor
             Physics.simulationMode = SimulationMode.Script;
             Physics.SyncTransforms();
             var root = new GameObject("__ScatterBake").transform;
-            BlockRacks(root);
+            var blockers = BlockRacks(root);
             var spawned = new List<CarInstance>(order.Count);
             int total = order.Count;
             int next = 0;
@@ -74,6 +74,8 @@ namespace SortThem.Editor
                     }
                 }
 
+                int settleSteps = Settle(blockers, spawned, gm, rng, dt);
+
                 var layout = EditorAssets.LoadOrCreate<LevelLayoutData>(Paths.Layout);
                 layout.Catalog = catalog;
                 var entries = new LevelLayoutData.Entry[spawned.Count];
@@ -95,7 +97,7 @@ namespace SortThem.Editor
                 gm.Layout = layout;
                 EditorUtility.SetDirty(gm);
                 AssetDatabase.SaveAssets();
-                Debug.Log("SortThem: baked " + entries.Length + " cars in " + steps + " steps (" + (steps * dt).ToString("0.0") + " s simulated), rescued " + rescued + ", all sleeping=" + AllSleeping(spawned));
+                Debug.Log("SortThem: baked " + entries.Length + " cars in " + steps + " + " + settleSteps + " steps (" + ((steps + settleSteps) * dt).ToString("0.0") + " s simulated), rescued " + rescued + ", all sleeping=" + AllSleeping(spawned));
             }
             finally
             {
@@ -120,7 +122,7 @@ namespace SortThem.Editor
             var prevMode = Physics.simulationMode;
             Physics.simulationMode = SimulationMode.Script;
             var root = new GameObject("__CollectibleBake").transform;
-            BlockRacks(root);
+            var blockers = BlockRacks(root);
             var bodies = new List<Rigidbody>(count);
             try
             {
@@ -149,6 +151,22 @@ namespace SortThem.Editor
                         if (steps > 100 && sleeping) break;
                     }
                 }
+                foreach (var go in blockers) if (go != null) Object.DestroyImmediate(go);
+                blockers.Clear();
+                Physics.SyncTransforms();
+                foreach (var b in bodies) b.WakeUp();
+                foreach (var c in cars) { c.Body.isKinematic = false; c.Body.WakeUp(); }
+                for (int i = 0; i < 3000; i++)
+                {
+                    Physics.Simulate(dt);
+                    steps++;
+                    if (i % 25 == 0)
+                    {
+                        bool sleeping = true;
+                        foreach (var b in bodies) if (!b.IsSleeping()) { sleeping = false; break; }
+                        if (i > 100 && sleeping && AllSleeping(cars)) break;
+                    }
+                }
                 var half = gm.Config.LevelHalfExtents;
                 var entries = new LevelLayoutData.PoseEntry[count];
                 int rescued = 0;
@@ -175,6 +193,53 @@ namespace SortThem.Editor
             }
         }
 
+        const int SettleMaxSteps = 4000, SweepRounds = 6;
+        const float RackTopY = 0.45f;
+
+        static int Settle(List<GameObject> blockers, List<CarInstance> cars, GameManager gm, System.Random rng, float dt)
+        {
+            foreach (var go in blockers) if (go != null) Object.DestroyImmediate(go);
+            blockers.Clear();
+            Physics.SyncTransforms();
+            foreach (var car in cars) { car.Body.isKinematic = false; car.Body.WakeUp(); }
+
+            int steps = 0;
+            var stranded = new List<CarInstance>();
+            for (int round = 0; round <= SweepRounds; round++)
+            {
+                while (steps < SettleMaxSteps)
+                {
+                    Physics.Simulate(dt);
+                    steps++;
+                    if (steps % 25 == 0)
+                    {
+                        EditorUtility.DisplayProgressBar("Baking scatter", "settling on real geometry, round " + round + ", step " + steps, 0.5f + Mathf.Min(0.49f, steps / (float)SettleMaxSteps * 0.5f));
+                        if (AllSleeping(cars)) break;
+                    }
+                }
+                if (round == SweepRounds) break;
+                stranded.Clear();
+                foreach (var car in cars) if (OnRack(car)) stranded.Add(car);
+                if (stranded.Count == 0) break;
+                foreach (var car in stranded) gm.Scatterer.LaunchCar(car, rng);
+                Physics.SyncTransforms();
+            }
+            EditorUtility.ClearProgressBar();
+            return steps;
+        }
+
+        static bool OnRack(CarInstance car)
+        {
+            if (car.transform.position.y < RackTopY) return false;
+            var hits = Physics.RaycastAll(car.transform.position, Vector3.down, car.HalfExtents.y + 0.08f, ~0, QueryTriggerInteraction.Ignore);
+            foreach (var h in hits)
+            {
+                if (h.collider == car.Col) continue;
+                if (h.collider.GetComponentInParent<RackController>() != null) return true;
+            }
+            return false;
+        }
+
         static bool AllSleeping(List<CarInstance> cars)
         {
             foreach (var c in cars)
@@ -184,12 +249,14 @@ namespace SortThem.Editor
 
         const float BlockHeight = 6f, SpecialBlockRadius = 3.2f, SpecialBlockHeight = 3.3f;
 
-        static void BlockRacks(Transform root)
+        static List<GameObject> BlockRacks(Transform root)
         {
+            var made = new List<GameObject>();
             foreach (var rack in Object.FindObjectsByType<RackController>(FindObjectsSortMode.None))
             {
                 if (rack.Zone == null) continue;
                 var go = new GameObject("__RackBlock_" + rack.name);
+                made.Add(go);
                 go.transform.SetParent(root, false);
                 var center = rack.Zone.transform.TransformPoint(rack.Zone.center);
                 if (rack.Shelves != null && rack.Shelves.Length > 0 && rack.Shelves[0] != null && rack.Shelves[0].Locked)
@@ -206,6 +273,7 @@ namespace SortThem.Editor
                 go.AddComponent<BoxCollider>().size = new Vector3(size.x, BlockHeight, size.z);
             }
             Physics.SyncTransforms();
+            return made;
         }
 
         static Mesh ConeMesh(float radius, float height, int segments)

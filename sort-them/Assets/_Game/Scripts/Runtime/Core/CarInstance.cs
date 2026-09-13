@@ -36,7 +36,11 @@ namespace SortThem
         public MeshRenderer Rend { get { if (_rend == null) _rend = GetComponentInChildren<MeshRenderer>(); return _rend; } }
         public MeshFilter Filter { get { if (_filter == null) _filter = GetComponentInChildren<MeshFilter>(); return _filter; } }
 
-        public Vector3 HalfExtents
+        public float DisplayScale { get; private set; } = 1f;
+
+        public Vector3 HalfExtents => BaseHalfExtents * DisplayScale;
+
+        Vector3 BaseHalfExtents
         {
             get
             {
@@ -45,10 +49,19 @@ namespace SortThem
                     if (Col is BoxCollider box) _halfExtents = Vector3.Scale(box.size, transform.lossyScale) * 0.5f;
                     else if (Col != null) _halfExtents = Col.bounds.extents;
                     else _halfExtents = Vector3.one * 0.1f;
+                    _halfExtents /= DisplayScale;
                     _halfExtentsReady = true;
                 }
                 return _halfExtents;
             }
+        }
+
+        public void SetDisplayScale(float scale)
+        {
+            if (scale <= 0f) scale = 1f;
+            if (Mathf.Approximately(DisplayScale, scale)) return;
+            DisplayScale = scale;
+            transform.localScale = Vector3.one * scale;
         }
 
         public bool IsSleepingOrKinematic => Body.isKinematic || Body.IsSleeping();
@@ -56,6 +69,7 @@ namespace SortThem
         public void SetLoose(Vector3 position, Quaternion rotation, bool kinematic)
         {
             State = CarState.Loose;
+            SetDisplayScale(1f);
             Shelf = null;
             SlotIndex = -1;
             gameObject.layer = Layers.LooseItems;
@@ -74,6 +88,7 @@ namespace SortThem
         public void Launch(Vector3 position, Quaternion rotation, Vector3 velocity)
         {
             State = CarState.Loose;
+            SetDisplayScale(1f);
             Shelf = null;
             SlotIndex = -1;
             gameObject.layer = Layers.LooseItems;
@@ -90,6 +105,7 @@ namespace SortThem
         {
             PileOcclusion.MarkDirty(this);
             State = CarState.Held;
+            SetDisplayScale(1f);
             Shelf = null;
             SlotIndex = -1;
             Body.isKinematic = true;
@@ -99,6 +115,7 @@ namespace SortThem
         public void SetPlaced(ShelfController shelf, int slot, Transform slotPoint)
         {
             State = CarState.Placed;
+            SetDisplayScale(shelf != null && shelf.Data != null ? shelf.Data.DisplayScale : 1f);
             Shelf = shelf;
             SlotIndex = slot;
             if (!gameObject.activeSelf) gameObject.SetActive(true);
@@ -108,7 +125,9 @@ namespace SortThem
             SetVisible(true);
         }
 
-        public Vector3 SlotPose(Transform slotPoint) => slotPoint.position + slotPoint.up * HalfExtents.y;
+        public Vector3 SlotPose(Transform slotPoint) => SlotPose(slotPoint, DisplayScale);
+
+        public Vector3 SlotPose(Transform slotPoint, float scale) => slotPoint.position + slotPoint.up * (BaseHalfExtents.y * scale);
 
         public void Freeze()
         {

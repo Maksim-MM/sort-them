@@ -23,6 +23,7 @@ namespace SortThem.Editor
         static float RackW = 2.45f, RackD = 1.1f;
         const int ShelvesPerSection = 5, Sections = 4;
         const float BottomShelfHeight = 0.4f;
+        const float SpecialDisplayScale = 2f;
         static readonly float[] ShelfHeights = { BottomShelfHeight, BottomShelfHeight + ShelfPitch, BottomShelfHeight + ShelfPitch * 2f, BottomShelfHeight + ShelfPitch * 3f, BottomShelfHeight + ShelfPitch * 4f };
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
@@ -224,6 +225,7 @@ namespace SortThem.Editor
             shelfData.Columns = 1;
             shelfData.SlotYaw = 0f;
             shelfData.Locked = true;
+            shelfData.DisplayScale = SpecialDisplayScale;
             EditorUtility.SetDirty(shelfData);
             EditorAssets.EnsureFolder(Paths.Racks);
             var rackData = EditorAssets.LoadOrCreate<RackData>(Paths.Racks + "/Rack_" + cat.CategoryID + ".asset");

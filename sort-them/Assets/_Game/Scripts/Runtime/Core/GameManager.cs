@@ -437,7 +437,8 @@ namespace SortThem
                     var p = car.transform.position;
                     if (p.y < Config.FloorY - 0.2f || Mathf.Abs(p.x) > half.x || Mathf.Abs(p.z) > half.z)
                         car.SetLoose(Config.UnstuckCenter + new Vector3((float)rng.NextDouble() * 2f - 1f, (float)rng.NextDouble(), (float)rng.NextDouble() * 2f - 1f), UnityEngine.Random.rotation, true);
-                    else car.Freeze();
+                    else if (car.Body.IsSleeping()) car.Freeze();
+                    else car.CalmSince = -1f;
                 }
             }
             finally
