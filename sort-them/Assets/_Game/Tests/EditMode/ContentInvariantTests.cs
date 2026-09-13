@@ -52,7 +52,7 @@ namespace SortThem.Tests
         }
 
         [Test]
-        public void EveryCarCountEqualsShelfCapacity()
+        public void EveryCarCountEqualsItsShareOfCategorySlots()
         {
             var counts = new int[_catalog.Cars.Length];
             foreach (var e in _layout.Instances) counts[e.CarIndex]++;
@@ -61,22 +61,24 @@ namespace SortThem.Tests
             for (int i = 0; i < _catalog.Cars.Length; i++)
             {
                 var car = _catalog.Cars[i];
-                var shelf = _shelves.FirstOrDefault(s => s.Rack != null && s.Rack.Category == car.Category);
-                if (shelf == null) { failures.Add($"{car.DevName}: нет стеллажа категории {car.Category?.CategoryID}"); continue; }
-                if (counts[i] != shelf.Capacity) failures.Add($"{car.DevName}: {counts[i]} на уровне, полка на {shelf.Capacity}");
+                int models = _catalog.Cars.Count(c => c.Category == car.Category);
+                int slots = _shelves.Where(s => s.Rack != null && s.Rack.Category == car.Category).Sum(s => s.Capacity);
+                if (slots == 0) { failures.Add($"{car.DevName}: нет полок категории {car.Category?.CategoryID}"); continue; }
+                int expected = slots / models;
+                if (counts[i] != expected) failures.Add($"{car.DevName}: {counts[i]} на уровне, слотов на модель {expected}");
             }
             Assert.IsEmpty(failures, string.Join("\n", failures));
         }
 
         [Test]
-        public void EveryCategoryHasOneShelfPerModel()
+        public void EveryCategoryHasWholeShelvesPerModel()
         {
             var failures = new List<string>();
             foreach (var cat in _catalog.Categories)
             {
                 int models = _catalog.Cars.Count(c => c.Category == cat);
                 int shelves = _shelves.Count(s => s.Rack != null && s.Rack.Category == cat);
-                if (models != shelves) failures.Add($"{cat.CategoryID}: моделей {models}, полок {shelves}");
+                if (models == 0 || shelves < models || shelves % models != 0) failures.Add($"{cat.CategoryID}: моделей {models}, полок {shelves}");
             }
             Assert.IsEmpty(failures, string.Join("\n", failures));
         }

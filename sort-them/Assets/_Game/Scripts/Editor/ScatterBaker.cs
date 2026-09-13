@@ -18,14 +18,23 @@ namespace SortThem.Editor
                 return;
             }
             var catalog = gm.Catalog;
-            var shelfData = AssetDatabase.LoadAssetAtPath<ShelfData>(Paths.Data + "/Shelf_Standard.asset");
-            int perModel = copiesPerModel > 0 ? copiesPerModel : shelfData != null ? shelfData.Capacity : 10;
+            var shelves = Object.FindObjectsByType<ShelfController>(FindObjectsSortMode.None);
+            int CopiesFor(CarItemData car)
+            {
+                if (catalog.IsSpecial(car)) return 1;
+                if (copiesPerModel > 0) return copiesPerModel;
+                int models = 0;
+                foreach (var c in catalog.Cars) if (c != null && c.Category == car.Category) models++;
+                int slots = 0;
+                foreach (var s in shelves) if (!s.Locked && s.Rack != null && s.Rack.Category == car.Category) slots += s.Capacity;
+                return models > 0 && slots > 0 ? slots / models : 10;
+            }
 
             var rng = new System.Random(gm.Scatterer.Seed);
             var order = new List<int>();
             for (int i = 0; i < catalog.Cars.Length; i++)
             {
-                int copies = catalog.IsSpecial(catalog.Cars[i]) ? 1 : perModel;
+                int copies = CopiesFor(catalog.Cars[i]);
                 for (int k = 0; k < copies; k++) order.Add(i);
             }
             for (int i = order.Count - 1; i > 0; i--)
@@ -38,6 +47,7 @@ namespace SortThem.Editor
             Physics.simulationMode = SimulationMode.Script;
             Physics.SyncTransforms();
             var root = new GameObject("__ScatterBake").transform;
+            BlockRacks(root);
             var spawned = new List<CarInstance>(order.Count);
             int total = order.Count;
             int next = 0;
@@ -110,6 +120,7 @@ namespace SortThem.Editor
             var prevMode = Physics.simulationMode;
             Physics.simulationMode = SimulationMode.Script;
             var root = new GameObject("__CollectibleBake").transform;
+            BlockRacks(root);
             var bodies = new List<Rigidbody>(count);
             try
             {
@@ -169,6 +180,23 @@ namespace SortThem.Editor
             foreach (var c in cars)
                 if (!c.Body.IsSleeping()) return false;
             return true;
+        }
+
+        const float BlockHeight = 6f;
+
+        static void BlockRacks(Transform root)
+        {
+            foreach (var rack in Object.FindObjectsByType<RackController>(FindObjectsSortMode.None))
+            {
+                if (rack.Zone == null) continue;
+                var go = new GameObject("__RackBlock_" + rack.name);
+                go.transform.SetParent(root, false);
+                var center = rack.Zone.transform.TransformPoint(rack.Zone.center);
+                go.transform.SetPositionAndRotation(new Vector3(center.x, BlockHeight * 0.5f, center.z), rack.Zone.transform.rotation);
+                var size = Vector3.Scale(rack.Zone.size, rack.Zone.transform.lossyScale);
+                go.AddComponent<BoxCollider>().size = new Vector3(size.x, BlockHeight, size.z);
+            }
+            Physics.SyncTransforms();
         }
     }
 }

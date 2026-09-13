@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Rack_cat_hatchbacks
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.RackData
   Category: {fileID: 11400000, guid: 428626908585f4c5395ba41318c5b803, type: 2}
-  ShelfCount: 10
+  ShelfCount: 20
   Shelf: {fileID: 11400000, guid: 89a7b7900fb4447de953b5bd91bdf56c, type: 2}

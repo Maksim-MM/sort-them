@@ -17,3 +17,4 @@ MonoBehaviour:
   SlotPitch: 0.45
   RowPitch: 0.48
   SlotYaw: 35
+  Locked: 0

@@ -13,12 +13,15 @@ namespace SortThem.Editor
 {
     public static class LevelBuilder
     {
-        const float RoomX = 36f, RoomZ = 20f, RoomH = 5f, WallT = 0.3f;
-        const float ShopGapX = 10.8f;
-        const int RacksTop = 5, RacksBottom = 5, RacksLeft = 3, RacksRight = 2;
+        const float ArmLen = 34f, WingW = 12f, RoomH = 5f, WallT = 0.3f;
+        const float Min = -ArmLen * 0.5f, Max = ArmLen * 0.5f, Inner = Min + WingW;
+        const float WestX = (Min + Inner) * 0.5f, SouthZ = (Min + Inner) * 0.5f;
+        static readonly Vector3 FountainPos = new Vector3(WestX, 0f, SouthZ);
+        static readonly Vector3 SpecialRackPos = new Vector3(Inner - 2.4f, 0f, Inner - 2.4f);
+        const float ShopX = Max - 0.3f;
         const float BoardT = 0.04f, DividerT = 0.05f, ShelfPitch = 0.42f;
         static float RackW = 2.45f, RackD = 1.1f;
-        const int ShelvesPerSection = 5, Sections = 2;
+        const int ShelvesPerSection = 5, Sections = 4;
         const float BottomShelfHeight = 0.55f;
         static readonly float[] ShelfHeights = { BottomShelfHeight, BottomShelfHeight + ShelfPitch, BottomShelfHeight + ShelfPitch * 2f, BottomShelfHeight + ShelfPitch * 3f, BottomShelfHeight + ShelfPitch * 4f };
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
@@ -35,6 +38,18 @@ namespace SortThem.Editor
                 Debug.LogError("SortThem: generate cars first");
                 return;
             }
+            EditorAssets.EnsureFolder(Paths.Scenes);
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
+            var defaultCam = Camera.main;
+            if (defaultCam != null) Object.DestroyImmediate(defaultCam.gameObject);
+            var light = Object.FindFirstObjectByType<Light>();
+            if (light != null)
+            {
+                light.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+                light.intensity = 1.2f;
+                light.shadows = LightShadows.None;
+            }
+            catalog = AssetDatabase.LoadAssetAtPath<CarCatalog>(Paths.Catalog);
             var inputAsset = AssetDatabase.LoadAssetAtPath<InputActionAsset>(Paths.InputAsset);
             if (inputAsset == null) inputAsset = InputSetup.Create();
             if (inputAsset == null)
@@ -50,36 +65,26 @@ namespace SortThem.Editor
             EditorUtility.SetDirty(shelfData);
 
             var gameConfig = EditorAssets.LoadOrCreate<GameConfig>(Paths.Config + "/GameConfig.asset");
-            gameConfig.LevelHalfExtents = new Vector3(RoomX * 0.5f + 1f, RoomH, RoomZ * 0.5f + 1f);
+            gameConfig.LevelHalfExtents = new Vector3(Max + 1f, RoomH, Max + 1f);
+            gameConfig.UnstuckCenter = FountainPos + Vector3.up * 2.5f;
             EditorUtility.SetDirty(gameConfig);
             var economy = EditorAssets.LoadOrCreate<EconomyConfig>(Paths.Config + "/EconomyConfig.asset");
             var upgrades = UpgradeSetup.CreateAll(false);
 
-            EditorAssets.EnsureFolder(Paths.Scenes);
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
-            var defaultCam = Camera.main;
-            if (defaultCam != null) Object.DestroyImmediate(defaultCam.gameObject);
-            var light = Object.FindFirstObjectByType<Light>();
-            if (light != null)
-            {
-                light.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
-                light.intensity = 1.2f;
-                light.shadows = LightShadows.None;
-            }
-
             BuildRoom();
             var shelves = BuildRacks(catalog, shelfData);
+            if (catalog.SpecialCategory != null && catalog.Specials != null && catalog.Specials.Length > 0) BuildSpecialRack(catalog);
             var podium = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             podium.name = "Podium";
-            podium.transform.position = new Vector3(0f, 0.3f, 0f);
+            podium.transform.position = FountainPos + new Vector3(0f, 0.3f, 0f);
             podium.transform.localScale = new Vector3(4f, 0.3f, 4f);
             podium.GetComponent<Renderer>().sharedMaterial = _podium;
             podium.isStatic = true;
 
             var terminal = GameObject.CreatePrimitive(PrimitiveType.Cube);
             terminal.name = "UpgradeTerminal";
-            terminal.transform.position = new Vector3(ShopGapX - 0.57f, 0.8f, -RoomZ * 0.5f + 0.3f);
-            terminal.transform.rotation = Quaternion.identity;
+            terminal.transform.position = new Vector3(ShopX, 0.8f, SouthZ + 1.75f);
+            terminal.transform.rotation = ShopRot;
             terminal.transform.localScale = new Vector3(0.9f, 1.6f, 0.5f);
             terminal.GetComponent<Renderer>().sharedMaterial = _terminal;
             terminal.AddComponent<UpgradeTerminal>();
@@ -97,10 +102,12 @@ namespace SortThem.Editor
             BuildCashRegister();
             BuildTutorial();
 
-            var cabinet = Block("Cabinet", null, new Vector3(-ShopGapX, 0.4f, -RoomZ * 0.5f + 0.3f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
+            var cabinet = Block("Cabinet", null, new Vector3(ShopX, 0.4f, SouthZ + 4.2f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
+            cabinet.transform.rotation = ShopRot;
             var radio = GameObject.CreatePrimitive(PrimitiveType.Cube);
             radio.name = "Radio";
-            radio.transform.position = new Vector3(-ShopGapX, 0.8f + 0.13f, -RoomZ * 0.5f + 0.3f);
+            radio.transform.position = new Vector3(ShopX, 0.8f + 0.13f, SouthZ + 4.2f);
+            radio.transform.rotation = ShopRot;
             radio.transform.localScale = new Vector3(0.44f, 0.26f, 0.18f);
             radio.GetComponent<Renderer>().sharedMaterial = _radio;
             radio.AddComponent<Radio>();
@@ -140,7 +147,7 @@ namespace SortThem.Editor
             var scatterer = gmGo.AddComponent<Scatterer>();
             var source = new GameObject("ScatterSource").transform;
             source.SetParent(gmGo.transform, false);
-            source.position = new Vector3(0f, 1.3f, 0f);
+            source.position = FountainPos + new Vector3(0f, 1.3f, 0f);
             scatterer.Source = source;
             scatterer.MinSpeed = 5f;
             scatterer.MaxSpeed = 9f;
@@ -240,7 +247,7 @@ namespace SortThem.Editor
             var racksRoot = GameObject.Find("Racks");
             var rackGo = new GameObject("Rack_" + cat.CategoryID);
             if (racksRoot != null) rackGo.transform.SetParent(racksRoot.transform, false);
-            rackGo.transform.SetPositionAndRotation(new Vector3(0f, 0f, 6.3f), Quaternion.identity);
+            rackGo.transform.SetPositionAndRotation(SpecialRackPos, Quaternion.identity);
             var rack = rackGo.AddComponent<RackController>();
             rack.Category = cat;
 
@@ -341,7 +348,7 @@ namespace SortThem.Editor
         {
             var existing = GameObject.Find("CashDesk");
             if (existing != null) Object.DestroyImmediate(existing);
-            var desk = Block("CashDesk", null, new Vector3(RoomX * 0.5f - WallT - 0.45f, 0.45f, 0f), new Vector3(0.6f, 0.9f, 1.4f), _cabinet);
+            var desk = Block("CashDesk", null, new Vector3(Max - 0.45f, 0.45f, SouthZ - 2.6f), new Vector3(0.6f, 0.9f, 1.4f), _cabinet);
             var register = GameObject.CreatePrimitive(PrimitiveType.Cube);
             register.name = "CashRegister";
             register.transform.SetParent(desk.transform, false);
@@ -372,8 +379,8 @@ namespace SortThem.Editor
             if (existing != null) Object.DestroyImmediate(existing);
             var slot = GameObject.CreatePrimitive(PrimitiveType.Cube);
             slot.name = "SlotMachine";
-            slot.transform.position = new Vector3(ShopGapX + 0.58f, 0.8f, -RoomZ * 0.5f + 0.3f);
-            slot.transform.rotation = Quaternion.identity;
+            slot.transform.position = new Vector3(ShopX, 0.8f, SouthZ + 0.6f);
+            slot.transform.rotation = ShopRot;
             slot.transform.localScale = new Vector3(0.8f, 1.6f, 0.5f);
             slot.GetComponent<Renderer>().sharedMaterial = _radio;
             slot.AddComponent<SlotMachine>();
@@ -445,44 +452,46 @@ namespace SortThem.Editor
             return go;
         }
 
+        static readonly Quaternion ShopRot = Quaternion.Euler(0f, -90f, 0f);
+
         static void BuildRoom()
         {
             var room = new GameObject("Room").transform;
-            Block("Floor", room, new Vector3(0f, -0.1f, 0f), new Vector3(RoomX + 2f, 0.2f, RoomZ + 2f), _floor);
-            Block("Ceiling", room, new Vector3(0f, RoomH + 0.15f, 0f), new Vector3(RoomX + 2f, 0.3f, RoomZ + 2f), _ceiling);
-            Block("Wall_N", room, new Vector3(0f, RoomH * 0.5f, RoomZ * 0.5f + WallT * 0.5f), new Vector3(RoomX + WallT * 2f, RoomH, WallT), _wall);
-            Block("Wall_S", room, new Vector3(0f, RoomH * 0.5f, -RoomZ * 0.5f - WallT * 0.5f), new Vector3(RoomX + WallT * 2f, RoomH, WallT), _wall);
-            Block("Wall_E", room, new Vector3(RoomX * 0.5f + WallT * 0.5f, RoomH * 0.5f, 0f), new Vector3(WallT, RoomH, RoomZ), _wall);
-            Block("Wall_W", room, new Vector3(-RoomX * 0.5f - WallT * 0.5f, RoomH * 0.5f, 0f), new Vector3(WallT, RoomH, RoomZ), _wall);
+            float armLen = Max - Inner;
+            Block("Floor_W", room, new Vector3(WestX, -0.1f, 0f), new Vector3(WingW + 2f, 0.2f, ArmLen + 2f), _floor);
+            Block("Floor_S", room, new Vector3((Inner + Max) * 0.5f, -0.1f, SouthZ), new Vector3(armLen + 2f, 0.2f, WingW + 2f), _floor);
+            Block("Ceiling_W", room, new Vector3(WestX, RoomH + 0.15f, 0f), new Vector3(WingW + 2f, 0.3f, ArmLen + 2f), _ceiling);
+            Block("Ceiling_S", room, new Vector3((Inner + Max) * 0.5f, RoomH + 0.15f, SouthZ), new Vector3(armLen + 2f, 0.3f, WingW + 2f), _ceiling);
+            Block("Wall_W", room, new Vector3(Min - WallT * 0.5f, RoomH * 0.5f, 0f), new Vector3(WallT, RoomH, ArmLen + WallT * 2f), _wall);
+            Block("Wall_N", room, new Vector3(WestX, RoomH * 0.5f, Max + WallT * 0.5f), new Vector3(WingW + WallT * 2f, RoomH, WallT), _wall);
+            Block("Wall_IE", room, new Vector3(Inner + WallT * 0.5f, RoomH * 0.5f, (Inner + Max) * 0.5f + WallT * 0.5f), new Vector3(WallT, RoomH, armLen + WallT), _wall);
+            Block("Wall_IN", room, new Vector3((Inner + Max) * 0.5f + WallT * 0.5f, RoomH * 0.5f, Inner + WallT * 0.5f), new Vector3(armLen + WallT, RoomH, WallT), _wall);
+            Block("Wall_E", room, new Vector3(Max + WallT * 0.5f, RoomH * 0.5f, SouthZ), new Vector3(WallT, RoomH, WingW + WallT * 2f), _wall);
+            Block("Wall_S", room, new Vector3(0f, RoomH * 0.5f, Min - WallT * 0.5f), new Vector3(ArmLen + WallT * 2f, RoomH, WallT), _wall);
         }
 
         static List<ShelfController> BuildRacks(CarCatalog catalog, ShelfData shelfData)
         {
             var shelves = new List<ShelfController>();
             var slots = new List<(Vector3 pos, float yaw)>();
-            int need = catalog.Categories.Length;
-            if (need > RacksTop + RacksBottom + RacksLeft + RacksRight) Debug.LogError($"SortThem: {need} categories, only {RacksTop + RacksBottom + RacksLeft + RacksRight} rack slots");
-            float sideUsable = RoomZ - 2f * RackD - 0.4f;
-            for (int i = 0; i < RacksTop; i++)
+            var categories = new List<CategoryData>();
+            foreach (var c in catalog.Categories) if (c != null && !catalog.IsSpecial(c)) categories.Add(c);
+            int need = categories.Count;
+            float wallOff = RackD * 0.5f + 0.05f;
+            float[] wallCenters = { 11.5f, 0.5f, -10.5f };
+            float[] wingCenters = { Inner + 0.2f + RackTotalW * 0.5f, Max - 1.2f - RackTotalW * 0.5f };
+            foreach (float z in wallCenters) slots.Add((new Vector3(Min + wallOff, 0f, z), 90f));
+            foreach (float z in wingCenters)
             {
-                float step = RoomX / RacksTop;
-                slots.Add((new Vector3(-RoomX * 0.5f + step * (i + 0.5f), 0f, RoomZ * 0.5f - RackD * 0.5f), 180f));
+                slots.Add((new Vector3(WestX + RackD * 0.5f, 0f, z), 90f));
+                slots.Add((new Vector3(WestX - RackD * 0.5f, 0f, z), -90f));
+                slots.Add((new Vector3(Inner - wallOff, 0f, z), -90f));
             }
-            for (int j = 0; j < RacksRight; j++)
-            {
-                float step = sideUsable / RacksRight;
-                slots.Add((new Vector3(RoomX * 0.5f - RackD * 0.5f, 0f, -sideUsable * 0.5f + step * (j + 0.5f)), -90f));
-            }
-            for (int i = 0; i < RacksBottom; i++)
-            {
-                float step = RoomX / RacksBottom;
-                slots.Add((new Vector3(RoomX * 0.5f - step * (i + 0.5f), 0f, -RoomZ * 0.5f + RackD * 0.5f), 0f));
-            }
-            for (int j = 0; j < RacksLeft; j++)
-            {
-                float step = sideUsable / RacksLeft;
-                slots.Add((new Vector3(-RoomX * 0.5f + RackD * 0.5f, 0f, sideUsable * 0.5f - step * (j + 0.5f)), 90f));
-            }
+            slots.Add((new Vector3(wingCenters[0], 0f, Inner - wallOff), 180f));
+            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ + RackD * 0.5f), 0f));
+            slots.Add((new Vector3(wingCenters[0], 0f, SouthZ - RackD * 0.5f), 180f));
+            foreach (float x in wallCenters) slots.Add((new Vector3(-x, 0f, Min + wallOff), 0f));
+            if (slots.Count < need) Debug.LogError($"SortThem: {need} categories, only {slots.Count} rack slots");
             if (slots.Count > need) slots.RemoveRange(need, slots.Count - need);
 
             EditorAssets.EnsureFolder(Paths.Racks);
@@ -491,7 +500,7 @@ namespace SortThem.Editor
             float totalW = RackTotalW;
             for (int r = 0; r < slots.Count; r++)
             {
-                var cat = catalog.Categories[r % catalog.Categories.Length];
+                var cat = categories[r];
                 var rackData = EditorAssets.LoadOrCreate<RackData>(Paths.Racks + "/Rack_" + cat.CategoryID + ".asset");
                 rackData.Category = cat;
                 rackData.ShelfCount = ShelvesPerSection * Sections;
@@ -651,8 +660,8 @@ namespace SortThem.Editor
         {
             var player = new GameObject("Player");
             player.layer = LayerMask.NameToLayer("Player");
-            player.transform.position = new Vector3(5f, 0.05f, -4.5f);
-            player.transform.rotation = Quaternion.Euler(0f, -60f, 0f);
+            player.transform.position = new Vector3(Max - 3.5f, 0.05f, SouthZ);
+            player.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
             var cc = player.AddComponent<CharacterController>();
             cc.height = 1.8f;
             cc.radius = 0.45f;

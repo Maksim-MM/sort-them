@@ -115,9 +115,9 @@ MonoBehaviour:
   BombHandEuler: {x: 0, y: 0, z: 20}
   BombFuseClip: {fileID: 8300000, guid: 38f1ec9576db04d90aa1295637e41808, type: 3}
   BombExplodeClip: {fileID: 8300000, guid: 278a3c8aa897e47e0bb38c56827bd144, type: 3}
-  UnstuckCenter: {x: 0, y: 2.5, z: 0}
+  UnstuckCenter: {x: -11, y: 2.5, z: -11}
   FloorY: 0
-  LevelHalfExtents: {x: 19, y: 5, z: 11}
+  LevelHalfExtents: {x: 18, y: 5, z: 18}
   CollectiblesTotal: 40
   SpecialHoldTime: 1.2
   SpecialShake: 0.03
