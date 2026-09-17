@@ -55,21 +55,31 @@ namespace SortThem
             _upgradeView.raycastTarget = true;
             _upgradeDrag = viewRt.gameObject.AddComponent<UiDragArea>();
 
-            _upgradeTitle = UiFactory.Text(_upgrade, "Title", "", 40f, TextAlignmentOptions.Center, Color.white);
-            _upgradeTitle.fontStyle = FontStyles.Bold;
-            UiFactory.Anchored(_upgradeTitle.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(900f, 52f));
-            _upgradeLevel = UiFactory.Text(_upgrade, "Level", "", 30f, TextAlignmentOptions.Center, Gold);
-            UiFactory.Anchored(_upgradeLevel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -84f), new Vector2(900f, 40f));
+            var marquee = UiFactory.NeonBox(_upgrade, "Marquee", ArcadeNeon, new Color(0.05f, 0.07f, 0.11f, 1f), 4f);
+            UiFactory.Anchored((RectTransform)marquee.parent, new Vector2(0.5f, 1f), new Vector2(0f, -ArcadeMarqueeTop), new Vector2(760f, ArcadeMarqueeHeight));
+            UiFactory.Glow((RectTransform)marquee.parent, 24f, 0.5f);
+            _upgradeTitle = UiFactory.Text(marquee, "Title", "", 40f, TextAlignmentOptions.Center, ArcadeTitle);
+            _upgradeTitle.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+            _upgradeTitle.characterSpacing = 4f;
+            UiFactory.TextGlow(_upgradeTitle, new Color(ArcadeTitle.r, ArcadeTitle.g, ArcadeTitle.b, 0.85f), 0.3f, 0.6f);
+            UiFactory.Anchor(_upgradeTitle.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            _upgradeLevel = UiFactory.Text(_upgrade, "Level", "", 30f, TextAlignmentOptions.Center, ArcadeCost);
+            _upgradeLevel.fontStyle = FontStyles.Bold;
+            UiFactory.TextGlow(_upgradeLevel, new Color(ArcadeCost.r, ArcadeCost.g, ArcadeCost.b, 0.7f), 0.2f, 0.5f);
+            UiFactory.Anchored(_upgradeLevel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -(ArcadeMarqueeTop + ArcadeMarqueeHeight + 22f)), new Vector2(900f, 40f));
             _upgradeNext = UiFactory.Text(_upgrade, "Next", "", 22f, TextAlignmentOptions.Center, new Color(0.85f, 0.85f, 0.9f, 1f));
             UiFactory.Anchored(_upgradeNext.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 150f), new Vector2(900f, 32f));
 
-            var close = Bind(UiFactory.Button(_upgrade, "Close", "", CloseUpgrade, 20f), "ui.close", "Закрыть");
-            UiFactory.Anchored(close.GetComponent<RectTransform>(), new Vector2(1f, 1f), new Vector2(-24f, -24f), new Vector2(140f, 44f));
+            var close = Bind(ArcadeButton(_upgrade, "Close", CloseUpgrade, ArcadeNeon, 18f), "ui.close", "Закрыть");
+            UiFactory.Anchored(close.GetComponent<RectTransform>(), new Vector2(1f, 1f), new Vector2(-ArcadeButtonInset, -ArcadeMarqueeTop - 8f), new Vector2(150f, 56f));
             _upgradeButtons.Add(close);
 
-            var hold = UiFactory.Panel(_upgrade, "Hold", new Color(0.2f, 0.45f, 0.8f, 1f));
+            var hold = UiFactory.Panel(_upgrade, "Hold", ArcadeCost);
             UiFactory.Anchored(hold, new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(360f, 72f));
-            _holdFill = UiFactory.Image(hold, "Fill", Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 4f, 4f), new Vector2(0.5f, 0.5f)), Gold, Image.Type.Filled);
+            var holdInner = UiFactory.Panel(hold, "Fill", ArcadeFill(ArcadeCost));
+            UiFactory.Anchor(holdInner, Vector2.zero, Vector2.one, new Vector2(2f, 2f), new Vector2(-2f, -2f));
+            holdInner.GetComponent<Image>().raycastTarget = false;
+            _holdFill = UiFactory.Image(holdInner, "Progress", Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 4f, 4f), new Vector2(0.5f, 0.5f)), new Color(ArcadeCost.r, ArcadeCost.g, ArcadeCost.b, 0.85f), Image.Type.Filled);
             _holdFill.fillMethod = Image.FillMethod.Horizontal;
             _holdFill.fillOrigin = 0;
             _holdFill.fillAmount = 0f;
@@ -78,16 +88,21 @@ namespace SortThem
             _holdButton.targetGraphic = hold.GetComponent<Image>();
             _holdButton.navigation = new Navigation { mode = Navigation.Mode.None };
             var colors = _holdButton.colors;
-            colors.highlightedColor = new Color(0.3f, 0.6f, 1f, 1f);
-            colors.pressedColor = new Color(0.15f, 0.3f, 0.6f, 1f);
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1.6f, 1.6f, 1.6f, 1f);
+            colors.pressedColor = new Color(0.6f, 0.6f, 0.6f, 1f);
             colors.disabledColor = new Color(0.35f, 0.35f, 0.35f, 1f);
             _holdButton.colors = colors;
-            _holdLabel = UiFactory.Text(hold, "Label", "", 24f, TextAlignmentOptions.Center, Color.white);
+            _holdLabel = UiFactory.Text(holdInner, "Label", "", 22f, TextAlignmentOptions.Center, ArcadeCost);
+            _holdLabel.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+            UiFactory.TextGlow(_holdLabel, new Color(ArcadeCost.r, ArcadeCost.g, ArcadeCost.b, 0.6f), 0.2f, 0.5f);
             UiFactory.Anchor(_holdLabel.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            UiFactory.Glow(hold, 16f, 0.55f);
+            _arcadeIdle[_holdButton] = ArcadeCost;
             _upgradeButtons.Insert(0, _holdButton);
 
-            _upgradeCrates = UiFactory.Text(_upgrade, "Crates", "", 26f, TextAlignmentOptions.Center, Color.white);
-            UiFactory.Anchored(_upgradeCrates.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 20f), new Vector2(600f, 34f));
+            _upgradeCrates = UiFactory.Text(_upgrade, "Crates", "", 24f, TextAlignmentOptions.Center, Color.white);
+            UiFactory.Anchored(_upgradeCrates.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -(ArcadeMarqueeTop + ArcadeMarqueeHeight + 62f)), new Vector2(600f, 34f));
 
             _upgrade.gameObject.SetActive(false);
 
@@ -98,22 +113,15 @@ namespace SortThem
 
         void BuildConfirm()
         {
-            _confirm = UiFactory.Panel(transform, "Confirm", new Color(0.08f, 0.09f, 0.12f, 0.98f));
-            UiFactory.Anchored(_confirm, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(560f, 230f));
-            UiFactory.Layout(_confirm, 16f, new RectOffset(24, 24, 20, 20));
-            var text = Bind(UiFactory.Text(_confirm, "Text", "", 26f, TextAlignmentOptions.Center, Color.white), "ui.reset_confirm", "Вы точно хотите сбросить весь прогресс и начать заново?");
+            const float screenH = 130f;
+            var w = BuildArcadeWindow("Confirm", new Vector2(660f, ArcadeHeight(screenH, false, true)), "ui.newgame", "Сбросить прогресс", false, true);
+            _confirm = w.Root;
+            var text = Bind(UiFactory.Text(w.Screen, "Text", "", 24f, TextAlignmentOptions.Center, Color.white), "ui.reset_confirm", "Вы точно хотите сбросить весь прогресс и начать заново?");
             text.textWrappingMode = TextWrappingModes.Normal;
-            UiFactory.Size(text, 0f, 90f);
-            var row = UiFactory.Rect(_confirm, "Row");
-            UiFactory.Layout(row, 16f, new RectOffset(0, 0, 0, 0), false);
-            UiFactory.Size(row, 0f, 60f);
-            var no = Bind(UiFactory.Button(row, "No", "", CloseConfirm), "ui.cancel", "Отмена");
-            var yes = Bind(UiFactory.Button(row, "Yes", "", ResetSave), "ui.yes", "Да, сбросить");
-            UiFactory.Size(no, 200f, 56f, 1f);
-            UiFactory.Size(yes, 200f, 56f, 1f);
-            var yesImage = yes.GetComponent<Image>();
-            yesImage.color = new Color(0.75f, 0.25f, 0.25f, 1f);
-            var yc = yes.colors; yc.normalColor = Color.white; yc.highlightedColor = new Color(1f, 0.8f, 0.8f, 1f); yes.colors = yc;
+            UiFactory.Anchor(text.rectTransform, Vector2.zero, Vector2.one, new Vector2(28f, 12f), new Vector2(-28f, -12f));
+            FinishArcadeScreen(w.Screen);
+            var no = Bind(ArcadePanelButton(w, "No", CloseConfirm, ArcadeNeon, 220f, false), "ui.cancel", "Отмена");
+            var yes = Bind(ArcadePanelButton(w, "Yes", ResetSave, ArcadeRed, 260f, true, 18f, true), "ui.yes", "Да, сбросить");
             _confirmButtons.Add(no);
             _confirmButtons.Add(yes);
             _confirm.gameObject.SetActive(false);

@@ -7,6 +7,7 @@ namespace SortThem.Editor
     public static class RoomMesh
     {
         public const string Folder = Paths.Meshes + "/Room";
+        public const float PackMargin = 0.015f;
 
         static readonly Dictionary<string, Mesh> Cache = new Dictionary<string, Mesh>();
 
@@ -54,7 +55,6 @@ namespace SortThem.Editor
             var verts = new List<Vector3>(24);
             var norms = new List<Vector3>(24);
             var uv0 = new List<Vector2>(24);
-            var uv1 = new List<Vector2>(24);
             var tris = new List<int>(36);
 
             AddFace(verts, norms, uv0, tris, new Vector3(0, 0, -h.z), Vector3.right * h.x, Vector3.up * h.y, Vector3.back, size.x, size.y, metersPerTile, grainAlongLongest);
@@ -64,25 +64,26 @@ namespace SortThem.Editor
             AddFace(verts, norms, uv0, tris, new Vector3(0, h.y, 0), Vector3.right * h.x, Vector3.forward * h.z, Vector3.up, size.x, size.z, metersPerTile, grainAlongLongest);
             AddFace(verts, norms, uv0, tris, new Vector3(0, -h.y, 0), Vector3.right * h.x, Vector3.back * h.z, Vector3.down, size.x, size.z, metersPerTile, grainAlongLongest);
 
-            const float pad = 0.02f;
-            for (int face = 0; face < 6; face++)
-            {
-                float cx = (face % 3) / 3f, cy = (face / 3) * 0.5f;
-                uv1.Add(new Vector2(cx + pad / 3f, cy + pad * 0.5f));
-                uv1.Add(new Vector2(cx + (1f - pad) / 3f, cy + pad * 0.5f));
-                uv1.Add(new Vector2(cx + (1f - pad) / 3f, cy + (1f - pad) * 0.5f));
-                uv1.Add(new Vector2(cx + pad / 3f, cy + (1f - pad) * 0.5f));
-            }
-
             var mesh = new Mesh { name = "Box" };
             mesh.SetVertices(verts);
             mesh.SetNormals(norms);
             mesh.SetUVs(0, uv0);
-            mesh.SetUVs(1, uv1);
             mesh.SetTriangles(tris, 0);
             mesh.RecalculateTangents();
             mesh.RecalculateBounds();
+            GenerateLightmapUVs(mesh);
             return mesh;
+        }
+
+        public static void GenerateLightmapUVs(Mesh mesh)
+        {
+            var param = new UnwrapParam();
+            UnwrapParam.SetDefaults(out param);
+            param.hardAngle = 88f;
+            param.angleError = 0.08f;
+            param.areaError = 0.15f;
+            param.packMargin = PackMargin;
+            Unwrapping.GenerateSecondaryUVSet(mesh, param);
         }
 
         static void AddFace(List<Vector3> verts, List<Vector3> norms, List<Vector2> uv0, List<int> tris, Vector3 center, Vector3 right, Vector3 up, Vector3 normal, float width, float height, Vector2 metersPerTile, bool grainAlongLongest)

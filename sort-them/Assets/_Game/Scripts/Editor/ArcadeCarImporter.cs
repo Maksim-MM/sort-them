@@ -451,7 +451,7 @@ namespace SortThem.Editor
             mr.sharedMaterial = mat;
             mr.shadowCastingMode = ShadowCastingMode.Off;
             mr.receiveShadows = false;
-            mr.lightProbeUsage = LightProbeUsage.Off;
+            mr.lightProbeUsage = LightProbeUsage.BlendProbes;
             mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
             var bc = go.AddComponent<BoxCollider>();
             bc.center = bounds.center;

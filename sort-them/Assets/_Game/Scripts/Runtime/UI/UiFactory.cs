@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -88,18 +89,18 @@ namespace SortThem
         public static Slider Slider(Transform parent, string name, float min, float max, float value)
         {
             var rt = Rect(parent, name);
-            var bg = Image(rt, "Background", null, new Color(1f, 1f, 1f, 0.15f), UnityEngine.UI.Image.Type.Simple);
+            var bg = Image(rt, "Background", null, new Color(0.25f, 0.88f, 1f, 0.18f), UnityEngine.UI.Image.Type.Simple);
             bg.raycastTarget = true;
             Anchor(bg.rectTransform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -6f), new Vector2(0f, 6f));
             var fillArea = Rect(rt, "FillArea");
             Anchor(fillArea, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0f, -6f), new Vector2(0f, 6f));
-            var fill = Image(fillArea, "Fill", null, new Color(0.3f, 0.6f, 1f, 1f), UnityEngine.UI.Image.Type.Simple);
+            var fill = Image(fillArea, "Fill", null, new Color(0.25f, 0.88f, 1f, 1f), UnityEngine.UI.Image.Type.Simple);
             Anchor(fill.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             var handleArea = Rect(rt, "HandleArea");
             Anchor(handleArea, Vector2.zero, Vector2.one, new Vector2(10f, 0f), new Vector2(-10f, 0f));
-            var handle = Image(handleArea, "Handle", null, Color.white, UnityEngine.UI.Image.Type.Simple);
+            var handle = Image(handleArea, "Handle", null, new Color(0.93f, 0.97f, 1f, 1f), UnityEngine.UI.Image.Type.Simple);
             handle.raycastTarget = true;
-            handle.rectTransform.sizeDelta = new Vector2(20f, -16f);
+            handle.rectTransform.sizeDelta = new Vector2(14f, -20f);
             var slider = rt.gameObject.AddComponent<Slider>();
             slider.navigation = new Navigation { mode = Navigation.Mode.None };
             slider.fillRect = fill.rectTransform;
@@ -139,6 +140,107 @@ namespace SortThem
             btn.onClick.AddListener(() => { var gm = GameManager.I; if (gm != null) Sfx.PlayUi(gm.Config.UiClickClip); Rumble.UiClick(); });
             if (onClick != null) btn.onClick.AddListener(() => onClick());
             return btn;
+        }
+
+        static readonly Dictionary<(Material, Color), Material> GlowMaterials = new Dictionary<(Material, Color), Material>();
+        static Sprite _glowSprite, _vignetteSprite;
+        static Texture2D _scanTexture;
+
+        public static void TextGlow(TMP_Text t, Color glow, float dilate = 0.25f, float softness = 0.55f)
+        {
+            var key = (t.fontSharedMaterial, glow);
+            if (!GlowMaterials.TryGetValue(key, out var mat))
+            {
+                mat = new Material(t.fontSharedMaterial) { name = t.fontSharedMaterial.name + " Glow" };
+                mat.EnableKeyword("UNDERLAY_ON");
+                mat.SetColor(ShaderUtilities.ID_UnderlayColor, glow);
+                mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0f);
+                mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, 0f);
+                mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, dilate);
+                mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, softness);
+                GlowMaterials.Add(key, mat);
+            }
+            t.fontSharedMaterial = mat;
+        }
+
+        static Sprite GlowSprite()
+        {
+            if (_glowSprite != null) return _glowSprite;
+            const int size = 64, border = 24;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false) { name = "UiGlow", wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear };
+            var px = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = Mathf.Max(0f, border - x, x - (size - 1 - border)) / border;
+                float dy = Mathf.Max(0f, border - y, y - (size - 1 - border)) / border;
+                float a = Mathf.Clamp01(1f - Mathf.Sqrt(dx * dx + dy * dy));
+                a *= a;
+                px[y * size + x] = new Color32(255, 255, 255, (byte)Mathf.RoundToInt(a * 255f));
+            }
+            tex.SetPixels32(px);
+            tex.Apply();
+            _glowSprite = Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect, new Vector4(border, border, border, border));
+            return _glowSprite;
+        }
+
+        public static Image Glow(RectTransform target, float spread = 18f, float alpha = 0.55f)
+        {
+            var img = Image(target.parent, target.name + "Glow", GlowSprite(), Color.white, UnityEngine.UI.Image.Type.Sliced);
+            img.pixelsPerUnitMultiplier = 24f / spread;
+            img.rectTransform.SetSiblingIndex(target.GetSiblingIndex());
+            img.gameObject.AddComponent<LayoutElement>().ignoreLayout = true;
+            var glow = img.gameObject.AddComponent<UiGlow>();
+            glow.Source = target.GetComponent<Image>();
+            glow.Target = target;
+            glow.Spread = spread;
+            glow.Alpha = alpha;
+            glow.Follow();
+            return img;
+        }
+
+        public static RawImage Scanlines(RectTransform area, float alpha = 0.18f, float period = 3f)
+        {
+            if (_scanTexture == null)
+            {
+                _scanTexture = new Texture2D(1, 3, TextureFormat.RGBA32, false) { name = "UiScanlines", filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Repeat };
+                _scanTexture.SetPixels32(new[] { new Color32(0, 0, 0, 255), new Color32(0, 0, 0, 0), new Color32(0, 0, 0, 0) });
+                _scanTexture.Apply();
+            }
+            var rt = Rect(area, "Scanlines");
+            Anchor(rt, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            var raw = rt.gameObject.AddComponent<RawImage>();
+            raw.texture = _scanTexture;
+            raw.color = new Color(0f, 0f, 0f, alpha);
+            raw.raycastTarget = false;
+            rt.gameObject.AddComponent<UiScanlines>().Period = period;
+            rt.SetAsLastSibling();
+            return raw;
+        }
+
+        public static Image Vignette(RectTransform area, float alpha = 0.5f)
+        {
+            if (_vignetteSprite == null)
+            {
+                const int size = 128;
+                var tex = new Texture2D(size, size, TextureFormat.RGBA32, false) { name = "UiVignette", wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear };
+                var px = new Color32[size * size];
+                for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float u = (x + 0.5f) / size * 2f - 1f, v = (y + 0.5f) / size * 2f - 1f;
+                    float r = Mathf.Sqrt(u * u + v * v) / 1.41421f;
+                    float a = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.45f, 1f, r));
+                    px[y * size + x] = new Color32(0, 0, 0, (byte)Mathf.RoundToInt(a * 255f));
+                }
+                tex.SetPixels32(px);
+                tex.Apply();
+                _vignetteSprite = Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+            }
+            var img = Image(area, "Vignette", _vignetteSprite, new Color(1f, 1f, 1f, alpha), UnityEngine.UI.Image.Type.Simple);
+            Anchor(img.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            img.rectTransform.SetAsLastSibling();
+            return img;
         }
 
         public static void Layout(RectTransform rt, float spacing, RectOffset padding, bool vertical = true)

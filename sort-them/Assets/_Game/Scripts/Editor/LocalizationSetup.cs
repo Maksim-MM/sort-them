@@ -94,7 +94,6 @@ namespace SortThem.Editor
             LocUtil.Set("ui.resume", "Продолжить", "Resume");
             LocUtil.Set("ui.save", "Сохранить", "Save");
             LocUtil.Set("ui.saved", "Сохранено", "Saved");
-            LocUtil.Set("ui.unstuck", "Вернуть застрявшие машинки", "Return stuck cars");
             LocUtil.Set("ui.newgame", "Сбросить прогресс", "Reset progress");
             LocUtil.Set("ui.shuffle", "Перемешать кучу", "Shuffle the pile");
             LocUtil.Set("ui.shuffling", "Перемешиваем кучу…", "Shuffling the pile…");

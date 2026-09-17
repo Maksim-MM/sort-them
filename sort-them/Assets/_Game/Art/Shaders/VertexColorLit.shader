@@ -18,7 +18,9 @@ Shader "SortThem/VertexColorLit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
+            CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
+            CBUFFER_END
 
             struct Attributes
             {
@@ -72,7 +74,9 @@ Shader "SortThem/VertexColorLit"
             #pragma fragment fragDepth
             #pragma multi_compile_instancing
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
+            CBUFFER_END
             struct A { float4 positionOS : POSITION; UNITY_VERTEX_INPUT_INSTANCE_ID };
             struct V { float4 positionCS : SV_POSITION; };
             V vertDepth(A IN) { V o; UNITY_SETUP_INSTANCE_ID(IN); o.positionCS = TransformObjectToHClip(IN.positionOS.xyz); return o; }

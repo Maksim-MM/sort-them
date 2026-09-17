@@ -66,7 +66,7 @@ namespace SortThem
             r.sharedMaterials = mr.sharedMaterials;
             r.shadowCastingMode = ShadowCastingMode.Off;
             r.receiveShadows = false;
-            r.lightProbeUsage = LightProbeUsage.Off;
+            r.lightProbeUsage = LightProbeUsage.BlendProbes;
             r.reflectionProbeUsage = ReflectionProbeUsage.Off;
             return go;
         }

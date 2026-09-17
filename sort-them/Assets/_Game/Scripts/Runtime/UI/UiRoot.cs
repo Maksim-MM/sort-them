@@ -62,6 +62,7 @@ namespace SortThem
         readonly List<(TMP_Text Text, string Key, string Fallback)> _bound = new List<(TMP_Text, string, string)>();
         readonly List<Selectable> _pauseButtons = new List<Selectable>();
         readonly List<Selectable> _settingsItems = new List<Selectable>();
+        RectTransform _settingsList;
         Selectable _focused;
         Button _vibrationButton;
         GameObject _vibrationRow;
@@ -588,36 +589,13 @@ namespace SortThem
 
         void BuildTerminal()
         {
-            _terminal = UiFactory.Panel(transform, "Terminal", ArcadeBody);
-            UiFactory.Anchored(_terminal, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1080f, 880f));
+            var w = BuildArcadeWindow("Terminal", new Vector2(1080f, 880f), "ui.terminal", "Терминал улучшений", true, true);
+            _terminal = w.Root;
+            _terminalScore = BuildBalanceBox(_terminal);
 
-            var marquee = UiFactory.NeonBox(_terminal, "Marquee", ArcadeNeon, new Color(0.05f, 0.07f, 0.11f, 1f), 4f);
-            UiFactory.Anchor(marquee.parent as RectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -96f), new Vector2(-24f, -12f));
-            var title = Bind(UiFactory.Text(marquee, "Title", "", 44f, TextAlignmentOptions.Center, ArcadeTitle), "ui.terminal", "Терминал улучшений");
-            title.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
-            title.characterSpacing = 6f;
-            UiFactory.Anchor(title.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-
-            var score = UiFactory.NeonBox(_terminal, "Score", new Color(0.35f, 0.35f, 0.40f, 1f), Color.black, 3f);
-            UiFactory.Anchored(score.parent as RectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -100f), new Vector2(250f, 62f));
-            var scoreLabel = Bind(UiFactory.Text(score, "Label", "", 16f, TextAlignmentOptions.Center, new Color(1f, 0.34f, 0.69f, 1f)), "ui.balance", "Баланс");
-            scoreLabel.fontStyle = FontStyles.UpperCase;
-            UiFactory.Anchor(scoreLabel.rectTransform, new Vector2(0f, 0.58f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-            _terminalScore = UiFactory.Text(score, "Value", "$0", 34f, TextAlignmentOptions.Center, new Color(1f, 0.23f, 0.18f, 1f));
-            _terminalScore.fontStyle = FontStyles.Bold;
-            UiFactory.Anchor(_terminalScore.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0.62f), Vector2.zero, Vector2.zero);
-
-            var screen = UiFactory.NeonBox(_terminal, "Screen", ArcadeNeon, ArcadeScreen, 4f);
-            UiFactory.Anchor(screen.parent as RectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(40f, 120f), new Vector2(-40f, -170f));
-
-            var header = UiFactory.Rect(screen, "Header");
-            UiFactory.Anchor(header, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(14f, -46f), new Vector2(-14f, -8f));
-            var sub = Bind(UiFactory.Text(header, "Sub", "", 24f, TextAlignmentOptions.Left, Color.white), "ui.terminal", "Терминал улучшений");
-            UiFactory.Anchor(sub.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-
-            var list = UiFactory.Rect(screen, "List");
-            UiFactory.Anchor(list, Vector2.zero, Vector2.one, new Vector2(12f, 30f), new Vector2(-12f, -46f));
-            UiFactory.Layout(list, 4f, new RectOffset(0, 0, 0, 0));
+            var list = UiFactory.Rect(w.Screen, "List");
+            UiFactory.Anchor(list, Vector2.zero, Vector2.one, new Vector2(12f, 14f), new Vector2(-12f, -14f));
+            UiFactory.Layout(list, 3f, new RectOffset(0, 0, 0, 0));
 
             var gm = GameManager.I;
             foreach (var data in gm.Upgrades.All)
@@ -625,7 +603,7 @@ namespace SortThem
                 if (data.Source != UpgradeSource.Terminal) continue;
                 var rowFill = UiFactory.NeonBox(list, "Row_" + data.UpgradeID, ArcadeNeon, new Color(0.06f, 0.10f, 0.14f, 1f), 2f);
                 var rowRoot = (RectTransform)rowFill.parent;
-                UiFactory.Size(rowRoot, 0f, 52f);
+                UiFactory.Size(rowRoot, 0f, 50f);
                 var r = new UpgradeRow { Data = data, Frame = rowRoot.GetComponent<Image>() };
 
                 var icon = UiFactory.Image(rowFill, "Icon", data.Icon, Color.white, Image.Type.Simple);
@@ -666,13 +644,8 @@ namespace SortThem
                 _rows.Add(r);
             }
 
-            var panel = UiFactory.Panel(_terminal, "ControlPanel", new Color(0.13f, 0.15f, 0.21f, 1f));
-            UiFactory.Anchor(panel, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(40f, 18f), new Vector2(-40f, 114f));
-
-            _terminalClose = Bind(UiFactory.NeonButton(panel, "CloseBig", "", CloseTerminal, ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 18f), "ui.close", "Закрыть");
-            var closeBig = _terminalClose;
-            UiFactory.Anchored(closeBig.GetComponent<RectTransform>(), new Vector2(1f, 0.5f), new Vector2(-40f, 0f), new Vector2(150f, 62f));
-
+            FinishArcadeScreen(w.Screen);
+            _terminalClose = Bind(ArcadePanelButton(w, "CloseBig", CloseTerminal, ArcadeNeon, 150f, true), "ui.close", "Закрыть");
             _terminal.gameObject.SetActive(false);
         }
 
@@ -680,27 +653,10 @@ namespace SortThem
 
         void BuildSlot()
         {
-            _slot = UiFactory.Panel(transform, "SlotMachine", ArcadeBody);
-            UiFactory.Anchored(_slot, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1000f, 700f));
-
-            var marquee = UiFactory.NeonBox(_slot, "Marquee", ArcadeNeon, new Color(0.05f, 0.07f, 0.11f, 1f), 4f);
-            UiFactory.Anchor(marquee.parent as RectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -96f), new Vector2(-24f, -12f));
-            var title = Bind(UiFactory.Text(marquee, "Title", "", 44f, TextAlignmentOptions.Center, ArcadeTitle), "ui.slot", "Слот-машина");
-            title.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
-            title.characterSpacing = 6f;
-            UiFactory.Anchor(title.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-
-            var score = UiFactory.NeonBox(_slot, "Balance", new Color(0.35f, 0.35f, 0.40f, 1f), Color.black, 3f);
-            UiFactory.Anchored(score.parent as RectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -100f), new Vector2(250f, 62f));
-            var balanceLabel = Bind(UiFactory.Text(score, "Label", "", 16f, TextAlignmentOptions.Center, new Color(1f, 0.34f, 0.69f, 1f)), "ui.balance", "Баланс");
-            balanceLabel.fontStyle = FontStyles.UpperCase;
-            UiFactory.Anchor(balanceLabel.rectTransform, new Vector2(0f, 0.58f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
-            _slotBalance = UiFactory.Text(score, "Value", "", 34f, TextAlignmentOptions.Center, new Color(1f, 0.23f, 0.18f, 1f));
-            _slotBalance.fontStyle = FontStyles.Bold;
-            UiFactory.Anchor(_slotBalance.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0.62f), Vector2.zero, Vector2.zero);
-
-            var screen = UiFactory.NeonBox(_slot, "Screen", ArcadeNeon, ArcadeScreen, 4f);
-            UiFactory.Anchor(screen.parent as RectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(40f, 120f), new Vector2(-40f, -170f));
+            var w = BuildArcadeWindow("SlotMachine", new Vector2(1060f, 780f), "ui.slot", "Слот-машина", true, true);
+            _slot = w.Root;
+            _slotBalance = BuildBalanceBox(_slot);
+            var screen = w.Screen;
 
             var prizes = UiFactory.NeonBox(screen, "PrizeBox", ArcadeNeon, new Color(0.05f, 0.09f, 0.13f, 1f), 2f);
             UiFactory.Anchor(prizes.parent as RectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(14f, 14f), new Vector2(258f, -14f));
@@ -710,8 +666,8 @@ namespace SortThem
             UiFactory.Anchor(reels, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(268f, 74f), new Vector2(-14f, -14f));
             BuildReels(reels);
 
-            var payline = UiFactory.Panel(reels, "Payline", new Color(1f, 0.85f, 0.25f, 0.55f));
-            UiFactory.Anchor(payline, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-6f, -1.5f), new Vector2(6f, 1.5f));
+            var payline = UiFactory.Panel(reels, "Payline", new Color(1f, 0.85f, 0.25f, 0.7f));
+            UiFactory.Anchor(payline, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-6f, -3.5f), new Vector2(6f, 3.5f));
             payline.SetAsLastSibling();
 
             _slotIcon = UiFactory.Image(screen, "HiddenIcon", null, Gold, Image.Type.Simple);
@@ -723,17 +679,11 @@ namespace SortThem
 
             _slotRemaining = UiFactory.Text(screen, "Remaining", "", 16f, TextAlignmentOptions.Center, new Color(1f, 1f, 1f, 0.55f));
             UiFactory.Anchor(_slotRemaining.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(268f, 10f), new Vector2(-14f, 36f));
+            FinishArcadeScreen(screen);
 
-            var panel = UiFactory.Panel(_slot, "ControlPanel", new Color(0.13f, 0.15f, 0.21f, 1f));
-            UiFactory.Anchor(panel, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(40f, 18f), new Vector2(-40f, 114f));
-
-            _spinButton = UiFactory.NeonButton(panel, "Spin", "", Spin, ArcadeCost, new Color(0.14f, 0.10f, 0.04f, 1f), ArcadeCost, 24f);
+            _spinButton = ArcadePanelButton(w, "Spin", Spin, ArcadeCost, 320f, false, 24f, true);
             _spinLabel = _spinButton.GetComponentInChildren<TMP_Text>();
-            _spinLabel.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
-            UiFactory.Anchored(_spinButton.GetComponent<RectTransform>(), new Vector2(0f, 0.5f), new Vector2(40f, 0f), new Vector2(320f, 66f));
-
-            _slotClose = Bind(UiFactory.NeonButton(panel, "Close", "", CloseSlot, ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 18f), "ui.close", "Закрыть");
-            UiFactory.Anchored(_slotClose.GetComponent<RectTransform>(), new Vector2(1f, 0.5f), new Vector2(-40f, 0f), new Vector2(150f, 62f));
+            _slotClose = Bind(ArcadePanelButton(w, "Close", CloseSlot, ArcadeNeon, 150f, true), "ui.close", "Закрыть");
 
             _slotButtons.Add(_spinButton);
             _slotButtons.Add(_slotClose);
@@ -833,7 +783,7 @@ namespace SortThem
                         parts.Add(string.Format(Loc.Get("ui.slot_bonus_radius", "радиус ×{0}"), up.Value(UpgradeKind.AutoCollectRadius, 1f).ToString("0.0#")));
                     if (kind != UpgradeKind.AutoCollect && up.Has(UpgradeKind.AbilityDuration))
                         parts.Add(string.Format(Loc.Get("ui.slot_bonus_duration", "действие ×{0}"), up.Value(UpgradeKind.AbilityDuration, 1f).ToString("0.0#")));
-                    return parts.Count > 0 ? string.Join("\n", parts) : null;
+                    return parts.Count > 0 ? string.Join(" · ", parts) : null;
                 }
             }
             return null;
@@ -841,23 +791,25 @@ namespace SortThem
 
         void BuildPause()
         {
-            _pause = UiFactory.Panel(transform, "Pause", new Color(0.08f, 0.09f, 0.12f, 0.96f));
-            UiFactory.Layout(_pause, 12f, new RectOffset(24, 24, 20, 20));
-            var title = Bind(UiFactory.Text(_pause, "Title", "", 34f, TextAlignmentOptions.Center, Color.white), "ui.pause", "Пауза");
-            UiFactory.Size(title, 0f, 50f);
-            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Resume", "", ClosePause), "ui.resume", "Продолжить"));
-            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Save", "", () => GameManager.I.Save.SaveNow("manual")), "ui.save", "Сохранить"));
-            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Settings", "", OpenSettings), "ui.settings", "Настройки"));
-            var controlsButton = Bind(UiFactory.Button(_pause, "Controls", "", OpenControls), "ui.controls", "Управление");
+            const float buttonH = 56f, spacing = 14f, pad = 24f;
+            int count = TouchInput.Active ? 5 : 6;
+            float screenH = pad * 2f + count * buttonH + (count - 1) * spacing;
+            var w = BuildArcadeWindow("Pause", new Vector2(520f, ArcadeHeight(screenH, false, false)), "ui.pause", "Пауза", false, false);
+            _pause = w.Root;
+            var list = UiFactory.Rect(w.Screen, "List");
+            UiFactory.Anchor(list, Vector2.zero, Vector2.one, new Vector2(28f, pad), new Vector2(-28f, -pad));
+            UiFactory.Layout(list, spacing, new RectOffset(0, 0, 0, 0));
+            _pauseButtons.Add(Bind(ArcadeButton(list, "Resume", ClosePause, ArcadeNeon, 20f), "ui.resume", "Продолжить"));
+            _pauseButtons.Add(Bind(ArcadeButton(list, "Save", () => GameManager.I.Save.SaveNow("manual"), ArcadeNeon, 20f), "ui.save", "Сохранить"));
+            _pauseButtons.Add(Bind(ArcadeButton(list, "Settings", OpenSettings, ArcadeNeon, 20f), "ui.settings", "Настройки"));
+            var controlsButton = Bind(ArcadeButton(list, "Controls", OpenControls, ArcadeNeon, 20f), "ui.controls", "Управление");
             _controlsButton = controlsButton.gameObject;
             _controlsButton.SetActive(!TouchInput.Active);
             _pauseButtons.Add(controlsButton);
-            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Unstuck", "", () => GameManager.I.UnstuckCars()), "ui.unstuck", "Вернуть застрявшие машинки"));
-            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "Shuffle", "", StartShuffle), "ui.shuffle", "Перемешать кучу"));
-            _pauseButtons.Add(Bind(UiFactory.Button(_pause, "NewGame", "", OpenConfirm), "ui.newgame", "Сбросить прогресс"));
-            int visible = 0;
-            foreach (var b in _pauseButtons) { UiFactory.Size(b, 0f, 56f); if (b.gameObject.activeSelf) visible++; }
-            UiFactory.Anchored(_pause, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(420f, 40f + 50f + visible * 68f));
+            _pauseButtons.Add(Bind(ArcadeButton(list, "Shuffle", StartShuffle, ArcadeNeon, 20f), "ui.shuffle", "Перемешать кучу"));
+            _pauseButtons.Add(Bind(ArcadeButton(list, "NewGame", OpenConfirm, ArcadeRed, 20f), "ui.newgame", "Сбросить прогресс"));
+            foreach (var b in _pauseButtons) UiFactory.Size(b, 0f, buttonH);
+            FinishArcadeScreen(w.Screen);
             _pause.gameObject.SetActive(false);
         }
 
@@ -897,40 +849,37 @@ namespace SortThem
 
         void BuildSettings()
         {
-            _settings = UiFactory.Panel(transform, "Settings", new Color(0.08f, 0.09f, 0.12f, 0.96f));
-            UiFactory.Anchored(_settings, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(800f, 572f));
-            UiFactory.Layout(_settings, 10f, new RectOffset(24, 24, 20, 20));
-            var title = Bind(UiFactory.Text(_settings, "Title", "", 34f, TextAlignmentOptions.Center, Color.white), "ui.settings", "Настройки");
-            UiFactory.Size(title, 0f, 50f);
+            const float rowH = 56f, gap = 8f, pad = 20f;
+            int rows = Platform.IsMobile ? 5 : 6;
+            float screenH = pad * 2f + rows * rowH + (rows - 1) * gap;
+            var w = BuildArcadeWindow("Settings", new Vector2(900f, ArcadeHeight(screenH, false, true)), "ui.settings", "Настройки", false, true);
+            _settings = w.Root;
+            _settingsList = UiFactory.Rect(w.Screen, "List");
+            UiFactory.Anchor(_settingsList, Vector2.zero, Vector2.one, new Vector2(pad, pad), new Vector2(-pad, -pad));
+            UiFactory.Layout(_settingsList, gap, new RectOffset(0, 0, 0, 0));
 
             _settingsItems.Add(SettingsSlider("Music", "ui.music", "Музыка", 0f, 1f, Settings.MusicVolume, Settings.SetMusicVolume, Percent));
             _settingsItems.Add(SettingsSlider("Sfx", "ui.sfx", "Эффекты", 0f, 1f, Settings.SfxVolume, Settings.SetSfxVolume, Percent));
             _settingsItems.Add(SettingsSlider("SensX", "ui.sens_x", "Чувствительность по горизонтали", Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityX, Settings.SetSensitivityX, Multiplier));
             _settingsItems.Add(SettingsSlider("SensY", "ui.sens_y", "Чувствительность по вертикали", Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityY, Settings.SetSensitivityY, Multiplier));
 
-            var langRow = UiFactory.Rect(_settings, "Language");
-            UiFactory.Size(langRow, 0f, 52f);
-            var langLabel = Bind(UiFactory.Text(langRow, "Label", "", 21f, TextAlignmentOptions.Left, Color.white), "ui.language", "Язык");
-            UiFactory.Anchor(langLabel.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
-            _languageButton = UiFactory.Button(langRow, "Cycle", "", () => CycleLanguage(1), 20f);
+            var langRow = ArcadeRow(_settingsList, "Language", "ui.language", "Язык", rowH);
+            _languageButton = ArcadeButton(langRow, "Cycle", () => CycleLanguage(1), ArcadeNeon, 18f);
             _languageLabel = _languageButton.GetComponentInChildren<TMP_Text>();
-            UiFactory.Anchor(_languageButton.GetComponent<RectTransform>(), new Vector2(0.72f, 0.1f), new Vector2(1f, 0.9f), Vector2.zero, Vector2.zero);
+            UiFactory.Anchor(_languageButton.GetComponent<RectTransform>(), new Vector2(0.72f, 0.14f), new Vector2(1f, 0.86f), Vector2.zero, new Vector2(-10f, 0f));
             _settingsItems.Add(_languageButton);
             RefreshLanguage();
 
-            var vibRow = UiFactory.Rect(_settings, "Vibration");
-            _vibrationRow = vibRow.gameObject;
-            UiFactory.Size(vibRow, 0f, 52f);
-            var vibLabel = Bind(UiFactory.Text(vibRow, "Label", "", 21f, TextAlignmentOptions.Left, Color.white), "ui.vibration", "Вибрация");
-            UiFactory.Anchor(vibLabel.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
-            _vibrationButton = UiFactory.Button(vibRow, "Toggle", "", () => { Settings.SetVibration(!Settings.Vibration); RefreshVibration(); }, 20f);
+            var vibRow = ArcadeRow(_settingsList, "Vibration", "ui.vibration", "Вибрация", rowH);
+            _vibrationRow = vibRow.parent.gameObject;
+            _vibrationButton = ArcadeButton(vibRow, "Toggle", () => { Settings.SetVibration(!Settings.Vibration); RefreshVibration(); }, ArcadeNeon, 18f);
             _vibrationLabel = _vibrationButton.GetComponentInChildren<TMP_Text>();
-            UiFactory.Anchor(_vibrationButton.GetComponent<RectTransform>(), new Vector2(0.72f, 0.1f), new Vector2(1f, 0.9f), Vector2.zero, Vector2.zero);
+            UiFactory.Anchor(_vibrationButton.GetComponent<RectTransform>(), new Vector2(0.72f, 0.14f), new Vector2(1f, 0.86f), Vector2.zero, new Vector2(-10f, 0f));
             _settingsItems.Add(_vibrationButton);
             RefreshVibration();
 
-            var back = Bind(UiFactory.Button(_settings, "Back", "", () => CloseSettings(true)), "ui.back", "Назад");
-            UiFactory.Size(back, 0f, 56f);
+            FinishArcadeScreen(w.Screen);
+            var back = Bind(ArcadePanelButton(w, "Back", () => CloseSettings(true), ArcadeNeon, 150f, true), "ui.back", "Назад");
             _settingsItems.Add(back);
             _settings.gameObject.SetActive(false);
         }
@@ -940,15 +889,14 @@ namespace SortThem
 
         Slider SettingsSlider(string name, string labelKey, string labelFallback, float min, float max, float value, System.Action<float> apply, System.Func<float, string> format)
         {
-            var row = UiFactory.Rect(_settings, name);
-            UiFactory.Size(row, 0f, 52f);
-            var text = Bind(UiFactory.Text(row, "Label", "", 21f, TextAlignmentOptions.Left, Color.white), labelKey, labelFallback);
-            UiFactory.Anchor(text.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(8f, 0f), Vector2.zero);
+            var row = ArcadeRow(_settingsList, name, labelKey, labelFallback, 56f);
             var slider = UiFactory.Slider(row, "Slider", min, max, value);
             UiFactory.Anchor(slider.GetComponent<RectTransform>(), new Vector2(0.54f, 0f), new Vector2(0.85f, 1f), Vector2.zero, Vector2.zero);
-            var valueText = UiFactory.Text(row, "Value", format(value), 20f, TextAlignmentOptions.Right, new Color(0.8f, 0.8f, 0.85f, 1f));
-            UiFactory.Anchor(valueText.rectTransform, new Vector2(0.87f, 0f), new Vector2(1f, 1f), Vector2.zero, new Vector2(-8f, 0f));
+            var valueText = UiFactory.Text(row, "Value", format(value), 20f, TextAlignmentOptions.Right, ArcadeCost);
+            valueText.fontStyle = FontStyles.Bold;
+            UiFactory.Anchor(valueText.rectTransform, new Vector2(0.87f, 0f), new Vector2(1f, 1f), Vector2.zero, new Vector2(-14f, 0f));
             slider.onValueChanged.AddListener(v => { apply(v); valueText.text = format(v); });
+            _arcadeFrames[slider] = row.parent.GetComponent<Image>();
             return slider;
         }
 
@@ -1025,16 +973,15 @@ namespace SortThem
 
         void BuildControls()
         {
-            _controls = UiFactory.Panel(transform, "Controls", new Color(0.08f, 0.09f, 0.12f, 0.96f));
-            UiFactory.Anchored(_controls, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 640f));
-            UiFactory.Layout(_controls, 10f, new RectOffset(24, 24, 20, 20));
-            var title = Bind(UiFactory.Text(_controls, "Title", "", 34f, TextAlignmentOptions.Center, Color.white), "ui.controls", "Управление");
-            UiFactory.Size(title, 0f, 50f);
-            _controlsList = UiFactory.Rect(_controls, "List");
-            UiFactory.Size(_controlsList, 0f, ControlRows.Length * 36f);
-            UiFactory.Layout(_controlsList, 2f, new RectOffset(0, 0, 0, 0));
-            var back = Bind(UiFactory.Button(_controls, "Back", "", () => CloseControls(true)), "ui.back", "Назад");
-            UiFactory.Size(back, 0f, 56f);
+            const float rowH = 36f, gap = 2f, pad = 20f;
+            float screenH = pad * 2f + ControlRows.Length * rowH + (ControlRows.Length - 1) * gap;
+            var w = BuildArcadeWindow("Controls", new Vector2(900f, ArcadeHeight(screenH, false, true)), "ui.controls", "Управление", false, true);
+            _controls = w.Root;
+            _controlsList = UiFactory.Rect(w.Screen, "List");
+            UiFactory.Anchor(_controlsList, Vector2.zero, Vector2.one, new Vector2(pad, pad), new Vector2(-pad, -pad));
+            UiFactory.Layout(_controlsList, gap, new RectOffset(0, 0, 0, 0));
+            FinishArcadeScreen(w.Screen);
+            var back = Bind(ArcadePanelButton(w, "Back", () => CloseControls(true), ArcadeNeon, 150f, true), "ui.back", "Назад");
             _controlsItems.Add(back);
             _controls.gameObject.SetActive(false);
         }
@@ -1054,9 +1001,12 @@ namespace SortThem
                 else if (row.Action != null) key = ControlHints.Label(map != null ? map.FindAction(row.Action, false) : null, _controlsGroup);
                 else key = SelectLabel(_controlsGroup);
                 var r = UiFactory.Rect(_controlsList, "Row_" + row.Key);
-                UiFactory.Size(r, 0f, 34f);
-                var keyText = UiFactory.Text(r, "Key", "[" + key + "]", 20f, TextAlignmentOptions.Right, new Color(1f, 0.9f, 0.5f, 1f));
-                UiFactory.Anchor(keyText.rectTransform, Vector2.zero, new Vector2(0.42f, 1f), Vector2.zero, Vector2.zero);
+                UiFactory.Size(r, 0f, 36f);
+                var cap = UiFactory.NeonBox(r, "Key", ArcadeCost, new Color(0.12f, 0.09f, 0.03f, 1f), 2f);
+                UiFactory.Anchor((RectTransform)cap.parent, new Vector2(0f, 0.08f), new Vector2(0.42f, 0.92f), Vector2.zero, Vector2.zero);
+                var keyText = UiFactory.Text(cap, "Text", key, 18f, TextAlignmentOptions.Center, ArcadeCost);
+                keyText.fontStyle = FontStyles.Bold;
+                UiFactory.Anchor(keyText.rectTransform, Vector2.zero, Vector2.one, new Vector2(8f, 0f), new Vector2(-8f, 0f));
                 var desc = UiFactory.Text(r, "Desc", Loc.Get(row.Key, row.Fallback), 20f, TextAlignmentOptions.Left, Color.white);
                 UiFactory.Anchor(desc.rectTransform, new Vector2(0.42f, 0f), Vector2.one, new Vector2(24f, 0f), Vector2.zero);
             }
@@ -1202,16 +1152,10 @@ namespace SortThem
                 if (b.transform.localScale.x != scale) b.transform.localScale = new Vector3(scale, scale, 1f);
             }
             if (TerminalOpen) RefreshTerminalFocus();
-            if (SlotOpen) RefreshSlotFocus();
+            RefreshArcadeFocus();
         }
 
-        void RefreshSlotFocus()
-        {
-            Paint(_spinButton, ArcadeCost);
-            Paint(_slotClose, ArcadeNeon);
-        }
-
-        void Paint(Button b, Color idle)
+        void Paint(Selectable b, Color idle)
         {
             if (b == null) return;
             var want = b == _focused ? ArcadeFocus : idle;
@@ -1241,18 +1185,6 @@ namespace SortThem
                 }
                 var buyFrame = r.Buy.GetComponent<Image>();
                 if (buyFrame != null && buyFrame.color != want) buyFrame.color = want;
-            }
-            if (_terminalClose != null)
-            {
-                var want = _terminalClose == _focused ? ArcadeFocus : ArcadeNeon;
-                var img = _terminalClose.GetComponent<Image>();
-                if (img != null && img.color != want) img.color = want;
-                var closeLabel = _terminalClose.transform.Find("Fill/Label");
-                if (closeLabel != null)
-                {
-                    var text = closeLabel.GetComponent<TMP_Text>();
-                    if (text != null && text.color != want) text.color = want;
-                }
             }
         }
 
@@ -1350,7 +1282,7 @@ namespace SortThem
                 r.Name.text = Loc.Get(r.Data.DisplayName, r.Data.DevName);
                 r.Desc.text = Loc.Get(r.Data.Description, r.Data.DevDescription);
                 string bonus = SlotBonusText(r.Data.Kind);
-                r.Level.text = level + "/" + r.Data.MaxLevel + (bonus != null ? "\n<size=15><color=" + GoldHex + ">" + bonus + "</color></size>" : "");
+                r.Level.text = level + "/" + r.Data.MaxLevel + (bonus != null ? "\n<size=13><color=" + GoldHex + ">" + bonus + "</color></size>" : "");
                 if (r.Icon != null) r.Icon.color = bonus != null ? Gold : Color.white;
                 r.Cost.text = maxed ? Loc.Get("ui.max", "Макс.") : "$" + gm.Upgrades.NextCost(r.Data);
                 r.Buy.interactable = gm.Upgrades.CanBuy(r.Data);

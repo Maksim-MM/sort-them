@@ -171,23 +171,34 @@ namespace SortThem.Editor
             EditorAssets.EnsureFolder(Paths.Meshes);
             var material = EditorAssets.LoadOrCreateMaterial("Cars", "SortThem/VertexColorLit", Color.white);
             var p = new List<Part>();
-            const float w = 0.24f, h = 0.18f, d = 0.24f, t = 0.012f;
-            Box(p, 0f, h * 0.5f, 0f, w, h, d, Wood);
+            const float w = 0.24f, h = 0.18f, d = 0.24f;
+            const float plank = 0.012f, railW = 0.026f, boardH = 0.046f;
+
+            Box(p, 0f, 0.007f, 0f, w - 0.004f, 0.014f, d - 0.004f, WoodDark);
+
+            foreach (float y in new[] { 0.035f, 0.089f, 0.143f })
+            {
+                Box(p, 0f, y, d * 0.5f - plank * 0.5f, w - 0.006f, boardH, plank, Wood);
+                Box(p, 0f, y, -d * 0.5f + plank * 0.5f, w - 0.006f, boardH, plank, Wood);
+                Box(p, w * 0.5f - plank * 0.5f, y, 0f, plank, boardH, d - plank * 2f - 0.004f, Wood);
+                Box(p, -w * 0.5f + plank * 0.5f, y, 0f, plank, boardH, d - plank * 2f - 0.004f, Wood);
+            }
+
             foreach (float sx in new[] { -1f, 1f })
                 foreach (float sz in new[] { -1f, 1f })
-                    Box(p, sx * (w * 0.5f - t * 0.5f), h * 0.5f, sz * (d * 0.5f - t * 0.5f), t * 1.6f, h + 0.004f, t * 1.6f, WoodDark);
-            foreach (float sy in new[] { 0.02f, h - 0.02f })
-            {
-                Box(p, 0f, sy, d * 0.5f + 0.002f, w + 0.004f, 0.02f, 0.006f, WoodDark);
-                Box(p, 0f, sy, -d * 0.5f - 0.002f, w + 0.004f, 0.02f, 0.006f, WoodDark);
-                Box(p, w * 0.5f + 0.002f, sy, 0f, 0.006f, 0.02f, d + 0.004f, WoodDark);
-                Box(p, -w * 0.5f - 0.002f, sy, 0f, 0.006f, 0.02f, d + 0.004f, WoodDark);
-            }
-            Box(p, 0f, h * 0.5f, d * 0.5f + 0.004f, 0.11f, 0.06f, 0.004f, Yellow);
-            Box(p, 0f, h * 0.5f, -d * 0.5f - 0.004f, 0.11f, 0.06f, 0.004f, Yellow);
-            Cyl(p, -0.03f, h + 0.012f, 0.03f, 0.025f, 0.024f, 'Y', Steel);
-            Cyl(p, 0.04f, h + 0.008f, -0.03f, 0.014f, 0.016f, 'Y', Steel);
-            Box(p, 0.045f, h + 0.008f, 0.02f, 0.09f, 0.012f, 0.02f, Steel, 0f, 30f, 0f);
+                    Box(p, sx * (w * 0.5f - 0.008f), h * 0.5f, sz * (d * 0.5f - 0.008f), railW, h + 0.004f, railW, WoodDark);
+
+            foreach (float z in new[] { -0.082f, 0f, 0.082f })
+                Box(p, 0f, h - 0.008f, z, w - 0.006f, 0.016f, 0.07f, Wood);
+            foreach (float z in new[] { -0.072f, 0.072f })
+                Box(p, 0f, h + 0.003f, z, w - 0.03f, 0.008f, 0.026f, WoodDark);
+
+            float mid = h * 0.5f;
+            CrateEmblem(p, new Vector3(0f, mid, d * 0.5f + 0.001f), Quaternion.identity);
+            CrateEmblem(p, new Vector3(0f, mid, -d * 0.5f - 0.001f), Quaternion.Euler(0f, 180f, 0f));
+            CrateEmblem(p, new Vector3(w * 0.5f + 0.001f, mid, 0f), Quaternion.Euler(0f, 90f, 0f));
+            CrateEmblem(p, new Vector3(-w * 0.5f - 0.001f, mid, 0f), Quaternion.Euler(0f, -90f, 0f));
+
             var mesh = Combine(p, "PartsCrate", out var bounds);
             mesh = SaveMesh(mesh, Paths.Meshes + "/PartsCrate.asset");
 
@@ -198,7 +209,7 @@ namespace SortThem.Editor
             var mr = go.AddComponent<MeshRenderer>();
             mr.sharedMaterial = material;
             mr.shadowCastingMode = ShadowCastingMode.Off;
-            mr.lightProbeUsage = LightProbeUsage.Off;
+            mr.lightProbeUsage = LightProbeUsage.BlendProbes;
             mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
             var bc = go.AddComponent<BoxCollider>();
             bc.center = bounds.center;
@@ -254,7 +265,7 @@ namespace SortThem.Editor
             mr.sharedMaterial = material;
             mr.shadowCastingMode = ShadowCastingMode.Off;
             mr.receiveShadows = false;
-            mr.lightProbeUsage = LightProbeUsage.Off;
+            mr.lightProbeUsage = LightProbeUsage.BlendProbes;
             mr.reflectionProbeUsage = ReflectionProbeUsage.Off;
             var bc = go.AddComponent<BoxCollider>();
             bc.center = Vector3.zero;
@@ -316,6 +327,44 @@ namespace SortThem.Editor
             mesh.RecalculateBounds();
             mesh.UploadMeshData(false);
             return mesh;
+        }
+
+        static void Piece(List<Part> p, Mesh mesh, Vector3 origin, Quaternion basis, Vector3 local, Quaternion localRot, Vector3 scale, Color c)
+        {
+            p.Add(new Part { Mesh = mesh, Pos = origin + basis * local, Rot = basis * localRot, Scale = scale, Color = c });
+        }
+
+        static void CrateEmblem(List<Part> p, Vector3 origin, Quaternion basis)
+        {
+            const float thin = 0.006f;
+            var flat = Quaternion.Euler(90f, 0f, 0f);
+
+            var gear = new Vector3(-0.040f, 0f, 0f);
+            Piece(p, _cylinder, origin, basis, gear, flat, new Vector3(0.052f, thin * 0.5f, 0.052f), Steel);
+            for (int i = 0; i < 8; i++)
+            {
+                float deg = i * 45f;
+                float rad = deg * Mathf.Deg2Rad;
+                var at = gear + new Vector3(Mathf.Cos(rad) * 0.03f, Mathf.Sin(rad) * 0.03f, 0f);
+                Piece(p, _cube, origin, basis, at, Quaternion.Euler(0f, 0f, deg), new Vector3(0.016f, 0.011f, thin), Steel);
+            }
+            Piece(p, _cylinder, origin, basis, gear, flat, new Vector3(0.018f, thin * 0.9f, 0.018f), WoodDark);
+
+            const float tilt = 35f;
+            float c35 = Mathf.Cos(tilt * Mathf.Deg2Rad), s35 = Mathf.Sin(tilt * Mathf.Deg2Rad);
+            var dir = new Vector3(c35, s35, 0f);
+            var side = new Vector3(-s35, c35, 0f);
+            var shaft = new Vector3(0.038f, -0.004f, 0f);
+            var spin = Quaternion.Euler(0f, 0f, tilt);
+            Piece(p, _cube, origin, basis, shaft, spin, new Vector3(0.056f, 0.013f, thin), Steel);
+
+            var jaw = shaft + dir * 0.034f;
+            Piece(p, _cube, origin, basis, jaw + side * 0.0085f, spin, new Vector3(0.02f, 0.007f, thin), Steel);
+            Piece(p, _cube, origin, basis, jaw - side * 0.0085f, spin, new Vector3(0.02f, 0.007f, thin), Steel);
+
+            var ring = shaft - dir * 0.032f;
+            Piece(p, _cylinder, origin, basis, ring, flat, new Vector3(0.024f, thin * 0.5f, 0.024f), Steel);
+            Piece(p, _cylinder, origin, basis, ring, flat, new Vector3(0.012f, thin * 0.9f, 0.012f), WoodDark);
         }
 
         static void Box(List<Part> p, float x, float y, float z, float sx, float sy, float sz, Color c, float rx = 0f, float ry = 0f, float rz = 0f)
