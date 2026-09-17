@@ -35,7 +35,7 @@ namespace SortThem
 
         public void SaveNow(string reason)
         {
-            if (!_gm.Ready) return;
+            if (!_gm.Ready || _gm.Shuffling) return;
             try
             {
                 _storage.Save(Serialize());

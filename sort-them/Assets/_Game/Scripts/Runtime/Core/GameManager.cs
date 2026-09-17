@@ -163,7 +163,7 @@ namespace SortThem
             if (_activationTimer <= 0f)
             {
                 _activationTimer = Config.ActivationUpdateInterval;
-                if (Player != null) PhysicsActivation.Tick(Cars, Player.transform.position, Platform.IsMobile ? Config.MobileActivationRadius : Config.ActivationRadius, Config.FreezeSpeed, Config.FreezeDelay, 3, Time.frameCount);
+                if (Player != null && !Shuffling) PhysicsActivation.Tick(Cars, Player.transform.position, Platform.IsMobile ? Config.MobileActivationRadius : Config.ActivationRadius, Config.FreezeSpeed, Config.FreezeDelay, 3, Time.frameCount);
             }
             Save.Tick(Time.deltaTime);
             PileOcclusion.Tick();
@@ -418,6 +418,13 @@ namespace SortThem
                 float dt = Time.fixedDeltaTime;
                 int perStep = Mathf.Max(1, Config.ShuffleCarsPerStep), perFrame = Mathf.Max(1, Config.ShuffleStepsPerFrame), maxSteps = Mathf.Max(1, Config.ShuffleMaxSteps);
                 int next = 0, steps = 0;
+                var park = new Vector3(Config.UnstuckCenter.x, Config.FloorY - 50f, Config.UnstuckCenter.z);
+                for (int i = 0; i < loose.Count; i++)
+                {
+                    loose[i].Body.isKinematic = true;
+                    loose[i].transform.position = park + new Vector3(i % 64 * 0.6f, 0f, i / 64 * 0.6f);
+                }
+                Physics.SyncTransforms();
                 foreach (var body in bodies) Scatterer.LaunchBody(body, rng);
                 while (steps < maxSteps)
                 {
@@ -431,12 +438,19 @@ namespace SortThem
                     if (next >= loose.Count && steps % 25 == 0 && AllSleeping(loose)) break;
                     yield return null;
                 }
+                foreach (var car in loose) { car.Body.isKinematic = false; car.Body.WakeUp(); }
+                for (int extra = 0; extra < 400; extra++)
+                {
+                    Physics.Simulate(dt);
+                    if (extra % 25 == 24 && AllSleeping(loose)) break;
+                    if (extra % perFrame == perFrame - 1) { progress?.Invoke(1f); yield return null; }
+                }
                 var half = Config.LevelHalfExtents;
                 foreach (var car in loose)
                 {
                     var p = car.transform.position;
                     if (p.y < Config.FloorY - 0.2f || Mathf.Abs(p.x) > half.x || Mathf.Abs(p.z) > half.z)
-                        car.SetLoose(Config.UnstuckCenter + new Vector3((float)rng.NextDouble() * 2f - 1f, (float)rng.NextDouble(), (float)rng.NextDouble() * 2f - 1f), UnityEngine.Random.rotation, true);
+                        car.SetLoose(Config.UnstuckCenter + new Vector3((float)rng.NextDouble() * 2f - 1f, (float)rng.NextDouble(), (float)rng.NextDouble() * 2f - 1f), UnityEngine.Random.rotation, false);
                     else if (car.Body.IsSleeping()) car.Freeze();
                     else car.CalmSince = -1f;
                 }

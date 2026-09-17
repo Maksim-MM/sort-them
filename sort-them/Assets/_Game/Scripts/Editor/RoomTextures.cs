@@ -9,37 +9,38 @@ namespace SortThem.Editor
     {
         public const string Folder = Paths.Root + "/Art/Textures/Room";
         const int Size = 512;
+        const int WoodSize = 1024;
 
         [MenuItem("SortThem/2a. Generate Room Textures")]
         public static void Generate()
         {
             EditorAssets.EnsureFolder(Paths.Root + "/Art/Textures");
             EditorAssets.EnsureFolder(Folder);
-            Write("Wood_Beam", Size, Size, Wood(4, new Color(0.44f, 0.26f, 0.13f), 0.30f, 11));
-            Write("Wood_Floor", Size, Size, Wood(7, new Color(0.56f, 0.35f, 0.18f), 0.22f, 23));
-            Write("Wood_Panel", Size, Size, Wood(5, new Color(0.50f, 0.30f, 0.16f), 0.26f, 37));
+            Write("Wood_Beam", WoodSize, WoodSize, Wood(4, new Color(0.44f, 0.26f, 0.13f), 0.30f, 11, WoodSize));
+            Write("Wood_Floor", WoodSize, WoodSize, Wood(7, new Color(0.56f, 0.35f, 0.18f), 0.22f, 23, WoodSize));
+            Write("Wood_Panel", WoodSize, WoodSize, Wood(5, new Color(0.50f, 0.30f, 0.16f), 0.26f, 37, WoodSize));
             Write("Plaster_Blue", Size, Size, Plaster(new Color(0.16f, 0.33f, 0.53f), 41));
             Write("Plaster_Ceiling", Size, Size, Plaster(new Color(0.86f, 0.83f, 0.76f), 53));
             Write("Rug_Check", Size, Size, Rug(new Color(0.24f, 0.24f, 0.25f), new Color(0.82f, 0.78f, 0.69f), 8, 67));
             Write("Window_Frost", Size, Size, FrostedWindow(71));
             Write("Window_Sky", Size, Size, FrostedSky(97));
-            Write("Wood_Slab", Size, Size, Slab(new Color(0.52f, 0.32f, 0.17f), 0.30f, 83));
-            Write("Wood_PlanksV", Size, Size, Transpose(Wood(6, new Color(0.40f, 0.24f, 0.12f), 0.26f, 91)));
+            Write("Wood_Slab", WoodSize, WoodSize, Slab(new Color(0.52f, 0.32f, 0.17f), 0.30f, 83, WoodSize));
+            Write("Wood_PlanksV", WoodSize, WoodSize, Transpose(Wood(6, new Color(0.40f, 0.24f, 0.12f), 0.26f, 91, WoodSize)));
             AssetDatabase.Refresh();
             Debug.Log("SortThem: room textures written to " + Folder);
         }
 
-        static Func<int, int, Color> Wood(int planks, Color baseColor, float grainStrength, int seed)
+        static Func<int, int, Color> Wood(int planks, Color baseColor, float grainStrength, int seed, int size)
         {
             return (x, y) =>
             {
-                float u = x / (float)Size, v = y / (float)Size;
+                float u = x / (float)size, v = y / (float)size;
                 float plankF = v * planks;
                 int plank = Mathf.FloorToInt(plankF);
                 float inPlank = plankF - plank;
 
                 int plankId = Mod(plank, planks);
-                float tone = (Hash(plankId, 0, seed) - 0.5f) * 0.22f;
+                float tone = (Hash(plankId, 0, seed) - 0.5f) * 0.30f;
                 float shift = Hash(plankId, 1, seed) * 10f;
 
                 float grain = Tiled(u, v, 4, 24, seed + plankId * 13, 4, 0.55f);
@@ -50,24 +51,37 @@ namespace SortThem.Editor
                 k *= 1f - grainStrength * (rings * 0.55f + grain * 0.45f);
                 k *= 0.94f + fibre * 0.12f;
 
+                float gloss = 0.72f + (fibre - 0.5f) * 0.35f - rings * grainStrength * 0.9f + tone * 0.6f;
+
                 float edge = Mathf.Min(inPlank, 1f - inPlank);
-                if (edge < 0.035f) k *= Mathf.Lerp(0.62f, 1f, edge / 0.035f);
+                if (edge < 0.03f)
+                {
+                    float t = edge / 0.03f;
+                    k *= Mathf.Lerp(0.45f, 1f, t);
+                    gloss *= Mathf.Lerp(0.2f, 1f, t);
+                }
+                else if (edge < 0.06f) k *= Mathf.Lerp(1.05f, 1f, (edge - 0.03f) / 0.03f);
 
                 float joint = Hash(plankId, 3, seed);
                 float du = Mathf.Abs(Frac(u - joint) - 0.5f);
-                if (du > 0.497f) k *= Mathf.Lerp(0.7f, 1f, (0.5f - du) / 0.003f);
+                if (du > 0.496f)
+                {
+                    float t = (0.5f - du) / 0.004f;
+                    k *= Mathf.Lerp(0.5f, 1f, t);
+                    gloss *= Mathf.Lerp(0.2f, 1f, t);
+                }
 
-                return new Color(baseColor.r * k, baseColor.g * k, baseColor.b * k, 1f);
+                return new Color(baseColor.r * k, baseColor.g * k, baseColor.b * k, Mathf.Clamp01(gloss));
             };
         }
 
         static Func<int, int, Color> Transpose(Func<int, int, Color> fn) => (x, y) => fn(y, x);
 
-        static Func<int, int, Color> Slab(Color baseColor, float grainStrength, int seed)
+        static Func<int, int, Color> Slab(Color baseColor, float grainStrength, int seed, int size)
         {
             return (x, y) =>
             {
-                float u = x / (float)Size, v = y / (float)Size;
+                float u = x / (float)size, v = y / (float)size;
                 float wander = Tiled(u, v, 2, 3, seed + 2, 3, 0.6f);
                 float grain = Tiled(u, v, 3, 24, seed, 4, 0.55f);
                 float rings = Mathf.Sin((v * 7f + wander * 2.5f + grain * 1.8f) * Mathf.PI * 2f) * 0.5f + 0.5f;
@@ -77,7 +91,8 @@ namespace SortThem.Editor
                 float k = 1f + (broad - 0.5f) * 0.14f;
                 k *= 1f - grainStrength * (rings * 0.5f + grain * 0.35f);
                 k *= 0.92f + fibre * 0.17f;
-                return new Color(baseColor.r * k, baseColor.g * k, baseColor.b * k, 1f);
+                float gloss = 0.7f + (fibre - 0.5f) * 0.35f - rings * grainStrength * 0.9f + (broad - 0.5f) * 0.3f;
+                return new Color(baseColor.r * k, baseColor.g * k, baseColor.b * k, Mathf.Clamp01(gloss));
             };
         }
 
@@ -253,7 +268,7 @@ namespace SortThem.Editor
                         (byte)Mathf.RoundToInt(Mathf.Clamp01(c.r) * 255f),
                         (byte)Mathf.RoundToInt(Mathf.Clamp01(c.g) * 255f),
                         (byte)Mathf.RoundToInt(Mathf.Clamp01(c.b) * 255f),
-                        255);
+                        (byte)Mathf.RoundToInt(Mathf.Clamp01(c.a) * 255f));
                 }
             tex.SetPixels32(px);
             tex.Apply();
@@ -271,8 +286,11 @@ namespace SortThem.Editor
                 imp.mipmapEnabled = true;
                 imp.mipMapBias = -0.25f;
                 imp.anisoLevel = 4;
-                imp.maxTextureSize = 512;
+                imp.maxTextureSize = Mathf.Max(w, h);
+                imp.alphaIsTransparency = false;
                 imp.textureCompression = TextureImporterCompression.Compressed;
+                imp.crunchedCompression = true;
+                imp.compressionQuality = 60;
                 imp.SaveAndReimport();
             }
         }

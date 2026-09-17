@@ -433,10 +433,10 @@ namespace SortThem.Editor
         static void CreateMaterials()
         {
             string tex = RoomTextures.Folder;
-            _woodBeam = EditorAssets.Textured("Room_WoodBeam", tex + "/Wood_Beam.png", Color.white, 0.18f);
-            _woodPanel = EditorAssets.Textured("Room_WoodPanel", tex + "/Wood_Panel.png", Color.white, 0.15f);
-            _woodPanelV = EditorAssets.Textured("Room_WoodPanelV", tex + "/Wood_PlanksV.png", Color.white, 0.15f);
-            _woodFloor = EditorAssets.Textured("Room_WoodFloor", tex + "/Wood_Floor.png", Color.white, 0.22f);
+            _woodBeam = EditorAssets.Textured("Room_WoodBeam", tex + "/Wood_Beam.png", Color.white, 0.32f, specular: true);
+            _woodPanel = EditorAssets.Textured("Room_WoodPanel", tex + "/Wood_Panel.png", Color.white, 0.30f, specular: true);
+            _woodPanelV = EditorAssets.Textured("Room_WoodPanelV", tex + "/Wood_PlanksV.png", Color.white, 0.30f, specular: true);
+            _woodFloor = EditorAssets.Textured("Room_WoodFloor", tex + "/Wood_Floor.png", Color.white, 0.48f, specular: true);
             _plaster = EditorAssets.Textured("Room_Plaster", tex + "/Plaster_Blue.png", Color.white, 0.05f);
             _ceilingPlaster = EditorAssets.Textured("Room_Ceiling", tex + "/Plaster_Ceiling.png", Color.white, 0.05f);
             _glass = EditorAssets.Textured("Room_Window", tex + "/Window_Frost.png", Color.white, 0f, true);
@@ -446,10 +446,10 @@ namespace SortThem.Editor
             _floor = EditorAssets.Lit("Floor", new Color(0.42f, 0.42f, 0.45f));
             _wall = EditorAssets.Lit("Wall", new Color(0.78f, 0.74f, 0.66f));
             _ceiling = EditorAssets.Lit("Ceiling", new Color(0.85f, 0.85f, 0.85f));
-            _rack = EditorAssets.Textured("Rack", tex + "/Wood_Slab.png", Color.white, 0.16f);
-            _board = EditorAssets.Textured("ShelfBoard", tex + "/Wood_Slab.png", new Color(1.05f, 1.02f, 0.98f), 0.18f);
-            _rackBack = EditorAssets.Textured("RackBack", tex + "/Wood_PlanksV.png", Color.white, 0.12f);
-            _podium = EditorAssets.Textured("Podium", tex + "/Wood_Panel.png", new Color(0.82f, 0.78f, 0.74f), 0.2f);
+            _rack = EditorAssets.Textured("Rack", tex + "/Wood_Slab.png", Color.white, 0.34f, specular: true);
+            _board = EditorAssets.Textured("ShelfBoard", tex + "/Wood_Slab.png", new Color(1.05f, 1.02f, 0.98f), 0.40f, specular: true);
+            _rackBack = EditorAssets.Textured("RackBack", tex + "/Wood_PlanksV.png", Color.white, 0.24f, specular: true);
+            _podium = EditorAssets.Textured("Podium", tex + "/Wood_Panel.png", new Color(0.82f, 0.78f, 0.74f), 0.36f, specular: true);
             _terminal = EditorAssets.Lit("Terminal", new Color(0.15f, 0.15f, 0.18f));
             _cabinet = EditorAssets.Lit("Cabinet", new Color(0.42f, 0.28f, 0.16f));
             _radio = EditorAssets.Lit("Radio", new Color(0.75f, 0.55f, 0.3f));

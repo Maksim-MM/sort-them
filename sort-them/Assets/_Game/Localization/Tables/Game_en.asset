@@ -1387,23 +1387,23 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2515659379433472
-    m_Localized: Eleanor
+    m_Localized: Car_01
     m_Metadata:
       m_Items: []
   - m_Id: 2515659987607552
-    m_Localized: Sunshine
+    m_Localized: Car_03
     m_Metadata:
       m_Items: []
   - m_Id: 2515661333979136
-    m_Localized: Watch Out
+    m_Localized: Car_07
     m_Metadata:
       m_Items: []
   - m_Id: 2515662369972224
-    m_Localized: Bluesmobile
+    m_Localized: Car_08
     m_Metadata:
       m_Items: []
   - m_Id: 2515663070420992
-    m_Localized: Mater
+    m_Localized: Car_11
     m_Metadata:
       m_Items: []
   - m_Id: 2515703620952064
