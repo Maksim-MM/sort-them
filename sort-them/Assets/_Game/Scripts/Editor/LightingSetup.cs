@@ -83,7 +83,7 @@ namespace SortThem.Editor
 
         static int MarkProps()
         {
-            string[] roots = { "UpgradeTerminal", "SlotMachine", "CashDesk", "Cabinet", "Radio" };
+            string[] roots = { "UpgradeTerminal", "SlotMachine", "Counter", "Doors" };
             int count = 0;
             foreach (var name in roots)
             {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -28,7 +29,7 @@ namespace SortThem.Editor
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
 
-        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _cabinet, _radio, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _tutOutline, _heldCars;
+        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _tutOutline, _heldCars;
         static Material _woodBeam, _woodPanel, _woodPanelV, _woodFloor, _plaster, _ceilingPlaster, _glass, _sky, _rug, _lampGlow, _rackBack;
 
         [MenuItem("SortThem/4. Build Level Scene")]
@@ -82,41 +83,10 @@ namespace SortThem.Editor
             terminal.AddComponent<UpgradeTerminal>();
 
             BuildSlotMachine();
-            BuildCashRegister();
             BuildTutorial();
 
-            var cabinet = Block("Cabinet", null, new Vector3(ShopX, 0.4f, SouthZ + 4.2f), new Vector3(0.7f, 0.8f, 0.5f), _cabinet);
-            cabinet.transform.rotation = ShopRot;
-            var radio = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            radio.name = "Radio";
-            radio.transform.position = new Vector3(ShopX, 0.8f + 0.13f, SouthZ + 4.2f);
-            radio.transform.rotation = ShopRot;
-            radio.transform.localScale = new Vector3(0.44f, 0.26f, 0.18f);
-            radio.GetComponent<Renderer>().sharedMaterial = _radio;
-            radio.AddComponent<Radio>();
-            var grille = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            grille.name = "Grille";
-            grille.transform.SetParent(radio.transform, false);
-            grille.transform.localPosition = new Vector3(-0.18f, 0f, 0.52f);
-            grille.transform.localScale = new Vector3(0.5f, 0.7f, 0.06f);
-            grille.GetComponent<Renderer>().sharedMaterial = _terminal;
-            Object.DestroyImmediate(grille.GetComponent<Collider>());
-            var dial = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            dial.name = "Dial";
-            dial.transform.SetParent(radio.transform, false);
-            dial.transform.localPosition = new Vector3(0.25f, 0f, 0.52f);
-            dial.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            dial.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            dial.GetComponent<Renderer>().sharedMaterial = _marker;
-            Object.DestroyImmediate(dial.GetComponent<Collider>());
-            var antenna = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            antenna.name = "Antenna";
-            antenna.transform.SetParent(radio.transform, false);
-            antenna.transform.localPosition = new Vector3(0.35f, 1.1f, 0f);
-            antenna.transform.localRotation = Quaternion.Euler(0f, 0f, -20f);
-            antenna.transform.localScale = new Vector3(0.04f, 0.7f, 0.1f);
-            antenna.GetComponent<Renderer>().sharedMaterial = _terminal;
-            Object.DestroyImmediate(antenna.GetComponent<Collider>());
+            BuildCounter();
+            BuildEntranceDoors();
 
             var gmGo = new GameObject("GameManager");
             var gm = gmGo.AddComponent<GameManager>();
@@ -177,11 +147,12 @@ namespace SortThem.Editor
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
         }
 
-        [MenuItem("SortThem/4c. Add Cash Register")]
-        public static void AddCashRegister()
+        [MenuItem("SortThem/4c. Add Counter & Doors")]
+        public static void AddCounterAndDoors()
         {
             CreateMaterials();
-            BuildCashRegister();
+            BuildCounter();
+            BuildEntranceDoors();
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
         }
 
@@ -334,33 +305,267 @@ namespace SortThem.Editor
             tutorial.Outline = outline;
         }
 
-        static void BuildCashRegister()
+        const string RadioModel = "Assets/_Game/Art/Models/Radio/radio_vef202.fbx";
+        const string RadioTextures = "Assets/_Game/Art/Models/Radio/Textures";
+        const float RadioW = 0.46f;
+        const string CashModel = "Assets/_Game/Art/Models/CashRegister/kasa.fbx";
+        const string CashTextures = "Assets/_Game/Art/Models/CashRegister/Textures";
+        const float CashW = 0.46f;
+        static readonly Vector3 CounterCenter = new Vector3(6.2f, 0f, -5.0f);
+        const float CounterL = 3.6f, CounterD = 0.8f, CounterH = 0.9f;
+        const float DoorCenterX = 11.1f;
+
+        public static void BuildCounter()
         {
-            var existing = GameObject.Find("CashDesk");
-            if (existing != null) Object.DestroyImmediate(existing);
-            var desk = Block("CashDesk", null, new Vector3(Max - 0.45f, 0.45f, SouthZ - 2.6f), new Vector3(0.6f, 0.9f, 1.4f), _cabinet);
-            var register = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            register.name = "CashRegister";
-            register.transform.SetParent(desk.transform, false);
-            register.transform.localPosition = new Vector3(-0.05f, 0.5f + 0.19f, 0f);
-            register.transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
-            register.transform.localScale = new Vector3(0.45f / 1.4f, 0.34f / 0.9f, 0.36f / 0.6f);
-            register.GetComponent<Renderer>().sharedMaterial = _terminal;
-            register.AddComponent<CashRegister>();
-            var display = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            display.name = "Display";
-            display.transform.SetParent(register.transform, false);
-            display.transform.localPosition = new Vector3(0f, 0.25f, 0.52f);
-            display.transform.localScale = new Vector3(0.7f, 0.3f, 0.05f);
-            display.GetComponent<Renderer>().sharedMaterial = _marker;
-            Object.DestroyImmediate(display.GetComponent<Collider>());
-            var keys = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            keys.name = "Keys";
-            keys.transform.SetParent(register.transform, false);
-            keys.transform.localPosition = new Vector3(0f, -0.2f, 0.52f);
-            keys.transform.localScale = new Vector3(0.8f, 0.4f, 0.05f);
-            keys.GetComponent<Renderer>().sharedMaterial = _plateWhite;
-            Object.DestroyImmediate(keys.GetComponent<Collider>());
+            var stale = new HashSet<string> { "Counter", "CashDesk", "Radio", "RadioTable", "Cabinet", "Table", "Cash" };
+            foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
+                if (stale.Contains(go.name)) Object.DestroyImmediate(go);
+            if (_rack == null) CreateMaterials();
+
+            var root = new GameObject("Counter");
+            root.transform.SetPositionAndRotation(CounterCenter, Quaternion.identity);
+            const float topT = 0.05f, plinthH = 0.08f, panelT = 0.03f, pilW = 0.08f;
+            float bodyL = CounterL - 0.06f, bodyD = CounterD - 0.06f;
+            float panelY0 = plinthH, panelY1 = CounterH - topT, panelH = panelY1 - panelY0, panelMid = (panelY0 + panelY1) * 0.5f;
+            Panel("Top", root.transform, new Vector3(0f, CounterH - topT * 0.5f, 0f), new Vector3(CounterL, topT, CounterD), _board, SlabTile);
+            Panel("Trim", root.transform, new Vector3(0f, CounterH - topT - 0.02f, -CounterD * 0.5f + 0.02f), new Vector3(CounterL, 0.04f, 0.04f), _woodBeam, 1f);
+            Panel("Plinth", root.transform, new Vector3(0f, plinthH * 0.5f, 0f), new Vector3(bodyL - 0.04f, plinthH, bodyD - 0.04f), _terminal, SlabTile);
+            Panel("Front", root.transform, new Vector3(0f, panelMid, -bodyD * 0.5f + panelT * 0.5f), new Vector3(bodyL, panelH, panelT), _woodPanelV, 0.9f);
+            Panel("SideL", root.transform, new Vector3(-bodyL * 0.5f + panelT * 0.5f, panelMid, 0f), new Vector3(panelT, panelH, bodyD), _woodPanelV, 0.9f);
+            Panel("SideR", root.transform, new Vector3(bodyL * 0.5f - panelT * 0.5f, panelMid, 0f), new Vector3(panelT, panelH, bodyD), _woodPanelV, 0.9f);
+            Panel("Shelf", root.transform, new Vector3(0f, 0.45f, 0.06f), new Vector3(bodyL - panelT * 2f, 0.03f, bodyD - panelT - 0.12f), _board, SlabTile);
+            Panel("ShelfBack", root.transform, new Vector3(0f, panelMid, -bodyD * 0.5f + panelT + 0.01f), new Vector3(bodyL - panelT * 2f, panelH, 0.02f), _woodPanelV, 0.9f);
+            foreach (float x in new[] { -bodyL * 0.5f + pilW * 0.5f, -bodyL / 6f, bodyL / 6f, bodyL * 0.5f - pilW * 0.5f })
+                Panel("Pilaster", root.transform, new Vector3(x, panelMid, -bodyD * 0.5f + 0.01f), new Vector3(pilW, panelH, 0.05f), _woodBeam, 1f);
+            Panel("Rail", root.transform, new Vector3(0f, panelY0 + panelH * 0.55f, -bodyD * 0.5f + 0.005f), new Vector3(bodyL, 0.06f, 0.04f), _woodBeam, 1f);
+            foreach (var t in root.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
+
+            var cash = new GameObject("CashRegister");
+            cash.transform.SetParent(root.transform, false);
+            cash.transform.localPosition = new Vector3(-0.55f, CounterH, 0.04f);
+            cash.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            PlaceModel(cash, PrepareCashModel(), CashW, new Vector3(0.44f, 0.36f, 0.42f));
+            cash.AddComponent<CashRegister>();
+
+            var radio = new GameObject("Radio");
+            radio.transform.SetParent(root.transform, false);
+            radio.transform.localPosition = new Vector3(1.15f, CounterH, 0.1f);
+            radio.transform.localRotation = Quaternion.Euler(0f, 168f, 0f);
+            PlaceModel(radio, PrepareRadioModel(), RadioW, new Vector3(0.44f, 0.26f, 0.18f));
+            radio.AddComponent<Radio>();
+        }
+
+        static void PlaceModel(GameObject root, GameObject prefab, float width, Vector3 fallbackSize)
+        {
+            if (prefab == null)
+            {
+                Debug.LogError("SortThem: model for " + root.name + " not found, using a block");
+                Block("Body", root.transform, new Vector3(0f, fallbackSize.y * 0.5f, 0f), fallbackSize, _terminal);
+                var fb = root.AddComponent<BoxCollider>();
+                fb.center = new Vector3(0f, fallbackSize.y * 0.5f, 0f);
+                fb.size = fallbackSize;
+                return;
+            }
+            var model = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            model.name = "Model";
+            model.transform.SetParent(root.transform, false);
+            model.transform.localRotation = Quaternion.identity;
+            model.transform.localPosition = Vector3.zero;
+            var local = LocalBoundsIn(root.transform, model);
+            model.transform.localScale *= width / local.size.x;
+            local = LocalBoundsIn(root.transform, model);
+            model.transform.localPosition = new Vector3(-local.center.x, -local.min.y, -local.center.z);
+            local = LocalBoundsIn(root.transform, model);
+            var box = root.AddComponent<BoxCollider>();
+            box.center = local.center;
+            box.size = local.size;
+            foreach (var t in model.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
+        }
+
+        static GameObject PrepareCashModel()
+        {
+            var importer = AssetImporter.GetAtPath(CashModel) as ModelImporter;
+            if (importer == null) return null;
+            bool dirty = false;
+            var map = importer.GetExternalObjectMap();
+            for (int i = 1; i <= 4; i++)
+            {
+                string l = "lambert" + i;
+                var mat = EditorAssets.Textured("Cash_" + l, CashTextures + "/" + l + "_albedo.jpg", Color.white, 0.35f, specular: true);
+                string normalPath = CashTextures + "/" + l + "_normal.png";
+                if (File.Exists(normalPath))
+                {
+                    EnsureNormalMap(normalPath);
+                    mat.SetTexture("_BumpMap", AssetDatabase.LoadAssetAtPath<Texture2D>(normalPath));
+                    mat.EnableKeyword("_NORMALMAP");
+                }
+                var ao = AssetDatabase.LoadAssetAtPath<Texture2D>(CashTextures + "/" + l + "_AO.jpg");
+                if (ao != null) { mat.SetTexture("_OcclusionMap", ao); mat.EnableKeyword("_OCCLUSIONMAP"); }
+                var emissive = AssetDatabase.LoadAssetAtPath<Texture2D>(CashTextures + "/" + l + "_emissive.jpg");
+                if (emissive != null)
+                {
+                    mat.SetTexture("_EmissionMap", emissive);
+                    mat.SetColor("_EmissionColor", Color.white);
+                    mat.EnableKeyword("_EMISSION");
+                    mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                }
+                if (mat.HasProperty("_Metallic")) mat.SetFloat("_Metallic", File.Exists(CashTextures + "/" + l + "_metallic.jpg") ? 0.3f : 0f);
+                EditorUtility.SetDirty(mat);
+                var id = new AssetImporter.SourceAssetIdentifier(typeof(Material), l);
+                if (!map.TryGetValue(id, out var current) || current != mat) { importer.AddRemap(id, mat); dirty = true; }
+            }
+            if (!importer.generateSecondaryUV) { importer.generateSecondaryUV = true; dirty = true; }
+            if (!importer.isReadable) { importer.isReadable = true; dirty = true; }
+            if (dirty) importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<GameObject>(CashModel);
+        }
+
+        static void EnsureNormalMap(string path)
+        {
+            var ti = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (ti == null || ti.textureType == TextureImporterType.NormalMap) return;
+            ti.textureType = TextureImporterType.NormalMap;
+            ti.SaveAndReimport();
+        }
+
+        public static void BuildEntranceDoors()
+        {
+            foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
+                if (go.name == "Doors") Object.DestroyImmediate(go);
+            if (_rack == null) CreateMaterials();
+
+            var walls = GameObject.Find("Room/Walls");
+            var run = walls != null ? walls.transform.Find("Run_3") : null;
+            if (run == null) { Debug.LogError("SortThem: wall run for the entrance not found"); return; }
+
+            float x0 = float.NegativeInfinity, x1 = float.PositiveInfinity, openTop = WinBottom - MullionW * 0.5f;
+            foreach (Transform c in run)
+            {
+                float mx = c.position.x;
+                if (c.name.StartsWith("Mullion_"))
+                {
+                    if (mx < DoorCenterX && mx > x0) x0 = mx;
+                    if (mx > DoorCenterX && mx < x1) x1 = mx;
+                }
+                else if (c.name.StartsWith("Transom_"))
+                {
+                    var mr = c.GetComponent<MeshRenderer>();
+                    if (mr != null && mr.bounds.min.x < DoorCenterX && mr.bounds.max.x > DoorCenterX) openTop = mr.bounds.min.y;
+                }
+            }
+            if (float.IsInfinity(x0) || float.IsInfinity(x1)) { Debug.LogError("SortThem: no window bay around x=" + DoorCenterX); return; }
+            CutWallOpening(run, x0, x1);
+
+            var root = new GameObject("Doors");
+            root.transform.position = new Vector3((x0 + x1) * 0.5f, 0f, Inner);
+            float bayW = x1 - x0;
+            const float jambW = 0.12f, jambD = 0.16f, headH = 0.14f, thr = 0.025f, leafT = 0.05f;
+            float zFrame = -jambD * 0.5f;
+            Panel("JambL", root.transform, new Vector3(-bayW * 0.5f, openTop * 0.5f, zFrame), new Vector3(jambW, openTop, jambD), _woodBeam, 1f);
+            Panel("JambR", root.transform, new Vector3(bayW * 0.5f, openTop * 0.5f, zFrame), new Vector3(jambW, openTop, jambD), _woodBeam, 1f);
+            Panel("Header", root.transform, new Vector3(0f, openTop - headH * 0.5f, zFrame), new Vector3(bayW - jambW, headH, jambD), _woodBeam, 1f);
+            Panel("Threshold", root.transform, new Vector3(0f, thr * 0.5f, -0.06f), new Vector3(bayW - jambW, thr, 0.24f), _terminal, 1f);
+            float clearW = bayW - jambW;
+            float leafW = clearW * 0.5f - 0.006f;
+            float leafH = openTop - headH - thr - 0.012f;
+            foreach (int side in new[] { -1, 1 })
+                BuildDoorLeaf(root.transform, side < 0 ? "LeafL" : "LeafR", new Vector3(side * (leafW * 0.5f + 0.006f), thr + 0.006f, -0.085f), leafW, leafH, leafT, side);
+            foreach (var t in root.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
+        }
+
+        static void BuildDoorLeaf(Transform parent, string name, Vector3 origin, float w, float h, float t, int side)
+        {
+            var leaf = new GameObject(name);
+            leaf.transform.SetParent(parent, false);
+            leaf.transform.localPosition = origin;
+            const float stile = 0.10f, topRail = 0.12f, lockRailY = 0.95f, lockRail = 0.10f, bottomRail = 0.30f;
+            float inner = w - stile * 2f;
+            Panel("StileL", leaf.transform, new Vector3(-w * 0.5f + stile * 0.5f, h * 0.5f, 0f), new Vector3(stile, h, t), _woodBeam, 1f);
+            Panel("StileR", leaf.transform, new Vector3(w * 0.5f - stile * 0.5f, h * 0.5f, 0f), new Vector3(stile, h, t), _woodBeam, 1f);
+            Panel("TopRail", leaf.transform, new Vector3(0f, h - topRail * 0.5f, 0f), new Vector3(inner, topRail, t), _woodBeam, 1f);
+            Panel("BottomRail", leaf.transform, new Vector3(0f, bottomRail * 0.5f, 0f), new Vector3(inner, bottomRail, t), _woodBeam, 1f);
+            Panel("LockRail", leaf.transform, new Vector3(0f, lockRailY, 0f), new Vector3(inner, lockRail, t), _woodBeam, 1f);
+            float p0 = bottomRail, p1 = lockRailY - lockRail * 0.5f;
+            Panel("LowerPanel", leaf.transform, new Vector3(0f, (p0 + p1) * 0.5f, 0f), new Vector3(inner, p1 - p0, t - 0.02f), _woodPanelV, 0.9f);
+            float g0 = lockRailY + lockRail * 0.5f, g1 = h - topRail, gh = g1 - g0;
+            var glass = RoomMesh.Box("GlassDoor_" + name, leaf.transform, new Vector3(0f, (g0 + g1) * 0.5f, 0f), new Vector3(inner, gh, 0.012f), _glass, new Vector2(GlassTile, gh), false);
+            glass.isStatic = true;
+            Panel("MuntinV", leaf.transform, new Vector3(0f, (g0 + g1) * 0.5f, 0f), new Vector3(0.04f, gh, t - 0.01f), _woodBeam, 1f);
+            Panel("MuntinH", leaf.transform, new Vector3(0f, g0 + gh * 0.62f, 0f), new Vector3(inner, 0.04f, t - 0.01f), _woodBeam, 1f);
+            float hx = -side * (w * 0.5f - stile - 0.06f);
+            Panel("Handle", leaf.transform, new Vector3(hx, 1.06f, -t * 0.5f - 0.05f), new Vector3(0.03f, 0.34f, 0.03f), _terminal, 1f);
+            Panel("HandleTop", leaf.transform, new Vector3(hx, 1.23f, -t * 0.5f - 0.03f), new Vector3(0.03f, 0.03f, 0.06f), _terminal, 1f);
+            Panel("HandleBottom", leaf.transform, new Vector3(hx, 0.89f, -t * 0.5f - 0.03f), new Vector3(0.03f, 0.03f, 0.06f), _terminal, 1f);
+        }
+
+        static void CutWallOpening(Transform run, float x0, float x1)
+        {
+            var victims = new List<Transform>();
+            foreach (Transform c in run)
+                if (c.name.StartsWith("Socle_") || c.name.StartsWith("Sill_") || c.name.StartsWith("GlassLow_") || c.name.StartsWith("Plaster_") || c.name.StartsWith("WallLow_")) victims.Add(c);
+            foreach (var c in victims)
+            {
+                var mr = c.GetComponent<MeshRenderer>();
+                var mf = c.GetComponent<MeshFilter>();
+                if (mr == null || mf == null || mf.sharedMesh == null) continue;
+                var b = mr.bounds;
+                if (b.max.x <= x0 + 0.001f || b.min.x >= x1 - 0.001f) continue;
+                if (!TryParseTile(mf.sharedMesh.name, out var tile, out bool grain)) { Debug.LogWarning("SortThem: cannot split " + c.name + " (" + mf.sharedMesh.name + ")"); continue; }
+                var mat = mr.sharedMaterial;
+                string baseName = c.name;
+                Object.DestroyImmediate(c.gameObject);
+                if (x0 - b.min.x > 0.01f) RoomMesh.Box(baseName + "a", run, new Vector3((b.min.x + x0) * 0.5f, b.center.y, b.center.z), new Vector3(x0 - b.min.x, b.size.y, b.size.z), mat, tile, grain);
+                if (b.max.x - x1 > 0.01f) RoomMesh.Box(baseName + "b", run, new Vector3((x1 + b.max.x) * 0.5f, b.center.y, b.center.z), new Vector3(b.max.x - x1, b.size.y, b.size.z), mat, tile, grain);
+            }
+        }
+
+        static bool TryParseTile(string meshName, out Vector2 tile, out bool grainAlongLongest)
+        {
+            tile = Vector2.one;
+            grainAlongLongest = !meshName.EndsWith("_flat");
+            string key = meshName;
+            if (key.StartsWith("Box_")) key = key.Substring(4);
+            if (key.EndsWith("_flat")) key = key.Substring(0, key.Length - 5);
+            var parts = key.Split('_');
+            if (parts.Length != 4) return false;
+            var xy = parts[3].Split('x');
+            if (xy.Length != 2) return false;
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            if (!float.TryParse(xy[0].Replace('p', '.'), System.Globalization.NumberStyles.Float, inv, out float tx)) return false;
+            if (!float.TryParse(xy[1].Replace('p', '.'), System.Globalization.NumberStyles.Float, inv, out float ty)) return false;
+            tile = new Vector2(tx, ty);
+            return true;
+        }
+
+        static GameObject PrepareRadioModel()
+        {
+            var importer = AssetImporter.GetAtPath(RadioModel) as ModelImporter;
+            if (importer == null) return null;
+            string normalPath = RadioTextures + "/DefaultMaterial_Normal_OpenGL.png";
+            var normalImporter = AssetImporter.GetAtPath(normalPath) as TextureImporter;
+            if (normalImporter != null && normalImporter.textureType != TextureImporterType.NormalMap)
+            {
+                normalImporter.textureType = TextureImporterType.NormalMap;
+                normalImporter.SaveAndReimport();
+            }
+            var mat = EditorAssets.Textured("Radio_VEF202", RadioTextures + "/DefaultMaterial_Base_Color.png", Color.white, 0.4f, specular: true);
+            var normal = AssetDatabase.LoadAssetAtPath<Texture2D>(normalPath);
+            if (normal != null)
+            {
+                mat.SetTexture("_BumpMap", normal);
+                mat.EnableKeyword("_NORMALMAP");
+            }
+            if (mat.HasProperty("_Metallic")) mat.SetFloat("_Metallic", 0.1f);
+            EditorUtility.SetDirty(mat);
+
+            bool dirty = false;
+            var id = new AssetImporter.SourceAssetIdentifier(typeof(Material), "radio_tex");
+            var map = importer.GetExternalObjectMap();
+            if (!map.TryGetValue(id, out var current) || current != mat) { importer.AddRemap(id, mat); dirty = true; }
+            if (!importer.generateSecondaryUV) { importer.generateSecondaryUV = true; dirty = true; }
+            if (!importer.isReadable) { importer.isReadable = true; dirty = true; }
+            if (dirty) importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<GameObject>(RadioModel);
         }
 
         static void BuildSlotMachine()
@@ -451,8 +656,6 @@ namespace SortThem.Editor
             _rackBack = EditorAssets.Textured("RackBack", tex + "/Wood_PlanksV.png", Color.white, 0.24f, specular: true);
             _podium = EditorAssets.Textured("Podium", tex + "/Wood_Panel.png", new Color(0.82f, 0.78f, 0.74f), 0.36f, specular: true);
             _terminal = EditorAssets.Lit("Terminal", new Color(0.15f, 0.15f, 0.18f));
-            _cabinet = EditorAssets.Lit("Cabinet", new Color(0.42f, 0.28f, 0.16f));
-            _radio = EditorAssets.Lit("Radio", new Color(0.75f, 0.55f, 0.3f));
             _plateWhite = EditorAssets.Unlit("PlateWhite", Color.white);
             _plateRed = EditorAssets.Unlit("PlateRed", new Color(0.85f, 0.12f, 0.12f));
             _plateGold = EditorAssets.Unlit("PlateGold", new Color(1f, 0.78f, 0.2f));
@@ -735,7 +938,7 @@ namespace SortThem.Editor
             }
         }
 
-        const string ArcadePrefab = "Assets/Arcade machine/fbx.fbx";
+        const string ArcadePrefab = "Assets/_Game/Art/Models/ArcadeMachine/arcade_machine.fbx";
         const float ArcadeHeight = 1.75f;
         const string SlotMachinePrefab = "Assets/_Game/Prefabs/SlotMachine.prefab";
         const float SlotStandH = 0.9f, SlotStandW = 0.62f, SlotStandD = 0.52f;
