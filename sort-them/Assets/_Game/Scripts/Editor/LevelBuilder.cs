@@ -29,7 +29,7 @@ namespace SortThem.Editor
         static float RackH => ShelfHeights[ShelfHeights.Length - 1] + ShelfPitch - BoardT;
         static float RackTotalW => Sections * RackW + (Sections - 1) * DividerT;
 
-        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _tutOutline, _heldCars;
+        static Material _floor, _wall, _ceiling, _rack, _board, _podium, _terminal, _plateWhite, _plateRed, _plateGold, _marker, _ghost, _outline, _highlight, _levOutline, _heldCars;
         static Material _woodBeam, _woodPanel, _woodPanelV, _woodFloor, _plaster, _ceilingPlaster, _glass, _sky, _rug, _lampGlow, _rackBack;
 
         [MenuItem("SortThem/4. Build Level Scene")]
@@ -71,6 +71,7 @@ namespace SortThem.Editor
             var gameConfig = EditorAssets.LoadOrCreate<GameConfig>(Paths.Config + "/GameConfig.asset");
             gameConfig.LevelHalfExtents = new Vector3(Max + 1f, RoomH, Max + 1f);
             gameConfig.UnstuckCenter = SpecialRackPos + new Vector3(0f, 2.5f, 2.5f);
+            gameConfig.Piles = DefaultPiles();
             EditorUtility.SetDirty(gameConfig);
             var economy = EditorAssets.LoadOrCreate<EconomyConfig>(Paths.Config + "/EconomyConfig.asset");
             var upgrades = UpgradeSetup.CreateAll(false);
@@ -111,6 +112,7 @@ namespace SortThem.Editor
             var player = BuildPlayer(gm);
             gm.Player = player.GetComponent<PlayerController>();
             gm.Inventory = player.GetComponent<Inventory>();
+            Atmosphere.Build();
 
             var uiGo = new GameObject("UI");
             var canvas = uiGo.AddComponent<Canvas>();
@@ -286,6 +288,104 @@ namespace SortThem.Editor
             rack.Shelves = shelves;
         }
 
+        [MenuItem("SortThem/4f. Add Blueprint Board")]
+        public static void AddBlueprintBoard()
+        {
+            CreateMaterials();
+            BuildBlueprintBoard();
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+
+        const string BoardTexture = "Assets/_Game/Art/Textures/BlueprintBoard.png";
+        const string BoardTexture2 = "Assets/_Game/Art/Textures/BlueprintBoard2.png";
+        const float BoardW = 1.2f, BoardFrameW = 0.035f, BoardDepth = 0.04f, BoardFrameDepth = 0.055f;
+        static readonly Vector3 BoardCenter = new Vector3(13.98f, 1.62f, -5.55f);
+        static readonly Vector3 BoardCenter2 = new Vector3(13.98f, 1.62f, -10.30f);
+
+        public static void BuildBlueprintBoard()
+        {
+            if (_woodBeam == null) CreateMaterials();
+            BuildBoard("BlueprintBoard", BoardTexture, BoardCenter);
+            BuildBoard("BlueprintBoard2", BoardTexture2, BoardCenter2);
+        }
+
+        static void BuildBoard(string name, string texturePath, Vector3 center)
+        {
+            foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
+                if (go.name == name) Object.DestroyImmediate(go);
+
+            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+            if (importer != null && (importer.npotScale != TextureImporterNPOTScale.None || importer.wrapMode != TextureWrapMode.Clamp || importer.anisoLevel < 4 || !importer.mipmapEnabled || importer.maxTextureSize < 2048))
+            {
+                importer.sRGBTexture = true;
+                importer.npotScale = TextureImporterNPOTScale.None;
+                importer.mipmapEnabled = true;
+                importer.anisoLevel = 4;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.maxTextureSize = 2048;
+                importer.textureCompression = TextureImporterCompression.Compressed;
+                importer.SaveAndReimport();
+            }
+            var mat = EditorAssets.Textured(name, texturePath, Color.white, 0.18f);
+            var tex = mat.GetTexture("_BaseMap");
+            float boardH = tex != null ? BoardW * tex.height / tex.width : BoardW * 9f / 16f;
+
+            var root = new GameObject(name);
+            root.transform.SetPositionAndRotation(center, Quaternion.Euler(0f, 90f, 0f));
+            float outerW = BoardW + BoardFrameW * 2f;
+            Panel("Back", root.transform, new Vector3(0f, 0f, -BoardDepth * 0.5f), new Vector3(BoardW + BoardFrameW, boardH + BoardFrameW, BoardDepth), _woodBeam, 1f);
+            float fz = -BoardFrameDepth * 0.5f;
+            Panel("FrameTop", root.transform, new Vector3(0f, boardH * 0.5f + BoardFrameW * 0.5f, fz), new Vector3(outerW, BoardFrameW, BoardFrameDepth), _woodBeam, 1f);
+            Panel("FrameBottom", root.transform, new Vector3(0f, -boardH * 0.5f - BoardFrameW * 0.5f, fz), new Vector3(outerW, BoardFrameW, BoardFrameDepth), _woodBeam, 1f);
+            Panel("FrameLeft", root.transform, new Vector3(-BoardW * 0.5f - BoardFrameW * 0.5f, 0f, fz), new Vector3(BoardFrameW, boardH, BoardFrameDepth), _woodBeam, 1f);
+            Panel("FrameRight", root.transform, new Vector3(BoardW * 0.5f + BoardFrameW * 0.5f, 0f, fz), new Vector3(BoardFrameW, boardH, BoardFrameDepth), _woodBeam, 1f);
+
+            var face = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            face.name = "Face";
+            Object.DestroyImmediate(face.GetComponent<Collider>());
+            face.transform.SetParent(root.transform, false);
+            face.transform.localPosition = new Vector3(0f, 0f, -BoardDepth - 0.003f);
+            face.transform.localRotation = Quaternion.identity;
+            face.transform.localScale = new Vector3(BoardW, boardH, 1f);
+            face.GetComponent<MeshRenderer>().sharedMaterial = mat;
+            foreach (var t in root.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
+        }
+
+        [MenuItem("SortThem/4g. Assign Pile Zones")]
+        public static void AssignPileZones()
+        {
+            var cfg = EditorAssets.LoadOrCreate<GameConfig>(Paths.Config + "/GameConfig.asset");
+            cfg.Piles = DefaultPiles();
+            EditorUtility.SetDirty(cfg);
+            AssetDatabase.SaveAssets();
+            Debug.Log("SortThem: pile zones assigned: " + cfg.Piles.Length);
+        }
+
+        static GameConfig.PileZone[] DefaultPiles()
+        {
+            var list = new List<GameConfig.PileZone>();
+            void Add(float share, float x0, float x1, float z0, float z1) => list.Add(new GameConfig.PileZone
+            {
+                Center = new Vector3((x0 + x1) * 0.5f, 0f, (z0 + z1) * 0.5f),
+                HalfSize = new Vector2((x1 - x0) * 0.5f, (z1 - z0) * 0.5f),
+                Share = share
+            });
+
+            var main = new[] { (-12.55f, -10.5f, -12.55f, -4.3f), (-7.5f, -4.3f, -12.55f, -4.3f), (-10.5f, -7.5f, -7.5f, -4.3f), (-10.5f, -7.5f, -12.55f, -10.5f) };
+            float mainArea = 0f;
+            foreach (var r in main) mainArea += (r.Item2 - r.Item1) * (r.Item4 - r.Item3);
+            foreach (var r in main) Add(0.5f * (r.Item2 - r.Item1) * (r.Item4 - r.Item3) / mainArea, r.Item1, r.Item2, r.Item3, r.Item4);
+
+            var westAisles = new[] { (-12.55f, -10.45f), (-7.55f, -5.45f) };
+            var westSegments = new[] { (-3.5f, 1.5f), (1.5f, 6.5f), (6.5f, 12.5f) };
+            foreach (var x in westAisles) foreach (var z in westSegments) Add(0.25f / 6f, x.Item1, x.Item2, z.Item1, z.Item2);
+
+            var southAisles = new[] { (-7.55f, -5.45f), (-12.55f, -10.45f) };
+            var southSegments = new[] { (-3.5f, 0.05f), (0.05f, 3.6f) };
+            foreach (var z in southAisles) foreach (var x in southSegments) Add(0.25f / 4f, x.Item1, x.Item2, z.Item1, z.Item2);
+            return list.ToArray();
+        }
+
         [MenuItem("SortThem/4d. Add Tutorial")]
         public static void AddTutorial()
         {
@@ -299,10 +399,7 @@ namespace SortThem.Editor
             var existing = GameObject.Find("Tutorial");
             if (existing != null) Object.DestroyImmediate(existing);
             var go = new GameObject("Tutorial");
-            var tutorial = go.AddComponent<Tutorial>();
-            var outline = Ghost("TutorialOutline", _tutOutline);
-            outline.transform.SetParent(go.transform, false);
-            tutorial.Outline = outline;
+            go.AddComponent<Tutorial>();
         }
 
         const string RadioModel = "Assets/_Game/Art/Models/Radio/radio_vef202.fbx";
@@ -311,7 +408,7 @@ namespace SortThem.Editor
         const string CashModel = "Assets/_Game/Art/Models/CashRegister/kasa.fbx";
         const string CashTextures = "Assets/_Game/Art/Models/CashRegister/Textures";
         const float CashW = 0.46f;
-        static readonly Vector3 CounterCenter = new Vector3(6.2f, 0f, -5.0f);
+        static readonly Vector3 CounterCenter = new Vector3(6.2f, 0f, -5.16f);
         const float CounterL = 3.6f, CounterD = 0.8f, CounterH = 0.9f;
         const float DoorCenterX = 11.1f;
 
@@ -330,26 +427,26 @@ namespace SortThem.Editor
             Panel("Top", root.transform, new Vector3(0f, CounterH - topT * 0.5f, 0f), new Vector3(CounterL, topT, CounterD), _board, SlabTile);
             Panel("Trim", root.transform, new Vector3(0f, CounterH - topT - 0.02f, -CounterD * 0.5f + 0.02f), new Vector3(CounterL, 0.04f, 0.04f), _woodBeam, 1f);
             Panel("Plinth", root.transform, new Vector3(0f, plinthH * 0.5f, 0f), new Vector3(bodyL - 0.04f, plinthH, bodyD - 0.04f), _terminal, SlabTile);
-            Panel("Front", root.transform, new Vector3(0f, panelMid, -bodyD * 0.5f + panelT * 0.5f), new Vector3(bodyL, panelH, panelT), _woodPanelV, 0.9f);
+            Panel("Front", root.transform, new Vector3(0f, panelMid, -bodyD * 0.5f + panelT * 0.5f), new Vector3(bodyL - panelT * 2f, panelH, panelT), _woodPanelV, 0.9f);
             Panel("SideL", root.transform, new Vector3(-bodyL * 0.5f + panelT * 0.5f, panelMid, 0f), new Vector3(panelT, panelH, bodyD), _woodPanelV, 0.9f);
             Panel("SideR", root.transform, new Vector3(bodyL * 0.5f - panelT * 0.5f, panelMid, 0f), new Vector3(panelT, panelH, bodyD), _woodPanelV, 0.9f);
             Panel("Shelf", root.transform, new Vector3(0f, 0.45f, 0.06f), new Vector3(bodyL - panelT * 2f, 0.03f, bodyD - panelT - 0.12f), _board, SlabTile);
             Panel("ShelfBack", root.transform, new Vector3(0f, panelMid, -bodyD * 0.5f + panelT + 0.01f), new Vector3(bodyL - panelT * 2f, panelH, 0.02f), _woodPanelV, 0.9f);
-            foreach (float x in new[] { -bodyL * 0.5f + pilW * 0.5f, -bodyL / 6f, bodyL / 6f, bodyL * 0.5f - pilW * 0.5f })
+            foreach (float x in new[] { -bodyL * 0.5f - 0.01f + pilW * 0.5f, -bodyL / 6f, bodyL / 6f, bodyL * 0.5f + 0.01f - pilW * 0.5f })
                 Panel("Pilaster", root.transform, new Vector3(x, panelMid, -bodyD * 0.5f + 0.01f), new Vector3(pilW, panelH, 0.05f), _woodBeam, 1f);
-            Panel("Rail", root.transform, new Vector3(0f, panelY0 + panelH * 0.55f, -bodyD * 0.5f + 0.005f), new Vector3(bodyL, 0.06f, 0.04f), _woodBeam, 1f);
+            Panel("Rail", root.transform, new Vector3(0f, panelY0 + panelH * 0.55f, -bodyD * 0.5f + 0.005f), new Vector3(bodyL - pilW * 2f, 0.06f, 0.03f), _woodBeam, 1f);
             foreach (var t in root.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
 
             var cash = new GameObject("CashRegister");
             cash.transform.SetParent(root.transform, false);
-            cash.transform.localPosition = new Vector3(-0.55f, CounterH, 0.04f);
-            cash.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            cash.transform.localPosition = new Vector3(1.11f, CounterH, -0.02f);
+            cash.transform.localRotation = Quaternion.identity;
             PlaceModel(cash, PrepareCashModel(), CashW, new Vector3(0.44f, 0.36f, 0.42f));
             cash.AddComponent<CashRegister>();
 
             var radio = new GameObject("Radio");
             radio.transform.SetParent(root.transform, false);
-            radio.transform.localPosition = new Vector3(1.15f, CounterH, 0.1f);
+            radio.transform.localPosition = new Vector3(-0.64f, CounterH, -0.02f);
             radio.transform.localRotation = Quaternion.Euler(0f, 168f, 0f);
             PlaceModel(radio, PrepareRadioModel(), RadioW, new Vector3(0.44f, 0.26f, 0.18f));
             radio.AddComponent<Radio>();
@@ -638,10 +735,10 @@ namespace SortThem.Editor
         static void CreateMaterials()
         {
             string tex = RoomTextures.Folder;
-            _woodBeam = EditorAssets.Textured("Room_WoodBeam", tex + "/Wood_Beam.png", Color.white, 0.32f, specular: true);
-            _woodPanel = EditorAssets.Textured("Room_WoodPanel", tex + "/Wood_Panel.png", Color.white, 0.30f, specular: true);
-            _woodPanelV = EditorAssets.Textured("Room_WoodPanelV", tex + "/Wood_PlanksV.png", Color.white, 0.30f, specular: true);
-            _woodFloor = EditorAssets.Textured("Room_WoodFloor", tex + "/Wood_Floor.png", Color.white, 0.48f, specular: true);
+            _woodBeam = EditorAssets.Textured("Room_WoodBeam", tex + "/Wood_Beam.png", Color.white, 0.32f, specular: true, glossFromAlpha: true);
+            _woodPanel = EditorAssets.Textured("Room_WoodPanel", tex + "/Wood_Panel.png", Color.white, 0.30f, specular: true, glossFromAlpha: true);
+            _woodPanelV = EditorAssets.Textured("Room_WoodPanelV", tex + "/Wood_PlanksV.png", Color.white, 0.30f, specular: true, glossFromAlpha: true);
+            _woodFloor = EditorAssets.Textured("Room_WoodFloor", tex + "/Wood_Floor.png", Color.white, 0.48f, specular: true, glossFromAlpha: true);
             _plaster = EditorAssets.Textured("Room_Plaster", tex + "/Plaster_Blue.png", Color.white, 0.05f);
             _ceilingPlaster = EditorAssets.Textured("Room_Ceiling", tex + "/Plaster_Ceiling.png", Color.white, 0.05f);
             _glass = EditorAssets.Textured("Room_Window", tex + "/Window_Frost.png", Color.white, 0f, true);
@@ -651,10 +748,10 @@ namespace SortThem.Editor
             _floor = EditorAssets.Lit("Floor", new Color(0.42f, 0.42f, 0.45f));
             _wall = EditorAssets.Lit("Wall", new Color(0.78f, 0.74f, 0.66f));
             _ceiling = EditorAssets.Lit("Ceiling", new Color(0.85f, 0.85f, 0.85f));
-            _rack = EditorAssets.Textured("Rack", tex + "/Wood_Slab.png", Color.white, 0.34f, specular: true);
-            _board = EditorAssets.Textured("ShelfBoard", tex + "/Wood_Slab.png", new Color(1.05f, 1.02f, 0.98f), 0.40f, specular: true);
-            _rackBack = EditorAssets.Textured("RackBack", tex + "/Wood_PlanksV.png", Color.white, 0.24f, specular: true);
-            _podium = EditorAssets.Textured("Podium", tex + "/Wood_Panel.png", new Color(0.82f, 0.78f, 0.74f), 0.36f, specular: true);
+            _rack = EditorAssets.Textured("Rack", tex + "/Wood_Slab.png", Color.white, 0.34f, specular: true, glossFromAlpha: true);
+            _board = EditorAssets.Textured("ShelfBoard", tex + "/Wood_Slab.png", new Color(1.05f, 1.02f, 0.98f), 0.40f, specular: true, glossFromAlpha: true);
+            _rackBack = EditorAssets.Textured("RackBack", tex + "/Wood_PlanksV.png", Color.white, 0.24f, specular: true, glossFromAlpha: true);
+            _podium = EditorAssets.Textured("Podium", tex + "/Wood_Panel.png", new Color(0.82f, 0.78f, 0.74f), 0.36f, specular: true, glossFromAlpha: true);
             _terminal = EditorAssets.Lit("Terminal", new Color(0.15f, 0.15f, 0.18f));
             _plateWhite = EditorAssets.Unlit("PlateWhite", Color.white);
             _plateRed = EditorAssets.Unlit("PlateRed", new Color(0.85f, 0.12f, 0.12f));
@@ -668,11 +765,6 @@ namespace SortThem.Editor
             _levOutline.SetFloat("_Width", 7f);
             _levOutline.renderQueue = 3000;
             EditorUtility.SetDirty(_levOutline);
-            _tutOutline = EditorAssets.LoadOrCreateMaterial("OutlineYellow", "SortThem/OutlineXRay", new Color(1f, 0.85f, 0.2f), "_Color");
-            _tutOutline.shader = Shader.Find("SortThem/OutlineXRay");
-            _tutOutline.SetFloat("_Width", 7f);
-            _tutOutline.renderQueue = 3000;
-            EditorUtility.SetDirty(_tutOutline);
             _heldCars = EditorAssets.LoadOrCreateMaterial("CarsHeld", "SortThem/VertexColorLitOverlay", Color.white);
         }
 

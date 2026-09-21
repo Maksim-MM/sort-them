@@ -12,15 +12,32 @@ namespace SortThem.Editor
         const string RootName = "Lighting";
         const string SettingsPath = Paths.Config + "/RoomLighting.lighting";
 
-        const float WindowIntensity = 9.0f;
+        const float WindowIntensity = 2.5f;
         const float LampIntensity = 5.0f;
         const float LampRange = 8f;
         static readonly Color WindowColor = new Color(0.86f, 0.92f, 1f);
         static readonly Color LampColor = new Color(1f, 0.90f, 0.72f);
 
+        public const float SunElevation = 45f;
+        public const float SunAzimuth = 195f;
+        const float SunIntensity = 5.0f;
+        const float SkyAmbient = 0.35f;
+        static readonly Color SunColor = new Color(1f, 0.94f, 0.82f);
+
+        public static Vector3 SunDirection
+        {
+            get
+            {
+                float el = SunElevation * Mathf.Deg2Rad, az = SunAzimuth * Mathf.Deg2Rad;
+                var h = new Vector3(Mathf.Sin(az), 0f, Mathf.Cos(az));
+                return (h * Mathf.Cos(el) + Vector3.down * Mathf.Sin(el)).normalized;
+            }
+        }
+
         const float ArmLen = 28f, WingW = 10f;
         const float Min = -ArmLen * 0.5f, Max = ArmLen * 0.5f, Inner = Min + WingW;
         const float ProbeStep = 2.5f;
+        const float SmallPropSize = 0.5f;
         static readonly float[] ProbeHeights = { 0.2f, 1.0f, 2.2f, 3.8f };
 
         [MenuItem("SortThem/6. Setup Lighting")]
@@ -38,12 +55,15 @@ namespace SortThem.Editor
                 l.enabled = false;
             }
 
+            BuildSun(root.transform);
             int windows = BuildWindowLights(root.transform);
             int lamps = BuildLampLights(root.transform);
             int probes = BuildLightProbes(root.transform);
             int reflections = BuildReflectionProbes(root.transform);
             int marked = MarkProps();
             TuneRenderers(out int scaled, out int excluded);
+            RenderSettings.ambientMode = AmbientMode.Skybox;
+            RenderSettings.ambientIntensity = SkyAmbient;
             ApplySettings(false);
 
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
@@ -83,7 +103,7 @@ namespace SortThem.Editor
 
         static int MarkProps()
         {
-            string[] roots = { "UpgradeTerminal", "SlotMachine", "Counter", "Doors" };
+            string[] roots = { "UpgradeTerminal", "SlotMachine", "Counter", "Doors", "BlueprintBoard", "BlueprintBoard2" };
             int count = 0;
             foreach (var name in roots)
             {
@@ -101,6 +121,20 @@ namespace SortThem.Editor
                 }
             }
             return count;
+        }
+
+        static void BuildSun(Transform parent)
+        {
+            var go = new GameObject("Sun");
+            go.transform.SetParent(parent, false);
+            go.transform.rotation = Quaternion.LookRotation(SunDirection, Vector3.up);
+            var light = go.AddComponent<Light>();
+            light.type = LightType.Directional;
+            light.color = SunColor;
+            light.intensity = SunIntensity;
+            light.lightmapBakeType = LightmapBakeType.Baked;
+            light.shadows = LightShadows.Soft;
+            light.shadowAngle = 1.5f;
         }
 
         static int BuildWindowLights(Transform parent)
@@ -249,7 +283,10 @@ namespace SortThem.Editor
                 }
 
                 float longest = Mathf.Max(mr.bounds.size.x, Mathf.Max(mr.bounds.size.y, mr.bounds.size.z));
-                float scale = longest < 0.35f ? 0.35f : longest < 1.2f ? 0.6f : 1f;
+                mr.receiveGI = longest < SmallPropSize ? ReceiveGI.LightProbes : ReceiveGI.Lightmaps;
+                if (mr.receiveGI == ReceiveGI.LightProbes) { mr.lightProbeUsage = LightProbeUsage.BlendProbes; continue; }
+                float scale = longest < 1.2f ? 0.6f : 1f;
+                if (n.StartsWith("Floor_")) scale = 2f;
                 if (SetLightmapScale(mr, scale)) scaled++;
             }
         }
@@ -278,14 +315,15 @@ namespace SortThem.Editor
             settings.bakedGI = true;
             settings.realtimeGI = false;
             settings.lightmapper = LightingSettings.Lightmapper.ProgressiveGPU;
-            settings.directionalityMode = LightmapsMode.NonDirectional;
+            settings.directionalityMode = LightmapsMode.CombinedDirectional;
             settings.lightmapMaxSize = 1024;
             settings.lightmapPadding = 2;
             settings.lightmapCompression = LightmapCompression.NormalQuality;
             settings.ao = true;
-            settings.aoMaxDistance = 0.6f;
+            settings.aoMaxDistance = 0.2f;
             settings.aoExponentDirect = 1f;
-            settings.aoExponentIndirect = 1.3f;
+            settings.aoExponentIndirect = 1f;
+            settings.albedoBoost = 2.0f;
             settings.maxBounces = 3;
             settings.lightmapResolution = final ? 12f : 4f;
             settings.directSampleCount = final ? 64 : 16;
@@ -299,7 +337,7 @@ namespace SortThem.Editor
             return settings;
         }
 
-        static bool Inside(Vector3 p)
+        internal static bool Inside(Vector3 p)
         {
             bool west = p.x > Min && p.x < Inner && p.z > Min && p.z < Max;
             bool south = p.z > Min && p.z < Inner && p.x > Min && p.x < Max;

@@ -127,8 +127,10 @@ namespace SortThem
             float interval = sprint ? cfg.FootstepRunInterval : cfg.FootstepWalkInterval;
             if (_crouching) interval *= 1.4f;
             _stepTimer = interval;
-            var clip = sprint ? cfg.FootstepRunClip : cfg.FootstepWalkClip;
-            Sfx.Play(clip, transform.position, _crouching ? 0.5f : 1f, Random.Range(0.92f, 1.08f));
+            var clip = sprint ? Sfx.Pick(cfg.FootstepRunClips, cfg.FootstepRunClip) : Sfx.Pick(cfg.FootstepWalkClips, cfg.FootstepWalkClip);
+            float pitch = Random.Range(0.92f, 1.08f);
+            if (sprint && cfg.FootstepRunClips.Length == 0 && cfg.FootstepWalkClips.Length > 0) { clip = Sfx.Pick(cfg.FootstepWalkClips, cfg.FootstepWalkClip); pitch *= 1.1f; }
+            Sfx.Play(clip, transform.position, _crouching ? 0.5f : 1f, pitch);
         }
 
         bool CanStand()

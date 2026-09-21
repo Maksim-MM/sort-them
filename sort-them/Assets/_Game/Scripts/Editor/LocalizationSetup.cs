@@ -126,8 +126,8 @@ namespace SortThem.Editor
             LocUtil.Set("tut.walk_touch", "Стик слева — походить", "Left stick — walk around");
             LocUtil.Set("tut.look", "{0} — повертеть камерой", "{0} — look around");
             LocUtil.Set("tut.look_touch", "Правая половина экрана — повертеть камерой", "Right half of the screen — look around");
-            LocUtil.Set("tut.take", "{0} — взять подсвеченную машинку", "{0} — pick up the highlighted car");
-            LocUtil.Set("tut.take_touch", "Кнопка «взять» — подсвеченная машинка", "Take button — the highlighted car");
+            LocUtil.Set("tut.take", "{0} — взять любую машинку", "{0} — pick up any car");
+            LocUtil.Set("tut.take_touch", "Кнопка «взять» — взять любую машинку", "Take button — pick up any car");
             LocUtil.Set("tut.place", "{0} — поставить на подсвеченный стеллаж", "{0} — place it on the highlighted rack");
             LocUtil.Set("tut.place_touch", "Кнопка «поставить» — подсвеченный стеллаж", "Place button — the highlighted rack");
             LocUtil.Set("ui.hint", "{0} взять · {1} поставить/бросить · {2} выбрать · {3} меню", "{0} take · {1} place/throw · {2} select · {3} menu");

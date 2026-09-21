@@ -116,11 +116,13 @@ namespace SortThem
             CarSpawner.SpawnFromLayout(Layout, CarsRoot, Cars);
             TotalCars = Cars.Count;
             SpawnCollectibles();
+            SettleCollectibles();
 
             Music = gameObject.AddComponent<MusicPlayer>();
             Music.Play(Config.MusicClips, Settings.MusicTrack);
             bool loaded = Save.Load();
             Debug.Log(loaded ? "SortThem: save loaded" : "SortThem: new game");
+            if (loaded) SettleCollectibles();
             RecountStats();
             _completeAnnounced = GameComplete;
             Ready = true;
@@ -257,6 +259,50 @@ namespace SortThem
                 var rb = go.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = true;
                 Collectibles.Add(c);
+            }
+        }
+
+        IEnumerator SettleCollectiblesLater()
+        {
+            yield return new WaitForSeconds(1f);
+            SettleCollectibles();
+            yield return new WaitForSeconds(2f);
+            SettleCollectibles();
+        }
+
+        void SettleCollectibles()
+        {
+            Physics.SyncTransforms();
+            foreach (var c in Collectibles)
+            {
+                if (c == null || !c.gameObject.activeSelf) continue;
+                var col = c.GetComponent<BoxCollider>();
+                if (col == null) continue;
+                var t = c.transform;
+                var half = Vector3.Scale(col.size, t.lossyScale) * 0.45f;
+                for (int pass = 0; pass < 4; pass++)
+                {
+                    var center = t.TransformPoint(col.center);
+                    bool resting = false, pushed = false;
+                    foreach (var o in Physics.OverlapBox(center, half, t.rotation, ~0, QueryTriggerInteraction.Ignore))
+                    {
+                        if (o == col || o.transform.IsChildOf(t)) continue;
+                        if (o.GetComponentInParent<RackController>() == null) { resting = true; break; }
+                        if (Physics.ComputePenetration(col, t.position, t.rotation, o, o.transform.position, o.transform.rotation, out var dir, out float dist))
+                        {
+                            dir.y = 0f;
+                            if (dir.sqrMagnitude > 1e-6f) { t.position += dir.normalized * (dist + 0.01f); pushed = true; break; }
+                        }
+                    }
+                    if (resting) break;
+                    if (pushed) { Physics.SyncTransforms(); continue; }
+                    float best = float.MaxValue;
+                    foreach (var h in Physics.BoxCastAll(center, half, Vector3.down, t.rotation, 6f, ~0, QueryTriggerInteraction.Ignore))
+                        if (h.collider != col && !h.transform.IsChildOf(t) && h.collider.GetComponentInParent<RackController>() == null && h.distance < best) best = h.distance;
+                    if (best == float.MaxValue || best < 0.01f) break;
+                    t.position += Vector3.down * (best - 0.005f);
+                    Physics.SyncTransforms();
+                }
             }
         }
 
@@ -401,7 +447,7 @@ namespace SortThem
 
         public IEnumerator ShuffleLoose(Action<float> progress = null)
         {
-            if (Shuffling || !Ready || Scatterer == null) yield break;
+            if (Shuffling || !Ready) yield break;
             Shuffling = true;
             var loose = new List<CarInstance>();
             foreach (var car in Cars)
@@ -425,12 +471,13 @@ namespace SortThem
                     loose[i].transform.position = park + new Vector3(i % 64 * 0.6f, 0f, i / 64 * 0.6f);
                 }
                 Physics.SyncTransforms();
-                foreach (var body in bodies) Scatterer.LaunchBody(body, rng);
+                var zones = PileDrop.Assign(Config, loose.Count, rng);
+                foreach (var body in bodies) PileDrop.DropBody(body, Config, PileDrop.PickZone(Config, rng), rng);
                 while (steps < maxSteps)
                 {
                     for (int f = 0; f < perFrame && steps < maxSteps; f++)
                     {
-                        for (int k = 0; k < perStep && next < loose.Count; k++, next++) Scatterer.LaunchCar(loose[next], rng);
+                        for (int k = 0; k < perStep && next < loose.Count; k++, next++) PileDrop.Drop(loose[next], Config, zones[next], rng);
                         Physics.Simulate(dt);
                         steps++;
                     }
@@ -454,12 +501,14 @@ namespace SortThem
                     else if (car.Body.IsSleeping()) car.Freeze();
                     else car.CalmSince = -1f;
                 }
+                SettleCollectibles();
             }
             finally
             {
                 Physics.simulationMode = prevMode;
                 Shuffling = false;
             }
+            StartCoroutine(SettleCollectiblesLater());
         }
 
         static bool AllSleeping(List<CarInstance> cars)

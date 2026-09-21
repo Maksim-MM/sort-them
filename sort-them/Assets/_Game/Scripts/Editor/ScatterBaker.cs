@@ -12,9 +12,14 @@ namespace SortThem.Editor
         public static void Bake(int copiesPerModel)
         {
             var gm = Object.FindFirstObjectByType<GameManager>();
-            if (gm == null || gm.Catalog == null || gm.Scatterer == null)
+            if (gm == null || gm.Catalog == null || gm.Config == null)
             {
                 Debug.LogError("SortThem: open Main scene with GameManager first");
+                return;
+            }
+            if (gm.Config.Piles == null || gm.Config.Piles.Length == 0)
+            {
+                Debug.LogError("SortThem: GameConfig.Piles is empty, run menu 4g first");
                 return;
             }
             var catalog = gm.Catalog;
@@ -30,7 +35,7 @@ namespace SortThem.Editor
                 return models > 0 && slots > 0 ? slots / models : 10;
             }
 
-            var rng = new System.Random(gm.Scatterer.Seed);
+            var rng = new System.Random(gm.Scatterer != null ? gm.Scatterer.Seed : 12345);
             var order = new List<int>();
             for (int i = 0; i < catalog.Cars.Length; i++)
             {
@@ -50,6 +55,7 @@ namespace SortThem.Editor
             var blockers = BlockRacks(root);
             var spawned = new List<CarInstance>(order.Count);
             int total = order.Count;
+            var zones = PileDrop.Assign(gm.Config, total, rng);
             int next = 0;
             int steps = 0;
             const int perStep = 2;
@@ -62,7 +68,7 @@ namespace SortThem.Editor
                     for (int k = 0; k < perStep && next < total; k++, next++)
                     {
                         var car = CarSpawner.Spawn(catalog.Cars[order[next]], root, next);
-                        gm.Scatterer.LaunchCar(car, rng);
+                        PileDrop.Drop(car, gm.Config, zones[next], rng);
                         spawned.Add(car);
                     }
                     Physics.Simulate(dt);
@@ -74,7 +80,7 @@ namespace SortThem.Editor
                     }
                 }
 
-                int settleSteps = Settle(blockers, spawned, gm, rng, dt);
+                int settleSteps = Settle(blockers, spawned, zones, gm, rng, dt);
 
                 var layout = EditorAssets.LoadOrCreate<LevelLayoutData>(Paths.Layout);
                 layout.Catalog = catalog;
@@ -112,13 +118,13 @@ namespace SortThem.Editor
         {
             var gm = Object.FindFirstObjectByType<GameManager>();
             var layout = AssetDatabase.LoadAssetAtPath<LevelLayoutData>(Paths.Layout);
-            if (gm == null || gm.Scatterer == null || layout == null || layout.CollectiblePrefab == null)
+            if (gm == null || gm.Config == null || layout == null || layout.CollectiblePrefab == null)
             {
                 Debug.LogError("SortThem: need Main scene with GameManager, baked layout and crate prefab (menu 3e)");
                 return;
             }
             int count = Mathf.Clamp(gm.Config.CollectiblesTotal, 1, 64);
-            var rng = new System.Random(gm.Scatterer.Seed + 777);
+            var rng = new System.Random((gm.Scatterer != null ? gm.Scatterer.Seed : 12345) + 777);
             var prevMode = Physics.simulationMode;
             Physics.simulationMode = SimulationMode.Script;
             var root = new GameObject("__CollectibleBake").transform;
@@ -132,11 +138,7 @@ namespace SortThem.Editor
                 {
                     var go = (GameObject)PrefabUtility.InstantiatePrefab(layout.CollectiblePrefab, root);
                     var rb = go.GetComponent<Rigidbody>();
-                    gm.Scatterer.LaunchBody(rb, rng, 1f);
-                    float elevation = Mathf.Deg2Rad * (20f + (float)rng.NextDouble() * 20f);
-                    float azimuth = (float)rng.NextDouble() * Mathf.PI * 2f;
-                    float speed = 10f + (float)rng.NextDouble() * 5f;
-                    rb.linearVelocity = new Vector3(Mathf.Cos(elevation) * Mathf.Cos(azimuth), Mathf.Sin(elevation), Mathf.Cos(elevation) * Mathf.Sin(azimuth)) * speed;
+                    PileDrop.DropBody(rb, gm.Config, PileDrop.PickZone(gm.Config, rng), rng);
                     bodies.Add(rb);
                 }
                 const float dt = 0.02f;
@@ -196,7 +198,7 @@ namespace SortThem.Editor
         const int SettleMaxSteps = 4000, SweepRounds = 6;
         const float RackTopY = 0.45f;
 
-        static int Settle(List<GameObject> blockers, List<CarInstance> cars, GameManager gm, System.Random rng, float dt)
+        static int Settle(List<GameObject> blockers, List<CarInstance> cars, int[] zones, GameManager gm, System.Random rng, float dt)
         {
             foreach (var go in blockers) if (go != null) Object.DestroyImmediate(go);
             blockers.Clear();
@@ -204,7 +206,7 @@ namespace SortThem.Editor
             foreach (var car in cars) { car.Body.isKinematic = false; car.Body.WakeUp(); }
 
             int steps = 0;
-            var stranded = new List<CarInstance>();
+            var stranded = new List<int>();
             for (int round = 0; round <= SweepRounds; round++)
             {
                 while (steps < SettleMaxSteps)
@@ -219,9 +221,9 @@ namespace SortThem.Editor
                 }
                 if (round == SweepRounds) break;
                 stranded.Clear();
-                foreach (var car in cars) if (OnRack(car)) stranded.Add(car);
+                for (int i = 0; i < cars.Count; i++) if (OnRack(cars[i])) stranded.Add(i);
                 if (stranded.Count == 0) break;
-                foreach (var car in stranded) gm.Scatterer.LaunchCar(car, rng);
+                foreach (int i in stranded) PileDrop.Drop(cars[i], gm.Config, zones[i], rng);
                 Physics.SyncTransforms();
             }
             EditorUtility.ClearProgressBar();

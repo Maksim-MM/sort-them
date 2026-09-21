@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 241d91afe8c5f4cda9dd9130fde1d416, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.GameConfig
-  WalkSpeed: 4
-  SprintSpeed: 7
+  WalkSpeed: 3
+  SprintSpeed: 5.25
   CrouchSpeed: 2
   JumpHeight: 1
   Gravity: -20
@@ -37,9 +37,9 @@ MonoBehaviour:
   PopDuration: 0.25
   ShelfCompleteClip: {fileID: 8300000, guid: 2fe200c9515c848fdb1da16a237bab00, type: 3}
   CollectibleClip: {fileID: 8300000, guid: b225bdc37bc724de184c6229d5f7a70b, type: 3}
-  SpecialUpgradeClip: {fileID: 0}
+  SpecialUpgradeClip: {fileID: 8300000, guid: f9a0fe3780d8f4f7f8a03d895e7d99b8, type: 3}
   PlaceClip: {fileID: 8300000, guid: bafffeabbfa5a4132a980ff3a1802354, type: 3}
-  BounceClip: {fileID: 0}
+  BounceClip: {fileID: 8300000, guid: b8a26907fe4434a2d9e2c284eb4fd8ec, type: 3}
   ThrowClip: {fileID: 0}
   PickupClip: {fileID: 8300000, guid: 028a460628ff34a9fb8db1a47266adf9, type: 3}
   AbilityClip: {fileID: 0}
@@ -47,22 +47,59 @@ MonoBehaviour:
   AbilityReadyClip: {fileID: 8300000, guid: bc5ea2b50d95648c9bf7c240d025496b, type: 3}
   PurchaseClip: {fileID: 8300000, guid: acc88dcd28ffe4c84a80e01092bacd34, type: 3}
   SlotLeverClip: {fileID: 8300000, guid: da8b91c2e43ca46a682326848a447886, type: 3}
-  SlotReelClip: {fileID: 8300000, guid: d148faa8b39854ad88c89c83e60ea9f5, type: 3}
+  SlotReelClip: {fileID: 0}
+  SlotSpinClip: {fileID: 8300000, guid: fccb6de0b805f4c5cb62635b29c27c3d, type: 3}
   SlotWinClip: {fileID: 8300000, guid: 6815527fbff9f491182861f7b34d84c5, type: 3}
   RegisterClickClip: {fileID: 8300000, guid: bc775915bd01141c49bec2bb760f3592, type: 3}
   RegisterPayClip: {fileID: 8300000, guid: fd50dd82d169949b2981fff6f83df51e, type: 3}
   UiMoveClip: {fileID: 8300000, guid: dd27946c9641f4c259480164a4ab25bd, type: 3}
-  UiClickClip: {fileID: 0}
+  UiClickClip: {fileID: 8300000, guid: 19354c05af66c44fea5347febaa20ce0, type: 3}
   FootstepWalkClip: {fileID: 8300000, guid: da61d87bb6f394c45a7295f01e200e47, type: 3}
   FootstepRunClip: {fileID: 8300000, guid: 15fbb1ea2ffd144ebba5139300f0ad78, type: 3}
-  FootstepWalkInterval: 0.5
-  FootstepRunInterval: 0.33
+  FootstepWalkClips:
+  - {fileID: 8300000, guid: d44d370aacbe8478c9fe54e6b65889c3, type: 3}
+  - {fileID: 8300000, guid: 6d95cb6c1287b42cb8af69ed0f7f191c, type: 3}
+  - {fileID: 8300000, guid: 709a7090e1fc24ed4bb1d1ee977778ec, type: 3}
+  - {fileID: 8300000, guid: efd093915cf984cd08c640c397981ad9, type: 3}
+  - {fileID: 8300000, guid: 8f3302c43c03c403a916454eb7c87847, type: 3}
+  - {fileID: 8300000, guid: b61d390a43a0c4f1a9c9f18b7bf02b3c, type: 3}
+  - {fileID: 8300000, guid: f2dbb172f10f747d686a77e19487039b, type: 3}
+  - {fileID: 8300000, guid: 839ca4c443011422eb2c8a75af79afd0, type: 3}
+  - {fileID: 8300000, guid: a3be1bbec2f1647df9a075eacaf7134d, type: 3}
+  - {fileID: 8300000, guid: da9b7c966f5a04cd0b9b408e5c43504d, type: 3}
+  - {fileID: 8300000, guid: 27d56b2688c1e4de696156279245cb85, type: 3}
+  - {fileID: 8300000, guid: 8aeb32249f3854ba389917eb876d3a0f, type: 3}
+  - {fileID: 8300000, guid: 21ed8970f6c2e4e579e900f1340c4e89, type: 3}
+  - {fileID: 8300000, guid: ddcc0bceaa2b54de0a88bce3e3d0a34a, type: 3}
+  - {fileID: 8300000, guid: f9966d540573b4cdeb9550c24c1263d6, type: 3}
+  - {fileID: 8300000, guid: 3339034353340480ca5bd1c435bbe0b2, type: 3}
+  - {fileID: 8300000, guid: 9213a5302c5814728b36bbaa4aef9465, type: 3}
+  - {fileID: 8300000, guid: b3b718b0a8d614c429ade89073778ecf, type: 3}
+  - {fileID: 8300000, guid: 0063b1f53622c4dc8a2c993f075b54bb, type: 3}
+  - {fileID: 8300000, guid: 7f84b25d7cc8d4171818ffff99ab70ca, type: 3}
+  - {fileID: 8300000, guid: 733bec1f563a04fa4b9668062dc04843, type: 3}
+  - {fileID: 8300000, guid: 0e4179051fd0244a9b33e7355a6ef929, type: 3}
+  - {fileID: 8300000, guid: ea5d7c83405b148c3944b0cd722ad02c, type: 3}
+  - {fileID: 8300000, guid: 78b2e7abcc0994d4190e5cdad0f53535, type: 3}
+  - {fileID: 8300000, guid: e8d12d76fdcd64b4aafeca2ade595040, type: 3}
+  - {fileID: 8300000, guid: ec0b2f0c9984a493faa2cc4be95f2d48, type: 3}
+  - {fileID: 8300000, guid: 77e361153b9a544d2853c2b54b184fc6, type: 3}
+  - {fileID: 8300000, guid: 78ab0604206e541a0a8d030138b3a10c, type: 3}
+  - {fileID: 8300000, guid: d792f48982e4946aa9aaac2ec3be8a0e, type: 3}
+  - {fileID: 8300000, guid: f4ccce7a802f9440784cbd441cea237d, type: 3}
+  FootstepRunClips: []
+  AbilityClips:
+  - {fileID: 8300000, guid: ef0652388530544fe8224432c3fb6a56, type: 3}
+  - {fileID: 8300000, guid: ebdb404e4830b42abb0b4f1d421bf0a5, type: 3}
+  FootstepWalkInterval: 0.667
+  FootstepRunInterval: 0.44
   SprintFovBoost: 8
   TouchLookSpeed: 160
   FovSmoothTime: 0.2
   MusicClips:
-  - {fileID: 8300000, guid: 78713402fae4a4cd3bdc106351c48f89, type: 3}
-  - {fileID: 8300000, guid: d8b10fe2900704571a046ed0417a60e2, type: 3}
+  - {fileID: 8300000, guid: c161949168acd47e49e4cd7ddf95f6e6, type: 3}
+  - {fileID: 8300000, guid: 667625e4161b34096afa92c434249dbc, type: 3}
+  - {fileID: 8300000, guid: 58ca165b37cb9409a9fda824778faf13, type: 3}
   RackHighlightCooldown: 60
   RackHighlightDuration: 30
   AutoCollectRadius: 8
@@ -115,6 +152,50 @@ MonoBehaviour:
   BombHandEuler: {x: 0, y: 0, z: 20}
   BombFuseClip: {fileID: 8300000, guid: 38f1ec9576db04d90aa1295637e41808, type: 3}
   BombExplodeClip: {fileID: 8300000, guid: 278a3c8aa897e47e0bb38c56827bd144, type: 3}
+  Piles:
+  - Center: {x: -11.525, y: 0, z: -8.425}
+    HalfSize: {x: 1.0250001, y: 4.125}
+    Share: 0.14317462
+  - Center: {x: -5.9, y: 0, z: -8.425}
+    HalfSize: {x: 1.5999999, y: 4.125}
+    Share: 0.22349206
+  - Center: {x: -9, y: 0, z: -5.9}
+    HalfSize: {x: 1.5, y: 1.5999999}
+    Share: 0.08126984
+  - Center: {x: -9, y: 0, z: -11.525}
+    HalfSize: {x: 1.5, y: 1.0250001}
+    Share: 0.0520635
+  - Center: {x: -11.5, y: 0, z: -1}
+    HalfSize: {x: 1.0500002, y: 2.5}
+    Share: 0.041666668
+  - Center: {x: -11.5, y: 0, z: 4}
+    HalfSize: {x: 1.0500002, y: 2.5}
+    Share: 0.041666668
+  - Center: {x: -11.5, y: 0, z: 9.5}
+    HalfSize: {x: 1.0500002, y: 3}
+    Share: 0.041666668
+  - Center: {x: -6.5, y: 0, z: -1}
+    HalfSize: {x: 1.0500002, y: 2.5}
+    Share: 0.041666668
+  - Center: {x: -6.5, y: 0, z: 4}
+    HalfSize: {x: 1.0500002, y: 2.5}
+    Share: 0.041666668
+  - Center: {x: -6.5, y: 0, z: 9.5}
+    HalfSize: {x: 1.0500002, y: 3}
+    Share: 0.041666668
+  - Center: {x: -1.725, y: 0, z: -6.5}
+    HalfSize: {x: 1.775, y: 1.0500002}
+    Share: 0.0625
+  - Center: {x: 1.8249999, y: 0, z: -6.5}
+    HalfSize: {x: 1.775, y: 1.0500002}
+    Share: 0.0625
+  - Center: {x: -1.725, y: 0, z: -11.5}
+    HalfSize: {x: 1.775, y: 1.0500002}
+    Share: 0.0625
+  - Center: {x: 1.8249999, y: 0, z: -11.5}
+    HalfSize: {x: 1.775, y: 1.0500002}
+    Share: 0.0625
+  PileDropHeight: 2.5
   UnstuckCenter: {x: -9, y: 2.5, z: -6.5}
   FloorY: 0
   LevelHalfExtents: {x: 15, y: 5, z: 15}

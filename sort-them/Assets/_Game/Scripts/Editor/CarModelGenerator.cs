@@ -336,35 +336,37 @@ namespace SortThem.Editor
 
         static void CrateEmblem(List<Part> p, Vector3 origin, Quaternion basis)
         {
-            const float thin = 0.006f;
+            const float thin = 0.004f;
             var flat = Quaternion.Euler(90f, 0f, 0f);
+            var paint = Dark;
 
-            var gear = new Vector3(-0.040f, 0f, 0f);
-            Piece(p, _cylinder, origin, basis, gear, flat, new Vector3(0.052f, thin * 0.5f, 0.052f), Steel);
+            var gear = new Vector3(-0.034f, 0.004f, 0f);
+            Piece(p, _cylinder, origin, basis, gear, flat, new Vector3(0.068f, thin * 0.5f, 0.068f), paint);
             for (int i = 0; i < 8; i++)
             {
-                float deg = i * 45f;
+                float deg = i * 45f + 22.5f;
                 float rad = deg * Mathf.Deg2Rad;
-                var at = gear + new Vector3(Mathf.Cos(rad) * 0.03f, Mathf.Sin(rad) * 0.03f, 0f);
-                Piece(p, _cube, origin, basis, at, Quaternion.Euler(0f, 0f, deg), new Vector3(0.016f, 0.011f, thin), Steel);
+                var at = gear + new Vector3(Mathf.Cos(rad) * 0.038f, Mathf.Sin(rad) * 0.038f, 0f);
+                Piece(p, _cube, origin, basis, at, Quaternion.Euler(0f, 0f, deg), new Vector3(0.02f, 0.016f, thin), paint);
             }
-            Piece(p, _cylinder, origin, basis, gear, flat, new Vector3(0.018f, thin * 0.9f, 0.018f), WoodDark);
+            Piece(p, _cylinder, origin, basis, gear + new Vector3(0f, 0f, -0.0005f), flat, new Vector3(0.026f, thin * 0.6f, 0.026f), Wood);
 
-            const float tilt = 35f;
-            float c35 = Mathf.Cos(tilt * Mathf.Deg2Rad), s35 = Mathf.Sin(tilt * Mathf.Deg2Rad);
-            var dir = new Vector3(c35, s35, 0f);
-            var side = new Vector3(-s35, c35, 0f);
-            var shaft = new Vector3(0.038f, -0.004f, 0f);
+            const float tilt = 40f;
+            float ct = Mathf.Cos(tilt * Mathf.Deg2Rad), st = Mathf.Sin(tilt * Mathf.Deg2Rad);
+            var dir = new Vector3(ct, st, 0f);
+            var side = new Vector3(-st, ct, 0f);
             var spin = Quaternion.Euler(0f, 0f, tilt);
-            Piece(p, _cube, origin, basis, shaft, spin, new Vector3(0.056f, 0.013f, thin), Steel);
+            var shaft = new Vector3(0.036f, -0.006f, 0f);
+            Piece(p, _cube, origin, basis, shaft, spin, new Vector3(0.078f, 0.016f, thin), paint);
 
-            var jaw = shaft + dir * 0.034f;
-            Piece(p, _cube, origin, basis, jaw + side * 0.0085f, spin, new Vector3(0.02f, 0.007f, thin), Steel);
-            Piece(p, _cube, origin, basis, jaw - side * 0.0085f, spin, new Vector3(0.02f, 0.007f, thin), Steel);
+            var jaw = shaft + dir * 0.047f;
+            Piece(p, _cube, origin, basis, jaw, spin, new Vector3(0.012f, 0.034f, thin), paint);
+            Piece(p, _cube, origin, basis, jaw + dir * 0.012f + side * 0.012f, spin, new Vector3(0.014f, 0.01f, thin), paint);
+            Piece(p, _cube, origin, basis, jaw + dir * 0.012f - side * 0.012f, spin, new Vector3(0.014f, 0.01f, thin), paint);
 
-            var ring = shaft - dir * 0.032f;
-            Piece(p, _cylinder, origin, basis, ring, flat, new Vector3(0.024f, thin * 0.5f, 0.024f), Steel);
-            Piece(p, _cylinder, origin, basis, ring, flat, new Vector3(0.012f, thin * 0.9f, 0.012f), WoodDark);
+            var ring = shaft - dir * 0.045f;
+            Piece(p, _cylinder, origin, basis, ring, flat, new Vector3(0.032f, thin * 0.5f, 0.032f), paint);
+            Piece(p, _cylinder, origin, basis, ring + new Vector3(0f, 0f, -0.0005f), flat, new Vector3(0.013f, thin * 0.6f, 0.013f), Wood);
         }
 
         static void Box(List<Part> p, float x, float y, float z, float sx, float sy, float sz, Color c, float rx = 0f, float ry = 0f, float rz = 0f)

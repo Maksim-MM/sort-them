@@ -10,6 +10,13 @@ namespace SortThem
         static AudioSource[] _pool;
         static int _next;
 
+        public static AudioClip Pick(AudioClip[] variants, AudioClip fallback)
+        {
+            if (variants == null || variants.Length == 0) return fallback;
+            var clip = variants[Random.Range(0, variants.Length)];
+            return clip != null ? clip : fallback;
+        }
+
         public static void Play(AudioClip clip, Vector3 position, float volume = 1f, float pitch = 1f)
         {
             if (clip == null) return;

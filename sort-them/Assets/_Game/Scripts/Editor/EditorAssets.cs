@@ -42,7 +42,7 @@ namespace SortThem.Editor
             return mat;
         }
 
-        public static Material Textured(string name, string texturePath, Color tint, float smoothness = 0.12f, bool unlit = false, bool specular = false)
+        public static Material Textured(string name, string texturePath, Color tint, float smoothness = 0.12f, bool unlit = false, bool specular = false, bool glossFromAlpha = false)
         {
             var mat = LoadOrCreateMaterial(name, unlit ? "Universal Render Pipeline/Unlit" : "Universal Render Pipeline/Lit", tint);
             var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
@@ -54,8 +54,8 @@ namespace SortThem.Editor
                 if (mat.HasProperty("_Metallic")) mat.SetFloat("_Metallic", 0f);
                 if (mat.HasProperty("_SpecularHighlights")) mat.SetFloat("_SpecularHighlights", specular ? 1f : 0f);
                 if (specular) mat.DisableKeyword("_SPECULARHIGHLIGHTS_OFF"); else mat.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
-                if (mat.HasProperty("_SmoothnessTextureChannel")) mat.SetFloat("_SmoothnessTextureChannel", specular ? 1f : 0f);
-                if (specular) mat.EnableKeyword("_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A"); else mat.DisableKeyword("_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A");
+                if (mat.HasProperty("_SmoothnessTextureChannel")) mat.SetFloat("_SmoothnessTextureChannel", glossFromAlpha ? 1f : 0f);
+                if (glossFromAlpha) mat.EnableKeyword("_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A"); else mat.DisableKeyword("_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A");
             }
             EditorUtility.SetDirty(mat);
             return mat;

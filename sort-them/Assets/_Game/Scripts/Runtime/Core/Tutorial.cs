@@ -12,11 +12,9 @@ namespace SortThem
         public float WalkDistance = 2f;
         public float LookDegrees = 90f;
         public bool ForceRun;
-        public MeshGhost Outline;
 
         public bool Active { get; private set; }
         public TutorialStep Step { get; private set; } = TutorialStep.Done;
-        public CarInstance Target { get; private set; }
         public event Action Changed;
 
         public static bool Running => I != null && I.Active;
@@ -73,18 +71,11 @@ namespace SortThem
                     break;
                 }
                 case TutorialStep.Take:
-                    if (_inventory.Items.Count > 0) { Advance(gm); break; }
-                    if (Target == null || Target.State != CarState.Loose) PickTarget(gm);
-                    if (Outline != null)
-                    {
-                        if (Target != null && Target.Filter != null)
-                            Outline.Show(Target.Filter.sharedMesh, Target.transform.position, Target.transform.rotation, Target.transform.lossyScale);
-                        else Outline.Hide();
-                    }
+                    if (_inventory.Items.Count > 0) Advance(gm);
                     break;
                 case TutorialStep.Place:
                     if (CountPlaced(gm) > _placedAtStart) { Finish(gm); break; }
-                    if (_inventory.Items.Count == 0) { SetRack(null); Step = TutorialStep.Take; Target = null; Changed?.Invoke(); break; }
+                    if (_inventory.Items.Count == 0) { SetRack(null); Step = TutorialStep.Take; Changed?.Invoke(); break; }
                     var held = _inventory.Active;
                     if (held != null && (_rack == null || _rack.Category != held.Data.Category))
                     {
@@ -112,21 +103,13 @@ namespace SortThem
         {
             Step++;
             if (Step == TutorialStep.Look) _lastRot = _player.CameraPivot.rotation;
-            if (Step == TutorialStep.Take) PickTarget(gm);
-            if (Step == TutorialStep.Place)
-            {
-                if (Outline != null) Outline.Hide();
-                Target = null;
-                _placedAtStart = CountPlaced(gm);
-            }
+            if (Step == TutorialStep.Place) _placedAtStart = CountPlaced(gm);
             Changed?.Invoke();
         }
 
         void Finish(GameManager gm)
         {
             SetRack(null);
-            if (Outline != null) Outline.Hide();
-            Target = null;
             Active = false;
             Step = TutorialStep.Done;
             gm.TutorialDone = true;
@@ -140,24 +123,6 @@ namespace SortThem
             if (_rack != null) _rack.SetHighlight(false);
             _rack = rack;
             if (_rack != null) _rack.SetHighlight(true);
-        }
-
-        void PickTarget(GameManager gm)
-        {
-            Target = null;
-            float best = float.MaxValue;
-            var from = _player.transform.position;
-            foreach (var car in gm.Cars)
-            {
-                if (car.State != CarState.Loose || car.Filter == null) continue;
-                var d = car.transform.position - from;
-                d.y = 0f;
-                float dist = d.sqrMagnitude;
-                if (dist >= best) continue;
-                if (!Physics.Raycast(car.transform.position + Vector3.up * 2f, Vector3.down, out var hit, 2.5f) || hit.collider != car.Col) continue;
-                best = dist;
-                Target = car;
-            }
         }
 
         static int CountPlaced(GameManager gm)

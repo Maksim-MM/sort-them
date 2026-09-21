@@ -24,7 +24,7 @@ namespace SortThem
         RectTransform _prizeList;
         readonly List<(Image Icon, TMP_Text Count, UpgradeData Data)> _prizeRows = new List<(Image, TMP_Text, UpgradeData)>();
 
-        const float CellSize = 104f, ReelSpeed = 9f, ReelStagger = 0.32f, SettleTime = 0.45f;
+        const float CellSize = 104f, ReelSpeed = 9f, ReelStagger = 1.28f, SettleTime = 0.45f;
 
         void BuildReels(RectTransform parent)
         {

@@ -839,11 +839,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044931
-    m_Localized: "{0} \u2014 pick up the highlighted car"
+    m_Localized: "{0} \u2014 pick up any car"
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044932
-    m_Localized: "Take button \u2014 the highlighted car"
+    m_Localized: "Take button \u2014 pick up any car"
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044933

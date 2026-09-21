@@ -6,8 +6,8 @@ namespace SortThem
     public class GameConfig : ScriptableObject
     {
         [Header("Player")]
-        public float WalkSpeed = 4f;
-        public float SprintSpeed = 7f;
+        public float WalkSpeed = 3f;
+        public float SprintSpeed = 5.25f;
         public float CrouchSpeed = 2f;
         public float JumpHeight = 1f;
         public float Gravity = -20f;
@@ -44,6 +44,7 @@ namespace SortThem
         public AudioClip PurchaseClip;
         public AudioClip SlotLeverClip;
         public AudioClip SlotReelClip;
+        public AudioClip SlotSpinClip;
         public AudioClip SlotWinClip;
         public AudioClip RegisterClickClip;
         public AudioClip RegisterPayClip;
@@ -51,8 +52,11 @@ namespace SortThem
         public AudioClip UiClickClip;
         public AudioClip FootstepWalkClip;
         public AudioClip FootstepRunClip;
-        public float FootstepWalkInterval = 0.5f;
-        public float FootstepRunInterval = 0.33f;
+        public AudioClip[] FootstepWalkClips = System.Array.Empty<AudioClip>();
+        public AudioClip[] FootstepRunClips = System.Array.Empty<AudioClip>();
+        public AudioClip[] AbilityClips = System.Array.Empty<AudioClip>();
+        public float FootstepWalkInterval = 0.667f;
+        public float FootstepRunInterval = 0.44f;
         public float SprintFovBoost = 8f;
         public float TouchLookSpeed = 160f;
         public float FovSmoothTime = 0.2f;
@@ -111,6 +115,18 @@ namespace SortThem
         public Vector3 BombHandEuler = new Vector3(0f, 0f, 20f);
         public AudioClip BombFuseClip;
         public AudioClip BombExplodeClip;
+
+        [System.Serializable]
+        public struct PileZone
+        {
+            public Vector3 Center;
+            public Vector2 HalfSize;
+            public float Share;
+        }
+
+        [Header("Piles")]
+        public PileZone[] Piles = new PileZone[0];
+        public float PileDropHeight = 2.5f;
 
         [Header("Level")]
         public Vector3 UnstuckCenter = new Vector3(0f, 2.5f, 0f);

@@ -109,7 +109,7 @@ namespace SortThem
             var held = Inventory.Active;
             if (held == null) { NeedItem(); return; }
             _findUntil = Time.time + ActiveTotal(0);
-            Sfx.PlayUi(gm.Config.AbilityClip);
+            Sfx.PlayUi(Sfx.Pick(gm.Config.AbilityClips, gm.Config.AbilityClip));
             _cooldown[0] = CooldownTotal(0);
             _findModel = held.Data;
             StartLevitation(gm, held.Data);
@@ -216,7 +216,7 @@ namespace SortThem
             _collectModel = held.Data;
             _collectBudget = Inventory.Capacity - Inventory.Items.Count;
             _collectUntil = Time.time + gm.Config.AutoCollectDuration;
-            Sfx.PlayUi(gm.Config.AbilityClip);
+            Sfx.PlayUi(Sfx.Pick(gm.Config.AbilityClips, gm.Config.AbilityClip));
             _collectNextPull = Time.time;
             _cooldown[1] = CooldownTotal(1);
         }
@@ -300,7 +300,7 @@ namespace SortThem
             if (_cooldown[2] > 0f) { NotReady(); return; }
             if (Inventory.Active == null) { NeedItem(); return; }
             _rackUntil = Time.time + ActiveTotal(2);
-            Sfx.PlayUi(gm.Config.AbilityClip);
+            Sfx.PlayUi(Sfx.Pick(gm.Config.AbilityClips, gm.Config.AbilityClip));
             _cooldown[2] = CooldownTotal(2);
         }
 

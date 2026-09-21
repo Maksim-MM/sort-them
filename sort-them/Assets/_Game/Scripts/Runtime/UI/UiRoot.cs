@@ -22,7 +22,7 @@ namespace SortThem
         public Sprite BombIcon;
 
         Canvas _canvas;
-        TMP_Text _carsText, _shelvesText, _collectiblesText, _balanceText, _inventoryText, _inventoryCountText, _hintText, _saveText, _toastText;
+        TMP_Text _carsText, _shelvesText, _collectiblesText, _balanceText, _inventoryText, _inventoryCountText, _saveText, _toastText;
         CanvasGroup _toast;
         CanvasGroup _tutorial;
         TMP_Text _fpsText;
@@ -53,7 +53,7 @@ namespace SortThem
         UpgradeData _spinReward;
         bool _spinning, _spinBomb;
         float _spinUntil = -1f, _spinTickAt;
-        const float SpinDuration = 1.2f, SpinTick = 0.07f;
+        const float SpinDuration = 1.55f, SpinTick = 0.07f;
         static readonly Color Gold = new Color(1f, 0.8f, 0.25f, 1f);
         static readonly Color GoldCooldown = new Color(0.6f, 0.48f, 0.15f, 1f);
         const string GoldHex = "#FFCC40";
@@ -85,7 +85,6 @@ namespace SortThem
         GameObject _touchSprint, _touchCrouch, _rotateOverlay;
         RectTransform _safe;
         static readonly string[] AbilityActions = { "Ability1", "Ability2", "Ability3" };
-        string _hintGroup;
         const float SlotSize = 72f, SlotGap = 12f;
         static readonly Color SlotColor = new Color(0.13f, 0.12f, 0.14f, 0.92f);
         static readonly Color FillActive = new Color(0.55f, 0.35f, 1f, 0.55f);
@@ -196,8 +195,6 @@ namespace SortThem
             RefreshVibration();
             RefreshLanguage();
             RefreshUpgrade();
-            _hintGroup = null;
-            RefreshHint();
             if (ControlsOpen) RefreshControls();
             if (_tutorialText != null && _tutorialShown != TutorialStep.Done) _tutorialText.text = TutorialText(_tutorialShown, ActiveGroup());
         }
@@ -251,7 +248,6 @@ namespace SortThem
             }
             if (_saveText != null && _saveText.gameObject.activeSelf != Time.time < _saveTextUntil) _saveText.gameObject.SetActive(Time.time < _saveTextUntil);
             RefreshAbilities();
-            RefreshHint();
             UpdateTutorial();
             UpdateFps();
             UpdateSpin();
@@ -267,21 +263,27 @@ namespace SortThem
             var hud = UiFactory.Rect(_safe, "HUD");
             UiFactory.Anchor(hud, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-            var stats = UiFactory.Panel(hud, "Stats", new Color(0f, 0f, 0f, 0.45f));
+            var stats = UiFactory.Rect(hud, "Stats");
             UiFactory.Anchored(stats, new Vector2(0f, 1f), new Vector2(16f, -16f), new Vector2(320f, 110f));
             UiFactory.Layout(stats, 2f, new RectOffset(12, 12, 8, 8));
             _carsText = UiFactory.Text(stats, "Cars", "", 24f, TextAlignmentOptions.Left, Color.white);
             _shelvesText = UiFactory.Text(stats, "Shelves", "", 24f, TextAlignmentOptions.Left, Color.white);
             _collectiblesText = UiFactory.Text(stats, "Collectibles", "", 24f, TextAlignmentOptions.Left, Color.white);
+            var hudShadow = new Color(0f, 0f, 0f, 0.8f);
+            UiFactory.TextGlow(_carsText, hudShadow, 0.35f, 0.45f);
+            UiFactory.TextGlow(_shelvesText, hudShadow, 0.35f, 0.45f);
+            UiFactory.TextGlow(_collectiblesText, hudShadow, 0.35f, 0.45f);
 
             _fpsText = UiFactory.Text(hud, "Fps", "", 24f, TextAlignmentOptions.Left, new Color(0.3f, 1f, 0.3f, 1f));
             _fpsText.fontStyle = FontStyles.Bold;
             UiFactory.Anchored(_fpsText.rectTransform, new Vector2(0f, 1f), new Vector2(28f, -134f), new Vector2(160f, 30f));
 
-            var balancePanel = UiFactory.Panel(hud, "Balance", new Color(0f, 0f, 0f, 0.45f));
+            var balancePanel = UiFactory.Rect(hud, "Balance");
             UiFactory.Anchored(balancePanel, new Vector2(1f, 1f), new Vector2(-16f, -16f), new Vector2(240f, 56f));
-            _balanceText = UiFactory.Text(balancePanel, "Text", "$0", 32f, TextAlignmentOptions.Center, Color.white);
-            UiFactory.Anchor(_balanceText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            _balanceText = UiFactory.Text(balancePanel, "Text", "$0", 32f, TextAlignmentOptions.Right, Color.white);
+            _balanceText.fontStyle = FontStyles.Bold;
+            UiFactory.TextGlow(_balanceText, hudShadow, 0.35f, 0.45f);
+            UiFactory.Anchor(_balanceText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, new Vector2(-12f, 0f));
 
             var crosshair = UiFactory.Panel(hud, "Crosshair", new Color(1f, 1f, 1f, 0.9f));
             UiFactory.Anchored(crosshair, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(6f, 6f));
@@ -298,9 +300,6 @@ namespace SortThem
             _abilitiesPanel = abilities;
             UiFactory.Anchored(abilities, Vector2.zero, new Vector2(24f, 24f), new Vector2(3f * SlotSize + 2f * SlotGap, SlotSize + 52f));
             for (int i = 0; i < 3; i++) _abilitySlots[i] = BuildAbilitySlot(abilities, i);
-
-            _hintText = UiFactory.Text(hud, "Hint", "", 18f, TextAlignmentOptions.Top, new Color(1f, 1f, 1f, 0.6f));
-            UiFactory.Anchored(_hintText.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -16f), new Vector2(900f, 30f));
 
             var toast = UiFactory.Panel(hud, "Toast", new Color(0f, 0f, 0f, 0.6f));
             UiFactory.Anchored(toast, new Vector2(0.5f, 0f), new Vector2(0f, 140f), new Vector2(560f, 46f));
@@ -335,11 +334,11 @@ namespace SortThem
             UiFactory.Anchor(tick, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             var green = new Color(0.45f, 1f, 0.5f, 1f);
             var shortBar = UiFactory.Image(tick, "Short", null, green, Image.Type.Simple);
-            UiFactory.Anchored(shortBar.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-5f, -3f), new Vector2(4f, 11f));
-            shortBar.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+            UiFactory.Anchored(shortBar.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-5.5f, -3f), new Vector2(4f, 11f));
+            shortBar.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
             var longBar = UiFactory.Image(tick, "Long", null, green, Image.Type.Simple);
-            UiFactory.Anchored(longBar.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(3f, 0f), new Vector2(4f, 20f));
-            longBar.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 40f);
+            UiFactory.Anchored(longBar.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(3f, 0.5f), new Vector2(4f, 20f));
+            longBar.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -40f);
             _tutorialTick.SetActive(false);
             _tutorialText = UiFactory.Text(panel, "Text", "", 22f, TextAlignmentOptions.Left, Color.white);
             _tutorialText.enableAutoSizing = true;
@@ -424,8 +423,8 @@ namespace SortThem
                     string look = group == ControlHints.KeyboardGroup ? Loc.Get("ctl.mouse_key", "Мышь") : ControlHints.Label(PlayerAction("Look"), group);
                     return string.Format(Loc.Get("tut.look", "{0} — повертеть камерой"), look);
                 case TutorialStep.Take:
-                    return touch ? Loc.Get("tut.take_touch", "Кнопка «взять» — подсвеченная машинка")
-                        : string.Format(Loc.Get("tut.take", "{0} — взять подсвеченную машинку"), ControlHints.Label(PlayerAction("Interact"), group));
+                    return touch ? Loc.Get("tut.take_touch", "Кнопка «взять» — взять любую машинку")
+                        : string.Format(Loc.Get("tut.take", "{0} — взять любую машинку"), ControlHints.Label(PlayerAction("Interact"), group));
                 case TutorialStep.Place:
                     return touch ? Loc.Get("tut.place_touch", "Кнопка «поставить» — подсвеченный стеллаж")
                         : string.Format(Loc.Get("tut.place", "{0} — поставить на подсвеченный стеллаж"), ControlHints.Label(PlayerAction("PlaceOrThrow"), group));
@@ -512,7 +511,6 @@ namespace SortThem
             _inventoryCountText.fontSize = 24f;
             BuildInventoryWheel(layer);
             UiFactory.Anchored(_abilitiesPanel, new Vector2(0.5f, 0f), new Vector2(0f, 24f), new Vector2(3f * SlotSize + 2f * SlotGap, SlotSize));
-            if (_hintText != null) _hintText.gameObject.SetActive(false);
         }
 
         void BuildInventoryWheel(Transform parent)
@@ -714,7 +712,7 @@ namespace SortThem
             _spinTickAt = 0f;
             StartReels(reward != null ? reward.Icon : BombIcon);
             Sfx.PlayUi(gm.Config.SlotLeverClip);
-            Sfx.PlayUi(gm.Config.SlotReelClip);
+            Sfx.PlayUi(gm.Config.SlotSpinClip != null ? gm.Config.SlotSpinClip : gm.Config.SlotReelClip);
             RefreshSlot();
         }
 
@@ -959,16 +957,6 @@ namespace SortThem
             return group == ControlHints.GamepadGroup
                 ? ControlHints.Short(PlayerAction("PrevItem"), group) + "/" + ControlHints.Short(PlayerAction("NextItem"), group)
                 : Loc.Get("ctl.wheel_key", "Колесо мыши");
-        }
-
-        void RefreshHint()
-        {
-            if (_hintText == null || !_hintText.gameObject.activeSelf) return;
-            string group = ActiveGroup();
-            if (group == _hintGroup) return;
-            _hintGroup = group;
-            _hintText.text = string.Format(Loc.Get("ui.hint", "{0} взять · {1} поставить/бросить · {2} выбрать · {3} меню"),
-                ControlHints.Short(PlayerAction("Interact"), group), ControlHints.Short(PlayerAction("PlaceOrThrow"), group), SelectLabel(group), ControlHints.Short(PlayerAction("Pause"), group));
         }
 
         void BuildControls()

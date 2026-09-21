@@ -24,6 +24,8 @@ namespace SortThem.Editor
             Write("Rug_Check", Size, Size, Rug(new Color(0.24f, 0.24f, 0.25f), new Color(0.82f, 0.78f, 0.69f), 8, 67));
             Write("Window_Frost", Size, Size, FrostedWindow(71));
             Write("Window_Sky", Size, Size, FrostedSky(97));
+            Write("Window_FrostSun", Size, Size, Glare(FrostedWindow(71), 0.5f, 1.0f, 0.9f, 0.5f, new Color(1f, 0.97f, 0.9f)));
+            Write("Window_SkySun", Size, Size, Glare(FrostedSky(97), 0.5f, 0.55f, 0.6f, 0.8f, new Color(1f, 0.98f, 0.92f)));
             Write("Wood_Slab", WoodSize, WoodSize, Slab(new Color(0.52f, 0.32f, 0.17f), 0.30f, 83, WoodSize));
             Write("Wood_PlanksV", WoodSize, WoodSize, Transpose(Wood(6, new Color(0.40f, 0.24f, 0.12f), 0.26f, 91, WoodSize)));
             AssetDatabase.Refresh();
@@ -76,6 +78,20 @@ namespace SortThem.Editor
         }
 
         static Func<int, int, Color> Transpose(Func<int, int, Color> fn) => (x, y) => fn(y, x);
+
+        static Func<int, int, Color> Glare(Func<int, int, Color> fn, float cx, float cy, float radius, float strength, Color tint)
+        {
+            return (x, y) =>
+            {
+                float u = x / (float)Size, v = y / (float)Size;
+                var c = fn(x, y);
+                float d = Mathf.Abs(v - cy) / radius;
+                float glow = Mathf.Pow(Mathf.Clamp01(1f - d), 1.6f) * strength;
+                float lift = 0.12f * strength;
+                c = Color.Lerp(c, tint, Mathf.Clamp01(glow + lift));
+                return new Color(c.r, c.g, c.b, 1f);
+            };
+        }
 
         static Func<int, int, Color> Slab(Color baseColor, float grainStrength, int seed, int size)
         {
