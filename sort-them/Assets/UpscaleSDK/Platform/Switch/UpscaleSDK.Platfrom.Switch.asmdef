@@ -1,0 +1,20 @@
+{
+    "name": "UpscaleSDK.Platfrom.Switch",
+    "rootNamespace": "",
+    "references": [
+        "GUID:165bcdf6eff832341b89945432813531",
+        "GUID:ec0ca56da29cd224d9573f5ea52c50cd"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "Switch"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

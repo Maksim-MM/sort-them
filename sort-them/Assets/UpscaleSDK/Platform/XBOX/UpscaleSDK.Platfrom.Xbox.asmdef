@@ -1,0 +1,21 @@
+{
+    "name": "UpscaleSDK.Platfrom.Xbox",
+    "rootNamespace": "",
+    "references": [
+        "GUID:165bcdf6eff832341b89945432813531",
+        "GUID:5ee1933b8c8d484ea7cb408c3d679e50"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "GameCoreXboxOne",
+        "GameCoreScarlett"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,25 @@
+{
+    "name": "UpscaleSDK.Platfrom.PS5",
+    "rootNamespace": "",
+    "references": [
+        "GUID:165bcdf6eff832341b89945432813531",
+        "GUID:0e57870b6ae64b0478b2dee0f794efbb",
+        "GUID:cd5e5d7edbf806b4aa5c04910bdd8adf",
+        "GUID:3d092795be785c14b9825e3518b78346",
+        "GUID:f07bae5e6cc341d44ba79dc1121f5e8e",
+        "GUID:1a5a81e307e1f7f4793a31c4a7584f03",
+        "GUID:c8b434663461cb04bb3620174c9cd87e"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "PS5"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

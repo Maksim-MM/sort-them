@@ -1,0 +1,21 @@
+{
+    "name": "UpscaleSDK.Platfrom.PS4",
+    "rootNamespace": "",
+    "references": [
+        "GUID:165bcdf6eff832341b89945432813531",
+        "GUID:c5a77e832a1bb924e8204c5b16f719f8",
+        "GUID:538275013d9c29b4abd298e8cdeb4144"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "PS4"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

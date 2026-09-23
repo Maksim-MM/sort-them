@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fcf016187edd214d96e1690b06ae673, type: 3}
+  m_Name: Ps4 Colored IconsSet
+  m_EditorClassIdentifier: Assembly-CSharp::Input.Glyphs.GamepadIconsSet
+  icons:
+  - Glyph: 0
+    Sprite: {fileID: 21300000, guid: 0dc4c720612f2ba42b0c04404a6c2cc8, type: 3}
+  - Glyph: 1
+    Sprite: {fileID: 21300000, guid: 4ef1b8b4b18848d4080000314bfcf5e1, type: 3}
+  - Glyph: 2
+    Sprite: {fileID: 21300000, guid: f596414fb2232d84cbbdab1aefd2080e, type: 3}
+  - Glyph: 3
+    Sprite: {fileID: 21300000, guid: a1217a9f1e5431b4fbcac983406d72bc, type: 3}
+  - Glyph: 4
+    Sprite: {fileID: 21300000, guid: 45d6c66fe25233742b18763cb1702de9, type: 3}
+  - Glyph: 5
+    Sprite: {fileID: 21300000, guid: 0005dd5acdfdfa64e9898ca560656a7f, type: 3}
+  - Glyph: 6
+    Sprite: {fileID: 21300000, guid: 855a4428a7e4a1c4a9221961b2345ee2, type: 3}
+  - Glyph: 7
+    Sprite: {fileID: 21300000, guid: b24d2080756a65b4692e56efda10cb15, type: 3}
+  - Glyph: 8
+    Sprite: {fileID: 21300000, guid: fd5d6f21db43a394da22c62534747773, type: 3}
+  - Glyph: 9
+    Sprite: {fileID: 21300000, guid: 0ac46df6e9508494e8836e469653ccc6, type: 3}
+  - Glyph: 10
+    Sprite: {fileID: 21300000, guid: ae4df1ce98bf95b449ac9ab9241cd13d, type: 3}
+  - Glyph: 11
+    Sprite: {fileID: 21300000, guid: 8620365dcf3fa8c4aa6aaa43682f65f7, type: 3}
+  - Glyph: 12
+    Sprite: {fileID: 21300000, guid: c71f00e3a51a3bc4c87a95a3dd54f991, type: 3}
+  - Glyph: 13
+    Sprite: {fileID: 21300000, guid: 7902f55325004c64b82037c40356fd70, type: 3}
+  - Glyph: 14
+    Sprite: {fileID: 21300000, guid: e1fdee418e6d1954c98d31f16d40572c, type: 3}
+  - Glyph: 15
+    Sprite: {fileID: 21300000, guid: 7c639a5218acd2642b07cd913059af38, type: 3}
+  - Glyph: 16
+    Sprite: {fileID: 21300000, guid: 52d7e75124b9348479c3d052e48febcf, type: 3}
+  - Glyph: 17
+    Sprite: {fileID: 21300000, guid: a0453f625dd53064db7f3c82a10a52b4, type: 3}
+  - Glyph: 18
+    Sprite: {fileID: 21300000, guid: 40873bcd263ac964080b2235df2809fc, type: 3}
+  - Glyph: 19
+    Sprite: {fileID: 21300000, guid: c8ded08429f49324abd3fada005d1502, type: 3}
+  - Glyph: 20
+    Sprite: {fileID: 21300000, guid: 74ec08cfaae97354982277dc6d9df193, type: 3}
+  - Glyph: 21
+    Sprite: {fileID: 21300000, guid: 37593ca2044497340beb495c0613c473, type: 3}
+  - Glyph: 22
+    Sprite: {fileID: 21300000, guid: 587c103b937196c41a0dfed7a1e83f58, type: 3}

@@ -1,0 +1,169 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ee4d7a106864beeb41b0ca8bcda6d91, type: 3}
+  m_Name: KeyboardIconsSet
+  m_EditorClassIdentifier: UpscaleSDK.Core::UpscaleSDK.Core.Input.Glyphs.KeyboardIconsSet
+  icons:
+  - Glyph: 0
+    Sprite: {fileID: 21300000, guid: 7dd8ba8bfa7f4614e8912a9ccfce8f6b, type: 3}
+  - Glyph: 1
+    Sprite: {fileID: 21300000, guid: c35d465c2d2e3bf438125559f0c97916, type: 3}
+  - Glyph: 2
+    Sprite: {fileID: 21300000, guid: 427ccbcb6f390f54ca7cf2836edef93f, type: 3}
+  - Glyph: 3
+    Sprite: {fileID: 21300000, guid: 7e49412c15b94fa41a00f9f687ba41da, type: 3}
+  - Glyph: 4
+    Sprite: {fileID: 21300000, guid: 47d4e24d1d0b87541bfb08a549771901, type: 3}
+  - Glyph: 5
+    Sprite: {fileID: 21300000, guid: a69f76e74adae4740aeea6d59779692b, type: 3}
+  - Glyph: 6
+    Sprite: {fileID: 21300000, guid: 14871fdac4ff2234189bc3019ab3f749, type: 3}
+  - Glyph: 7
+    Sprite: {fileID: 21300000, guid: b091a5ba4d8434841b9d209ac0145b19, type: 3}
+  - Glyph: 8
+    Sprite: {fileID: 21300000, guid: 489cfe8a6cdba894abfa908ac46e3c5e, type: 3}
+  - Glyph: 9
+    Sprite: {fileID: 21300000, guid: 8ff377a4a31ea86469eedf1398d16028, type: 3}
+  - Glyph: 10
+    Sprite: {fileID: 21300000, guid: 8ff377a4a31ea86469eedf1398d16028, type: 3}
+  - Glyph: 11
+    Sprite: {fileID: 21300000, guid: 6c9a3d6fd77eb5c469fe41281e9f529b, type: 3}
+  - Glyph: 12
+    Sprite: {fileID: 21300000, guid: 6c9a3d6fd77eb5c469fe41281e9f529b, type: 3}
+  - Glyph: 13
+    Sprite: {fileID: 21300000, guid: 5ceabc86f75aea746946f8f544fef4d5, type: 3}
+  - Glyph: 14
+    Sprite: {fileID: 21300000, guid: 5ceabc86f75aea746946f8f544fef4d5, type: 3}
+  - Glyph: 15
+    Sprite: {fileID: 21300000, guid: 62fed794c2d906e4f8195cabe4752c3a, type: 3}
+  - Glyph: 16
+    Sprite: {fileID: 21300000, guid: 6d41a322ce1b6374bb73eccf07f39add, type: 3}
+  - Glyph: 17
+    Sprite: {fileID: 21300000, guid: 658100bebcad2834da8ae255e11bec5b, type: 3}
+  - Glyph: 18
+    Sprite: {fileID: 21300000, guid: b24207d9bc6a83c41a2ea33503fd9923, type: 3}
+  - Glyph: 19
+    Sprite: {fileID: 21300000, guid: 2ea9678a76731ee41b20ae264cbd9747, type: 3}
+  - Glyph: 20
+    Sprite: {fileID: 21300000, guid: 90dc1f860124f7c448a9b535040e1e83, type: 3}
+  - Glyph: 21
+    Sprite: {fileID: 21300000, guid: 22f86b235e8287c41b023fbad1270727, type: 3}
+  - Glyph: 22
+    Sprite: {fileID: 21300000, guid: 3d6309f9f0672ad4db522b9fcd1ef3e4, type: 3}
+  - Glyph: 23
+    Sprite: {fileID: 21300000, guid: 15a6db218eeb7a446a4d3c2a61f88a20, type: 3}
+  - Glyph: 24
+    Sprite: {fileID: 21300000, guid: e2a10fae9a1b4d342ac1d5e7072e6337, type: 3}
+  - Glyph: 25
+    Sprite: {fileID: 21300000, guid: 36aa630e241190243b0e9941d0a85a74, type: 3}
+  - Glyph: 26
+    Sprite: {fileID: 21300000, guid: c5ae39a113759114196a0ea1e5ae8460, type: 3}
+  - Glyph: 27
+    Sprite: {fileID: 21300000, guid: 5bf8703fbb4bef84199838a628ff74c2, type: 3}
+  - Glyph: 28
+    Sprite: {fileID: 21300000, guid: 6034686358280ff46beac71c0e9f8e2c, type: 3}
+  - Glyph: 29
+    Sprite: {fileID: 21300000, guid: 583e369722c9482499dcf1af815b0ebe, type: 3}
+  - Glyph: 30
+    Sprite: {fileID: 21300000, guid: 9966de5f715491a4f8f15f418a16d122, type: 3}
+  - Glyph: 31
+    Sprite: {fileID: 21300000, guid: 2a01eb5ce8b885540af4bf46eac65559, type: 3}
+  - Glyph: 32
+    Sprite: {fileID: 21300000, guid: a8f7bc2860ab86846b3b06d10b6dfed8, type: 3}
+  - Glyph: 33
+    Sprite: {fileID: 21300000, guid: 9a031d8e2cc60a748a122abb54a020a9, type: 3}
+  - Glyph: 34
+    Sprite: {fileID: 21300000, guid: 22709ff82451e984bab999079193ad93, type: 3}
+  - Glyph: 35
+    Sprite: {fileID: 21300000, guid: 57c6d99db9c02e34693d548c5dfde1dc, type: 3}
+  - Glyph: 36
+    Sprite: {fileID: 21300000, guid: 33e89f032e57740419819f8a9075cdc7, type: 3}
+  - Glyph: 37
+    Sprite: {fileID: 21300000, guid: c1279d9e011e5f049801e721872e56c9, type: 3}
+  - Glyph: 38
+    Sprite: {fileID: 21300000, guid: fcd0cf728f83af34f9bd95580ffdec94, type: 3}
+  - Glyph: 39
+    Sprite: {fileID: 21300000, guid: c0817875647d34548922b3a6f0c5512a, type: 3}
+  - Glyph: 40
+    Sprite: {fileID: 21300000, guid: e2b73fab11aff3a4b98304c0572edc1c, type: 3}
+  - Glyph: 41
+    Sprite: {fileID: 21300000, guid: 4eb710098a9a26e448a3d78ffc1a3ed3, type: 3}
+  - Glyph: 42
+    Sprite: {fileID: 21300000, guid: 24f958c85d9228a4787d651eca56fdbd, type: 3}
+  - Glyph: 43
+    Sprite: {fileID: 21300000, guid: 583e96ff8cff7b94eb67af04b4d18267, type: 3}
+  - Glyph: 44
+    Sprite: {fileID: 21300000, guid: d9c23aeab4b601c49a6fa7a3b7b0d58d, type: 3}
+  - Glyph: 45
+    Sprite: {fileID: 21300000, guid: e232fcded0faf2f4c95b05cec8eb331e, type: 3}
+  - Glyph: 46
+    Sprite: {fileID: 21300000, guid: 40245bf3718c3894086c4845d701c96f, type: 3}
+  - Glyph: 47
+    Sprite: {fileID: 21300000, guid: 906e65be01284b14387a3616928887be, type: 3}
+  - Glyph: 48
+    Sprite: {fileID: 21300000, guid: bb02c71ec825ec84bb681febe6a8cbff, type: 3}
+  - Glyph: 49
+    Sprite: {fileID: 21300000, guid: 6d832d1c1721aa34fa0e7c183888f1e3, type: 3}
+  - Glyph: 50
+    Sprite: {fileID: 21300000, guid: e5c81c935b1b1464aa388383fe075b07, type: 3}
+  - Glyph: 51
+    Sprite: {fileID: 21300000, guid: 6eccc00ea1445aa429ba11e298ba431b, type: 3}
+  - Glyph: 52
+    Sprite: {fileID: 21300000, guid: 213077b7965aa77478b64fe472f9db3c, type: 3}
+  - Glyph: 53
+    Sprite: {fileID: 21300000, guid: 2058add750e221640aea5ef2c587e80a, type: 3}
+  - Glyph: 54
+    Sprite: {fileID: 21300000, guid: b701958e23d54c64b85cb58360aaf250, type: 3}
+  - Glyph: 55
+    Sprite: {fileID: 21300000, guid: d1807626a7d9b9343ac4a88106b0f420, type: 3}
+  - Glyph: 56
+    Sprite: {fileID: 21300000, guid: 2d025dc88c0f32e408b7090eb655e2de, type: 3}
+  - Glyph: 57
+    Sprite: {fileID: 21300000, guid: 5fc284370bb289646bc13c7da5d8a4f7, type: 3}
+  - Glyph: 58
+    Sprite: {fileID: 21300000, guid: 27c7b4f4fd0ae1b44a93851aabca124c, type: 3}
+  - Glyph: 59
+    Sprite: {fileID: 21300000, guid: 2ea8137e7a90fbb4dad087198eae21cd, type: 3}
+  - Glyph: 60
+    Sprite: {fileID: 21300000, guid: be60dfdd833170a47abfed89e6df37e2, type: 3}
+  - Glyph: 61
+    Sprite: {fileID: 21300000, guid: d7f853296cb92c942b1f6e03d5af6f5a, type: 3}
+  - Glyph: 62
+    Sprite: {fileID: 21300000, guid: 4d555b81b8b28d24cb88da38714835de, type: 3}
+  - Glyph: 63
+    Sprite: {fileID: 21300000, guid: 2ecdeb940b68a1e4d94d7e2846f07b20, type: 3}
+  - Glyph: 64
+    Sprite: {fileID: 21300000, guid: c3f85f9b4d595c34bad7af1658daa9e8, type: 3}
+  - Glyph: 65
+    Sprite: {fileID: 21300000, guid: 56c4c01c3faaf3347918ed86d57e6150, type: 3}
+  - Glyph: 66
+    Sprite: {fileID: 21300000, guid: 253723107aa92d94ab5582d264fa47d9, type: 3}
+  - Glyph: 67
+    Sprite: {fileID: 21300000, guid: 6f42a4ea84d00be44902173ed2207b25, type: 3}
+  - Glyph: 68
+    Sprite: {fileID: 21300000, guid: ee7ffa478b4adce4796f3a36013ae3bd, type: 3}
+  - Glyph: 69
+    Sprite: {fileID: 21300000, guid: 7c4261e720fcd164e9c0aca5d23835d9, type: 3}
+  - Glyph: 70
+    Sprite: {fileID: 21300000, guid: 06b84a7d403ae774d80a171b781acf1c, type: 3}
+  - Glyph: 71
+    Sprite: {fileID: 21300000, guid: c27dc2d90eee0154e988887535425fde, type: 3}
+  - Glyph: 72
+    Sprite: {fileID: 21300000, guid: 64e1abbd2b1b83f47bcec6d704ba446b, type: 3}
+  - Glyph: 73
+    Sprite: {fileID: 21300000, guid: f762d3971e5399542b3bf60b34ae66be, type: 3}
+  - Glyph: 74
+    Sprite: {fileID: 21300000, guid: c74e614c5e7ca2643ae4572678e5f384, type: 3}
+  - Glyph: 75
+    Sprite: {fileID: 21300000, guid: 4e35275ec256d8344a6df75494b85d68, type: 3}
+  - Glyph: 76
+    Sprite: {fileID: 21300000, guid: 4843fd11071fbe047a48e52f15e2e0e4, type: 3}
