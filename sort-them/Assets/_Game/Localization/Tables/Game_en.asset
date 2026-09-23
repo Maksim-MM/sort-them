@@ -1522,6 +1522,42 @@ MonoBehaviour:
     m_Localized: Prizes
     m_Metadata:
       m_Items: []
+  - m_Id: 5969817973547008
+    m_Localized: Left stick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044480
+    m_Localized: Right stick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044481
+    m_Localized: Left stick (press)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044482
+    m_Localized: Right stick (press)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044483
+    m_Localized: D-pad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044484
+    m_Localized: Cross
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044485
+    m_Localized: Circle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044486
+    m_Localized: Square
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044487
+    m_Localized: Triangle
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

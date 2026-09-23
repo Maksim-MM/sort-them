@@ -40,6 +40,7 @@ namespace SortThem
             _rt.pivot = Target.pivot;
             _rt.anchoredPosition = Target.anchoredPosition + Spread * (2f * Target.pivot - Vector2.one);
             _rt.sizeDelta = Target.sizeDelta + new Vector2(Spread * 2f, Spread * 2f);
+            if (_rt.localScale != Target.localScale) _rt.localScale = Target.localScale;
         }
     }
 }

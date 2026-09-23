@@ -122,6 +122,15 @@ namespace SortThem.Editor
             LocUtil.Set("ctl.ability2", "Автосбор совпадений", "Auto-collect");
             LocUtil.Set("ctl.ability3", "Подсветка стеллажа", "Rack highlight");
             LocUtil.Set("ctl.pause", "Пауза", "Pause");
+            LocUtil.Set("pad.leftstick", "Левый стик", "Left stick");
+            LocUtil.Set("pad.rightstick", "Правый стик", "Right stick");
+            LocUtil.Set("pad.leftstickpress", "Левый стик (нажать)", "Left stick (press)");
+            LocUtil.Set("pad.rightstickpress", "Правый стик (нажать)", "Right stick (press)");
+            LocUtil.Set("pad.dpad", "Крестовина", "D-pad");
+            LocUtil.Set("pad.cross", "Крест", "Cross");
+            LocUtil.Set("pad.circle", "Круг", "Circle");
+            LocUtil.Set("pad.square", "Квадрат", "Square");
+            LocUtil.Set("pad.triangle", "Треугольник", "Triangle");
             LocUtil.Set("tut.walk", "{0} — походить", "{0} — walk around");
             LocUtil.Set("tut.walk_touch", "Стик слева — походить", "Left stick — walk around");
             LocUtil.Set("tut.look", "{0} — повертеть камерой", "{0} — look around");

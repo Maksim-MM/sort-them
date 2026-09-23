@@ -1519,6 +1519,42 @@ MonoBehaviour:
     m_Key: ui.slot_prizes
     m_Metadata:
       m_Items: []
+  - m_Id: 5969817973547008
+    m_Key: pad.leftstick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044480
+    m_Key: pad.rightstick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044481
+    m_Key: pad.leftstickpress
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044482
+    m_Key: pad.rightstickpress
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044483
+    m_Key: pad.dpad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044484
+    m_Key: pad.cross
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044485
+    m_Key: pad.circle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044486
+    m_Key: pad.square
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044487
+    m_Key: pad.triangle
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

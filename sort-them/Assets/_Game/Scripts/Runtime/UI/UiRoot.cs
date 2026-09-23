@@ -247,6 +247,7 @@ namespace SortThem
                 else OpenPause();
             }
             if (_saveText != null && _saveText.gameObject.activeSelf != Time.time < _saveTextUntil) _saveText.gameObject.SetActive(Time.time < _saveTextUntil);
+            ActiveDevice.Poll();
             RefreshAbilities();
             UpdateTutorial();
             UpdateFps();
@@ -1062,15 +1063,7 @@ namespace SortThem
         public void OpenPause() { _pause.gameObject.SetActive(true); _focused = FirstCandidate(_pauseButtons); }
         public void ClosePause() { _pause.gameObject.SetActive(false); ClearFocus(); }
 
-        static bool GamepadActive()
-        {
-            var pad = Gamepad.current;
-            if (pad == null) return false;
-            double t = pad.lastUpdateTime;
-            if (Keyboard.current != null && Keyboard.current.lastUpdateTime > t) return false;
-            if (Mouse.current != null && Mouse.current.lastUpdateTime > t) return false;
-            return true;
-        }
+        static bool GamepadActive() => Gamepad.current != null && ActiveDevice.Gamepad;
 
         IEnumerable<Selectable> TerminalCandidates()
         {
@@ -1128,6 +1121,17 @@ namespace SortThem
                     }
                     else if (_focused is Slider slider)
                         slider.value = Mathf.Clamp(slider.value + side * SliderStep * (slider.maxValue - slider.minValue), slider.minValue, slider.maxValue);
+                    else if (side != 0 && (ConfirmOpen || SlotOpen))
+                    {
+                        var next = Step(list, _focused, side);
+                        if (next != null && next != _focused)
+                        {
+                            if (_focused != null) _focused.transform.localScale = Vector3.one;
+                            _focused = next;
+                            Sfx.PlayUi(gm.Config.UiMoveClip);
+                            Rumble.UiMove();
+                        }
+                    }
                 }
             }
             if (_submitAction != null && _submitAction.WasPressedThisFrame() && _focused is Button button && Selectable_(button))
@@ -1225,7 +1229,7 @@ namespace SortThem
         void RefreshAbilities()
         {
             if (Abilities == null) return;
-            bool pad = Gamepad.current != null && (Keyboard.current == null || Gamepad.current.lastUpdateTime > Keyboard.current.lastUpdateTime);
+            bool pad = GamepadActive();
             for (int i = 0; i < 3; i++)
             {
                 var slot = _abilitySlots[i];

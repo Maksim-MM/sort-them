@@ -23,6 +23,10 @@ MonoBehaviour:
   PlayerRadius: 0.45
   CameraHeightSmoothTime: 0.12
   CrouchHeight: 1
+  CrouchDownTime: 0.2
+  CrouchUpTime: 0.3
+  CrouchDip: 0.04
+  CrouchTilt: 1.5
   BaseInteractRange: 2.2
   BaseThrowDistance: 0.75
   ThrowArc: 0.4
@@ -56,6 +60,8 @@ MonoBehaviour:
   UiClickClip: {fileID: 8300000, guid: 19354c05af66c44fea5347febaa20ce0, type: 3}
   FootstepWalkClip: {fileID: 8300000, guid: da61d87bb6f394c45a7295f01e200e47, type: 3}
   FootstepRunClip: {fileID: 8300000, guid: 15fbb1ea2ffd144ebba5139300f0ad78, type: 3}
+  CrouchDownClip: {fileID: 8300000, guid: f7653c3018d0d4c5da0aa9eddb81fe35, type: 3}
+  CrouchUpClip: {fileID: 8300000, guid: 99cb483710eab4bf7afbc2dc5a55eb10, type: 3}
   FootstepWalkClips:
   - {fileID: 8300000, guid: d44d370aacbe8478c9fe54e6b65889c3, type: 3}
   - {fileID: 8300000, guid: 6d95cb6c1287b42cb8af69ed0f7f191c, type: 3}

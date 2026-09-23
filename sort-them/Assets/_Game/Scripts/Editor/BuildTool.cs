@@ -1,7 +1,10 @@
 using System.IO;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.AddressableAssets.Initialization;
 
 namespace SortThem.Editor
 {
@@ -19,8 +22,38 @@ namespace SortThem.Editor
             finally { PlayerSettings.insecureHttpOption = prev; }
         }
 
+        [MenuItem("SortThem/Build WebGL (Diag)")]
+        public static void BuildWebGLDiag()
+        {
+            var prevHttp = PlayerSettings.insecureHttpOption;
+            var prevExc = PlayerSettings.WebGL.exceptionSupport;
+            var prevDiag = PlayerSettings.WebGL.showDiagnostics;
+            PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
+            PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithoutStacktrace;
+            PlayerSettings.WebGL.showDiagnostics = true;
+            try { Build("Builds/WebGL/WebGL_Diag", BuildOptions.None); }
+            finally
+            {
+                PlayerSettings.insecureHttpOption = prevHttp;
+                PlayerSettings.WebGL.exceptionSupport = prevExc;
+                PlayerSettings.WebGL.showDiagnostics = prevDiag;
+            }
+        }
+
+        static void EnsureWebGLTarget()
+        {
+            if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.WebGL)
+                EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
+            AddressablesRuntimeProperties.ClearCachedPropertyValues();
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            string target = settings.profileSettings.EvaluateString(settings.activeProfileId, "[BuildTarget]");
+            if (target != "WebGL")
+                throw new BuildFailedException($"Addressables [BuildTarget] = {target}, ожидается WebGL");
+        }
+
         static void Build(string folder, BuildOptions buildOptions)
         {
+            EnsureWebGLTarget();
             string output = Path.Combine(Directory.GetCurrentDirectory(), folder);
             var options = new BuildPlayerOptions
             {

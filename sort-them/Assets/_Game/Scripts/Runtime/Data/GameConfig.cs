@@ -17,6 +17,10 @@ namespace SortThem
         public float PlayerRadius = 0.45f;
         public float CameraHeightSmoothTime = 0.12f;
         public float CrouchHeight = 1.0f;
+        public float CrouchDownTime = 0.2f;
+        public float CrouchUpTime = 0.3f;
+        public float CrouchDip = 0.04f;
+        public float CrouchTilt = 1.5f;
 
         [Header("Interaction")]
         public float BaseInteractRange = 2.2f;
@@ -52,6 +56,8 @@ namespace SortThem
         public AudioClip UiClickClip;
         public AudioClip FootstepWalkClip;
         public AudioClip FootstepRunClip;
+        public AudioClip CrouchDownClip;
+        public AudioClip CrouchUpClip;
         public AudioClip[] FootstepWalkClips = System.Array.Empty<AudioClip>();
         public AudioClip[] FootstepRunClips = System.Array.Empty<AudioClip>();
         public AudioClip[] AbilityClips = System.Array.Empty<AudioClip>();
