@@ -1558,6 +1558,14 @@ MonoBehaviour:
     m_Localized: "Lancio pi\xF9 forte"
     m_Metadata:
       m_Items: []
+  - m_Id: 6634382394646528
+    m_Localized: Premi un pulsante
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6634382415618048
+    m_Localized: Premi un tasto
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

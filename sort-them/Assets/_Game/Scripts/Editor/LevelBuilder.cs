@@ -137,7 +137,7 @@ namespace SortThem.Editor
             es.AddComponent<InputSystemUIInputModule>();
 
             EditorSceneManager.SaveScene(scene, Paths.MainScene);
-            EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(Paths.MainScene, true) };
+            TitleSceneBuilder.EnsureBuildScenes();
             AssetDatabase.SaveAssets();
             Debug.Log("SortThem: level built, shelves=" + shelves.Count);
         }

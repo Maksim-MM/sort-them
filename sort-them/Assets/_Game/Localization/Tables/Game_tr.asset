@@ -1563,6 +1563,14 @@ MonoBehaviour:
     m_Localized: "Daha g\xFC\xE7l\xFC f\u0131rlatma"
     m_Metadata:
       m_Items: []
+  - m_Id: 6634382394646528
+    m_Localized: "Herhangi bir d\xFC\u011Fmeye bas"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6634382415618048
+    m_Localized: "Herhangi bir tu\u015Fa bas"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

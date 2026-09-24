@@ -1560,6 +1560,14 @@ MonoBehaviour:
     m_Localized: Voimakkaampi heitto
     m_Metadata:
       m_Items: []
+  - m_Id: 6634382394646528
+    m_Localized: "Paina mit\xE4 tahansa painiketta"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6634382415618048
+    m_Localized: "Paina mit\xE4 tahansa n\xE4pp\xE4int\xE4"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

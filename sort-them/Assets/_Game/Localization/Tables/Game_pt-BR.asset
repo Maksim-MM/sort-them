@@ -1559,6 +1559,14 @@ MonoBehaviour:
     m_Localized: Arremesso mais forte
     m_Metadata:
       m_Items: []
+  - m_Id: 6634382394646528
+    m_Localized: "Pressione qualquer bot\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6634382415618048
+    m_Localized: Pressione qualquer tecla
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

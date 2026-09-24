@@ -1555,6 +1555,14 @@ MonoBehaviour:
     m_Key: pad.triangle
     m_Metadata:
       m_Items: []
+  - m_Id: 6634382394646528
+    m_Key: title.press_button
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6634382415618048
+    m_Key: title.press_key
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

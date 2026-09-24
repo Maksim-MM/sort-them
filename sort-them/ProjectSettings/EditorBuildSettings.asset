@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/UpscaleSDK/BootstrapScene/UPSBootstrap.unity
     guid: f88eecb4034db434e964829f3e835513
   - enabled: 1
+    path: Assets/_Game/Scenes/Title.unity
+    guid: 77dd4cc6e633740349c4180719c61461
+  - enabled: 1
     path: Assets/_Game/Scenes/Main.unity
     guid: 5c9c78da3b08b4a3b97a8a3cad6cf339
   m_configObjects:

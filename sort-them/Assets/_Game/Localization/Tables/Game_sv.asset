@@ -1559,6 +1559,14 @@ MonoBehaviour:
     m_Localized: Kraftigare kast
     m_Metadata:
       m_Items: []
+  - m_Id: 6634382394646528
+    m_Localized: "Tryck p\xE5 valfri knapp"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6634382415618048
+    m_Localized: "Tryck p\xE5 valfri tangent"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
