@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.InputSystem.UI;
@@ -16,6 +15,7 @@ namespace SortThem
 
         public PlayerAbilities Abilities;
         public Sprite[] AbilityIcons = new Sprite[3];
+        public Sprite[] StatIcons = new Sprite[3];
         public Sprite SlotFrame, KeyFrame;
         public Sprite[] TouchIcons = new Sprite[8];
         public Sprite Circle;
@@ -31,7 +31,7 @@ namespace SortThem
         TMP_Text _tutorialText;
         GameObject _tutorialTick;
         TutorialStep _tutorialShown = TutorialStep.Done;
-        string _tutorialGroup;
+        GlyphImage _tutorialGlyph;
         Coroutine _tutorialRoutine;
         UiPulse _pulseStick, _pulseTake, _pulseThrow;
         const float TutorialTickHold = 1f, TutorialFade = 0.3f;
@@ -40,8 +40,8 @@ namespace SortThem
         RectTransform _terminal, _pause, _settings, _slot, _controls;
         RectTransform _controlsList;
         readonly List<Selectable> _controlsItems = new List<Selectable>();
+        readonly List<TMP_Text> _controlsDescs = new List<TMP_Text>();
         GameObject _controlsButton;
-        string _controlsGroup;
         Button _languageButton;
         TMP_Text _languageLabel;
         CanvasGroup _fade;
@@ -58,10 +58,10 @@ namespace SortThem
         static readonly Color GoldCooldown = new Color(0.6f, 0.48f, 0.15f, 1f);
         const string GoldHex = "#FFCC40";
         readonly List<UpgradeRow> _rows = new List<UpgradeRow>();
-        InputAction _pauseAction, _navigateAction, _submitAction, _cancelAction;
         readonly List<(TMP_Text Text, string Key, string Fallback)> _bound = new List<(TMP_Text, string, string)>();
         readonly List<Selectable> _pauseButtons = new List<Selectable>();
         readonly List<Selectable> _settingsItems = new List<Selectable>();
+        readonly List<System.Action> _settingsRefreshers = new List<System.Action>();
         RectTransform _settingsList;
         Selectable _focused;
         Button _vibrationButton;
@@ -77,14 +77,13 @@ namespace SortThem
         {
             public GameObject Root;
             public Image Icon, Fill;
-            public TMP_Text Key;
+            public GlyphImage Key;
         }
 
         readonly AbilitySlot[] _abilitySlots = new AbilitySlot[3];
         RectTransform _abilitiesPanel;
         GameObject _touchSprint, _touchCrouch, _rotateOverlay;
         RectTransform _safe;
-        static readonly string[] AbilityActions = { "Ability1", "Ability2", "Ability3" };
         const float SlotSize = 72f, SlotGap = 12f;
         static readonly Color SlotColor = new Color(0.13f, 0.12f, 0.14f, 0.92f);
         static readonly Color FillActive = new Color(0.55f, 0.35f, 1f, 0.55f);
@@ -163,14 +162,6 @@ namespace SortThem
             Messages.Shown += ShowToast;
             Loc.Changed += OnLocChanged;
             gm.Save.Saved += reason => { _saveText.text = Loc.Get("ui.saved", "Сохранено"); _saveTextUntil = Time.time + 2f; };
-            _pauseAction = gm.InputAsset.FindActionMap("Player", true).FindAction("Pause", true);
-            var uiMap = gm.InputAsset.FindActionMap("UI", false);
-            if (uiMap != null)
-            {
-                _navigateAction = uiMap.FindAction("Navigate", false);
-                _submitAction = uiMap.FindAction("Submit", false);
-                _cancelAction = uiMap.FindAction("Cancel", false);
-            }
             var module = FindFirstObjectByType<InputSystemUIInputModule>();
             if (module != null) { module.move = null; module.submit = null; module.cancel = null; }
             RefreshStats();
@@ -195,8 +186,8 @@ namespace SortThem
             RefreshVibration();
             RefreshLanguage();
             RefreshUpgrade();
-            if (ControlsOpen) RefreshControls();
-            if (_tutorialText != null && _tutorialShown != TutorialStep.Done) _tutorialText.text = TutorialText(_tutorialShown, ActiveGroup());
+            RefreshControls();
+            if (_tutorialText != null && _tutorialShown != TutorialStep.Done) _tutorialText.text = TutorialText(_tutorialShown);
         }
 
         TMP_Text Bind(TMP_Text text, string key, string fallback)
@@ -235,7 +226,7 @@ namespace SortThem
             if (gm == null) return;
             UpdateToast();
             gm.UiBlocking = AnyOpen || !gm.Ready;
-            if ((_pauseAction != null && _pauseAction.WasPressedThisFrame()) || TouchInput.Consume(TouchButton.Pause))
+            if (GameInput.Ui.Pause.Pressed() || TouchInput.Consume(TouchButton.Pause))
             {
                 if (TerminalOpen) CloseTerminal();
                 else if (SlotOpen) CloseSlot();
@@ -253,7 +244,6 @@ namespace SortThem
             UpdateFps();
             UpdateSpin();
             UpdateUpgrade();
-            if (ControlsOpen && ActiveGroup() != _controlsGroup) RefreshControls();
             RefreshTouch();
             if (_rotateOverlay != null) { bool portrait = Screen.height > Screen.width; if (_rotateOverlay.activeSelf != portrait) _rotateOverlay.SetActive(portrait); }
             UpdateMenuFocus();
@@ -265,19 +255,16 @@ namespace SortThem
             UiFactory.Anchor(hud, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             var stats = UiFactory.Rect(hud, "Stats");
-            UiFactory.Anchored(stats, new Vector2(0f, 1f), new Vector2(16f, -16f), new Vector2(320f, 110f));
+            UiFactory.Anchored(stats, new Vector2(0f, 1f), new Vector2(16f, -16f), new Vector2(440f, 140f));
             UiFactory.Layout(stats, 2f, new RectOffset(12, 12, 8, 8));
-            _carsText = UiFactory.Text(stats, "Cars", "", 24f, TextAlignmentOptions.Left, Color.white);
-            _shelvesText = UiFactory.Text(stats, "Shelves", "", 24f, TextAlignmentOptions.Left, Color.white);
-            _collectiblesText = UiFactory.Text(stats, "Collectibles", "", 24f, TextAlignmentOptions.Left, Color.white);
             var hudShadow = new Color(0f, 0f, 0f, 0.8f);
-            UiFactory.TextGlow(_carsText, hudShadow, 0.35f, 0.45f);
-            UiFactory.TextGlow(_shelvesText, hudShadow, 0.35f, 0.45f);
-            UiFactory.TextGlow(_collectiblesText, hudShadow, 0.35f, 0.45f);
+            _carsText = StatRow(stats, "Cars", 0, hudShadow);
+            _shelvesText = StatRow(stats, "Shelves", 1, hudShadow);
+            _collectiblesText = StatRow(stats, "Collectibles", 2, hudShadow);
 
             _fpsText = UiFactory.Text(hud, "Fps", "", 24f, TextAlignmentOptions.Left, new Color(0.3f, 1f, 0.3f, 1f));
             _fpsText.fontStyle = FontStyles.Bold;
-            UiFactory.Anchored(_fpsText.rectTransform, new Vector2(0f, 1f), new Vector2(28f, -134f), new Vector2(160f, 30f));
+            UiFactory.Anchored(_fpsText.rectTransform, new Vector2(0f, 1f), new Vector2(28f, -164f), new Vector2(160f, 30f));
 
             var balancePanel = UiFactory.Rect(hud, "Balance");
             UiFactory.Anchored(balancePanel, new Vector2(1f, 1f), new Vector2(-16f, -16f), new Vector2(240f, 56f));
@@ -289,8 +276,9 @@ namespace SortThem
             var crosshair = UiFactory.Panel(hud, "Crosshair", new Color(1f, 1f, 1f, 0.9f));
             UiFactory.Anchored(crosshair, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(6f, 6f));
 
-            _inventoryCountText = UiFactory.Text(hud, "InventoryCount", "0/5", 30f, TextAlignmentOptions.BottomRight, Color.white);
+            _inventoryCountText = UiFactory.Text(hud, "InventoryCount", "0/5", 32f, TextAlignmentOptions.BottomRight, Color.white);
             _inventoryCountText.fontStyle = FontStyles.Bold;
+            UiFactory.TextGlow(_inventoryCountText, hudShadow, 0.35f, 0.45f);
             UiFactory.Anchored(_inventoryCountText.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 20f), new Vector2(300f, 44f));
             _inventoryText = UiFactory.Text(hud, "Inventory", "", 18f, TextAlignmentOptions.BottomRight, Color.white);
             _inventoryText.richText = true;
@@ -341,12 +329,29 @@ namespace SortThem
             UiFactory.Anchored(longBar.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(3f, 0.5f), new Vector2(4f, 20f));
             longBar.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -40f);
             _tutorialTick.SetActive(false);
+            _tutorialGlyph = UiFactory.Glyph(panel, "Glyph", 60f);
+            _tutorialGlyph.HideWhenEmpty = false;
+            UiFactory.Anchored(_tutorialGlyph.Image.rectTransform, new Vector2(0f, 0.5f), new Vector2(44f, 0f), new Vector2(60f, 60f));
             _tutorialText = UiFactory.Text(panel, "Text", "", 22f, TextAlignmentOptions.Left, Color.white);
             _tutorialText.enableAutoSizing = true;
             _tutorialText.fontSizeMin = 15f;
             _tutorialText.fontSizeMax = 22f;
-            UiFactory.Anchor(_tutorialText.rectTransform, Vector2.zero, Vector2.one, new Vector2(54f, 0f), new Vector2(-12f, 0f));
+            UiFactory.Anchor(_tutorialText.rectTransform, Vector2.zero, Vector2.one, new Vector2(104f, 0f), new Vector2(-12f, 0f));
             panel.gameObject.SetActive(false);
+        }
+
+        static GameAction TutorialAction(TutorialStep step)
+        {
+            if (TouchInput.Active) return null;
+            var p = GameInput.Player;
+            switch (step)
+            {
+                case TutorialStep.Walk: return p.Move;
+                case TutorialStep.Look: return p.Look;
+                case TutorialStep.Take: return p.Interact;
+                case TutorialStep.Place: return p.Place;
+            }
+            return null;
         }
 
         void UpdateFps()
@@ -365,19 +370,12 @@ namespace SortThem
             if (_tutorial == null) return;
             var t = Tutorial.I;
             var step = t != null && t.Active ? t.Step : TutorialStep.Done;
-            string group = ActiveGroup();
             if (step != _tutorialShown)
             {
                 bool completed = step > _tutorialShown && _tutorialShown != TutorialStep.Done;
                 _tutorialShown = step;
-                _tutorialGroup = group;
                 if (_tutorialRoutine != null) StopCoroutine(_tutorialRoutine);
                 _tutorialRoutine = StartCoroutine(TutorialTransition(step, completed));
-            }
-            else if (step != TutorialStep.Done && group != _tutorialGroup)
-            {
-                _tutorialGroup = group;
-                _tutorialText.text = TutorialText(step, group);
             }
             if (TouchInput.Active) SetPulses(step);
         }
@@ -404,33 +402,56 @@ namespace SortThem
             }
             if (step == TutorialStep.Done) { go.SetActive(false); _tutorialRoutine = null; yield break; }
             _tutorialTick.SetActive(false);
-            _tutorialText.text = TutorialText(step, _tutorialGroup);
+            _tutorialText.text = TutorialText(step);
+            _tutorialGlyph.Set(TutorialAction(step));
+            bool glyph = TutorialAction(step) != null;
+            _tutorialGlyph.gameObject.SetActive(glyph);
+            _tutorialText.rectTransform.offsetMin = new Vector2(glyph ? 104f : 54f, 0f);
             go.SetActive(true);
             for (float a = 0f; a < 1f; a += Time.unscaledDeltaTime / TutorialFade) { _tutorial.alpha = a; yield return null; }
             _tutorial.alpha = 1f;
             _tutorialRoutine = null;
         }
 
-        string TutorialText(TutorialStep step, string group)
+        string TutorialText(TutorialStep step)
         {
             bool touch = TouchInput.Active;
             switch (step)
             {
                 case TutorialStep.Walk:
-                    return touch ? Loc.Get("tut.walk_touch", "Стик слева — походить")
-                        : string.Format(Loc.Get("tut.walk", "{0} — походить"), ControlHints.Label(PlayerAction("Move"), group));
+                    return touch ? Loc.Get("tut.walk_touch", "Стик слева — походить") : Plain(Loc.Get("tut.walk", "Походить"));
                 case TutorialStep.Look:
-                    if (touch) return Loc.Get("tut.look_touch", "Правая половина экрана — повертеть камерой");
-                    string look = group == ControlHints.KeyboardGroup ? Loc.Get("ctl.mouse_key", "Мышь") : ControlHints.Label(PlayerAction("Look"), group);
-                    return string.Format(Loc.Get("tut.look", "{0} — повертеть камерой"), look);
+                    return touch ? Loc.Get("tut.look_touch", "Правая половина экрана — повертеть камерой") : Plain(Loc.Get("tut.look", "Повертеть камерой"));
                 case TutorialStep.Take:
-                    return touch ? Loc.Get("tut.take_touch", "Кнопка «взять» — взять любую машинку")
-                        : string.Format(Loc.Get("tut.take", "{0} — взять любую машинку"), ControlHints.Label(PlayerAction("Interact"), group));
+                    return touch ? Loc.Get("tut.take_touch", "Кнопка «взять» — взять любую машинку") : Plain(Loc.Get("tut.take", "Взять любую машинку"));
                 case TutorialStep.Place:
-                    return touch ? Loc.Get("tut.place_touch", "Кнопка «поставить» — подсвеченный стеллаж")
-                        : string.Format(Loc.Get("tut.place", "{0} — поставить на подсвеченный стеллаж"), ControlHints.Label(PlayerAction("PlaceOrThrow"), group));
+                    return touch ? Loc.Get("tut.place_touch", "Кнопка «поставить» — подсвеченный стеллаж") : Plain(Loc.Get("tut.place", "Поставить на подсвеченный стеллаж"));
             }
             return "";
+        }
+
+        static string Plain(string s)
+        {
+            if (string.IsNullOrEmpty(s) || !s.Contains("{0}")) return s;
+            s = s.Replace("{0}", "").Trim(' ', '—', '-', ':');
+            return s.Length > 0 ? char.ToUpperInvariant(s[0]) + s.Substring(1) : s;
+        }
+
+        TMP_Text StatRow(Transform parent, string name, int icon, Color shadow)
+        {
+            var row = UiFactory.Rect(parent, name);
+            row.gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+            var img = UiFactory.Image(row, "Icon", icon < StatIcons.Length ? StatIcons[icon] : null, Color.white, Image.Type.Simple);
+            img.preserveAspect = true;
+            UiFactory.Anchored(img.rectTransform, new Vector2(0f, 0.5f), Vector2.zero, new Vector2(44f, 44f));
+            var drop = img.gameObject.AddComponent<Shadow>();
+            drop.effectColor = shadow;
+            drop.effectDistance = new Vector2(1.5f, -1.5f);
+            var t = UiFactory.Text(row, "Value", "", 32f, TextAlignmentOptions.Left, Color.white);
+            t.fontStyle = FontStyles.Bold;
+            UiFactory.Anchor(t.rectTransform, Vector2.zero, Vector2.one, new Vector2(56f, 0f), Vector2.zero);
+            UiFactory.TextGlow(t, shadow, 0.35f, 0.45f);
+            return t;
         }
 
         AbilitySlot BuildAbilitySlot(Transform parent, int index)
@@ -456,15 +477,11 @@ namespace SortThem
             fill.fillClockwise = false;
             fill.fillAmount = 0f;
             UiFactory.Anchor(fill.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
-            var key = UiFactory.Image(root, "Key", KeyFrame, Color.white, Image.Type.Sliced);
-            key.pixelsPerUnitMultiplier = 3f;
+            var key = UiFactory.Glyph(root, "Key", 60f, GameInput.Player.Abilities[index]);
             if (TouchInput.Active) key.gameObject.SetActive(false);
-            UiFactory.Anchored(key.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, 38f), new Vector2(30f, 30f));
-            var keyText = UiFactory.Text(key.transform, "Text", "", 18f, TextAlignmentOptions.Center, new Color(0.12f, 0.12f, 0.14f, 1f));
-            keyText.fontStyle = FontStyles.Bold;
-            UiFactory.Anchor(keyText.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            UiFactory.Anchored(key.Image.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, 46f), new Vector2(60f, 60f));
             root.gameObject.SetActive(false);
-            return new AbilitySlot { Root = root.gameObject, Icon = icon, Fill = fill, Key = keyText };
+            return new AbilitySlot { Root = root.gameObject, Icon = icon, Fill = fill, Key = key };
         }
 
         const float TouchBig = 120f, TouchMid = 100f, TouchSmall = 96f;
@@ -857,10 +874,10 @@ namespace SortThem
             UiFactory.Anchor(_settingsList, Vector2.zero, Vector2.one, new Vector2(pad, pad), new Vector2(-pad, -pad));
             UiFactory.Layout(_settingsList, gap, new RectOffset(0, 0, 0, 0));
 
-            _settingsItems.Add(SettingsSlider("Music", "ui.music", "Музыка", 0f, 1f, Settings.MusicVolume, Settings.SetMusicVolume, Percent));
-            _settingsItems.Add(SettingsSlider("Sfx", "ui.sfx", "Эффекты", 0f, 1f, Settings.SfxVolume, Settings.SetSfxVolume, Percent));
-            _settingsItems.Add(SettingsSlider("SensX", "ui.sens_x", "Чувствительность по горизонтали", Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityX, Settings.SetSensitivityX, Multiplier));
-            _settingsItems.Add(SettingsSlider("SensY", "ui.sens_y", "Чувствительность по вертикали", Settings.SensitivityMin, Settings.SensitivityMax, Settings.SensitivityY, Settings.SetSensitivityY, Multiplier));
+            _settingsItems.Add(SettingsSlider("Music", "ui.music", "Музыка", 0f, 1f, () => Settings.MusicVolume, Settings.SetMusicVolume, Percent));
+            _settingsItems.Add(SettingsSlider("Sfx", "ui.sfx", "Эффекты", 0f, 1f, () => Settings.SfxVolume, Settings.SetSfxVolume, Percent));
+            _settingsItems.Add(SettingsSlider("SensX", "ui.sens_x", "Чувствительность по горизонтали", Settings.SensitivityMin, Settings.SensitivityMax, () => Settings.SensitivityX, Settings.SetSensitivityX, Multiplier));
+            _settingsItems.Add(SettingsSlider("SensY", "ui.sens_y", "Чувствительность по вертикали", Settings.SensitivityMin, Settings.SensitivityMax, () => Settings.SensitivityY, Settings.SetSensitivityY, Multiplier));
 
             var langRow = ArcadeRow(_settingsList, "Language", "ui.language", "Язык", rowH);
             _languageButton = ArcadeButton(langRow, "Cycle", () => CycleLanguage(1), ArcadeNeon, 18f);
@@ -886,15 +903,17 @@ namespace SortThem
         static string Percent(float v) => Mathf.RoundToInt(v * 100f) + "%";
         static string Multiplier(float v) => "×" + v.ToString("0.0");
 
-        Slider SettingsSlider(string name, string labelKey, string labelFallback, float min, float max, float value, System.Action<float> apply, System.Func<float, string> format)
+        Slider SettingsSlider(string name, string labelKey, string labelFallback, float min, float max, System.Func<float> current, System.Action<float> apply, System.Func<float, string> format)
         {
             var row = ArcadeRow(_settingsList, name, labelKey, labelFallback, 56f);
+            float value = current();
             var slider = UiFactory.Slider(row, "Slider", min, max, value);
-            UiFactory.Anchor(slider.GetComponent<RectTransform>(), new Vector2(0.54f, 0f), new Vector2(0.85f, 1f), Vector2.zero, Vector2.zero);
+            UiFactory.Anchor(slider.GetComponent<RectTransform>(), new Vector2(0.60f, 0f), new Vector2(0.87f, 1f), Vector2.zero, Vector2.zero);
             var valueText = UiFactory.Text(row, "Value", format(value), 20f, TextAlignmentOptions.Right, ArcadeCost);
             valueText.fontStyle = FontStyles.Bold;
-            UiFactory.Anchor(valueText.rectTransform, new Vector2(0.87f, 0f), new Vector2(1f, 1f), Vector2.zero, new Vector2(-14f, 0f));
+            UiFactory.Anchor(valueText.rectTransform, new Vector2(0.89f, 0f), new Vector2(1f, 1f), Vector2.zero, new Vector2(-14f, 0f));
             slider.onValueChanged.AddListener(v => { apply(v); valueText.text = format(v); });
+            _settingsRefreshers.Add(() => { float v = current(); slider.SetValueWithoutNotify(v); valueText.text = format(v); });
             _arcadeFrames[slider] = row.parent.GetComponent<Image>();
             return slider;
         }
@@ -915,6 +934,11 @@ namespace SortThem
         static string LocaleName(Locale locale)
         {
             if (locale == null) return "";
+            switch (locale.Identifier.Code)
+            {
+                case "zh": return "简体中文";
+                case "zh-Hant": return "繁體中文";
+            }
             var ci = locale.Identifier.CultureInfo;
             string name = ci != null ? ci.NativeName : locale.LocaleName;
             if (string.IsNullOrEmpty(name)) return locale.Identifier.Code;
@@ -927,84 +951,65 @@ namespace SortThem
             _languageLabel.text = Loc.Ready ? LocaleName(LocalizationSettings.SelectedLocale) : Loc.Get("ui.language", "Язык");
         }
 
-        static readonly (string Action, string Key, string Fallback)[] ControlRows =
+        static (GameAction[] Actions, string Key, string Fallback)[] ControlRows()
         {
-            ("Move", "ctl.move", "Передвижение"),
-            ("Look", "ctl.look", "Обзор"),
-            ("Jump", "ctl.jump", "Прыжок"),
-            ("Sprint", "ctl.sprint", "Бег"),
-            ("Crouch", "ctl.crouch", "Присед"),
-            ("Interact", "ctl.interact", "Взять"),
-            ("PlaceOrThrow", "ctl.place", "Поставить на полку или бросить"),
-            (null, "ctl.select", "Выбор предмета в руках"),
-            ("Ability1", "ctl.ability1", "Поиск совпадений"),
-            ("Ability2", "ctl.ability2", "Автосбор совпадений"),
-            ("Ability3", "ctl.ability3", "Подсветка стеллажа"),
-            ("Pause", "ctl.pause", "Пауза"),
-        };
-
-        static string ActiveGroup() => GamepadActive() ? ControlHints.GamepadGroup : ControlHints.KeyboardGroup;
-
-        static InputAction PlayerAction(string name)
-        {
-            var gm = GameManager.I;
-            if (gm == null || gm.InputAsset == null) return null;
-            var map = gm.InputAsset.FindActionMap("Player", false);
-            return map != null ? map.FindAction(name, false) : null;
-        }
-
-        string SelectLabel(string group)
-        {
-            return group == ControlHints.GamepadGroup
-                ? ControlHints.Short(PlayerAction("PrevItem"), group) + "/" + ControlHints.Short(PlayerAction("NextItem"), group)
-                : Loc.Get("ctl.wheel_key", "Колесо мыши");
+            var p = GameInput.Player;
+            return new[]
+            {
+                (new[] { p.Move }, "ctl.move", "Передвижение"),
+                (new[] { p.Look }, "ctl.look", "Обзор"),
+                (new[] { p.Jump }, "ctl.jump", "Прыжок"),
+                (new[] { p.Sprint }, "ctl.sprint", "Бег"),
+                (new[] { p.Crouch }, "ctl.crouch", "Присед"),
+                (new[] { p.Interact }, "ctl.interact", "Взять"),
+                (new[] { p.Place }, "ctl.place", "Поставить на полку или бросить"),
+                (new[] { p.PrevItem, p.NextItem, p.Scroll }, "ctl.select", "Выбор предмета в руках"),
+                (new[] { p.Ability1 }, "ctl.ability1", "Поиск совпадений"),
+                (new[] { p.Ability2 }, "ctl.ability2", "Автосбор совпадений"),
+                (new[] { p.Ability3 }, "ctl.ability3", "Подсветка стеллажа"),
+            };
         }
 
         void BuildControls()
         {
-            const float rowH = 36f, gap = 2f, pad = 20f;
-            float screenH = pad * 2f + ControlRows.Length * rowH + (ControlRows.Length - 1) * gap;
+            const float rowH = 50f, gap = 0f, pad = 8f;
+            var rows = ControlRows();
+            float screenH = pad * 2f + rows.Length * rowH + (rows.Length - 1) * gap;
             var w = BuildArcadeWindow("Controls", new Vector2(900f, ArcadeHeight(screenH, false, true)), "ui.controls", "Управление", false, true);
             _controls = w.Root;
             _controlsList = UiFactory.Rect(w.Screen, "List");
             UiFactory.Anchor(_controlsList, Vector2.zero, Vector2.one, new Vector2(pad, pad), new Vector2(-pad, -pad));
             UiFactory.Layout(_controlsList, gap, new RectOffset(0, 0, 0, 0));
+            foreach (var row in rows)
+            {
+                var r = UiFactory.Rect(_controlsList, "Row_" + row.Key);
+                UiFactory.Size(r, 0f, rowH);
+                var glyphs = UiFactory.Rect(r, "Glyphs");
+                UiFactory.Anchor(glyphs, new Vector2(0.03f, 0f), new Vector2(0.21f, 1f), Vector2.zero, Vector2.zero);
+                var g = glyphs.gameObject.AddComponent<HorizontalLayoutGroup>();
+                g.spacing = 6f;
+                g.childAlignment = TextAnchor.MiddleCenter;
+                g.childForceExpandWidth = false;
+                g.childForceExpandHeight = false;
+                g.childControlWidth = false;
+                g.childControlHeight = false;
+                foreach (var action in row.Actions)
+                    UiFactory.Glyph(glyphs, action.Id, 64f, action, 0, ArcadeCost);
+                var desc = UiFactory.Text(r, "Desc", Loc.Get(row.Key, row.Fallback), 22f, TextAlignmentOptions.Left, Color.white);
+                UiFactory.Anchor(desc.rectTransform, new Vector2(0.54f, 0f), Vector2.one, Vector2.zero, Vector2.zero);
+                _controlsDescs.Add(Bind(desc, row.Key, row.Fallback));
+            }
             FinishArcadeScreen(w.Screen);
             var back = Bind(ArcadePanelButton(w, "Back", () => CloseControls(true), ArcadeNeon, 150f, true), "ui.back", "Назад");
             _controlsItems.Add(back);
             _controls.gameObject.SetActive(false);
         }
 
-        void RefreshControls()
-        {
-            if (_controlsList == null) return;
-            var gm = GameManager.I;
-            if (gm == null || gm.InputAsset == null) return;
-            _controlsGroup = ActiveGroup();
-            for (int i = _controlsList.childCount - 1; i >= 0; i--) Destroy(_controlsList.GetChild(i).gameObject);
-            var map = gm.InputAsset.FindActionMap("Player", false);
-            foreach (var row in ControlRows)
-            {
-                string key;
-                if (row.Action == "Look" && _controlsGroup == ControlHints.KeyboardGroup) key = Loc.Get("ctl.mouse_key", "Мышь");
-                else if (row.Action != null) key = ControlHints.Label(map != null ? map.FindAction(row.Action, false) : null, _controlsGroup);
-                else key = SelectLabel(_controlsGroup);
-                var r = UiFactory.Rect(_controlsList, "Row_" + row.Key);
-                UiFactory.Size(r, 0f, 36f);
-                var cap = UiFactory.NeonBox(r, "Key", ArcadeCost, new Color(0.12f, 0.09f, 0.03f, 1f), 2f);
-                UiFactory.Anchor((RectTransform)cap.parent, new Vector2(0f, 0.08f), new Vector2(0.42f, 0.92f), Vector2.zero, Vector2.zero);
-                var keyText = UiFactory.Text(cap, "Text", key, 18f, TextAlignmentOptions.Center, ArcadeCost);
-                keyText.fontStyle = FontStyles.Bold;
-                UiFactory.Anchor(keyText.rectTransform, Vector2.zero, Vector2.one, new Vector2(8f, 0f), new Vector2(-8f, 0f));
-                var desc = UiFactory.Text(r, "Desc", Loc.Get(row.Key, row.Fallback), 20f, TextAlignmentOptions.Left, Color.white);
-                UiFactory.Anchor(desc.rectTransform, new Vector2(0.42f, 0f), Vector2.one, new Vector2(24f, 0f), Vector2.zero);
-            }
-        }
+        void RefreshControls() { }
 
         void OpenControls()
         {
             _pause.gameObject.SetActive(false);
-            RefreshControls();
             _controls.gameObject.SetActive(true);
             _focused = FirstCandidate(_controlsItems);
         }
@@ -1024,6 +1029,9 @@ namespace SortThem
         void OpenSettings()
         {
             _pause.gameObject.SetActive(false);
+            foreach (var refresh in _settingsRefreshers) refresh();
+            RefreshVibration();
+            RefreshLanguage();
             if (_vibrationRow != null) _vibrationRow.SetActive(!Platform.IsMobile);
             _settings.gameObject.SetActive(true);
             _focused = FirstCandidate(_settingsItems);
@@ -1063,7 +1071,7 @@ namespace SortThem
         public void OpenPause() { _pause.gameObject.SetActive(true); _focused = FirstCandidate(_pauseButtons); }
         public void ClosePause() { _pause.gameObject.SetActive(false); ClearFocus(); }
 
-        static bool GamepadActive() => Gamepad.current != null && ActiveDevice.Gamepad;
+        static bool GamepadActive() => GameInput.GamepadConnected && ActiveDevice.Gamepad;
 
         IEnumerable<Selectable> TerminalCandidates()
         {
@@ -1093,14 +1101,13 @@ namespace SortThem
             if (_focused != null && !Selectable_(_focused)) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
             if (_focused == null) _focused = FirstCandidate(list);
 
-            if (_cancelAction != null && _cancelAction.WasPressedThisFrame())
+            if (GameInput.Ui.Cancel.Pressed())
             {
                 if (TerminalOpen) CloseTerminal(); else if (SlotOpen) CloseSlot(); else if (UpgradeOpen) CloseUpgrade(); else if (ConfirmOpen) CloseConfirm(); else if (SettingsOpen) CloseSettings(true); else if (ControlsOpen) CloseControls(true); else ClosePause();
                 return;
             }
-            if (_navigateAction != null)
             {
-                var nav = _navigateAction.ReadValue<Vector2>();
+                var nav = GameInput.Ui.Navigate.VectorValue;
                 int dir = nav.y > 0.5f ? -1 : nav.y < -0.5f ? 1 : 0;
                 int side = nav.x > 0.5f ? 1 : nav.x < -0.5f ? -1 : 0;
                 if (dir == 0 && side == 0) _navRepeatAt = 0f;
@@ -1134,7 +1141,7 @@ namespace SortThem
                     }
                 }
             }
-            if (_submitAction != null && _submitAction.WasPressedThisFrame() && _focused is Button button && Selectable_(button))
+            if (GameInput.Ui.Submit.Pressed() && _focused is Button button && Selectable_(button))
                 button.onClick.Invoke();
 
             bool pulse = GamepadActive();
@@ -1196,9 +1203,9 @@ namespace SortThem
         {
             var gm = GameManager.I;
             if (gm == null) return;
-            _carsText.text = Loc.Get("ui.cars", "Машинки") + ": " + gm.PlacedValid + "/" + gm.TotalCars;
-            _shelvesText.text = Loc.Get("ui.shelves", "Полки") + ": " + gm.ClosedShelves + "/" + gm.TotalShelves;
-            _collectiblesText.text = Loc.Get("ui.crates", "Ящики запчастей") + ": " + gm.Crates;
+            _carsText.text = gm.PlacedValid + "/" + gm.TotalCars;
+            _shelvesText.text = gm.ClosedShelves + "/" + gm.TotalShelves;
+            _collectiblesText.text = gm.Crates.ToString();
             RefreshUpgrade();
             float b = gm.Economy.Balance;
             _balanceText.text = FormatMoney(b);
@@ -1229,7 +1236,6 @@ namespace SortThem
         void RefreshAbilities()
         {
             if (Abilities == null) return;
-            bool pad = GamepadActive();
             for (int i = 0; i < 3; i++)
             {
                 var slot = _abilitySlots[i];
@@ -1257,8 +1263,6 @@ namespace SortThem
                     slot.Fill.fillAmount = 0f;
                     slot.Icon.color = boosted ? Gold : Color.white;
                 }
-                string key = ControlHints.Short(PlayerAction(AbilityActions[i]), pad ? ControlHints.GamepadGroup : ControlHints.KeyboardGroup);
-                if (slot.Key.text != key) slot.Key.text = key;
             }
         }
 

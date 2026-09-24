@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace SortThem
 {
@@ -9,7 +8,7 @@ namespace SortThem
         public Transform CameraPivot;
 
         CharacterController _cc;
-        InputAction _move, _look, _jump, _sprint, _crouch;
+        PlayerInputActionSet _input;
         float _yaw, _pitch, _verticalVelocity, _camY, _camYVelocity;
         float _eyeY, _eyeVel, _eyeTilt;
         bool _camInit;
@@ -28,12 +27,7 @@ namespace SortThem
 
         void Start()
         {
-            var map = GameManager.I.InputAsset.FindActionMap("Player", true);
-            _move = map.FindAction("Move", true);
-            _look = map.FindAction("Look", true);
-            _jump = map.FindAction("Jump", true);
-            _sprint = map.FindAction("Sprint", true);
-            _crouch = map.FindAction("Crouch", true);
+            _input = GameInput.Player;
             _cc.radius = GameManager.I.Config.PlayerRadius;
             SetHeight(GameManager.I.Config.StandHeight);
             _eyeY = GameManager.I.Config.StandHeight - 0.15f;
@@ -55,7 +49,7 @@ namespace SortThem
         void Update()
         {
             var gm = GameManager.I;
-            if (gm == null || !gm.Ready || _move == null) return;
+            if (gm == null || !gm.Ready || _input == null) return;
             var cfg = gm.Config;
             bool blocked = gm.UiBlocking;
 
@@ -65,9 +59,7 @@ namespace SortThem
 
             if (!blocked)
             {
-                Vector2 look = touch ? Vector2.zero : _look.ReadValue<Vector2>();
-                bool gamepad = _look.activeControl != null && _look.activeControl.device is Gamepad;
-                look *= gamepad ? cfg.GamepadLookSpeed * Time.deltaTime : cfg.MouseSensitivity;
+                Vector2 look = touch ? Vector2.zero : _input.Look.VectorValue * (cfg.GamepadLookSpeed * Time.deltaTime) + _input.LookMouse.VectorValue * cfg.MouseSensitivity;
                 if (touch) look += TouchInput.ConsumeLook();
                 look.x *= Settings.SensitivityX;
                 look.y *= Settings.SensitivityY;
@@ -76,7 +68,7 @@ namespace SortThem
             }
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
 
-            if (!blocked && (_crouch.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Crouch)) && gm.Upgrades.Has(UpgradeKind.Crouch)) _wantCrouch = !_wantCrouch;
+            if (!blocked && (_input.Crouch.Pressed() || TouchInput.Consume(TouchButton.Crouch)) && gm.Upgrades.Has(UpgradeKind.Crouch)) _wantCrouch = !_wantCrouch;
             bool wantCrouch = _wantCrouch && gm.Upgrades.Has(UpgradeKind.Crouch);
             if (wantCrouch != _crouching)
             {
@@ -90,9 +82,9 @@ namespace SortThem
             float crouchF = UpdateEye(cfg);
             if (CameraPivot != null) CameraPivot.localRotation = Quaternion.Euler(_pitch + _eyeTilt, 0f, 0f);
 
-            Vector2 moveInput = blocked ? Vector2.zero : Vector2.ClampMagnitude(_move.ReadValue<Vector2>() + TouchInput.Move, 1f);
+            Vector2 moveInput = blocked ? Vector2.zero : Vector2.ClampMagnitude(_input.Move.VectorValue + TouchInput.Move, 1f);
             if (TouchInput.SprintToggled && !gm.Upgrades.Has(UpgradeKind.Sprint)) TouchInput.SprintToggled = false;
-            bool sprint = !blocked && (_sprint.IsPressed() || TouchInput.SprintToggled) && gm.Upgrades.Has(UpgradeKind.Sprint) && !_crouching;
+            bool sprint = !blocked && (_input.Sprint.Held() || TouchInput.SprintToggled) && gm.Upgrades.Has(UpgradeKind.Sprint) && !_crouching;
             float speed = Mathf.Lerp(sprint ? cfg.SprintSpeed : cfg.WalkSpeed, cfg.CrouchSpeed, crouchF);
             Vector3 dir = transform.right * moveInput.x + transform.forward * moveInput.y;
             if (dir.sqrMagnitude > 1f) dir.Normalize();
@@ -100,7 +92,7 @@ namespace SortThem
             if (_cc.isGrounded)
             {
                 if (_verticalVelocity < 0f) _verticalVelocity = -2f;
-                if (!blocked && (_jump.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Jump)) && !_crouching)
+                if (!blocked && (_input.Jump.Pressed() || TouchInput.Consume(TouchButton.Jump)) && !_crouching)
                     _verticalVelocity = Mathf.Sqrt(2f * -cfg.Gravity * cfg.JumpHeight);
             }
             _verticalVelocity += cfg.Gravity * Time.deltaTime;

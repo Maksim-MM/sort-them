@@ -50,7 +50,7 @@ MonoBehaviour:
   - Glyph: 17
     Sprite: {fileID: 21300000, guid: f5bf6b76c71b5a04facfe740aba00a95, type: 3}
   - Glyph: 18
-    Sprite: {fileID: 21300000, guid: 33ca28db48d63c3479068e3c83ff8ecb, type: 3}
+    Sprite: {fileID: 21300000, guid: a75ce5c7b854d46c9a354dc25fa0ed78, type: 3}
   - Glyph: 19
     Sprite: {fileID: 21300000, guid: 86c33045a6731614d8f7161aac1f780d, type: 3}
   - Glyph: 20

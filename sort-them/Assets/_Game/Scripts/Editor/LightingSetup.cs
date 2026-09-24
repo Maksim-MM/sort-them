@@ -103,7 +103,7 @@ namespace SortThem.Editor
 
         static int MarkProps()
         {
-            string[] roots = { "UpgradeTerminal", "SlotMachine", "Counter", "Doors", "BlueprintBoard", "BlueprintBoard2" };
+            string[] roots = { "UpgradeTerminal", "SlotMachine", "Counter", "Doors", "Blueprints" };
             int count = 0;
             foreach (var name in roots)
             {
@@ -113,6 +113,7 @@ namespace SortThem.Editor
                 {
                     var mat = mr.sharedMaterial;
                     if (mat != null && mat.shader != null && mat.shader.name.Contains("Unlit")) continue;
+                    if (mr.transform.parent != null && mr.transform.parent.name == "Frame") continue;
                     var flags = GameObjectUtility.GetStaticEditorFlags(mr.gameObject);
                     if ((flags & StaticEditorFlags.ContributeGI) != 0) continue;
                     GameObjectUtility.SetStaticEditorFlags(mr.gameObject,
@@ -279,6 +280,13 @@ namespace SortThem.Editor
                     GameObjectUtility.SetStaticEditorFlags(mr.gameObject, flags & ~StaticEditorFlags.ContributeGI);
                     mr.lightProbeUsage = LightProbeUsage.Off;
                     excluded++;
+                    continue;
+                }
+
+                if (n == "Mark")
+                {
+                    mr.receiveGI = ReceiveGI.Lightmaps;
+                    if (SetLightmapScale(mr, 2f)) scaled++;
                     continue;
                 }
 

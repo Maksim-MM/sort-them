@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace SortThem
 {
@@ -23,26 +22,20 @@ namespace SortThem
         public bool CanPlace { get; private set; }
         public float Range { get; private set; }
 
-        InputAction _interact, _place, _next, _prev, _scroll;
+        PlayerInputActionSet _input;
         float _scrollAccum, _lastScrollInput = -10f, _lastScrollSwitch = -10f;
         HeldItemView _heldView;
         readonly RaycastHit[] _hits = new RaycastHit[24];
 
         void Start()
         {
-            var map = GameManager.I.InputAsset.FindActionMap("Player", true);
-            _interact = map.FindAction("Interact", true);
-            _place = map.FindAction("PlaceOrThrow", true);
-            _next = map.FindAction("NextItem", true);
-            _prev = map.FindAction("PrevItem", true);
-            _scroll = map.FindAction("ScrollItems", false);
+            _input = GameInput.Player;
             _heldView = FindFirstObjectByType<HeldItemView>();
         }
 
         void HandleScroll(GameConfig cfg)
         {
-            if (_scroll == null) return;
-            float delta = _scroll.ReadValue<float>();
+            float delta = _input.Scroll.AxisValue;
             if (Time.time - _lastScrollInput > cfg.ScrollIdleReset) _scrollAccum = 0f;
             if (Mathf.Abs(delta) < 0.001f) return;
             _lastScrollInput = Time.time;
@@ -67,7 +60,7 @@ namespace SortThem
         void Update()
         {
             var gm = GameManager.I;
-            if (gm == null || !gm.Ready || _interact == null) return;
+            if (gm == null || !gm.Ready || _input == null) return;
             if (gm.UiBlocking)
             {
                 ClearHover();
@@ -80,18 +73,18 @@ namespace SortThem
             bool tutorial = Tutorial.Running;
             if (!tutorial)
             {
-                if (_next.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Next)) Inventory.Next();
-                if (_prev.WasPressedThisFrame() || TouchInput.Consume(TouchButton.Prev)) Inventory.Prev();
+                if (_input.NextItem.Pressed() || TouchInput.Consume(TouchButton.Next)) Inventory.Next();
+                if (_input.PrevItem.Pressed() || TouchInput.Consume(TouchButton.Prev)) Inventory.Prev();
                 HandleScroll(gm.Config);
             }
-            if (!Tutorial.BlocksInteract && (Pressed(_interact) || TouchInput.Consume(TouchButton.Interact))) Interact();
-            if (!Tutorial.BlocksPlace && (Pressed(_place) || TouchInput.Consume(TouchButton.Place))) PlaceOrThrow();
+            if (!Tutorial.BlocksInteract && (Pressed(_input.Interact) || TouchInput.Consume(TouchButton.Interact))) Interact();
+            if (!Tutorial.BlocksPlace && (Pressed(_input.Place) || TouchInput.Consume(TouchButton.Place))) PlaceOrThrow();
         }
 
-        static bool Pressed(InputAction action)
+        static bool Pressed(GameAction action)
         {
-            if (!action.WasPressedThisFrame()) return false;
-            if (TouchInput.Active && action.activeControl != null && action.activeControl.device is Mouse) return false;
+            if (!action.Pressed()) return false;
+            if (TouchInput.Active && !ActiveDevice.Gamepad) return false;
             return true;
         }
 

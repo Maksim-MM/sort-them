@@ -5,6 +5,14 @@ namespace SortThem
 {
     public static class ActiveDevice
     {
+#if (UNITY_SWITCH || UNITY_PS4 || UNITY_PS5 || UNITY_GAMECORE_XBOXONE || UNITY_GAMECORE_XBOXSERIES) && !UNITY_EDITOR
+        public const bool Console = true;
+        public static bool Gamepad => true;
+
+        public static void Init() { }
+        public static void Poll() { }
+#else
+        public const bool Console = false;
         public static bool Gamepad { get; private set; }
 
         const float PadThreshold = 0.25f;
@@ -35,5 +43,6 @@ namespace SortThem
                 if (b.isPressed) return true;
             return false;
         }
+#endif
     }
 }

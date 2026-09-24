@@ -5,7 +5,8 @@
         "Unity.InputSystem",
         "Unity.Localization",
         "Unity.TextMeshPro",
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "UpscaleSDK.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

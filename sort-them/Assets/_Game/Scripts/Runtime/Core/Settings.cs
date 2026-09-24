@@ -18,17 +18,21 @@ namespace SortThem
         public static event Action Changed;
 
         static bool _loaded;
+        public static bool Loaded => _loaded;
 
         public static void Load()
         {
-            MusicVolume = PlayerPrefs.GetFloat("settings.music", 0.7f);
-            SfxVolume = PlayerPrefs.GetFloat("settings.sfx", 1f);
-            SensitivityX = PlayerPrefs.GetFloat("settings.sens_x", 1f);
-            SensitivityY = PlayerPrefs.GetFloat("settings.sens_y", 1f);
-            Vibration = PlayerPrefs.GetInt("settings.vibration", 1) != 0;
-            MusicTrack = PlayerPrefs.GetInt("settings.track", 0);
-            Locale = PlayerPrefs.GetString("settings.locale", "");
+            var prefs = SavesReady.Prefs;
+            bool sdk = prefs != null && prefs.HasKey("settings.music");
+            MusicVolume = sdk ? prefs.GetFloat("settings.music", 0.7f) : PlayerPrefs.GetFloat("settings.music", 0.7f);
+            SfxVolume = sdk ? prefs.GetFloat("settings.sfx", 1f) : PlayerPrefs.GetFloat("settings.sfx", 1f);
+            SensitivityX = sdk ? prefs.GetFloat("settings.sens_x", 1f) : PlayerPrefs.GetFloat("settings.sens_x", 1f);
+            SensitivityY = sdk ? prefs.GetFloat("settings.sens_y", 1f) : PlayerPrefs.GetFloat("settings.sens_y", 1f);
+            Vibration = sdk ? prefs.GetBool("settings.vibration", true) : PlayerPrefs.GetInt("settings.vibration", 1) != 0;
+            MusicTrack = sdk ? prefs.GetInt("settings.track", 0) : PlayerPrefs.GetInt("settings.track", 0);
+            Locale = sdk ? prefs.GetString("settings.locale", "") : PlayerPrefs.GetString("settings.locale", "");
             _loaded = true;
+            if (prefs != null && !sdk && PlayerPrefs.HasKey("settings.music")) Store();
             Apply();
         }
 
@@ -42,17 +46,35 @@ namespace SortThem
         public static void SetMusicTrack(int index) { MusicTrack = Mathf.Max(0, index); Store(); }
         public static void SetLocale(string code) { Locale = code ?? ""; Store(); }
 
-        public static void Flush() => PlayerPrefs.Save();
+        public static void Flush()
+        {
+            var prefs = SavesReady.Prefs;
+            if (prefs != null) prefs.TrySave(); else PlayerPrefs.Save();
+        }
 
         static void Store()
         {
-            PlayerPrefs.SetFloat("settings.music", MusicVolume);
-            PlayerPrefs.SetFloat("settings.sfx", SfxVolume);
-            PlayerPrefs.SetFloat("settings.sens_x", SensitivityX);
-            PlayerPrefs.SetFloat("settings.sens_y", SensitivityY);
-            PlayerPrefs.SetInt("settings.vibration", Vibration ? 1 : 0);
-            PlayerPrefs.SetString("settings.locale", Locale);
-            PlayerPrefs.SetInt("settings.track", MusicTrack);
+            var prefs = SavesReady.Prefs;
+            if (prefs != null)
+            {
+                prefs.SetFloat("settings.music", MusicVolume);
+                prefs.SetFloat("settings.sfx", SfxVolume);
+                prefs.SetFloat("settings.sens_x", SensitivityX);
+                prefs.SetFloat("settings.sens_y", SensitivityY);
+                prefs.SetBool("settings.vibration", Vibration);
+                prefs.SetString("settings.locale", Locale);
+                prefs.SetInt("settings.track", MusicTrack);
+            }
+            else
+            {
+                PlayerPrefs.SetFloat("settings.music", MusicVolume);
+                PlayerPrefs.SetFloat("settings.sfx", SfxVolume);
+                PlayerPrefs.SetFloat("settings.sens_x", SensitivityX);
+                PlayerPrefs.SetFloat("settings.sens_y", SensitivityY);
+                PlayerPrefs.SetInt("settings.vibration", Vibration ? 1 : 0);
+                PlayerPrefs.SetString("settings.locale", Locale);
+                PlayerPrefs.SetInt("settings.track", MusicTrack);
+            }
             Apply();
         }
 

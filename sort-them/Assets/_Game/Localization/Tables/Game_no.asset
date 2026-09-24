@@ -1,0 +1,1563 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Game_no
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: no
+  m_SharedData: {fileID: 11400000, guid: da8bec3d2347743d38ff54005dee7ab6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 79149654016
+    m_Localized: "R\xF8d kort bybuss"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79476809728
+    m_Localized: "Bl\xE5 bybuss"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79816548352
+    m_Localized: "Gr\xF8nn lang bybuss"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80143704064
+    m_Localized: Gul kort dobbeltdekkerbuss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80475054080
+    m_Localized: Oransje dobbeltdekkerbuss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80814792704
+    m_Localized: Lilla lang dobbeltdekkerbuss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81158725632
+    m_Localized: Hvit kort skolebuss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81506852864
+    m_Localized: Svart skolebuss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81880145920
+    m_Localized: "Bl\xE5gr\xF8nn lang skolebuss"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82224078848
+    m_Localized: Rosa buss med takgrind
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976133296840704
+    m_Localized: Antiope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976133816934400
+    m_Localized: Aura
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976134353805312
+    m_Localized: Betelgeuse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976134857121792
+    m_Localized: Castalia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976135368826880
+    m_Localized: Dione
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976135901503488
+    m_Localized: Eros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976136421597184
+    m_Localized: Luna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976136916525056
+    m_Localized: Mercurio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976137403064320
+    m_Localized: Pictoris
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976137889603584
+    m_Localized: Psyche
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75710324736
+    m_Localized: "R\xF8d kort gravemaskin"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76050063360
+    m_Localized: "Bl\xE5 gravemaskin"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76385607680
+    m_Localized: "Gr\xF8nn lang gravemaskin"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76721152000
+    m_Localized: Gul kort bulldoser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77052502016
+    m_Localized: Oransje bulldoser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77379657728
+    m_Localized: Lilla lang bulldoser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77715202048
+    m_Localized: Hvit kort mobilkran
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78050746368
+    m_Localized: Svart mobilkran
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78386290688
+    m_Localized: "Bl\xE5gr\xF8nn lang mobilkran"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78713446400
+    m_Localized: Rosa veivals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72237441024
+    m_Localized: "R\xF8d kort politisedan"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72581373952
+    m_Localized: "Bl\xE5 politisedan"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72921112576
+    m_Localized: "Gr\xF8nn lang politisedan"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73260851200
+    m_Localized: Gul kort ambulanse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73592201216
+    m_Localized: Oransje ambulanse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73927745536
+    m_Localized: Lilla lang ambulanse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74275872768
+    m_Localized: Hvit kort brannbil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74611417088
+    m_Localized: Svart brannbil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74942767104
+    m_Localized: "Bl\xE5gr\xF8nn lang brannbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75265728512
+    m_Localized: Rosa utryknings-SUV
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976154993975296
+    m_Localized: Aeolus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976155484708864
+    m_Localized: Deimos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976156000608256
+    m_Localized: Hadar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976156545867776
+    m_Localized: Halley
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976157061767168
+    m_Localized: Ixion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976157602832384
+    m_Localized: Lelantos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976158135508992
+    m_Localized: Markab
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976158680768512
+    m_Localized: Pegaso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976159209250816
+    m_Localized: Saurus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976159729344512
+    m_Localized: Zephyr
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976138514554880
+    m_Localized: Callisto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976138996899840
+    m_Localized: Columbia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976139487633408
+    m_Localized: Doradus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976139957395456
+    m_Localized: Earth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976140427157504
+    m_Localized: Eridanus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976140909502464
+    m_Localized: Geras
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976141396041728
+    m_Localized: M78
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976141911941120
+    m_Localized: Pallas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976142478172160
+    m_Localized: Persephone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976143061180416
+    m_Localized: Set
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976143728074752
+    m_Localized: Artemis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976144269139968
+    m_Localized: Equinox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976144793427968
+    m_Localized: Fulmine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976145489682432
+    m_Localized: Hawken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976146143993856
+    m_Localized: Ixchel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976146634727424
+    m_Localized: Mistral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976147125460992
+    m_Localized: Nero
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976147641360384
+    m_Localized: Oblivion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976148144676864
+    m_Localized: Predator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976148652187648
+    m_Localized: Tetsuo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976101520793600
+    m_Localized: Anteros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976102078636032
+    m_Localized: Ascella
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976102590341120
+    m_Localized: Chandra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976103097851904
+    m_Localized: Glauke-288
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976103617945600
+    m_Localized: Ichor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976104125456384
+    m_Localized: Keres
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976104628772864
+    m_Localized: Nosaxa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976105136283648
+    m_Localized: Ocipete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976105807372288
+    m_Localized: Pluton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976106327465984
+    m_Localized: Tiny
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93531922432
+    m_Localized: "R\xF8d kort monstertruck"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93884243968
+    m_Localized: "Bl\xE5 monstertruck"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94240759808
+    m_Localized: "Gr\xF8nn lang monstertruck"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94584692736
+    m_Localized: Gul kort monstervarebil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94953791488
+    m_Localized: Oransje monstervarebil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95297724416
+    m_Localized: Lilla lang monstervarebil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95645851648
+    m_Localized: Hvit kort monstertruck med flagg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96019144704
+    m_Localized: Svart monstertruck med flagg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96388243456
+    m_Localized: "Bl\xE5gr\xF8nn lang monstertruck med flagg"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96757342208
+    m_Localized: Rosa monstertruck med lysrampe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61764263936
+    m_Localized: Coggia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62083031040
+    m_Localized: Cupid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62431158272
+    m_Localized: Davida
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62766702592
+    m_Localized: Dionysus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63106441216
+    m_Localized: Elara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63437791232
+    m_Localized: Enif
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63802695680
+    m_Localized: Gliese-393
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64184377344
+    m_Localized: Kalliope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64649945088
+    m_Localized: Majoris
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64977100800
+    m_Localized: Sunshine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82693840896
+    m_Localized: Clymene
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83033579520
+    m_Localized: Eos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83381706752
+    m_Localized: Etelvinna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83729833984
+    m_Localized: Flora-8
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84061184000
+    m_Localized: Itonda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84417699840
+    m_Localized: Laelaps
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84774215680
+    m_Localized: Lyssa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85126537216
+    m_Localized: Rogelia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85453692928
+    m_Localized: Roxane-317
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85793431552
+    m_Localized: Vortice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976160559816704
+    m_Localized: Aletheia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976161075716096
+    m_Localized: Anhur
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976161616781312
+    m_Localized: Horus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976162321424384
+    m_Localized: Leto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976162824740864
+    m_Localized: Medusa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976163361611776
+    m_Localized: Ponus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976163869122560
+    m_Localized: Titan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976164368244736
+    m_Localized: Typhon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976164905115648
+    m_Localized: Uranus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976165572009984
+    m_Localized: Vulcan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86233833472
+    m_Localized: "R\xF8d kort racerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86586155008
+    m_Localized: "Bl\xE5 racerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86946865152
+    m_Localized: "Gr\xF8nn lang racerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87303380992
+    m_Localized: Gul kort racerbil med stor vinge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87643119616
+    m_Localized: Oransje racerbil med stor vinge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87999635456
+    m_Localized: Lilla lang racerbil med stor vinge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88351956992
+    m_Localized: Hvit kort racerbil med luftinntak
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88721055744
+    m_Localized: Svart racerbil med luftinntak
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89081765888
+    m_Localized: "Bl\xE5gr\xF8nn lang racerbil med luftinntak"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89429893120
+    m_Localized: Rosa racerbil med dobbel nese
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976149457494016
+    m_Localized: Adonis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976149952421888
+    m_Localized: Ananke
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976150447349760
+    m_Localized: Cadmus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976150959054848
+    m_Localized: Haumea
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976151449788416
+    m_Localized: Hemera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976151948910592
+    m_Localized: Rhode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976152464809984
+    m_Localized: Silenus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976153022652416
+    m_Localized: Styx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976153756655616
+    m_Localized: Taandoco
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976154280943616
+    m_Localized: Whiteout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89887072256
+    m_Localized: "R\xF8d kort retrosedan"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90243588096
+    m_Localized: "Bl\xE5 retrosedan"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90587521024
+    m_Localized: "Gr\xF8nn lang retrosedan"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90927259648
+    m_Localized: Gul kort retroroadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91287969792
+    m_Localized: Oransje retroroadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91636097024
+    m_Localized: Lilla lang retroroadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91988418560
+    m_Localized: Hvit kort retrostasjonsvogn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92349128704
+    m_Localized: Svart retrostasjonsvogn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92718227456
+    m_Localized: "Bl\xE5gr\xF8nn lang retrostasjonsvogn"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93078937600
+    m_Localized: Rosa retrosedan med bagasje
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976096034643968
+    m_Localized: Endeis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976096554737664
+    m_Localized: Erebus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976097045471232
+    m_Localized: Foreword
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976097552982016
+    m_Localized: Merope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976098039521280
+    m_Localized: Otomi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976098555420672
+    m_Localized: Pheme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976099075514368
+    m_Localized: Salacia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976099595608064
+    m_Localized: Sapphire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976100296056832
+    m_Localized: Thisbe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976100799373312
+    m_Localized: Varuna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976166217932800
+    m_Localized: Diotima
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976166742220800
+    m_Localized: Egeria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976167283286016
+    m_Localized: Herculina-532
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976167811768320
+    m_Localized: Icebreaker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976168310890496
+    m_Localized: Lancelot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976168822595584
+    m_Localized: Lares
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976169393020928
+    m_Localized: Nessus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976169942474752
+    m_Localized: Palma-372
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976170475151360
+    m_Localized: Quaoar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976171032993792
+    m_Localized: Talos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659379433472
+    m_Localized: Car_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659987607552
+    m_Localized: Car_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515661333979136
+    m_Localized: Car_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515662369972224
+    m_Localized: Car_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515663070420992
+    m_Localized: Car_11
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976128154624000
+    m_Localized: Benzaiten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976128641163264
+    m_Localized: Boar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976129131896832
+    m_Localized: Carinae
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976129622630400
+    m_Localized: Echo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976130117558272
+    m_Localized: Encelado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976130612486144
+    m_Localized: Gaia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976131103219712
+    m_Localized: Grannus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976131589758976
+    m_Localized: Orcus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976132093075456
+    m_Localized: Sirius
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976132608974848
+    m_Localized: Supernova
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65396531200
+    m_Localized: Aphrodite
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65715298304
+    m_Localized: Atlas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66038259712
+    m_Localized: Azura
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66361221120
+    m_Localized: Azzurro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66684182528
+    m_Localized: Belenus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67002949632
+    m_Localized: Europa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67330105344
+    m_Localized: Hyas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67653066752
+    m_Localized: Juno
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67980222464
+    m_Localized: Rhea
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68307378176
+    m_Localized: Thalassa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976107006943232
+    m_Localized: Alcyone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976107552202752
+    m_Localized: Faunus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976108089073664
+    m_Localized: Interamnia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976108613361664
+    m_Localized: Mimas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976109141843968
+    m_Localized: Nephele
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976109661937664
+    m_Localized: Oniros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976110165254144
+    m_Localized: Ragnar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976110676959232
+    m_Localized: Scamander
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976111213830144
+    m_Localized: Tethys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976111721340928
+    m_Localized: Tlaloc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68777140224
+    m_Localized: "R\xF8d kort containerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69112684544
+    m_Localized: "Bl\xE5 containerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69444034560
+    m_Localized: "Gr\xF8nn lang containerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69779578880
+    m_Localized: Gul kort tankbil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70115123200
+    m_Localized: Oransje tankbil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70438084608
+    m_Localized: Lilla lang tankbil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70777823232
+    m_Localized: "Hvit kort t\xF8mmerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71113367552
+    m_Localized: "Svart t\xF8mmerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71444717568
+    m_Localized: "Bl\xE5gr\xF8nn lang t\xF8mmerbil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71788650496
+    m_Localized: Rosa tippbil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976171808940032
+    m_Localized: Hercules
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976172672966656
+    m_Localized: Limos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976173167894528
+    m_Localized: Moros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976173818011648
+    m_Localized: Pan_Burger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976174459740160
+    m_Localized: Pan_Donut
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976175130828800
+    m_Localized: Pan_HotDog
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976175617368064
+    m_Localized: Pan_IceCream
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976176108101632
+    m_Localized: Pan_Pizza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976176619806720
+    m_Localized: Peleus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976177123123200
+    m_Localized: Thoth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78818304000
+    m_Localized: Busser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976132768358400
+    m_Localized: Klassiske sportsbiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75374780416
+    m_Localized: Anleggsmaskiner
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71889313792
+    m_Localized: Utrykning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976154461298688
+    m_Localized: Ekstrem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976138036404224
+    m_Localized: GT Racing A
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976143220563968
+    m_Localized: GT Racing R
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976100958756864
+    m_Localized: Kombibiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93183795200
+    m_Localized: Monstertrucker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61369999360
+    m_Localized: Muskelbiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82345713664
+    m_Localized: Pickuper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976159884533760
+    m_Localized: Politi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85898289152
+    m_Localized: Racing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976148803182592
+    m_Localized: Rally og tuning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89543139328
+    m_Localized: Retro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976094990262272
+    m_Localized: Sedaner
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976165723004928
+    m_Localized: Utrykning og service
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515147544322048
+    m_Localized: Spesial
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976127663890432
+    m_Localized: Sportskupeer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65077764096
+    m_Localized: Superbiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976106482655232
+    m_Localized: SUV-er
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68433207296
+    m_Localized: Lastebiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976171209154560
+    m_Localized: Varebiler og food trucks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940170
+    m_Localized: Finn like
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940171
+    m_Localized: Autosamling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940172
+    m_Localized: Reolmarkering
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940165
+    m_Localized: Huk deg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940166
+    m_Localized: Ta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940163
+    m_Localized: Hopp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940162
+    m_Localized: Se deg rundt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1355034158686208
+    m_Localized: Mus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940161
+    m_Localized: Bevegelse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940173
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940167
+    m_Localized: "Sett p\xE5 en hylle eller kast"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940168
+    m_Localized: Velg gjenstand i hendene
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940164
+    m_Localized: "L\xF8p"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940169
+    m_Localized: Musehjul
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509851127808
+    m_Localized: Evnen er ikke klar enda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900079157250
+    m_Localized: En bombe falt ut av maskinen, finn den i haugen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 342033133723648
+    m_Localized: 'Kanne funnet: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126400
+    m_Localized: 'Delekasse: +1'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126403
+    m_Localized: Alle hyller er lukket. Lageret er i perfekt orden!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509872099328
+    m_Localized: Ta noe i hendene
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126401
+    m_Localized: Ingen delekasser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 350177448681472
+    m_Localized: 'Radio: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055873
+    m_Localized: Kassa er tom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055872
+    m_Localized: 'Kasse: +${0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637906472960
+    m_Localized: 'Kasse: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1260479111487488
+    m_Localized: Snu telefonen til liggende
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867462
+    m_Localized: 'Du fikk: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126402
+    m_Localized: Denne bilen er ferdig oppgradert
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044485
+    m_Localized: Sirkel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044484
+    m_Localized: Kryss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044483
+    m_Localized: Retningsknapper
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969817973547008
+    m_Localized: Venstre styrespak
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044481
+    m_Localized: Venstre styrespak (trykk)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044480
+    m_Localized: "H\xF8yre styrespak"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044482
+    m_Localized: "H\xF8yre styrespak (trykk)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044486
+    m_Localized: Firkant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044487
+    m_Localized: Trekant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830529
+    m_Localized: Evnene lades opp raskere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830528
+    m_Localized: "Kortere nedkj\xF8ling"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774337
+    m_Localized: "+1 kasse til \xE5 oppgradere spesialbiler"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774336
+    m_Localized: Delekasse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1348894855258113
+    m_Localized: Finn like og reolmarkering varer lenger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1348894855258112
+    m_Localized: Lengre effekt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612801
+    m_Localized: +1 plass i inventaret utover terminalen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612800
+    m_Localized: Ekstra plass
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659649
+    m_Localized: Autosamling rekker lenger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659648
+    m_Localized: Bredere autosamling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952070
+    m_Localized: Dekaler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952069
+    m_Localized: Motor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952068
+    m_Localized: Taklys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952065
+    m_Localized: "Fremre st\xF8tfanger"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952064
+    m_Localized: Frontlykter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952067
+    m_Localized: Eksos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146369
+    m_Localized: "Bl\xE5lys"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952066
+    m_Localized: "Bakre st\xF8tfanger"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952071
+    m_Localized: Spoiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952072
+    m_Localized: Turbin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146368
+    m_Localized: Hjul
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044929
+    m_Localized: Se deg rundt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044930
+    m_Localized: "H\xF8yre halvdel av skjermen \u2014 se deg rundt"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044933
+    m_Localized: "Sett den p\xE5 den markerte reolen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044934
+    m_Localized: "Sett-knappen \u2014 den markerte reolen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044931
+    m_Localized: Plukk opp hvilken som helst bil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044932
+    m_Localized: "Ta-knappen \u2014 plukk opp hvilken som helst bil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295069073408
+    m_Localized: "G\xE5 rundt"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044928
+    m_Localized: "Venstre spak \u2014 g\xE5 rundt"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956546
+    m_Localized: Finn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956547
+    m_Localized: Autosamling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956548
+    m_Localized: Reol
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373511
+    m_Localized: Tilbake
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2834538177748992
+    m_Localized: Saldo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762244
+    m_Localized: "Kj\xF8p"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932103
+    m_Localized: Avbryt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 405790720
+    m_Localized: Biler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762243
+    m_Localized: Lukk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762241
+    m_Localized: Kanner
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940160
+    m_Localized: Kontroller
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932096
+    m_Localized: Delekasser
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956545
+    m_Localized: "{0} ta \xB7 {1} sett/kast \xB7 {2} velg \xB7 {3} meny"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185374162944
+    m_Localized: "Spr\xE5k"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762245
+    m_Localized: Maks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373504
+    m_Localized: Musikk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956544
+    m_Localized: Nullstill fremgang
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373510
+    m_Localized: Av
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373509
+    m_Localized: "P\xE5"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762246
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2832435401187328
+    m_Localized: "Trykk kj\xF8p"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932102
+    m_Localized: "Nullstille all fremgang og starte p\xE5 nytt?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762247
+    m_Localized: Fortsett
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762248
+    m_Localized: Lagre
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762249
+    m_Localized: Lagret
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373506
+    m_Localized: "Horisontal f\xF8lsomhet"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373507
+    m_Localized: "Vertikal f\xF8lsomhet"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334676991401984
+    m_Localized: Innstillinger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373505
+    m_Localized: Effekter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762240
+    m_Localized: Hyller
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1350246335504384
+    m_Localized: Bland haugen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1350246343892992
+    m_Localized: "Blander haugen\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670345895936
+    m_Localized: Spilleautomat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900079157248
+    m_Localized: Bombe!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900079157249
+    m_Localized: bombe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867460
+    m_Localized: "nedkj\xF8ling \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1348886332432384
+    m_Localized: "varighet \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867461
+    m_Localized: "radius \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867458
+    m_Localized: "Tomt. Alle bel\xF8nninger er delt ut"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900070768640
+    m_Localized: "Bel\xF8nningene er brukt opp. Hvert spinn gir en bombe"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867459
+    m_Localized: "Hvert spinn gir en bel\xF8nning"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2862273583374336
+    m_Localized: Premier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867457
+    m_Localized: "Bel\xF8nninger igjen: {0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932099
+    m_Localized: Alle deler montert
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932100
+    m_Localized: "Hold inne for \xE5 oppgradere"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932097
+    m_Localized: 'Oppgraderinger: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932101
+    m_Localized: "Maks niv\xE5"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932098
+    m_Localized: 'Neste del: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867456
+    m_Localized: "Spinn \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762242
+    m_Localized: Oppgraderingsterminal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762250
+    m_Localized: Hent tilbake biler som sitter fast
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373508
+    m_Localized: Vibrering
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932104
+    m_Localized: Ja, nullstill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793985
+    m_Localized: "Tast 2: trekker like biler i n\xE6rheten inn i inventaret"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793984
+    m_Localized: Autosamling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026881
+    m_Localized: "En bil kastet i riktig reol setter seg p\xE5 en hylle selv"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026880
+    m_Localized: Autoplassering ved kast
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923073
+    m_Localized: "Hold Ctrl for \xE5 huke deg under hyllene"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923072
+    m_Localized: "L\xE5s opp huking"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936385
+    m_Localized: 'Tast 1: like biler i haugen lyser og svever opp'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936384
+    m_Localized: Finn like
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565210767360
+    m_Localized: "+1 plass per niv\xE5, opptil 15"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565202378752
+    m_Localized: "St\xF8rre inventar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013569
+    m_Localized: Ta og sett biler fra lengre avstand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013568
+    m_Localized: Lengre rekkevidde
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884481
+    m_Localized: 'Tast 3: markerer reolen for bilen du holder'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884480
+    m_Localized: Reolmarkering
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065473
+    m_Localized: "Hold Shift for \xE5 l\xF8pe"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065472
+    m_Localized: "L\xE5s opp l\xF8ping"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565646974976
+    m_Localized: Bilene flyr lenger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565642780672
+    m_Localized: Kraftigere kast
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

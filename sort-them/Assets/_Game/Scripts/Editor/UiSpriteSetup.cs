@@ -8,6 +8,7 @@ namespace SortThem.Editor
         public const string Dir = Paths.Root + "/Art/UI";
         public static readonly string[] AbilityIcons = { Dir + "/ab_find.png", Dir + "/ab_collect.png", Dir + "/ab_rack.png" };
         public static readonly string[] TouchIcons = { Dir + "/tc_take.png", Dir + "/tc_throw.png", Dir + "/tc_jump.png", Dir + "/tc_pause.png", Dir + "/tc_prev.png", Dir + "/tc_next.png", Dir + "/up_sprint.png", Dir + "/up_crouch.png" };
+        public static readonly string[] StatIcons = { Dir + "/stat_cars.png", Dir + "/stat_shelves.png", Dir + "/stat_crates.png" };
         public const string SlotFrame = Dir + "/frame_slot.png";
         public const string Circle = Dir + "/circle.png";
         public const string BombIcon = Dir + "/up_bomb.png";
@@ -35,6 +36,7 @@ namespace SortThem.Editor
         {
             foreach (var p in AbilityIcons) Import(p, Vector4.zero);
             foreach (var p in TouchIcons) if (p.Contains("/tc_")) Import(p, Vector4.zero);
+            ImportStatIcons();
             Import(SlotFrame, new Vector4(28f, 28f, 28f, 28f));
             Import(KeyFrame, new Vector4(24f, 24f, 24f, 24f));
             Import(Circle, Vector4.zero);
@@ -57,6 +59,11 @@ namespace SortThem.Editor
                     EditorUtility.SetDirty(u);
                 }
             }
+        }
+
+        public static void ImportStatIcons()
+        {
+            foreach (var p in StatIcons) if (System.IO.File.Exists(p)) Import(p, Vector4.zero);
         }
 
         public static Sprite Load(string path) => AssetDatabase.LoadAssetAtPath<Sprite>(path);

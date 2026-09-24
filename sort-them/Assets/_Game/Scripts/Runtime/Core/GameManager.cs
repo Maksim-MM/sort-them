@@ -40,6 +40,7 @@ namespace SortThem
         public int ClosedShelves { get; private set; }
         public int TotalShelves { get; private set; }
         public long CollectiblesMask { get; private set; }
+        public int BlueprintsMask { get; private set; }
         public int Crates { get; private set; }
         public readonly Dictionary<string, int> SpecialLevels = new Dictionary<string, int>();
         bool _completeAnnounced;
@@ -61,6 +62,7 @@ namespace SortThem
             {
                 if (_uiBlocking && !value) _uiReleaseFrame = Time.frameCount + 1;
                 _uiBlocking = value;
+                GameInput.SetGameplayActive(!value);
             }
         }
 
@@ -74,9 +76,7 @@ namespace SortThem
             I = this;
             Economy = new EconomyService(EconomyConfig);
             Upgrades = new UpgradeService(UpgradeAssets, Economy);
-            Save = new SaveService(this, new PlayerPrefsSaveStorage());
-            if (InputAsset != null) InputAsset.Enable();
-            Settings.Load();
+            Save = new SaveService(this, new UpscaleSaveStorage());
             ApplyPlatformSettings();
         }
 
@@ -108,6 +108,11 @@ namespace SortThem
             Racks.Clear();
             Racks.AddRange(FindObjectsByType<RackController>(FindObjectsSortMode.None));
             TotalShelves = Shelves.Count;
+
+            float savesTimeout = Time.realtimeSinceStartup + 10f;
+            while (!SavesReady.IsReady && Time.realtimeSinceStartup < savesTimeout) yield return null;
+            if (!SavesReady.IsReady) Debug.LogWarning("SortThem: SDK saves not ready, falling back to PlayerPrefs");
+            Settings.Load();
 
             yield return InitLocalization();
             foreach (var rack in Racks) rack.RefreshSign();
@@ -150,15 +155,32 @@ namespace SortThem
                     var saved = LocalizationSettings.AvailableLocales.GetLocale(Settings.Locale);
                     if (saved != null && LocalizationSettings.SelectedLocale != saved) LocalizationSettings.SelectedLocale = saved;
                 }
+                yield return WaitTable();
+                Fonts.Apply(LocalizationSettings.SelectedLocale?.Identifier.Code);
                 LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
                 LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
             }
         }
 
-        static void OnLocaleChanged(UnityEngine.Localization.Locale locale) => Loc.NotifyChanged();
+        static IEnumerator WaitTable()
+        {
+            var op = LocalizationSettings.StringDatabase.GetTableAsync(Loc.Table);
+            float timeout = Time.realtimeSinceStartup + 5f;
+            while (!op.IsDone && Time.realtimeSinceStartup < timeout) yield return null;
+        }
+
+        IEnumerator RefreshLocalization()
+        {
+            yield return WaitTable();
+            Fonts.Apply(LocalizationSettings.SelectedLocale?.Identifier.Code);
+            Loc.NotifyChanged();
+        }
+
+        void OnLocaleChanged(UnityEngine.Localization.Locale locale) => StartCoroutine(RefreshLocalization());
 
         void Update()
         {
+            GameInput.Tick();
             Rumble.Tick();
             if (!Ready) return;
             _activationTimer -= Time.deltaTime;
@@ -304,6 +326,20 @@ namespace SortThem
                     Physics.SyncTransforms();
                 }
             }
+        }
+
+        public void ApplyBlueprintsMask(int mask)
+        {
+            BlueprintsMask = mask;
+        }
+
+        public bool HasBlueprint(int index) => index >= 0 && index < 31 && (BlueprintsMask & (1 << index)) != 0;
+
+        public void UnlockBlueprint(int index)
+        {
+            if (index < 0 || index >= 31 || HasBlueprint(index)) return;
+            BlueprintsMask |= 1 << index;
+            if (Ready) Save.SaveNow("blueprint unlocked");
         }
 
         public void ApplyCollectiblesMask(long mask)

@@ -80,7 +80,7 @@ namespace SortThem.Editor
             BuildRoom(placements);
             var shelves = BuildRacks(catalog, shelfData, placements);
             if (catalog.SpecialCategory != null && catalog.Specials != null && catalog.Specials.Length > 0) BuildSpecialRack(catalog);
-            var terminal = BuildArcadeCabinet("UpgradeTerminal", new Vector3(ArcadeX, 0f, SouthZ + 1.75f), 0f);
+            var terminal = BuildArcadeCabinet("UpgradeTerminal", new Vector3(ArcadeX, 0f, SouthZ + 0.6f), 0f);
             terminal.AddComponent<UpgradeTerminal>();
 
             BuildSlotMachine();
@@ -125,6 +125,7 @@ namespace SortThem.Editor
             var ui = uiGo.AddComponent<UiRoot>();
             ui.Abilities = player.GetComponent<PlayerAbilities>();
             ui.AbilityIcons = new[] { UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[0]), UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[1]), UiSpriteSetup.Load(UiSpriteSetup.AbilityIcons[2]) };
+            ui.StatIcons = System.Array.ConvertAll(UiSpriteSetup.StatIcons, UiSpriteSetup.Load);
             ui.SlotFrame = UiSpriteSetup.Load(UiSpriteSetup.SlotFrame);
             ui.KeyFrame = UiSpriteSetup.Load(UiSpriteSetup.KeyFrame);
             ui.TouchIcons = System.Array.ConvertAll(UiSpriteSetup.TouchIcons, UiSpriteSetup.Load);
@@ -288,67 +289,243 @@ namespace SortThem.Editor
             rack.Shelves = shelves;
         }
 
-        [MenuItem("SortThem/4f. Add Blueprint Board")]
-        public static void AddBlueprintBoard()
+        [MenuItem("SortThem/4f. Build Blueprint Wall")]
+        public static void AddBlueprintWall()
         {
             CreateMaterials();
-            BuildBlueprintBoard();
+            BuildBlueprintWall();
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
         }
 
-        const string BoardTexture = "Assets/_Game/Art/Textures/BlueprintBoard.png";
-        const string BoardTexture2 = "Assets/_Game/Art/Textures/BlueprintBoard2.png";
-        const float BoardW = 1.2f, BoardFrameW = 0.035f, BoardDepth = 0.04f, BoardFrameDepth = 0.055f;
-        static readonly Vector3 BoardCenter = new Vector3(13.98f, 1.62f, -5.55f);
-        static readonly Vector3 BoardCenter2 = new Vector3(13.98f, 1.62f, -10.30f);
+        const string BlueprintDir = "Assets/_Game/Art/Textures/Blueprints";
+        const string WallMarkTexture = "Assets/_Game/Art/Textures/Room/WallMark.png";
+        const float BpWallX = 13.98f, BpCenterY = 1.7f, BpFrameW = 0.028f, BpDepth = 0.03f, BpFrameDepth = 0.04f;
+        const float BpGap = 0.055f, BpClear = 0.16f, BpZoneMin = -13.7f, BpZoneMax = -4.11f;
+        const float BpMaxH = 0.72f, BpMinH = 0.3f, BpMarkInset = 0.008f;
 
-        public static void BuildBlueprintBoard()
+        public static void BuildBlueprintWall()
         {
             if (_woodBeam == null) CreateMaterials();
-            BuildBoard("BlueprintBoard", BoardTexture, BoardCenter);
-            BuildBoard("BlueprintBoard2", BoardTexture2, BoardCenter2);
+            foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
+                if (go.name == "Blueprints" || go.name == "BlueprintBoard" || go.name == "BlueprintBoard2") Object.DestroyImmediate(go);
+
+            var catalog = AssetDatabase.LoadAssetAtPath<CarCatalog>(Paths.Data + "/CarCatalog.asset");
+            if (catalog == null) { Debug.LogError("SortThem: CarCatalog not found"); return; }
+            var cats = new List<CategoryData>();
+            foreach (var c in catalog.Categories) if (c != null && c != catalog.SpecialCategory) cats.Add(c);
+
+            var mats = new Material[cats.Count];
+            var aspect = new float[cats.Count];
+            for (int i = 0; i < cats.Count; i++)
+            {
+                string path = BlueprintDir + "/bp_" + cats[i].CategoryID + ".png";
+                var tex = ImportBlueprintTexture(path);
+                if (tex == null) { Debug.LogError("SortThem: blueprint texture missing " + path); return; }
+                mats[i] = EditorAssets.Textured("Blueprint_" + cats[i].CategoryID, path, Color.white, 0.14f);
+                aspect[i] = (float)tex.width / tex.height;
+            }
+
+            var segments = BlueprintSegments();
+            float h = FitBlueprints(aspect, segments, out var place);
+            if (h <= 0f) { Debug.LogError("SortThem: blueprints do not fit the wall"); return; }
+
+            var markMat = EnsureWallMark();
+            var nailMat = EditorAssets.Lit("Room_Nail", new Color(0.22f, 0.21f, 0.2f));
+            var root = new GameObject("Blueprints");
+            var frames = new GameObject[cats.Count];
+            for (int i = 0; i < cats.Count; i++)
+                frames[i] = BuildBlueprintFrame(root.transform, cats[i].CategoryID, mats[i], markMat, nailMat, h, aspect[i], place[i]);
+            var wall = root.AddComponent<BlueprintWall>();
+            wall.Categories = cats.ToArray();
+            wall.Frames = frames;
+            EditorUtility.SetDirty(wall);
+            Debug.Log("SortThem: blueprint wall built, frames " + cats.Count + ", face height " + h.ToString("F3") + " m");
         }
 
-        static void BuildBoard(string name, string texturePath, Vector3 center)
+        static Texture2D ImportBlueprintTexture(string path)
         {
-            foreach (var go in SceneManager.GetActiveScene().GetRootGameObjects())
-                if (go.name == name) Object.DestroyImmediate(go);
-
-            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
-            if (importer != null && (importer.npotScale != TextureImporterNPOTScale.None || importer.wrapMode != TextureWrapMode.Clamp || importer.anisoLevel < 4 || !importer.mipmapEnabled || importer.maxTextureSize < 2048))
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer != null && (importer.npotScale != TextureImporterNPOTScale.None || importer.wrapMode != TextureWrapMode.Clamp || importer.anisoLevel < 4 || !importer.mipmapEnabled || importer.maxTextureSize != 1024))
             {
                 importer.sRGBTexture = true;
                 importer.npotScale = TextureImporterNPOTScale.None;
                 importer.mipmapEnabled = true;
                 importer.anisoLevel = 4;
                 importer.wrapMode = TextureWrapMode.Clamp;
-                importer.maxTextureSize = 2048;
+                importer.maxTextureSize = 1024;
                 importer.textureCompression = TextureImporterCompression.Compressed;
                 importer.SaveAndReimport();
             }
-            var mat = EditorAssets.Textured(name, texturePath, Color.white, 0.18f);
-            var tex = mat.GetTexture("_BaseMap");
-            float boardH = tex != null ? BoardW * tex.height / tex.width : BoardW * 9f / 16f;
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        }
 
-            var root = new GameObject(name);
-            root.transform.SetPositionAndRotation(center, Quaternion.Euler(0f, 90f, 0f));
-            float outerW = BoardW + BoardFrameW * 2f;
-            Panel("Back", root.transform, new Vector3(0f, 0f, -BoardDepth * 0.5f), new Vector3(BoardW + BoardFrameW, boardH + BoardFrameW, BoardDepth), _woodBeam, 1f);
-            float fz = -BoardFrameDepth * 0.5f;
-            Panel("FrameTop", root.transform, new Vector3(0f, boardH * 0.5f + BoardFrameW * 0.5f, fz), new Vector3(outerW, BoardFrameW, BoardFrameDepth), _woodBeam, 1f);
-            Panel("FrameBottom", root.transform, new Vector3(0f, -boardH * 0.5f - BoardFrameW * 0.5f, fz), new Vector3(outerW, BoardFrameW, BoardFrameDepth), _woodBeam, 1f);
-            Panel("FrameLeft", root.transform, new Vector3(-BoardW * 0.5f - BoardFrameW * 0.5f, 0f, fz), new Vector3(BoardFrameW, boardH, BoardFrameDepth), _woodBeam, 1f);
-            Panel("FrameRight", root.transform, new Vector3(BoardW * 0.5f + BoardFrameW * 0.5f, 0f, fz), new Vector3(BoardFrameW, boardH, BoardFrameDepth), _woodBeam, 1f);
+        static List<Vector2> BlueprintSegments()
+        {
+            float nearMachines = -9.96f, farMachines = -7.85f;
+            var slot = GameObject.Find("SlotMachine");
+            var terminal = GameObject.Find("UpgradeTerminal");
+            if (slot != null && terminal != null)
+            {
+                var b = MachineBounds(slot);
+                b.Encapsulate(MachineBounds(terminal));
+                nearMachines = b.min.z - BpClear;
+                farMachines = b.max.z + BpClear;
+            }
+            return new List<Vector2> { new Vector2(farMachines, BpZoneMax), new Vector2(BpZoneMin, nearMachines) };
+        }
 
-            var face = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            face.name = "Face";
-            Object.DestroyImmediate(face.GetComponent<Collider>());
-            face.transform.SetParent(root.transform, false);
-            face.transform.localPosition = new Vector3(0f, 0f, -BoardDepth - 0.003f);
-            face.transform.localRotation = Quaternion.identity;
-            face.transform.localScale = new Vector3(BoardW, boardH, 1f);
-            face.GetComponent<MeshRenderer>().sharedMaterial = mat;
-            foreach (var t in root.GetComponentsInChildren<Transform>()) t.gameObject.isStatic = true;
+        static Bounds MachineBounds(GameObject go)
+        {
+            var renderers = go.GetComponentsInChildren<Renderer>();
+            var bounds = renderers[0].bounds;
+            foreach (var r in renderers) bounds.Encapsulate(r.bounds);
+            return bounds;
+        }
+
+        static float FitBlueprints(float[] aspect, List<Vector2> segments, out float[] place)
+        {
+            for (float h = BpMaxH; h >= BpMinH; h -= 0.005f)
+                if (TryPlaceBlueprints(aspect, segments, h, out place)) return h;
+            place = null;
+            return 0f;
+        }
+
+        static bool TryPlaceBlueprints(float[] aspect, List<Vector2> segments, float h, out float[] place)
+        {
+            place = new float[aspect.Length];
+            var segmentOf = new int[aspect.Length];
+            int s = 0;
+            float cursor = segments[0].y;
+            for (int i = 0; i < aspect.Length; i++)
+            {
+                float w = h * aspect[i] + BpFrameW * 2f;
+                while (cursor - w < segments[s].x)
+                {
+                    s++;
+                    if (s >= segments.Count) return false;
+                    cursor = segments[s].y;
+                }
+                place[i] = cursor - w * 0.5f;
+                segmentOf[i] = s;
+                cursor -= w + BpGap;
+            }
+            for (int seg = 0; seg <= s; seg++)
+            {
+                int first = -1, last = -1;
+                for (int i = 0; i < segmentOf.Length; i++)
+                {
+                    if (segmentOf[i] != seg) continue;
+                    if (first < 0) first = i;
+                    last = i;
+                }
+                if (first < 0) continue;
+                float top = place[first] + (h * aspect[first] + BpFrameW * 2f) * 0.5f;
+                float bottom = place[last] - (h * aspect[last] + BpFrameW * 2f) * 0.5f;
+                float shift = ((segments[seg].x - bottom) - (segments[seg].y - top)) * 0.5f;
+                for (int i = first; i <= last; i++) place[i] += shift;
+            }
+            return true;
+        }
+
+        static GameObject BuildBlueprintFrame(Transform parent, string id, Material face, Material markMat, Material nailMat, float h, float aspect, float z)
+        {
+            float w = h * aspect;
+            var root = new GameObject("BP_" + id);
+            root.transform.SetParent(parent, false);
+            root.transform.SetPositionAndRotation(new Vector3(BpWallX, BpCenterY, z), Quaternion.Euler(0f, 90f, 0f));
+
+            var mark = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            mark.name = "Mark";
+            Object.DestroyImmediate(mark.GetComponent<Collider>());
+            mark.transform.SetParent(root.transform, false);
+            mark.transform.localPosition = new Vector3(0f, 0f, -0.003f);
+            mark.transform.localScale = new Vector3(w + BpFrameW * 2f - BpMarkInset, h + BpFrameW * 2f - BpMarkInset, 1f);
+            var markRenderer = mark.GetComponent<MeshRenderer>();
+            markRenderer.sharedMaterial = markMat;
+            markRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            markRenderer.receiveShadows = false;
+            mark.isStatic = true;
+
+            RoomMesh.Box("Nail", root.transform, new Vector3(0f, h * 0.5f + 0.012f, -0.008f), new Vector3(0.012f, 0.012f, 0.016f), nailMat, 1f);
+
+            var frame = new GameObject("Frame");
+            frame.transform.SetParent(root.transform, false);
+            float outerW = w + BpFrameW * 2f, frameZ = -BpFrameDepth * 0.5f;
+            RoomMesh.Box("Back", frame.transform, new Vector3(0f, 0f, -BpDepth * 0.5f - 0.004f), new Vector3(w + BpFrameW, h + BpFrameW, BpDepth), _woodBeam, 1f);
+            RoomMesh.Box("FrameTop", frame.transform, new Vector3(0f, h * 0.5f + BpFrameW * 0.5f, frameZ), new Vector3(outerW, BpFrameW, BpFrameDepth), _woodBeam, 1f);
+            RoomMesh.Box("FrameBottom", frame.transform, new Vector3(0f, -h * 0.5f - BpFrameW * 0.5f, frameZ), new Vector3(outerW, BpFrameW, BpFrameDepth), _woodBeam, 1f);
+            RoomMesh.Box("FrameLeft", frame.transform, new Vector3(-w * 0.5f - BpFrameW * 0.5f, 0f, frameZ), new Vector3(BpFrameW, h, BpFrameDepth), _woodBeam, 1f);
+            RoomMesh.Box("FrameRight", frame.transform, new Vector3(w * 0.5f + BpFrameW * 0.5f, 0f, frameZ), new Vector3(BpFrameW, h, BpFrameDepth), _woodBeam, 1f);
+
+            var faceQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            faceQuad.name = "Face";
+            Object.DestroyImmediate(faceQuad.GetComponent<Collider>());
+            faceQuad.transform.SetParent(frame.transform, false);
+            faceQuad.transform.localPosition = new Vector3(0f, 0f, -BpDepth - 0.007f);
+            faceQuad.transform.localScale = new Vector3(w, h, 1f);
+            faceQuad.GetComponent<MeshRenderer>().sharedMaterial = face;
+
+            foreach (var t in frame.GetComponentsInChildren<Transform>(true)) t.gameObject.isStatic = false;
+            frame.SetActive(false);
+            return frame;
+        }
+
+        static Material EnsureWallMark()
+        {
+            if (!File.Exists(WallMarkTexture)) GenerateWallMark();
+            var mat = EditorAssets.Textured("Room_WallMark", WallMarkTexture, Color.white, 0.04f);
+            mat.SetFloat("_Surface", 1f);
+            mat.SetFloat("_Blend", 0f);
+            mat.SetFloat("_AlphaClip", 0f);
+            mat.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+            mat.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+            mat.SetFloat("_ZWrite", 0f);
+            mat.SetOverrideTag("RenderType", "Transparent");
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.DisableKeyword("_ALPHATEST_ON");
+            mat.renderQueue = (int)RenderQueue.Transparent;
+            EditorUtility.SetDirty(mat);
+            return mat;
+        }
+
+        static void GenerateWallMark()
+        {
+            const int size = 256;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            var pixels = new Color[size * size];
+            var wall = new Color(41f / 255f, 84f / 255f, 136f / 255f);
+            var clean = wall * 1.5f;
+            var soot = wall * 0.5f;
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float u = (x + 0.5f) / size, v = (y + 0.5f) / size;
+                    float d = Mathf.Min(Mathf.Min(u, 1f - u), Mathf.Min(v, 1f - v));
+                    float rim = 1f - Mathf.Clamp01((d - 0.03f) / 0.045f);
+                    float fade = Mathf.Clamp01(d / 0.014f);
+                    float noise = 0.82f + Mathf.PerlinNoise(u * 11f, v * 11f) * 0.36f;
+                    var c = Color.Lerp(clean, soot, rim);
+                    c.a = fade * Mathf.Lerp(0.3f, 0.5f, rim) * noise;
+                    pixels[y * size + x] = c;
+                }
+            tex.SetPixels(pixels);
+            tex.Apply();
+            Directory.CreateDirectory(Path.GetDirectoryName(WallMarkTexture));
+            File.WriteAllBytes(WallMarkTexture, tex.EncodeToPNG());
+            Object.DestroyImmediate(tex);
+            AssetDatabase.ImportAsset(WallMarkTexture, ImportAssetOptions.ForceUpdate);
+            var importer = AssetImporter.GetAtPath(WallMarkTexture) as TextureImporter;
+            if (importer != null)
+            {
+                importer.textureType = TextureImporterType.Default;
+                importer.sRGBTexture = true;
+                importer.alphaIsTransparency = true;
+                importer.alphaSource = TextureImporterAlphaSource.FromInput;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.mipmapEnabled = true;
+                importer.maxTextureSize = 256;
+                importer.SaveAndReimport();
+            }
         }
 
         [MenuItem("SortThem/4g. Assign Pile Zones")]
@@ -670,7 +847,7 @@ namespace SortThem.Editor
             var existing = GameObject.Find("SlotMachine");
             if (existing != null) Object.DestroyImmediate(existing);
 
-            var floorPos = new Vector3(ArcadeX, 0f, SouthZ + 0.35f);
+            var floorPos = new Vector3(ArcadeX, 0f, SouthZ - 0.44f);
             var root = new GameObject("SlotMachine");
             root.transform.SetPositionAndRotation(floorPos, Quaternion.Euler(0f, SlotYaw, 0f));
 

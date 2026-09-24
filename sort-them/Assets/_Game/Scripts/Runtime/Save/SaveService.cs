@@ -116,6 +116,7 @@ namespace SortThem
             }
             w.Write((byte)((_gm.RegisterPaid ? 1 : 0) | (_gm.TutorialDone ? 2 : 0)));
             w.Write((byte)Mathf.Min(255, _gm.PendingBombs));
+            w.Write(_gm.BlueprintsMask);
             w.Flush();
             return ms.ToArray();
         }
@@ -198,6 +199,7 @@ namespace SortThem
 
             int flags = r.BaseStream.Position < r.BaseStream.Length ? r.ReadByte() : 0;
             int bombs = r.BaseStream.Position < r.BaseStream.Length ? r.ReadByte() : 0;
+            _gm.ApplyBlueprintsMask(r.BaseStream.Position + 4 <= r.BaseStream.Length ? r.ReadInt32() : 0);
 
             var inv = _gm.Inventory;
             if (inv != null)

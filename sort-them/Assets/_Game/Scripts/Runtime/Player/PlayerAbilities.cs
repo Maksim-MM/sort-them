@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
 namespace SortThem
@@ -11,7 +10,7 @@ namespace SortThem
         public float StackDepth = 0.12f;
         public Material LevitateOutlineMaterial;
 
-        InputAction[] _actions;
+        GameAction[] _actions;
         readonly float[] _cooldown = new float[3];
         float _findUntil, _rackUntil, _collectUntil, _collectNextPull;
         bool _rackActive;
@@ -61,8 +60,7 @@ namespace SortThem
 
         void Start()
         {
-            var map = GameManager.I.InputAsset.FindActionMap("Player", true);
-            _actions = new[] { map.FindAction("Ability1", true), map.FindAction("Ability2", true), map.FindAction("Ability3", true) };
+            _actions = GameInput.Player.Abilities;
             _cam = Camera.main;
             _heldView = FindFirstObjectByType<HeldItemView>();
             _interaction = GetComponent<PlayerInteraction>();
@@ -85,9 +83,9 @@ namespace SortThem
 
             if (!gm.UiBlocking && !Tutorial.Running)
             {
-                if (_actions[0].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability1)) TryFindMatches(gm);
-                if (_actions[1].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability2)) TryAutoCollect(gm);
-                if (_actions[2].WasPressedThisFrame() || TouchInput.Consume(TouchButton.Ability3)) TryRackHighlight(gm);
+                if (_actions[0].Pressed() || TouchInput.Consume(TouchButton.Ability1)) TryFindMatches(gm);
+                if (_actions[1].Pressed() || TouchInput.Consume(TouchButton.Ability2)) TryAutoCollect(gm);
+                if (_actions[2].Pressed() || TouchInput.Consume(TouchButton.Ability3)) TryRackHighlight(gm);
             }
 
             UpdateLevitation(gm);

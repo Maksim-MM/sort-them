@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UpscaleSDK.Core.Input.Core;
 
 namespace SortThem
 {
@@ -15,10 +15,9 @@ namespace SortThem
 
         public static void Pulse(float low, float high, float duration)
         {
-            if (!Settings.Vibration) return;
-            var pad = Gamepad.current;
-            if (pad == null) return;
-            pad.SetMotorSpeeds(low, high);
+            if (!Settings.Vibration || !GameInput.GamepadConnected) return;
+            try { UPSInput.SetGamepadVibration(low, high); }
+            catch { return; }
             _until = Time.unscaledTime + duration;
             _active = true;
         }
@@ -32,8 +31,8 @@ namespace SortThem
         public static void Stop()
         {
             _active = false;
-            var pad = Gamepad.current;
-            if (pad != null) pad.SetMotorSpeeds(0f, 0f);
+            try { UPSInput.StopGamepadVibration(); }
+            catch { }
         }
     }
 }

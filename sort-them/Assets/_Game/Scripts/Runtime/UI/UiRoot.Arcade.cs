@@ -112,7 +112,10 @@ namespace SortThem
             UiFactory.Size(fill.parent as RectTransform, 0f, height);
             var label = Bind(UiFactory.Text(fill, "Label", "", 18f, TextAlignmentOptions.Left, Color.white), labelKey, labelFallback);
             label.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
-            UiFactory.Anchor(label.rectTransform, new Vector2(0f, 0f), new Vector2(0.52f, 1f), new Vector2(16f, 0f), Vector2.zero);
+            label.enableAutoSizing = true;
+            label.fontSizeMax = 18f;
+            label.fontSizeMin = 13f;
+            UiFactory.Anchor(label.rectTransform, new Vector2(0f, 0f), new Vector2(0.58f, 1f), new Vector2(16f, 0f), Vector2.zero);
             return fill;
         }
 

@@ -1,0 +1,1564 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Game_de
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: de
+  m_SharedData: {fileID: 11400000, guid: da8bec3d2347743d38ff54005dee7ab6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 79149654016
+    m_Localized: Kurzer roter Stadtbus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79476809728
+    m_Localized: Blauer Stadtbus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 79816548352
+    m_Localized: "Langer gr\xFCner Stadtbus"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80143704064
+    m_Localized: Kurzer gelber Doppeldeckerbus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80475054080
+    m_Localized: Oranger Doppeldeckerbus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 80814792704
+    m_Localized: Langer lila Doppeldeckerbus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81158725632
+    m_Localized: "Kurzer wei\xDFer Schulbus"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81506852864
+    m_Localized: Schwarzer Schulbus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 81880145920
+    m_Localized: "Langer t\xFCrkiser Schulbus"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82224078848
+    m_Localized: "Rosa Bus mit Dachgep\xE4cktr\xE4ger"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976133296840704
+    m_Localized: Antiope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976133816934400
+    m_Localized: Aura
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976134353805312
+    m_Localized: Betelgeuse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976134857121792
+    m_Localized: Castalia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976135368826880
+    m_Localized: Dione
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976135901503488
+    m_Localized: Eros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976136421597184
+    m_Localized: Luna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976136916525056
+    m_Localized: Mercurio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976137403064320
+    m_Localized: Pictoris
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976137889603584
+    m_Localized: Psyche
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75710324736
+    m_Localized: Kurzer roter Bagger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76050063360
+    m_Localized: Blauer Bagger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76385607680
+    m_Localized: "Langer gr\xFCner Bagger"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76721152000
+    m_Localized: Kurzer gelber Bulldozer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77052502016
+    m_Localized: Oranger Bulldozer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77379657728
+    m_Localized: Langer lila Bulldozer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77715202048
+    m_Localized: "Kurzer wei\xDFer Autokran"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78050746368
+    m_Localized: Schwarzer Autokran
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78386290688
+    m_Localized: "Langer t\xFCrkiser Autokran"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78713446400
+    m_Localized: "Rosa Stra\xDFenwalze"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72237441024
+    m_Localized: Kurze rote Polizeilimousine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72581373952
+    m_Localized: Blaue Polizeilimousine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72921112576
+    m_Localized: "Lange gr\xFCne Polizeilimousine"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73260851200
+    m_Localized: Kurzer gelber Rettungswagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73592201216
+    m_Localized: Oranger Rettungswagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73927745536
+    m_Localized: Langer lila Rettungswagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74275872768
+    m_Localized: "Kurzes wei\xDFes Feuerwehrauto"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74611417088
+    m_Localized: Schwarzes Feuerwehrauto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 74942767104
+    m_Localized: "Langes t\xFCrkises Feuerwehrauto"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75265728512
+    m_Localized: Rosa Einsatz-SUV
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976154993975296
+    m_Localized: Aeolus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976155484708864
+    m_Localized: Deimos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976156000608256
+    m_Localized: Hadar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976156545867776
+    m_Localized: Halley
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976157061767168
+    m_Localized: Ixion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976157602832384
+    m_Localized: Lelantos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976158135508992
+    m_Localized: Markab
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976158680768512
+    m_Localized: Pegaso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976159209250816
+    m_Localized: Saurus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976159729344512
+    m_Localized: Zephyr
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976138514554880
+    m_Localized: Callisto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976138996899840
+    m_Localized: Columbia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976139487633408
+    m_Localized: Doradus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976139957395456
+    m_Localized: Earth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976140427157504
+    m_Localized: Eridanus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976140909502464
+    m_Localized: Geras
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976141396041728
+    m_Localized: M78
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976141911941120
+    m_Localized: Pallas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976142478172160
+    m_Localized: Persephone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976143061180416
+    m_Localized: Set
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976143728074752
+    m_Localized: Artemis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976144269139968
+    m_Localized: Equinox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976144793427968
+    m_Localized: Fulmine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976145489682432
+    m_Localized: Hawken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976146143993856
+    m_Localized: Ixchel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976146634727424
+    m_Localized: Mistral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976147125460992
+    m_Localized: Nero
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976147641360384
+    m_Localized: Oblivion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976148144676864
+    m_Localized: Predator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976148652187648
+    m_Localized: Tetsuo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976101520793600
+    m_Localized: Anteros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976102078636032
+    m_Localized: Ascella
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976102590341120
+    m_Localized: Chandra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976103097851904
+    m_Localized: Glauke-288
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976103617945600
+    m_Localized: Ichor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976104125456384
+    m_Localized: Keres
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976104628772864
+    m_Localized: Nosaxa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976105136283648
+    m_Localized: Ocipete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976105807372288
+    m_Localized: Pluton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976106327465984
+    m_Localized: Tiny
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93531922432
+    m_Localized: Kurzer roter Monstertruck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93884243968
+    m_Localized: Blauer Monstertruck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94240759808
+    m_Localized: "Langer gr\xFCner Monstertruck"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94584692736
+    m_Localized: Kurzer gelber Monster-Van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 94953791488
+    m_Localized: Oranger Monster-Van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95297724416
+    m_Localized: Langer lila Monster-Van
+    m_Metadata:
+      m_Items: []
+  - m_Id: 95645851648
+    m_Localized: "Kurzer wei\xDFer Monstertruck mit Fahnen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96019144704
+    m_Localized: Schwarzer Monstertruck mit Fahnen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96388243456
+    m_Localized: "Langer t\xFCrkiser Monstertruck mit Fahnen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 96757342208
+    m_Localized: Rosa Monstertruck mit Lichtbalken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61764263936
+    m_Localized: Coggia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62083031040
+    m_Localized: Cupid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62431158272
+    m_Localized: Davida
+    m_Metadata:
+      m_Items: []
+  - m_Id: 62766702592
+    m_Localized: Dionysus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63106441216
+    m_Localized: Elara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63437791232
+    m_Localized: Enif
+    m_Metadata:
+      m_Items: []
+  - m_Id: 63802695680
+    m_Localized: Gliese-393
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64184377344
+    m_Localized: Kalliope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64649945088
+    m_Localized: Majoris
+    m_Metadata:
+      m_Items: []
+  - m_Id: 64977100800
+    m_Localized: Sunshine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82693840896
+    m_Localized: Clymene
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83033579520
+    m_Localized: Eos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83381706752
+    m_Localized: Etelvinna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 83729833984
+    m_Localized: Flora-8
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84061184000
+    m_Localized: Itonda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84417699840
+    m_Localized: Laelaps
+    m_Metadata:
+      m_Items: []
+  - m_Id: 84774215680
+    m_Localized: Lyssa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85126537216
+    m_Localized: Rogelia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85453692928
+    m_Localized: Roxane-317
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85793431552
+    m_Localized: Vortice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976160559816704
+    m_Localized: Aletheia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976161075716096
+    m_Localized: Anhur
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976161616781312
+    m_Localized: Horus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976162321424384
+    m_Localized: Leto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976162824740864
+    m_Localized: Medusa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976163361611776
+    m_Localized: Ponus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976163869122560
+    m_Localized: Titan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976164368244736
+    m_Localized: Typhon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976164905115648
+    m_Localized: Uranus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976165572009984
+    m_Localized: Vulcan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86233833472
+    m_Localized: Kurzer roter Rennwagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86586155008
+    m_Localized: Blauer Rennwagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 86946865152
+    m_Localized: "Langer gr\xFCner Rennwagen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87303380992
+    m_Localized: "Kurzer gelber Rennwagen mit gro\xDFem Heckfl\xFCgel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87643119616
+    m_Localized: "Oranger Rennwagen mit gro\xDFem Heckfl\xFCgel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 87999635456
+    m_Localized: "Langer lila Rennwagen mit gro\xDFem Heckfl\xFCgel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88351956992
+    m_Localized: "Kurzer wei\xDFer Rennwagen mit Airbox"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 88721055744
+    m_Localized: Schwarzer Rennwagen mit Airbox
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89081765888
+    m_Localized: "Langer t\xFCrkiser Rennwagen mit Airbox"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89429893120
+    m_Localized: Rosa Rennwagen mit Doppelnase
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976149457494016
+    m_Localized: Adonis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976149952421888
+    m_Localized: Ananke
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976150447349760
+    m_Localized: Cadmus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976150959054848
+    m_Localized: Haumea
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976151449788416
+    m_Localized: Hemera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976151948910592
+    m_Localized: Rhode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976152464809984
+    m_Localized: Silenus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976153022652416
+    m_Localized: Styx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976153756655616
+    m_Localized: Taandoco
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976154280943616
+    m_Localized: Whiteout
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89887072256
+    m_Localized: Kurze rote Retro-Limousine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90243588096
+    m_Localized: Blaue Retro-Limousine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90587521024
+    m_Localized: "Lange gr\xFCne Retro-Limousine"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 90927259648
+    m_Localized: Kurzer gelber Retro-Roadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91287969792
+    m_Localized: Oranger Retro-Roadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91636097024
+    m_Localized: Langer lila Retro-Roadster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 91988418560
+    m_Localized: "Kurzer wei\xDFer Retro-Kombi"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92349128704
+    m_Localized: Schwarzer Retro-Kombi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 92718227456
+    m_Localized: "Langer t\xFCrkiser Retro-Kombi"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93078937600
+    m_Localized: "Rosa Retro-Limousine mit Gep\xE4ck"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976096034643968
+    m_Localized: Endeis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976096554737664
+    m_Localized: Erebus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976097045471232
+    m_Localized: Foreword
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976097552982016
+    m_Localized: Merope
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976098039521280
+    m_Localized: Otomi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976098555420672
+    m_Localized: Pheme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976099075514368
+    m_Localized: Salacia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976099595608064
+    m_Localized: Sapphire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976100296056832
+    m_Localized: Thisbe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976100799373312
+    m_Localized: Varuna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976166217932800
+    m_Localized: Diotima
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976166742220800
+    m_Localized: Egeria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976167283286016
+    m_Localized: Herculina-532
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976167811768320
+    m_Localized: Icebreaker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976168310890496
+    m_Localized: Lancelot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976168822595584
+    m_Localized: Lares
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976169393020928
+    m_Localized: Nessus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976169942474752
+    m_Localized: Palma-372
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976170475151360
+    m_Localized: Quaoar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976171032993792
+    m_Localized: Talos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659379433472
+    m_Localized: Car_01
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515659987607552
+    m_Localized: Car_03
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515661333979136
+    m_Localized: Car_07
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515662369972224
+    m_Localized: Car_08
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515663070420992
+    m_Localized: Car_11
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976128154624000
+    m_Localized: Benzaiten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976128641163264
+    m_Localized: Boar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976129131896832
+    m_Localized: Carinae
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976129622630400
+    m_Localized: Echo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976130117558272
+    m_Localized: Encelado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976130612486144
+    m_Localized: Gaia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976131103219712
+    m_Localized: Grannus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976131589758976
+    m_Localized: Orcus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976132093075456
+    m_Localized: Sirius
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976132608974848
+    m_Localized: Supernova
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65396531200
+    m_Localized: Aphrodite
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65715298304
+    m_Localized: Atlas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66038259712
+    m_Localized: Azura
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66361221120
+    m_Localized: Azzurro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66684182528
+    m_Localized: Belenus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67002949632
+    m_Localized: Europa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67330105344
+    m_Localized: Hyas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67653066752
+    m_Localized: Juno
+    m_Metadata:
+      m_Items: []
+  - m_Id: 67980222464
+    m_Localized: Rhea
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68307378176
+    m_Localized: Thalassa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976107006943232
+    m_Localized: Alcyone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976107552202752
+    m_Localized: Faunus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976108089073664
+    m_Localized: Interamnia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976108613361664
+    m_Localized: Mimas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976109141843968
+    m_Localized: Nephele
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976109661937664
+    m_Localized: Oniros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976110165254144
+    m_Localized: Ragnar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976110676959232
+    m_Localized: Scamander
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976111213830144
+    m_Localized: Tethys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976111721340928
+    m_Localized: Tlaloc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68777140224
+    m_Localized: Kurzer roter Container-Lkw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69112684544
+    m_Localized: Blauer Container-Lkw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69444034560
+    m_Localized: "Langer gr\xFCner Container-Lkw"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 69779578880
+    m_Localized: Kurzer gelber Tanklaster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70115123200
+    m_Localized: Oranger Tanklaster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70438084608
+    m_Localized: Langer lila Tanklaster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 70777823232
+    m_Localized: "Kurzer wei\xDFer Holztransporter"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71113367552
+    m_Localized: Schwarzer Holztransporter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71444717568
+    m_Localized: "Langer t\xFCrkiser Holztransporter"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71788650496
+    m_Localized: Rosa Kipplaster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976171808940032
+    m_Localized: Hercules
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976172672966656
+    m_Localized: Limos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976173167894528
+    m_Localized: Moros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976173818011648
+    m_Localized: Pan_Burger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976174459740160
+    m_Localized: Pan_Donut
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976175130828800
+    m_Localized: Pan_HotDog
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976175617368064
+    m_Localized: Pan_IceCream
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976176108101632
+    m_Localized: Pan_Pizza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976176619806720
+    m_Localized: Peleus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976177123123200
+    m_Localized: Thoth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 78818304000
+    m_Localized: Busse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976132768358400
+    m_Localized: Klassische Sportwagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 75374780416
+    m_Localized: Baumaschinen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 71889313792
+    m_Localized: Einsatzfahrzeuge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976154461298688
+    m_Localized: Extrem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976138036404224
+    m_Localized: GT-Rennen A
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976143220563968
+    m_Localized: GT-Rennen R
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976100958756864
+    m_Localized: Kompaktwagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 93183795200
+    m_Localized: Monstertrucks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 61369999360
+    m_Localized: Muscle Cars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82345713664
+    m_Localized: Pick-ups
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976159884533760
+    m_Localized: Polizei
+    m_Metadata:
+      m_Items: []
+  - m_Id: 85898289152
+    m_Localized: Rennwagen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976148803182592
+    m_Localized: Rallye & Tuning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 89543139328
+    m_Localized: Retro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976094990262272
+    m_Localized: Limousinen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976165723004928
+    m_Localized: Einsatz & Service
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515147544322048
+    m_Localized: Spezial
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976127663890432
+    m_Localized: "Sportcoup\xE9s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 65077764096
+    m_Localized: Supercars
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976106482655232
+    m_Localized: SUVs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 68433207296
+    m_Localized: Lkw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1976171209154560
+    m_Localized: Vans & Foodtrucks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940170
+    m_Localized: Gleiche finden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940171
+    m_Localized: Auto-Sammeln
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940172
+    m_Localized: Regal hervorheben
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940165
+    m_Localized: Ducken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940166
+    m_Localized: Nehmen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940163
+    m_Localized: Springen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940162
+    m_Localized: Umsehen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1355034158686208
+    m_Localized: Maus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940161
+    m_Localized: Bewegen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940173
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940167
+    m_Localized: Ins Regal stellen oder werfen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940168
+    m_Localized: "Gegenstand in der Hand w\xE4hlen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940164
+    m_Localized: Sprinten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940169
+    m_Localized: Mausrad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509851127808
+    m_Localized: "F\xE4higkeit ist noch nicht bereit"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900079157250
+    m_Localized: Eine Bombe ist aus dem Automaten gefallen, such sie im Haufen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 342033133723648
+    m_Localized: 'Kanister gefunden: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126400
+    m_Localized: 'Ersatzteilkiste: +1'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126403
+    m_Localized: "Alle F\xE4cher geschlossen. Im Lager herrscht perfekte Ordnung!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193509872099328
+    m_Localized: Nimm etwas in die Hand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126401
+    m_Localized: Keine Ersatzteilkisten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 350177448681472
+    m_Localized: 'Radio: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055873
+    m_Localized: Kasse ist leer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637919055872
+    m_Localized: 'Kasse: +${0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1321637906472960
+    m_Localized: 'Kasse: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1260479111487488
+    m_Localized: Dreh dein Handy ins Querformat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867462
+    m_Localized: 'Gewonnen: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866817126402
+    m_Localized: "Dieses Auto ist voll aufger\xFCstet"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044485
+    m_Localized: Kreis
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044484
+    m_Localized: Kreuz
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044483
+    m_Localized: Steuerkreuz
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969817973547008
+    m_Localized: Linker Stick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044481
+    m_Localized: "Linker Stick (dr\xFCcken)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044480
+    m_Localized: Rechter Stick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044482
+    m_Localized: "Rechter Stick (dr\xFCcken)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044486
+    m_Localized: Quadrat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5969818049044487
+    m_Localized: Dreieck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830529
+    m_Localized: "F\xE4higkeiten laden schneller wieder auf"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678935830528
+    m_Localized: Schnellere Abklingzeit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774337
+    m_Localized: "+1 Kiste zum Aufr\xFCsten besonderer Autos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515876501774336
+    m_Localized: Ersatzteilkiste
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1348894855258113
+    m_Localized: "Gleiche finden und Regal hervorheben halten l\xE4nger"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1348894855258112
+    m_Localized: "L\xE4ngere Wirkung"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612801
+    m_Localized: "+1 Inventarplatz zus\xE4tzlich zum Terminal"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300678801612800
+    m_Localized: Extra-Platz
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659649
+    m_Localized: Auto-Sammeln reicht weiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300679061659648
+    m_Localized: "Gr\xF6\xDFerer Sammelradius"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952070
+    m_Localized: Aufkleber
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952069
+    m_Localized: Motor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952068
+    m_Localized: Dachscheinwerfer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952065
+    m_Localized: "Frontsto\xDFstange"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952064
+    m_Localized: Scheinwerfer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952067
+    m_Localized: Auspuff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146369
+    m_Localized: Blaulicht
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952066
+    m_Localized: "Hecksto\xDFstange"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952071
+    m_Localized: Spoiler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703620952072
+    m_Localized: Turbine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515703625146368
+    m_Localized: "R\xE4der"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044929
+    m_Localized: Sieh dich um
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044930
+    m_Localized: "Rechte Bildschirmh\xE4lfte \u2014 umsehen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044933
+    m_Localized: Stell es ins markierte Regal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044934
+    m_Localized: "Ablegen-Taste \u2014 das markierte Regal"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044931
+    m_Localized: Nimm irgendein Auto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044932
+    m_Localized: "Nehmen-Taste \u2014 nimm irgendein Auto"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295069073408
+    m_Localized: Lauf herum
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1426295090044928
+    m_Localized: "Linker Stick \u2014 lauf herum"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956546
+    m_Localized: Finden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956547
+    m_Localized: Sammeln
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956548
+    m_Localized: Regal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373511
+    m_Localized: "Zur\xFCck"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2834538177748992
+    m_Localized: Guthaben
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762244
+    m_Localized: Kaufen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932103
+    m_Localized: Abbrechen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 405790720
+    m_Localized: Autos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762243
+    m_Localized: "Schlie\xDFen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762241
+    m_Localized: Kanister
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185390940160
+    m_Localized: Steuerung
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932096
+    m_Localized: Ersatzteilkisten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956545
+    m_Localized: "{0} nehmen \xB7 {1} ablegen/werfen \xB7 {2} w\xE4hlen \xB7 {3}
+      Men\xFC"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1354185374162944
+    m_Localized: Sprache
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762245
+    m_Localized: Max.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373504
+    m_Localized: Musik
+    m_Metadata:
+      m_Items: []
+  - m_Id: 430956544
+    m_Localized: "Fortschritt zur\xFCcksetzen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373510
+    m_Localized: Aus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373509
+    m_Localized: An
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762246
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2832435401187328
+    m_Localized: "Dr\xFCck Kaufen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932102
+    m_Localized: "Gesamten Fortschritt zur\xFCcksetzen und neu anfangen?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762247
+    m_Localized: Weiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762248
+    m_Localized: Speichern
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762249
+    m_Localized: Gespeichert
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373506
+    m_Localized: Empfindlichkeit horizontal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373507
+    m_Localized: Empfindlichkeit vertikal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334676991401984
+    m_Localized: Einstellungen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373505
+    m_Localized: Effekte
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762240
+    m_Localized: "F\xE4cher"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1350246335504384
+    m_Localized: Haufen mischen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1350246343892992
+    m_Localized: "Haufen wird gemischt\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670345895936
+    m_Localized: Spielautomat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900079157248
+    m_Localized: Bombe!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900079157249
+    m_Localized: Bombe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867460
+    m_Localized: "Abklingzeit \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1348886332432384
+    m_Localized: "Dauer \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867461
+    m_Localized: "Radius \xD7{0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867458
+    m_Localized: Leer. Alle Belohnungen sind weg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1342900070768640
+    m_Localized: Belohnungen sind aus. Jeder Dreh bringt eine Bombe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867459
+    m_Localized: Jeder Dreh bringt eine Belohnung
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2862273583374336
+    m_Localized: Preise
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867457
+    m_Localized: "Belohnungen \xFCbrig: {0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932099
+    m_Localized: Alle Teile eingebaut
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932100
+    m_Localized: "Halten zum Aufr\xFCsten"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932097
+    m_Localized: 'Upgrades: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932101
+    m_Localized: Voll ausgebaut
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932098
+    m_Localized: "N\xE4chstes Teil: {0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1300670366867456
+    m_Localized: "Drehen \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762242
+    m_Localized: Upgrade-Terminal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 426762250
+    m_Localized: "H\xE4ngende Autos zur\xFCckholen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 334677012373508
+    m_Localized: Vibration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2515866812932104
+    m_Localized: "Ja, zur\xFCcksetzen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793985
+    m_Localized: "Taste 2: zieht gleiche Autos in der N\xE4he in dein Inventar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 566074793984
+    m_Localized: Auto-Sammeln
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026881
+    m_Localized: Ein ins richtige Regal geworfenes Auto rastet im Fach ein
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565756026880
+    m_Localized: Auto-Ablegen beim Werfen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923073
+    m_Localized: Halte Strg, um dich unter Regale zu ducken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565537923072
+    m_Localized: Ducken freischalten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936385
+    m_Localized: 'Taste 1: gleiche Autos im Haufen leuchten und schweben hoch'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565969936384
+    m_Localized: Gleiche finden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565210767360
+    m_Localized: +1 Platz pro Stufe, bis zu 15
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565202378752
+    m_Localized: "Gr\xF6\xDFeres Inventar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013569
+    m_Localized: "Autos aus gr\xF6\xDFerer Entfernung nehmen und ablegen"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565324013568
+    m_Localized: "Gr\xF6\xDFere Reichweite"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884481
+    m_Localized: "Taste 3: hebt das Regal f\xFCr das Auto in der Hand hervor"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565860884480
+    m_Localized: Regal hervorheben
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065473
+    m_Localized: Halte Shift, um zu rennen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565433065472
+    m_Localized: Sprint freischalten
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565646974976
+    m_Localized: Autos fliegen weiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 565642780672
+    m_Localized: "St\xE4rkerer Wurf"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

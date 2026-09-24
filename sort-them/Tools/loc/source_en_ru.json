@@ -1,0 +1,1542 @@
+{
+"car.car_buses_00": {
+"en": "Red short city bus",
+"ru": "Красный короткий городской автобус"
+},
+"car.car_buses_01": {
+"en": "Blue city bus",
+"ru": "Синий городской автобус"
+},
+"car.car_buses_02": {
+"en": "Green long city bus",
+"ru": "Зелёный длинный городской автобус"
+},
+"car.car_buses_03": {
+"en": "Yellow short double-decker bus",
+"ru": "Жёлтый короткий двухэтажный автобус"
+},
+"car.car_buses_04": {
+"en": "Orange double-decker bus",
+"ru": "Оранжевый двухэтажный автобус"
+},
+"car.car_buses_05": {
+"en": "Purple long double-decker bus",
+"ru": "Фиолетовый длинный двухэтажный автобус"
+},
+"car.car_buses_06": {
+"en": "White short school bus",
+"ru": "Белый короткий школьный автобус"
+},
+"car.car_buses_07": {
+"en": "Black school bus",
+"ru": "Чёрный школьный автобус"
+},
+"car.car_buses_08": {
+"en": "Teal long school bus",
+"ru": "Бирюзовый длинный школьный автобус"
+},
+"car.car_buses_09": {
+"en": "Pink bus with roof rack",
+"ru": "Розовый автобус с багажником"
+},
+"car.car_classicsport_00": {
+"en": "Antiope",
+"ru": "Antiope"
+},
+"car.car_classicsport_01": {
+"en": "Aura",
+"ru": "Aura"
+},
+"car.car_classicsport_02": {
+"en": "Betelgeuse",
+"ru": "Betelgeuse"
+},
+"car.car_classicsport_03": {
+"en": "Castalia",
+"ru": "Castalia"
+},
+"car.car_classicsport_04": {
+"en": "Dione",
+"ru": "Dione"
+},
+"car.car_classicsport_05": {
+"en": "Eros",
+"ru": "Eros"
+},
+"car.car_classicsport_06": {
+"en": "Luna",
+"ru": "Luna"
+},
+"car.car_classicsport_07": {
+"en": "Mercurio",
+"ru": "Mercurio"
+},
+"car.car_classicsport_08": {
+"en": "Pictoris",
+"ru": "Pictoris"
+},
+"car.car_classicsport_09": {
+"en": "Psyche",
+"ru": "Psyche"
+},
+"car.car_construction_00": {
+"en": "Red short excavator",
+"ru": "Красный короткий экскаватор"
+},
+"car.car_construction_01": {
+"en": "Blue excavator",
+"ru": "Синий экскаватор"
+},
+"car.car_construction_02": {
+"en": "Green long excavator",
+"ru": "Зелёный длинный экскаватор"
+},
+"car.car_construction_03": {
+"en": "Yellow short bulldozer",
+"ru": "Жёлтый короткий бульдозер"
+},
+"car.car_construction_04": {
+"en": "Orange bulldozer",
+"ru": "Оранжевый бульдозер"
+},
+"car.car_construction_05": {
+"en": "Purple long bulldozer",
+"ru": "Фиолетовый длинный бульдозер"
+},
+"car.car_construction_06": {
+"en": "White short mobile crane",
+"ru": "Белый короткий автокран"
+},
+"car.car_construction_07": {
+"en": "Black mobile crane",
+"ru": "Чёрный автокран"
+},
+"car.car_construction_08": {
+"en": "Teal long mobile crane",
+"ru": "Бирюзовый длинный автокран"
+},
+"car.car_construction_09": {
+"en": "Pink road roller",
+"ru": "Розовый дорожный каток"
+},
+"car.car_emergency_00": {
+"en": "Red short police sedan",
+"ru": "Красный короткий полицейский седан"
+},
+"car.car_emergency_01": {
+"en": "Blue police sedan",
+"ru": "Синий полицейский седан"
+},
+"car.car_emergency_02": {
+"en": "Green long police sedan",
+"ru": "Зелёный длинный полицейский седан"
+},
+"car.car_emergency_03": {
+"en": "Yellow short ambulance van",
+"ru": "Жёлтый короткий фургон скорой помощи"
+},
+"car.car_emergency_04": {
+"en": "Orange ambulance van",
+"ru": "Оранжевый фургон скорой помощи"
+},
+"car.car_emergency_05": {
+"en": "Purple long ambulance van",
+"ru": "Фиолетовый длинный фургон скорой помощи"
+},
+"car.car_emergency_06": {
+"en": "White short fire truck",
+"ru": "Белый короткий пожарный автомобиль"
+},
+"car.car_emergency_07": {
+"en": "Black fire truck",
+"ru": "Чёрный пожарный автомобиль"
+},
+"car.car_emergency_08": {
+"en": "Teal long fire truck",
+"ru": "Бирюзовый длинный пожарный автомобиль"
+},
+"car.car_emergency_09": {
+"en": "Pink emergency SUV",
+"ru": "Розовый внедорожник спецслужб"
+},
+"car.car_extreme_00": {
+"en": "Aeolus",
+"ru": "Aeolus"
+},
+"car.car_extreme_01": {
+"en": "Deimos",
+"ru": "Deimos"
+},
+"car.car_extreme_02": {
+"en": "Hadar",
+"ru": "Hadar"
+},
+"car.car_extreme_03": {
+"en": "Halley",
+"ru": "Halley"
+},
+"car.car_extreme_04": {
+"en": "Ixion",
+"ru": "Ixion"
+},
+"car.car_extreme_05": {
+"en": "Lelantos",
+"ru": "Lelantos"
+},
+"car.car_extreme_06": {
+"en": "Markab",
+"ru": "Markab"
+},
+"car.car_extreme_07": {
+"en": "Pegaso",
+"ru": "Pegaso"
+},
+"car.car_extreme_08": {
+"en": "Saurus",
+"ru": "Saurus"
+},
+"car.car_extreme_09": {
+"en": "Zephyr",
+"ru": "Zephyr"
+},
+"car.car_gta_00": {
+"en": "Callisto",
+"ru": "Callisto"
+},
+"car.car_gta_01": {
+"en": "Columbia",
+"ru": "Columbia"
+},
+"car.car_gta_02": {
+"en": "Doradus",
+"ru": "Doradus"
+},
+"car.car_gta_03": {
+"en": "Earth",
+"ru": "Earth"
+},
+"car.car_gta_04": {
+"en": "Eridanus",
+"ru": "Eridanus"
+},
+"car.car_gta_05": {
+"en": "Geras",
+"ru": "Geras"
+},
+"car.car_gta_06": {
+"en": "M78",
+"ru": "M78"
+},
+"car.car_gta_07": {
+"en": "Pallas",
+"ru": "Pallas"
+},
+"car.car_gta_08": {
+"en": "Persephone",
+"ru": "Persephone"
+},
+"car.car_gta_09": {
+"en": "Set",
+"ru": "Set"
+},
+"car.car_gtr_00": {
+"en": "Artemis",
+"ru": "Artemis"
+},
+"car.car_gtr_01": {
+"en": "Equinox",
+"ru": "Equinox"
+},
+"car.car_gtr_02": {
+"en": "Fulmine",
+"ru": "Fulmine"
+},
+"car.car_gtr_03": {
+"en": "Hawken",
+"ru": "Hawken"
+},
+"car.car_gtr_04": {
+"en": "Ixchel",
+"ru": "Ixchel"
+},
+"car.car_gtr_05": {
+"en": "Mistral",
+"ru": "Mistral"
+},
+"car.car_gtr_06": {
+"en": "Nero",
+"ru": "Nero"
+},
+"car.car_gtr_07": {
+"en": "Oblivion",
+"ru": "Oblivion"
+},
+"car.car_gtr_08": {
+"en": "Predator",
+"ru": "Predator"
+},
+"car.car_gtr_09": {
+"en": "Tetsuo",
+"ru": "Tetsuo"
+},
+"car.car_hatchbacks_00": {
+"en": "Anteros",
+"ru": "Anteros"
+},
+"car.car_hatchbacks_01": {
+"en": "Ascella",
+"ru": "Ascella"
+},
+"car.car_hatchbacks_02": {
+"en": "Chandra",
+"ru": "Chandra"
+},
+"car.car_hatchbacks_03": {
+"en": "Glauke-288",
+"ru": "Glauke-288"
+},
+"car.car_hatchbacks_04": {
+"en": "Ichor",
+"ru": "Ichor"
+},
+"car.car_hatchbacks_05": {
+"en": "Keres",
+"ru": "Keres"
+},
+"car.car_hatchbacks_06": {
+"en": "Nosaxa",
+"ru": "Nosaxa"
+},
+"car.car_hatchbacks_07": {
+"en": "Ocipete",
+"ru": "Ocipete"
+},
+"car.car_hatchbacks_08": {
+"en": "Pluton",
+"ru": "Pluton"
+},
+"car.car_hatchbacks_09": {
+"en": "Tiny",
+"ru": "Tiny"
+},
+"car.car_monster_00": {
+"en": "Red short monster truck",
+"ru": "Красный короткий монстр-трак"
+},
+"car.car_monster_01": {
+"en": "Blue monster truck",
+"ru": "Синий монстр-трак"
+},
+"car.car_monster_02": {
+"en": "Green long monster truck",
+"ru": "Зелёный длинный монстр-трак"
+},
+"car.car_monster_03": {
+"en": "Yellow short monster van",
+"ru": "Жёлтый короткий монстр-фургон"
+},
+"car.car_monster_04": {
+"en": "Orange monster van",
+"ru": "Оранжевый монстр-фургон"
+},
+"car.car_monster_05": {
+"en": "Purple long monster van",
+"ru": "Фиолетовый длинный монстр-фургон"
+},
+"car.car_monster_06": {
+"en": "White short monster truck with flags",
+"ru": "Белый короткий монстр-трак с флагами"
+},
+"car.car_monster_07": {
+"en": "Black monster truck with flags",
+"ru": "Чёрный монстр-трак с флагами"
+},
+"car.car_monster_08": {
+"en": "Teal long monster truck with flags",
+"ru": "Бирюзовый длинный монстр-трак с флагами"
+},
+"car.car_monster_09": {
+"en": "Pink monster truck with light bar",
+"ru": "Розовый монстр-трак с фарами"
+},
+"car.car_muscle_00": {
+"en": "Coggia",
+"ru": "Coggia"
+},
+"car.car_muscle_01": {
+"en": "Cupid",
+"ru": "Cupid"
+},
+"car.car_muscle_02": {
+"en": "Davida",
+"ru": "Davida"
+},
+"car.car_muscle_03": {
+"en": "Dionysus",
+"ru": "Dionysus"
+},
+"car.car_muscle_04": {
+"en": "Elara",
+"ru": "Elara"
+},
+"car.car_muscle_05": {
+"en": "Enif",
+"ru": "Enif"
+},
+"car.car_muscle_06": {
+"en": "Gliese-393",
+"ru": "Gliese-393"
+},
+"car.car_muscle_07": {
+"en": "Kalliope",
+"ru": "Kalliope"
+},
+"car.car_muscle_08": {
+"en": "Majoris",
+"ru": "Majoris"
+},
+"car.car_muscle_09": {
+"en": "Sunshine",
+"ru": "Sunshine"
+},
+"car.car_pickups_00": {
+"en": "Clymene",
+"ru": "Clymene"
+},
+"car.car_pickups_01": {
+"en": "Eos",
+"ru": "Eos"
+},
+"car.car_pickups_02": {
+"en": "Etelvinna",
+"ru": "Etelvinna"
+},
+"car.car_pickups_03": {
+"en": "Flora-8",
+"ru": "Flora-8"
+},
+"car.car_pickups_04": {
+"en": "Itonda",
+"ru": "Itonda"
+},
+"car.car_pickups_05": {
+"en": "Laelaps",
+"ru": "Laelaps"
+},
+"car.car_pickups_06": {
+"en": "Lyssa",
+"ru": "Lyssa"
+},
+"car.car_pickups_07": {
+"en": "Rogelia",
+"ru": "Rogelia"
+},
+"car.car_pickups_08": {
+"en": "Roxane-317",
+"ru": "Roxane-317"
+},
+"car.car_pickups_09": {
+"en": "Vortice",
+"ru": "Vortice"
+},
+"car.car_police_00": {
+"en": "Aletheia",
+"ru": "Aletheia"
+},
+"car.car_police_01": {
+"en": "Anhur",
+"ru": "Anhur"
+},
+"car.car_police_02": {
+"en": "Horus",
+"ru": "Horus"
+},
+"car.car_police_03": {
+"en": "Leto",
+"ru": "Leto"
+},
+"car.car_police_04": {
+"en": "Medusa",
+"ru": "Medusa"
+},
+"car.car_police_05": {
+"en": "Ponus",
+"ru": "Ponus"
+},
+"car.car_police_06": {
+"en": "Titan",
+"ru": "Titan"
+},
+"car.car_police_07": {
+"en": "Typhon",
+"ru": "Typhon"
+},
+"car.car_police_08": {
+"en": "Uranus",
+"ru": "Uranus"
+},
+"car.car_police_09": {
+"en": "Vulcan",
+"ru": "Vulcan"
+},
+"car.car_racing_00": {
+"en": "Red short racing car",
+"ru": "Красный короткий гоночный болид"
+},
+"car.car_racing_01": {
+"en": "Blue racing car",
+"ru": "Синий гоночный болид"
+},
+"car.car_racing_02": {
+"en": "Green long racing car",
+"ru": "Зелёный длинный гоночный болид"
+},
+"car.car_racing_03": {
+"en": "Yellow short racing car with big wing",
+"ru": "Жёлтый короткий болид с большим антикрылом"
+},
+"car.car_racing_04": {
+"en": "Orange racing car with big wing",
+"ru": "Оранжевый болид с большим антикрылом"
+},
+"car.car_racing_05": {
+"en": "Purple long racing car with big wing",
+"ru": "Фиолетовый длинный болид с большим антикрылом"
+},
+"car.car_racing_06": {
+"en": "White short racing car with airbox",
+"ru": "Белый короткий болид с воздухозаборником"
+},
+"car.car_racing_07": {
+"en": "Black racing car with airbox",
+"ru": "Чёрный болид с воздухозаборником"
+},
+"car.car_racing_08": {
+"en": "Teal long racing car with airbox",
+"ru": "Бирюзовый длинный болид с воздухозаборником"
+},
+"car.car_racing_09": {
+"en": "Pink twin-nose racing car",
+"ru": "Розовый болид с двойным носом"
+},
+"car.car_rally_00": {
+"en": "Adonis",
+"ru": "Adonis"
+},
+"car.car_rally_01": {
+"en": "Ananke",
+"ru": "Ananke"
+},
+"car.car_rally_02": {
+"en": "Cadmus",
+"ru": "Cadmus"
+},
+"car.car_rally_03": {
+"en": "Haumea",
+"ru": "Haumea"
+},
+"car.car_rally_04": {
+"en": "Hemera",
+"ru": "Hemera"
+},
+"car.car_rally_05": {
+"en": "Rhode",
+"ru": "Rhode"
+},
+"car.car_rally_06": {
+"en": "Silenus",
+"ru": "Silenus"
+},
+"car.car_rally_07": {
+"en": "Styx",
+"ru": "Styx"
+},
+"car.car_rally_08": {
+"en": "Taandoco",
+"ru": "Taandoco"
+},
+"car.car_rally_09": {
+"en": "Whiteout",
+"ru": "Whiteout"
+},
+"car.car_retro_00": {
+"en": "Red short retro sedan",
+"ru": "Красный короткий ретро-седан"
+},
+"car.car_retro_01": {
+"en": "Blue retro sedan",
+"ru": "Синий ретро-седан"
+},
+"car.car_retro_02": {
+"en": "Green long retro sedan",
+"ru": "Зелёный длинный ретро-седан"
+},
+"car.car_retro_03": {
+"en": "Yellow short retro roadster",
+"ru": "Жёлтый короткий ретро-родстер"
+},
+"car.car_retro_04": {
+"en": "Orange retro roadster",
+"ru": "Оранжевый ретро-родстер"
+},
+"car.car_retro_05": {
+"en": "Purple long retro roadster",
+"ru": "Фиолетовый длинный ретро-родстер"
+},
+"car.car_retro_06": {
+"en": "White short retro station wagon",
+"ru": "Белый короткий ретро-универсал"
+},
+"car.car_retro_07": {
+"en": "Black retro station wagon",
+"ru": "Чёрный ретро-универсал"
+},
+"car.car_retro_08": {
+"en": "Teal long retro station wagon",
+"ru": "Бирюзовый длинный ретро-универсал"
+},
+"car.car_retro_09": {
+"en": "Pink retro sedan with luggage",
+"ru": "Розовый ретро-седан с багажом"
+},
+"car.car_sedans_00": {
+"en": "Endeis",
+"ru": "Endeis"
+},
+"car.car_sedans_01": {
+"en": "Erebus",
+"ru": "Erebus"
+},
+"car.car_sedans_02": {
+"en": "Foreword",
+"ru": "Foreword"
+},
+"car.car_sedans_03": {
+"en": "Merope",
+"ru": "Merope"
+},
+"car.car_sedans_04": {
+"en": "Otomi",
+"ru": "Otomi"
+},
+"car.car_sedans_05": {
+"en": "Pheme",
+"ru": "Pheme"
+},
+"car.car_sedans_06": {
+"en": "Salacia",
+"ru": "Salacia"
+},
+"car.car_sedans_07": {
+"en": "Sapphire",
+"ru": "Sapphire"
+},
+"car.car_sedans_08": {
+"en": "Thisbe",
+"ru": "Thisbe"
+},
+"car.car_sedans_09": {
+"en": "Varuna",
+"ru": "Varuna"
+},
+"car.car_service_00": {
+"en": "Diotima",
+"ru": "Diotima"
+},
+"car.car_service_01": {
+"en": "Egeria",
+"ru": "Egeria"
+},
+"car.car_service_02": {
+"en": "Herculina-532",
+"ru": "Herculina-532"
+},
+"car.car_service_03": {
+"en": "Icebreaker",
+"ru": "Icebreaker"
+},
+"car.car_service_04": {
+"en": "Lancelot",
+"ru": "Lancelot"
+},
+"car.car_service_05": {
+"en": "Lares",
+"ru": "Lares"
+},
+"car.car_service_06": {
+"en": "Nessus",
+"ru": "Nessus"
+},
+"car.car_service_07": {
+"en": "Palma-372",
+"ru": "Palma-372"
+},
+"car.car_service_08": {
+"en": "Quaoar",
+"ru": "Quaoar"
+},
+"car.car_service_09": {
+"en": "Talos",
+"ru": "Talos"
+},
+"car.car_special_00": {
+"en": "Car_01",
+"ru": "Car_01"
+},
+"car.car_special_01": {
+"en": "Car_03",
+"ru": "Car_03"
+},
+"car.car_special_02": {
+"en": "Car_07",
+"ru": "Car_07"
+},
+"car.car_special_03": {
+"en": "Car_08",
+"ru": "Car_08"
+},
+"car.car_special_04": {
+"en": "Car_11",
+"ru": "Car_11"
+},
+"car.car_sportcoupe_00": {
+"en": "Benzaiten",
+"ru": "Benzaiten"
+},
+"car.car_sportcoupe_01": {
+"en": "Boar",
+"ru": "Boar"
+},
+"car.car_sportcoupe_02": {
+"en": "Carinae",
+"ru": "Carinae"
+},
+"car.car_sportcoupe_03": {
+"en": "Echo",
+"ru": "Echo"
+},
+"car.car_sportcoupe_04": {
+"en": "Encelado",
+"ru": "Encelado"
+},
+"car.car_sportcoupe_05": {
+"en": "Gaia",
+"ru": "Gaia"
+},
+"car.car_sportcoupe_06": {
+"en": "Grannus",
+"ru": "Grannus"
+},
+"car.car_sportcoupe_07": {
+"en": "Orcus",
+"ru": "Orcus"
+},
+"car.car_sportcoupe_08": {
+"en": "Sirius",
+"ru": "Sirius"
+},
+"car.car_sportcoupe_09": {
+"en": "Supernova",
+"ru": "Supernova"
+},
+"car.car_supercars_00": {
+"en": "Aphrodite",
+"ru": "Aphrodite"
+},
+"car.car_supercars_01": {
+"en": "Atlas",
+"ru": "Atlas"
+},
+"car.car_supercars_02": {
+"en": "Azura",
+"ru": "Azura"
+},
+"car.car_supercars_03": {
+"en": "Azzurro",
+"ru": "Azzurro"
+},
+"car.car_supercars_04": {
+"en": "Belenus",
+"ru": "Belenus"
+},
+"car.car_supercars_05": {
+"en": "Europa",
+"ru": "Europa"
+},
+"car.car_supercars_06": {
+"en": "Hyas",
+"ru": "Hyas"
+},
+"car.car_supercars_07": {
+"en": "Juno",
+"ru": "Juno"
+},
+"car.car_supercars_08": {
+"en": "Rhea",
+"ru": "Rhea"
+},
+"car.car_supercars_09": {
+"en": "Thalassa",
+"ru": "Thalassa"
+},
+"car.car_suv_00": {
+"en": "Alcyone",
+"ru": "Alcyone"
+},
+"car.car_suv_01": {
+"en": "Faunus",
+"ru": "Faunus"
+},
+"car.car_suv_02": {
+"en": "Interamnia",
+"ru": "Interamnia"
+},
+"car.car_suv_03": {
+"en": "Mimas",
+"ru": "Mimas"
+},
+"car.car_suv_04": {
+"en": "Nephele",
+"ru": "Nephele"
+},
+"car.car_suv_05": {
+"en": "Oniros",
+"ru": "Oniros"
+},
+"car.car_suv_06": {
+"en": "Ragnar",
+"ru": "Ragnar"
+},
+"car.car_suv_07": {
+"en": "Scamander",
+"ru": "Scamander"
+},
+"car.car_suv_08": {
+"en": "Tethys",
+"ru": "Tethys"
+},
+"car.car_suv_09": {
+"en": "Tlaloc",
+"ru": "Tlaloc"
+},
+"car.car_trucks_00": {
+"en": "Red short container truck",
+"ru": "Красный короткий грузовик-контейнеровоз"
+},
+"car.car_trucks_01": {
+"en": "Blue container truck",
+"ru": "Синий грузовик-контейнеровоз"
+},
+"car.car_trucks_02": {
+"en": "Green long container truck",
+"ru": "Зелёный длинный грузовик-контейнеровоз"
+},
+"car.car_trucks_03": {
+"en": "Yellow short tanker truck",
+"ru": "Жёлтый короткий бензовоз"
+},
+"car.car_trucks_04": {
+"en": "Orange tanker truck",
+"ru": "Оранжевый бензовоз"
+},
+"car.car_trucks_05": {
+"en": "Purple long tanker truck",
+"ru": "Фиолетовый длинный бензовоз"
+},
+"car.car_trucks_06": {
+"en": "White short log truck",
+"ru": "Белый короткий лесовоз"
+},
+"car.car_trucks_07": {
+"en": "Black log truck",
+"ru": "Чёрный лесовоз"
+},
+"car.car_trucks_08": {
+"en": "Teal long log truck",
+"ru": "Бирюзовый длинный лесовоз"
+},
+"car.car_trucks_09": {
+"en": "Pink dump truck",
+"ru": "Розовый самосвал"
+},
+"car.car_vans_00": {
+"en": "Hercules",
+"ru": "Hercules"
+},
+"car.car_vans_01": {
+"en": "Limos",
+"ru": "Limos"
+},
+"car.car_vans_02": {
+"en": "Moros",
+"ru": "Moros"
+},
+"car.car_vans_03": {
+"en": "Pan_Burger",
+"ru": "Pan_Burger"
+},
+"car.car_vans_04": {
+"en": "Pan_Donut",
+"ru": "Pan_Donut"
+},
+"car.car_vans_05": {
+"en": "Pan_HotDog",
+"ru": "Pan_HotDog"
+},
+"car.car_vans_06": {
+"en": "Pan_IceCream",
+"ru": "Pan_IceCream"
+},
+"car.car_vans_07": {
+"en": "Pan_Pizza",
+"ru": "Pan_Pizza"
+},
+"car.car_vans_08": {
+"en": "Peleus",
+"ru": "Peleus"
+},
+"car.car_vans_09": {
+"en": "Thoth",
+"ru": "Thoth"
+},
+"cat.cat_buses": {
+"en": "Buses",
+"ru": "Автобусы"
+},
+"cat.cat_classicsport": {
+"en": "Classic Sports",
+"ru": "Классические спорткары"
+},
+"cat.cat_construction": {
+"en": "Construction",
+"ru": "Стройтехника"
+},
+"cat.cat_emergency": {
+"en": "Emergency",
+"ru": "Спецслужбы"
+},
+"cat.cat_extreme": {
+"en": "Extreme",
+"ru": "Экстрим"
+},
+"cat.cat_gta": {
+"en": "GT Racing A",
+"ru": "Гонки GT A"
+},
+"cat.cat_gtr": {
+"en": "GT Racing R",
+"ru": "Гонки GT R"
+},
+"cat.cat_hatchbacks": {
+"en": "Hatchbacks",
+"ru": "Хэтчбеки"
+},
+"cat.cat_monster": {
+"en": "Monster Trucks",
+"ru": "Монстр-траки"
+},
+"cat.cat_muscle": {
+"en": "Muscle Cars",
+"ru": "Маслкары"
+},
+"cat.cat_pickups": {
+"en": "Pickups",
+"ru": "Пикапы"
+},
+"cat.cat_police": {
+"en": "Police",
+"ru": "Полиция"
+},
+"cat.cat_racing": {
+"en": "Racing",
+"ru": "Гонки"
+},
+"cat.cat_rally": {
+"en": "Rally & Tuning",
+"ru": "Ралли и тюнинг"
+},
+"cat.cat_retro": {
+"en": "Retro",
+"ru": "Ретро"
+},
+"cat.cat_sedans": {
+"en": "Sedans",
+"ru": "Седаны"
+},
+"cat.cat_service": {
+"en": "Emergency & Service",
+"ru": "Спецслужбы"
+},
+"cat.cat_special": {
+"en": "Special",
+"ru": "Особые"
+},
+"cat.cat_sportcoupe": {
+"en": "Sport Coupes",
+"ru": "Спорткупе"
+},
+"cat.cat_supercars": {
+"en": "Supercars",
+"ru": "Суперкары"
+},
+"cat.cat_suv": {
+"en": "SUVs",
+"ru": "Внедорожники"
+},
+"cat.cat_trucks": {
+"en": "Trucks",
+"ru": "Грузовики"
+},
+"cat.cat_vans": {
+"en": "Vans & Food Trucks",
+"ru": "Фургоны и фудтраки"
+},
+"ctl.ability1": {
+"en": "Find matches",
+"ru": "Поиск совпадений"
+},
+"ctl.ability2": {
+"en": "Auto-collect",
+"ru": "Автосбор совпадений"
+},
+"ctl.ability3": {
+"en": "Rack highlight",
+"ru": "Подсветка стеллажа"
+},
+"ctl.crouch": {
+"en": "Crouch",
+"ru": "Присед"
+},
+"ctl.interact": {
+"en": "Take",
+"ru": "Взять"
+},
+"ctl.jump": {
+"en": "Jump",
+"ru": "Прыжок"
+},
+"ctl.look": {
+"en": "Look around",
+"ru": "Обзор"
+},
+"ctl.mouse_key": {
+"en": "Mouse",
+"ru": "Мышь"
+},
+"ctl.move": {
+"en": "Move",
+"ru": "Передвижение"
+},
+"ctl.pause": {
+"en": "Pause",
+"ru": "Пауза"
+},
+"ctl.place": {
+"en": "Place on a shelf or throw",
+"ru": "Поставить на полку или бросить"
+},
+"ctl.select": {
+"en": "Select item in hands",
+"ru": "Выбор предмета в руках"
+},
+"ctl.sprint": {
+"en": "Sprint",
+"ru": "Бег"
+},
+"ctl.wheel_key": {
+"en": "Mouse wheel",
+"ru": "Колесо мыши"
+},
+"msg.ability_not_ready": {
+"en": "Ability is not ready yet",
+"ru": "Способность ещё не готова"
+},
+"msg.bomb_spawned": {
+"en": "A bomb dropped from the machine, find it in the pile",
+"ru": "Из автомата выпала бомба, ищи в куче"
+},
+"msg.collectible_found": {
+"en": "Canister found: {0}/{1}",
+"ru": "Канистра найдена: {0}/{1}"
+},
+"msg.crate_found": {
+"en": "Parts crate: +1",
+"ru": "Ящик запчастей: +1"
+},
+"msg.game_complete": {
+"en": "All shelves closed. The warehouse is in perfect order!",
+"ru": "Все полки закрыты. Склад в полном порядке!"
+},
+"msg.need_item_in_hands": {
+"en": "Take something in your hands",
+"ru": "Возьми что-нибудь в руки"
+},
+"msg.no_crates": {
+"en": "No parts crates",
+"ru": "Нет ящиков запчастей"
+},
+"msg.radio_track": {
+"en": "Radio: {0}/{1}",
+"ru": "Радио: {0}/{1}"
+},
+"msg.register_empty": {
+"en": "Register is empty",
+"ru": "Касса пуста"
+},
+"msg.register_paid": {
+"en": "Register: +${0}",
+"ru": "Касса: +${0}"
+},
+"msg.register_progress": {
+"en": "Register: {0}/{1}",
+"ru": "Касса: {0}/{1}"
+},
+"msg.rotate_device": {
+"en": "Rotate your phone to landscape",
+"ru": "Поверните телефон горизонтально"
+},
+"msg.slot_reward": {
+"en": "You got: {0}",
+"ru": "Выпало: {0}"
+},
+"msg.special_maxed": {
+"en": "This car is fully upgraded",
+"ru": "Машина прокачана полностью"
+},
+"pad.circle": {
+"en": "Circle",
+"ru": "Круг"
+},
+"pad.cross": {
+"en": "Cross",
+"ru": "Крест"
+},
+"pad.dpad": {
+"en": "D-pad",
+"ru": "Крестовина"
+},
+"pad.leftstick": {
+"en": "Left stick",
+"ru": "Левый стик"
+},
+"pad.leftstickpress": {
+"en": "Left stick (press)",
+"ru": "Левый стик (нажать)"
+},
+"pad.rightstick": {
+"en": "Right stick",
+"ru": "Правый стик"
+},
+"pad.rightstickpress": {
+"en": "Right stick (press)",
+"ru": "Правый стик (нажать)"
+},
+"pad.square": {
+"en": "Square",
+"ru": "Квадрат"
+},
+"pad.triangle": {
+"en": "Triangle",
+"ru": "Треугольник"
+},
+"slot_cooldown.desc": {
+"en": "Abilities recharge faster",
+"ru": "Способности откатываются быстрее"
+},
+"slot_cooldown.name": {
+"en": "Faster cooldown",
+"ru": "Быстрый откат"
+},
+"slot_crate.desc": {
+"en": "+1 crate to upgrade special cars",
+"ru": "+1 ящик для прокачки особых машин"
+},
+"slot_crate.name": {
+"en": "Parts crate",
+"ru": "Ящик запчастей"
+},
+"slot_duration.desc": {
+"en": "Find matches and rack highlight last longer",
+"ru": "Поиск совпадений и подсветка стеллажа держатся дольше"
+},
+"slot_duration.name": {
+"en": "Longer effect",
+"ru": "Долгое действие"
+},
+"slot_inventory.desc": {
+"en": "+1 inventory slot beyond the terminal",
+"ru": "Инвентарь +1 сверх терминала"
+},
+"slot_inventory.name": {
+"en": "Extra slot",
+"ru": "Ещё один слот"
+},
+"slot_radius.desc": {
+"en": "Auto-collect reaches farther",
+"ru": "Автосбор тянет машинки с большего расстояния"
+},
+"slot_radius.name": {
+"en": "Wider auto-collect",
+"ru": "Широкий автосбор"
+},
+"special.step.decals": {
+"en": "Decals",
+"ru": "Декали"
+},
+"special.step.engine": {
+"en": "Engine",
+"ru": "Двигатель"
+},
+"special.step.foglight": {
+"en": "Roof lights",
+"ru": "Противотуманки"
+},
+"special.step.front_bumper": {
+"en": "Front bumper",
+"ru": "Передний бампер"
+},
+"special.step.headlight": {
+"en": "Headlights",
+"ru": "Фары"
+},
+"special.step.pipe": {
+"en": "Exhaust",
+"ru": "Выхлоп"
+},
+"special.step.policelight": {
+"en": "Police light",
+"ru": "Мигалка"
+},
+"special.step.rear_bumper": {
+"en": "Rear bumper",
+"ru": "Задний бампер"
+},
+"special.step.spoiler": {
+"en": "Spoiler",
+"ru": "Спойлер"
+},
+"special.step.turbine": {
+"en": "Turbine",
+"ru": "Турбина"
+},
+"special.step.wheels": {
+"en": "Wheels",
+"ru": "Колёса"
+},
+"tut.look": {
+"en": "{0} — look around",
+"ru": "{0} — повертеть камерой"
+},
+"tut.look_touch": {
+"en": "Right half of the screen — look around",
+"ru": "Правая половина экрана — повертеть камерой"
+},
+"tut.place": {
+"en": "{0} — place it on the highlighted rack",
+"ru": "{0} — поставить на подсвеченный стеллаж"
+},
+"tut.place_touch": {
+"en": "Place button — the highlighted rack",
+"ru": "Кнопка «поставить» — подсвеченный стеллаж"
+},
+"tut.take": {
+"en": "{0} — pick up any car",
+"ru": "{0} — взять любую машинку"
+},
+"tut.take_touch": {
+"en": "Take button — pick up any car",
+"ru": "Кнопка «взять» — взять любую машинку"
+},
+"tut.walk": {
+"en": "{0} — walk around",
+"ru": "{0} — походить"
+},
+"tut.walk_touch": {
+"en": "Left stick — walk around",
+"ru": "Стик слева — походить"
+},
+"ui.ab1": {
+"en": "Find",
+"ru": "Поиск"
+},
+"ui.ab2": {
+"en": "Auto-collect",
+"ru": "Автосбор"
+},
+"ui.ab3": {
+"en": "Rack",
+"ru": "Стеллаж"
+},
+"ui.back": {
+"en": "Back",
+"ru": "Назад"
+},
+"ui.balance": {
+"en": "Balance",
+"ru": "Баланс"
+},
+"ui.buy": {
+"en": "Buy",
+"ru": "Купить"
+},
+"ui.cancel": {
+"en": "Cancel",
+"ru": "Отмена"
+},
+"ui.cars": {
+"en": "Cars",
+"ru": "Машинки"
+},
+"ui.close": {
+"en": "Close",
+"ru": "Закрыть"
+},
+"ui.collectibles": {
+"en": "Canisters",
+"ru": "Канистры"
+},
+"ui.controls": {
+"en": "Controls",
+"ru": "Управление"
+},
+"ui.crates": {
+"en": "Parts crates",
+"ru": "Ящики запчастей"
+},
+"ui.hint": {
+"en": "{0} take · {1} place/throw · {2} select · {3} menu",
+"ru": "{0} взять · {1} поставить/бросить · {2} выбрать · {3} меню"
+},
+"ui.language": {
+"en": "Language",
+"ru": "Язык"
+},
+"ui.max": {
+"en": "Max",
+"ru": "Макс."
+},
+"ui.music": {
+"en": "Music",
+"ru": "Музыка"
+},
+"ui.newgame": {
+"en": "Reset progress",
+"ru": "Сбросить прогресс"
+},
+"ui.off": {
+"en": "Off",
+"ru": "Выкл"
+},
+"ui.on": {
+"en": "On",
+"ru": "Вкл"
+},
+"ui.pause": {
+"en": "Pause",
+"ru": "Пауза"
+},
+"ui.push_buy": {
+"en": "Push buy",
+"ru": "Нажми купить"
+},
+"ui.reset_confirm": {
+"en": "Reset all progress and start over?",
+"ru": "Вы точно хотите сбросить весь прогресс и начать заново?"
+},
+"ui.resume": {
+"en": "Resume",
+"ru": "Продолжить"
+},
+"ui.save": {
+"en": "Save",
+"ru": "Сохранить"
+},
+"ui.saved": {
+"en": "Saved",
+"ru": "Сохранено"
+},
+"ui.sens_x": {
+"en": "Horizontal sensitivity",
+"ru": "Чувствительность по горизонтали"
+},
+"ui.sens_y": {
+"en": "Vertical sensitivity",
+"ru": "Чувствительность по вертикали"
+},
+"ui.settings": {
+"en": "Settings",
+"ru": "Настройки"
+},
+"ui.sfx": {
+"en": "Effects",
+"ru": "Эффекты"
+},
+"ui.shelves": {
+"en": "Shelves",
+"ru": "Полки"
+},
+"ui.shuffle": {
+"en": "Shuffle the pile",
+"ru": "Перемешать кучу"
+},
+"ui.shuffling": {
+"en": "Shuffling the pile…",
+"ru": "Перемешиваем кучу…"
+},
+"ui.slot": {
+"en": "Slot Machine",
+"ru": "Слот-машина"
+},
+"ui.slot_bomb": {
+"en": "Bomb!",
+"ru": "Бомба!"
+},
+"ui.slot_bomb_extra": {
+"en": "bomb",
+"ru": "бомба"
+},
+"ui.slot_bonus_cd": {
+"en": "cooldown ×{0}",
+"ru": "откат ×{0}"
+},
+"ui.slot_bonus_duration": {
+"en": "duration ×{0}",
+"ru": "действие ×{0}"
+},
+"ui.slot_bonus_radius": {
+"en": "radius ×{0}",
+"ru": "радиус ×{0}"
+},
+"ui.slot_empty": {
+"en": "Empty. All rewards are out",
+"ru": "Пусто. Все награды выданы"
+},
+"ui.slot_empty_bombs": {
+"en": "Rewards are out. Every spin drops a bomb",
+"ru": "Награды закончились. Каждый спин даёт бомбу"
+},
+"ui.slot_idle": {
+"en": "Every spin gives a reward",
+"ru": "Каждое вращение даёт награду"
+},
+"ui.slot_prizes": {
+"en": "Prizes",
+"ru": "Призы"
+},
+"ui.slot_remaining": {
+"en": "Rewards left: {0}",
+"ru": "Осталось наград: {0}"
+},
+"ui.special_done": {
+"en": "All parts installed",
+"ru": "Все детали установлены"
+},
+"ui.special_hold": {
+"en": "Hold to upgrade",
+"ru": "Удерживай, чтобы улучшить"
+},
+"ui.special_level": {
+"en": "Upgrades: {0}/{1}",
+"ru": "Улучшений: {0}/{1}"
+},
+"ui.special_max": {
+"en": "Maxed out",
+"ru": "Максимум"
+},
+"ui.special_next": {
+"en": "Next part: {0}",
+"ru": "Следующая деталь: {0}"
+},
+"ui.spin": {
+"en": "Spin · ${0}",
+"ru": "Крутить · ${0}"
+},
+"ui.terminal": {
+"en": "Upgrade Terminal",
+"ru": "Терминал улучшений"
+},
+"ui.unstuck": {
+"en": "Return stuck cars",
+"ru": "Вернуть застрявшие машинки"
+},
+"ui.vibration": {
+"en": "Vibration",
+"ru": "Вибрация"
+},
+"ui.yes": {
+"en": "Yes, reset",
+"ru": "Да, сбросить"
+},
+"upg_autocollect.desc": {
+"en": "Key 2: pulls the same cars nearby into your inventory",
+"ru": "Клавиша 2: затягивает такие же машинки поблизости в инвентарь"
+},
+"upg_autocollect.name": {
+"en": "Auto-collect",
+"ru": "Автосбор совпадений"
+},
+"upg_autoplace.desc": {
+"en": "A car thrown into its rack snaps onto a shelf",
+"ru": "Брошенная в свой стеллаж машинка сама встаёт на полку"
+},
+"upg_autoplace.name": {
+"en": "Auto-place on throw",
+"ru": "Авторасстановка при броске"
+},
+"upg_crouch.desc": {
+"en": "Hold Ctrl to crouch under shelves",
+"ru": "Присед на Ctrl, чтобы собирать под полками"
+},
+"upg_crouch.name": {
+"en": "Unlock crouch",
+"ru": "Открыть присед"
+},
+"upg_dup_highlight.desc": {
+"en": "Key 1: matching cars in the pile glow and float up",
+"ru": "Клавиша 1: такие же машинки в куче подсвечиваются и поднимаются в воздух"
+},
+"upg_dup_highlight.name": {
+"en": "Find matches",
+"ru": "Поиск совпадений"
+},
+"upg_inventory.desc": {
+"en": "+1 slot per level, up to 15",
+"ru": "+1 слот за уровень, максимум 15"
+},
+"upg_inventory.name": {
+"en": "Bigger inventory",
+"ru": "Больший инвентарь"
+},
+"upg_range.desc": {
+"en": "Take and place cars from farther away",
+"ru": "Брать и ставить машинки с большего расстояния"
+},
+"upg_range.name": {
+"en": "Longer reach",
+"ru": "Большая дальность"
+},
+"upg_shelf_highlight.desc": {
+"en": "Key 3: highlights the rack for the car in hand",
+"ru": "Клавиша 3: подсвечивает стеллаж категории машинки в руках"
+},
+"upg_shelf_highlight.name": {
+"en": "Rack highlight",
+"ru": "Подсветка стеллажа"
+},
+"upg_sprint.desc": {
+"en": "Hold Shift to run",
+"ru": "Бег на Shift"
+},
+"upg_sprint.name": {
+"en": "Unlock sprint",
+"ru": "Открыть спринт"
+},
+"upg_throw.desc": {
+"en": "Cars fly farther",
+"ru": "Машинки летят дальше"
+},
+"upg_throw.name": {
+"en": "Stronger throw",
+"ru": "Более сильный бросок"
+}
+}

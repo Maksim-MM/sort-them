@@ -240,14 +240,14 @@ namespace SortThem
 
             var drag = _upgradeDrag != null ? _upgradeDrag.Consume() : Vector2.zero;
             if (drag.x != 0f) _stageYaw += drag.x * DragDegreesPerPixel;
-            if (_navigateAction != null && _focused == _holdButton)
+            if (_focused == _holdButton)
             {
-                var nav = _navigateAction.ReadValue<Vector2>();
+                var nav = GameInput.Ui.Navigate.VectorValue;
                 if (Mathf.Abs(nav.x) > 0.3f) _stageYaw += nav.x * 90f * Time.unscaledDeltaTime;
             }
 
             bool can = gm.CanUpgradeSpecial(_upgradeCar);
-            bool held = _holdButton.Held || (_submitAction != null && _submitAction.IsPressed() && _focused == _holdButton);
+            bool held = _holdButton.Held || (GameInput.Ui.Submit.Held() && _focused == _holdButton);
             if (!held) _holdLatched = false;
             held &= !_holdLatched;
             if (_holdButton.PressedThisFrame)

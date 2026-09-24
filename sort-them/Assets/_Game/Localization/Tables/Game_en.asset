@@ -823,7 +823,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1426295069073408
-    m_Localized: "{0} \u2014 walk around"
+    m_Localized: Walk around
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044928
@@ -831,7 +831,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044929
-    m_Localized: "{0} \u2014 look around"
+    m_Localized: Look around
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044930
@@ -839,7 +839,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044931
-    m_Localized: "{0} \u2014 pick up any car"
+    m_Localized: Pick up any car
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044932
@@ -847,7 +847,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044933
-    m_Localized: "{0} \u2014 place it on the highlighted rack"
+    m_Localized: Place it on the highlighted rack
     m_Metadata:
       m_Items: []
   - m_Id: 1426295090044934

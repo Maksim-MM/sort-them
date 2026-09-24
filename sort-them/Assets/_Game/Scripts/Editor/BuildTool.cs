@@ -55,9 +55,12 @@ namespace SortThem.Editor
         {
             EnsureWebGLTarget();
             string output = Path.Combine(Directory.GetCurrentDirectory(), folder);
+            var scenes = new System.Collections.Generic.List<string>();
+            foreach (var scene in EditorBuildSettings.scenes) if (scene.enabled) scenes.Add(scene.path);
+            if (scenes.Count == 0) scenes.Add(Paths.MainScene);
             var options = new BuildPlayerOptions
             {
-                scenes = new[] { Paths.MainScene },
+                scenes = scenes.ToArray(),
                 locationPathName = output,
                 target = BuildTarget.WebGL,
                 options = buildOptions

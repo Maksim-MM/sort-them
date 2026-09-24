@@ -55,6 +55,7 @@ namespace SortThem
             t.raycastTarget = false;
             t.textWrappingMode = TextWrappingModes.NoWrap;
             t.overflowMode = TextOverflowModes.Overflow;
+            Fonts.Register(t);
             return t;
         }
 
@@ -84,6 +85,30 @@ namespace SortThem
             btn.onClick.AddListener(() => { var gm = GameManager.I; if (gm != null) Sfx.PlayUi(gm.Config.UiClickClip); Rumble.UiClick(); });
             if (onClick != null) btn.onClick.AddListener(() => onClick());
             return btn;
+        }
+
+        public static GlyphImage Glyph(Transform parent, string name, float size, GameAction action = null, int index = 0, Color? fallbackColor = null)
+        {
+            var img = Image(parent, name, null, Color.white, UnityEngine.UI.Image.Type.Simple);
+            img.preserveAspect = true;
+            img.rectTransform.sizeDelta = new Vector2(size, size);
+            var le = img.gameObject.AddComponent<LayoutElement>();
+            le.minWidth = size;
+            le.minHeight = size;
+            le.preferredWidth = size;
+            le.preferredHeight = size;
+            var text = Text(img.transform, "Fallback", "", size * 0.5f, TextAlignmentOptions.Center, fallbackColor ?? Color.white);
+            text.fontStyle = FontStyles.Bold;
+            text.enableAutoSizing = true;
+            text.fontSizeMin = 8f;
+            text.fontSizeMax = size * 0.55f;
+            Anchor(text.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            text.gameObject.SetActive(false);
+            var glyph = img.gameObject.AddComponent<GlyphImage>();
+            glyph.Image = img;
+            glyph.Fallback = text;
+            glyph.Set(action, index);
+            return glyph;
         }
 
         public static Slider Slider(Transform parent, string name, float min, float max, float value)
@@ -143,6 +168,12 @@ namespace SortThem
         }
 
         static readonly Dictionary<(Material, Color), Material> GlowMaterials = new Dictionary<(Material, Color), Material>();
+        static readonly Dictionary<TMP_Text, (Color Glow, float Dilate, float Softness)> Glows = new Dictionary<TMP_Text, (Color, float, float)>();
+
+        public static void ReapplyGlow(TMP_Text t)
+        {
+            if (Glows.TryGetValue(t, out var g)) TextGlow(t, g.Glow, g.Dilate, g.Softness);
+        }
         static Sprite _glowSprite, _vignetteSprite;
         static Texture2D _scanTexture;
 
@@ -161,6 +192,7 @@ namespace SortThem
                 GlowMaterials.Add(key, mat);
             }
             t.fontSharedMaterial = mat;
+            Glows[t] = (glow, dilate, softness);
         }
 
         static Sprite GlowSprite()
