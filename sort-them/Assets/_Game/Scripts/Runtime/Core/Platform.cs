@@ -20,6 +20,17 @@ namespace SortThem
             set => _mobile = value;
         }
 
+        public const int SwitchFrameRate = 30;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void ApplyFrameRate()
+        {
+#if UNITY_SWITCH && !UNITY_EDITOR
+            QualitySettings.vSyncCount = 60 / SwitchFrameRate;
+            Application.targetFrameRate = SwitchFrameRate;
+#endif
+        }
+
         public static bool LowPower
         {
             get

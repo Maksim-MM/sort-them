@@ -40,7 +40,11 @@ namespace SortThem
             }
             if (!Root.activeSelf) Root.SetActive(true);
             var car = shelf.TargetCar;
-            if (NameText != null) NameText.text = Loc.Get(car.DisplayName, car.DevName);
+            if (NameText != null)
+            {
+                Fonts.Register(NameText);
+                NameText.text = Loc.Get(car.DisplayName, car.DevName);
+            }
             if (PriceText != null) PriceText.text = "$" + car.DisplayPrice.ToString("0.##");
             if (CountText != null) CountText.text = shelf.Count + "/" + shelf.Capacity;
             if (Plate != null)

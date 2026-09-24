@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace SortThem
 {
@@ -10,10 +12,12 @@ namespace SortThem
 
         static readonly List<TMP_Text> Texts = new List<TMP_Text>();
         static string _code;
+        static AsyncOperationHandle<TMP_FontAsset> _handle;
 
         public static void Register(TMP_Text t)
         {
-            Texts.Add(t);
+            if (t == null) return;
+            if (!Texts.Contains(t)) Texts.Add(t);
             if (Current != null) t.font = Current;
         }
 
@@ -22,18 +26,23 @@ namespace SortThem
             string code = localeCode ?? "";
             if (code == _code) return;
             _code = code;
+            var prevHandle = _handle;
             var next = Load(code);
-            if (next == Current) return;
-            Current = next;
-            var target = next != null ? next : TMP_Settings.defaultFontAsset;
-            for (int i = Texts.Count - 1; i >= 0; i--)
+            bool changed = next != Current;
+            if (changed)
             {
-                var t = Texts[i];
-                if (t == null) { Texts.RemoveAt(i); continue; }
-                t.font = target;
-                UiFactory.ReapplyGlow(t);
+                Current = next;
+                var target = next != null ? next : TMP_Settings.defaultFontAsset;
+                for (int i = Texts.Count - 1; i >= 0; i--)
+                {
+                    var t = Texts[i];
+                    if (t == null) { Texts.RemoveAt(i); continue; }
+                    t.font = target;
+                    UiFactory.ReapplyGlow(t);
+                }
             }
-            Resources.UnloadUnusedAssets();
+            if (prevHandle.IsValid()) Addressables.Release(prevHandle);
+            if (changed) Resources.UnloadUnusedAssets();
         }
 
         static TMP_FontAsset Load(string code)
@@ -46,10 +55,21 @@ namespace SortThem
                 "zh-Hant" => "NotoSansTC SDF",
                 _ => null,
             };
+            _handle = default;
             if (name == null) return null;
-            var fa = Resources.Load<TMP_FontAsset>("Fonts/" + name);
-            if (fa == null) Debug.LogWarning("SortThem: font not found Resources/Fonts/" + name);
-            return fa;
+            try
+            {
+                _handle = Addressables.LoadAssetAsync<TMP_FontAsset>(name);
+                var fa = _handle.WaitForCompletion();
+                if (fa == null) Debug.LogWarning("SortThem: font not found in Addressables " + name);
+                return fa;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("SortThem: font load failed " + name + ": " + e.Message);
+                _handle = default;
+                return null;
+            }
         }
     }
 }

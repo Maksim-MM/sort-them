@@ -19,7 +19,7 @@ namespace SortThem.Editor
             var prev = PlayerSettings.insecureHttpOption;
             PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             try { Build("Builds/WebGL_Profile", BuildOptions.Development | BuildOptions.ConnectWithProfiler); }
-            finally { PlayerSettings.insecureHttpOption = prev; }
+            finally { PlayerSettings.insecureHttpOption = prev; SavePlayerSettings(); }
         }
 
         [MenuItem("SortThem/Build WebGL (Diag)")]
@@ -37,7 +37,14 @@ namespace SortThem.Editor
                 PlayerSettings.insecureHttpOption = prevHttp;
                 PlayerSettings.WebGL.exceptionSupport = prevExc;
                 PlayerSettings.WebGL.showDiagnostics = prevDiag;
+                SavePlayerSettings();
             }
+        }
+
+        static void SavePlayerSettings()
+        {
+            EditorUtility.SetDirty(Unsupported.GetSerializedAssetInterfaceSingleton("PlayerSettings"));
+            AssetDatabase.SaveAssets();
         }
 
         static void EnsureWebGLTarget()
@@ -56,7 +63,7 @@ namespace SortThem.Editor
             EnsureWebGLTarget();
             string output = Path.Combine(Directory.GetCurrentDirectory(), folder);
             var scenes = new System.Collections.Generic.List<string>();
-            foreach (var scene in EditorBuildSettings.scenes) if (scene.enabled) scenes.Add(scene.path);
+            foreach (var scene in EditorBuildSettings.scenes) if (scene.enabled && scene.path != TitleSceneBuilder.BootstrapScene) scenes.Add(scene.path);
             if (scenes.Count == 0) scenes.Add(Paths.MainScene);
             var options = new BuildPlayerOptions
             {
@@ -65,7 +72,10 @@ namespace SortThem.Editor
                 target = BuildTarget.WebGL,
                 options = buildOptions
             };
-            var report = BuildPipeline.BuildPlayer(options);
+            bool fontsIncluded = FontAddressables.SetIncludeInBuild(false);
+            BuildReport report;
+            try { report = BuildPipeline.BuildPlayer(options); }
+            finally { FontAddressables.SetIncludeInBuild(fontsIncluded); }
             var s = report.summary;
             Debug.Log($"SortThem: WebGL build {s.result}, size {s.totalSize / (1024f * 1024f):0.0} MB, time {s.totalTime.TotalSeconds:0} s, errors {s.totalErrors}, warnings {s.totalWarnings}, output {s.outputPath}");
             if (Application.isBatchMode && s.result != BuildResult.Succeeded) EditorApplication.Exit(1);

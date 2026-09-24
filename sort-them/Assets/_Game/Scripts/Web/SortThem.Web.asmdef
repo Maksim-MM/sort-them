@@ -1,15 +1,14 @@
 {
-    "name": "SortThem.Runtime",
-    "rootNamespace": "SortThem",
+    "name": "SortThem.Web",
+    "rootNamespace": "SortThem.Web",
     "references": [
-        "Unity.InputSystem",
+        "UpscaleSDK.Core",
         "Unity.Localization",
-        "Unity.TextMeshPro",
-        "Unity.ResourceManager",
-        "Unity.Addressables",
-        "UpscaleSDK.Core"
+        "Unity.ResourceManager"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "WebGL"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

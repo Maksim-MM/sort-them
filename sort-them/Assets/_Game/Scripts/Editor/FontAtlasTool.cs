@@ -17,7 +17,7 @@ namespace SortThem.Editor
         const GlyphRenderMode RenderMode = GlyphRenderMode.SDFAA;
         const string BaseRanges = "32 - 126, 160 - 255, 8192 - 8303, 8364, 8482, 9633";
         const string CharsDir = "Tools/loc/chars";
-        const string OutDir = "Assets/_Game/Resources/Fonts";
+        const string OutDir = FontAddressables.Dir;
         const string LiberationAsset = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
 
         static readonly (string Code, string Ttf, string Name)[] Cjk =
@@ -44,6 +44,7 @@ namespace SortThem.Editor
             }
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            FontAddressables.Ensure();
             LastReport = report.ToString();
             Debug.Log(LastReport);
         }

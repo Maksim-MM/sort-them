@@ -48,7 +48,11 @@ namespace SortThem
         public void RefreshSign()
         {
             if (Category == null) return;
-            if (SignText != null) SignText.text = Loc.Get(Category.DisplayName, Category.DevName);
+            if (SignText != null)
+            {
+                Fonts.Register(SignText);
+                SignText.text = Loc.Get(Category.DisplayName, Category.DevName);
+            }
             if (SignPlate != null) SignPlate.material.color = Category.CategoryColor;
         }
     }
