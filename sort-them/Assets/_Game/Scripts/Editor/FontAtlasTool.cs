@@ -133,6 +133,16 @@ namespace SortThem.Editor
             return name + ": не влезло в 2048² при " + pointSize + "pt";
         }
 
+        static string LanguageNameChars(string code)
+        {
+            if (UiRoot.LanguageNames.TryGetValue(code, out var own)) return own;
+            if (code != "_latin_cyr_all") return "";
+            var sb = new StringBuilder();
+            foreach (var name in UiRoot.LanguageNames.Values)
+                foreach (char c in name) if (c < 0x2E80) sb.Append(c);
+            return sb.ToString();
+        }
+
         static string Chars(string code)
         {
             var set = new System.Collections.Generic.SortedSet<int>();
@@ -145,7 +155,7 @@ namespace SortThem.Editor
             }
             string file = Path.Combine(Directory.GetCurrentDirectory(), CharsDir, code + ".txt");
             if (!File.Exists(file)) throw new FileNotFoundException("Нет набора символов: " + file + " (сначала выгрузи из таблиц)");
-            string s = File.ReadAllText(file);
+            string s = File.ReadAllText(file) + LanguageNameChars(code);
             for (int i = 0; i < s.Length; i++)
             {
                 int cp = char.ConvertToUtf32(s, i);

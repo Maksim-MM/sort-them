@@ -78,3 +78,6 @@ crashlytics-build.properties
 
 # Рабочие скриншоты для документации (локальные, в репозиторий не нужны)
 /Docs/screens/
+
+# Addressables: link.xml создаётся на время сборки игрока и удаляется после
+/[Aa]ssets/AddressableAssetsData/link.xml*

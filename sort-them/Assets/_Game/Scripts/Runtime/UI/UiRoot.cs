@@ -928,17 +928,20 @@ namespace SortThem
             var locale = locales[i];
             LocalizationSettings.SelectedLocale = locale;
             Settings.SetLocale(locale.Identifier.Code);
-            RefreshLanguage();
         }
+
+        public static readonly System.Collections.Generic.Dictionary<string, string> LanguageNames = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { "da", "Dansk" }, { "de", "Deutsch" }, { "en", "English" }, { "es", "Español" }, { "fi", "Suomi" },
+            { "fr", "Français" }, { "it", "Italiano" }, { "ja", "日本語" }, { "ko", "한국어" }, { "nl", "Nederlands" },
+            { "no", "Norsk" }, { "pl", "Polski" }, { "pt-BR", "Português (Brasil)" }, { "ru", "Русский" }, { "sv", "Svenska" },
+            { "tr", "Türkçe" }, { "uk", "Українська" }, { "zh", "简体中文" }, { "zh-Hant", "繁體中文" },
+        };
 
         static string LocaleName(Locale locale)
         {
             if (locale == null) return "";
-            switch (locale.Identifier.Code)
-            {
-                case "zh": return "简体中文";
-                case "zh-Hant": return "繁體中文";
-            }
+            if (LanguageNames.TryGetValue(locale.Identifier.Code, out var known)) return known;
             var ci = locale.Identifier.CultureInfo;
             string name = ci != null ? ci.NativeName : locale.LocaleName;
             if (string.IsNullOrEmpty(name)) return locale.Identifier.Code;
