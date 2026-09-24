@@ -19,5 +19,17 @@ namespace SortThem
             }
             set => _mobile = value;
         }
+
+        public static bool LowPower
+        {
+            get
+            {
+#if UNITY_SWITCH
+                return true;
+#else
+                return IsMobile;
+#endif
+            }
+        }
     }
 }

@@ -82,7 +82,7 @@ namespace SortThem
 
         void ApplyPlatformSettings()
         {
-            if (Platform.IsMobile)
+            if (Platform.LowPower)
             {
                 Time.fixedDeltaTime = Config.MobileFixedStep;
                 Time.maximumDeltaTime = Config.MobileMaxStep;
@@ -187,11 +187,11 @@ namespace SortThem
             if (_activationTimer <= 0f)
             {
                 _activationTimer = Config.ActivationUpdateInterval;
-                if (Player != null && !Shuffling) PhysicsActivation.Tick(Cars, Player.transform.position, Platform.IsMobile ? Config.MobileActivationRadius : Config.ActivationRadius, Config.FreezeSpeed, Config.FreezeDelay, 3, Time.frameCount);
+                if (Player != null && !Shuffling) PhysicsActivation.Tick(Cars, Player.transform.position, Platform.LowPower ? Config.MobileActivationRadius : Config.ActivationRadius, Config.FreezeSpeed, Config.FreezeDelay, 3, Time.frameCount);
             }
             Save.Tick(Time.deltaTime);
             PileOcclusion.Tick();
-            if (Player != null) CarLod.Tick(Cars, Player.CameraPivot != null ? Player.CameraPivot.position : Player.transform.position, Platform.IsMobile ? Config.LodDistancesMobile : Config.LodDistancesDesktop, 3, Time.frameCount);
+            if (Player != null) CarLod.Tick(Cars, Player.CameraPivot != null ? Player.CameraPivot.position : Player.transform.position, Platform.LowPower ? Config.LodDistancesMobile : Config.LodDistancesDesktop, 3, Time.frameCount);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!UiBlocking && Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) Economy.Add(1000f);
 #endif
