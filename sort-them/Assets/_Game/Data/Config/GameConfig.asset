@@ -141,9 +141,11 @@ MonoBehaviour:
   LodDistancesMobile:
   - 0
   - 4
+  - 10
   LodDistancesDesktop:
   - 10
   - 20
+  - 35
   ShuffleCarsPerStep: 4
   ShuffleStepsPerFrame: 12
   ShuffleMaxSteps: 3000

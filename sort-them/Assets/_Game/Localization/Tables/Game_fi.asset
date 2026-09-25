@@ -1568,6 +1568,10 @@ MonoBehaviour:
     m_Localized: "Paina mit\xE4 tahansa n\xE4pp\xE4int\xE4"
     m_Metadata:
       m_Items: []
+  - m_Id: 6766202733977600
+    m_Localized: Aloita napauttamalla
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

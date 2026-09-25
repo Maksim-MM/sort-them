@@ -22,6 +22,7 @@ namespace SortThem
         [System.NonSerialized] public int Lod;
         [System.NonSerialized] public bool Levitating;
         [System.NonSerialized] public float CalmSince = -1f;
+        [System.NonSerialized] public Vector3 LitPosition = new Vector3(float.MaxValue, 0f, 0f);
         public bool Hidden { get; private set; }
 
         Rigidbody _body;

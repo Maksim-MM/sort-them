@@ -20,10 +20,14 @@ Shader "SortThem/TexturedLit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
-            CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
             float4 _BaseMap_ST;
-            CBUFFER_END
+
+            UNITY_INSTANCING_BUFFER_START(Props)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _ProbeR)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _ProbeG)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _ProbeB)
+            UNITY_INSTANCING_BUFFER_END(Props)
 
             struct Attributes
             {
@@ -38,6 +42,7 @@ Shader "SortThem/TexturedLit"
                 float4 positionCS : SV_POSITION;
                 float3 normalWS : TEXCOORD0;
                 float2 uv : TEXCOORD1;
+                half3 ambient : TEXCOORD2;
             };
 
             Varyings vert(Attributes IN)
@@ -48,6 +53,14 @@ Shader "SortThem/TexturedLit"
                 o.positionCS = p.positionCS;
                 o.normalWS = TransformObjectToWorldNormal(IN.normalOS);
                 o.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+                float4 pr = UNITY_ACCESS_INSTANCED_PROP(Props, _ProbeR);
+                float4 pg = UNITY_ACCESS_INSTANCED_PROP(Props, _ProbeG);
+                float4 pb = UNITY_ACCESS_INSTANCED_PROP(Props, _ProbeB);
+                float3 n = normalize(o.normalWS);
+                if (dot(abs(pr) + abs(pg) + abs(pb), 1) > 0)
+                    o.ambient = max(half3(dot(pr.xyz, n) + pr.w, dot(pg.xyz, n) + pg.w, dot(pb.xyz, n) + pb.w), 0);
+                else
+                    o.ambient = SampleSH(n);
                 return o;
             }
 
@@ -56,7 +69,7 @@ Shader "SortThem/TexturedLit"
                 float3 n = normalize(IN.normalWS);
                 Light mainLight = GetMainLight();
                 half ndl = saturate(dot(n, mainLight.direction));
-                half3 ambient = SampleSH(n);
+                half3 ambient = IN.ambient;
                 half3 albedo = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv).rgb * _BaseColor.rgb;
                 half3 col = albedo * (mainLight.color * ndl + ambient);
                 return half4(col, 1);
@@ -75,10 +88,8 @@ Shader "SortThem/TexturedLit"
             #pragma fragment fragDepth
             #pragma multi_compile_instancing
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
             float4 _BaseMap_ST;
-            CBUFFER_END
             struct A { float4 positionOS : POSITION; UNITY_VERTEX_INPUT_INSTANCE_ID };
             struct V { float4 positionCS : SV_POSITION; };
             V vertDepth(A IN) { V o; UNITY_SETUP_INSTANCE_ID(IN); o.positionCS = TransformObjectToHClip(IN.positionOS.xyz); return o; }

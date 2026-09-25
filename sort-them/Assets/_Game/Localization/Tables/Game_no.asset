@@ -1566,6 +1566,10 @@ MonoBehaviour:
     m_Localized: "Trykk p\xE5 en tast"
     m_Metadata:
       m_Items: []
+  - m_Id: 6766202733977600
+    m_Localized: "Trykk for \xE5 starte"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

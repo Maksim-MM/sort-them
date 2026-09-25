@@ -18,15 +18,17 @@ namespace SortThem
 
         const string KeyButton = "title.press_button";
         const string KeyKey = "title.press_key";
+        const string KeyTouch = "title.press_touch";
         const float FadeTime = 0.45f;
 
         string _textButton = "Press Any Button";
         string _textKey = "Press Any Key";
+        string _textTouch = "Tap to Start";
         TMP_Text _label;
         Image _fade;
         AudioSource _music;
         AsyncOperation _load;
-        bool _ready, _started, _sawKbm;
+        bool _ready, _started, _sawKbm, _sawTouch;
         float _shownAt;
 
         IEnumerator Start()
@@ -48,7 +50,7 @@ namespace SortThem
             TrackDevice();
             if (_label != null && !_started)
             {
-                _label.text = ShowPad() ? _textButton : _textKey;
+                _label.text = LabelText();
                 if (_ready)
                 {
                     float t = Time.unscaledTime - _shownAt;
@@ -89,9 +91,18 @@ namespace SortThem
             var kb = Keyboard.current;
             var mouse = Mouse.current;
             if (kb != null && kb.anyKey.isPressed || mouse != null && mouse.delta.ReadValue().sqrMagnitude > 0.5f) _sawKbm = true;
+            var touch = Touchscreen.current;
+            if (touch != null && touch.primaryTouch.press.isPressed) _sawTouch = true;
         }
 
         bool ShowPad() => ActiveDevice.Console || ActiveDevice.Gamepad || Gamepad.current != null && !_sawKbm;
+
+        string LabelText()
+        {
+            bool touch = !ActiveDevice.Console && (_sawTouch || Platform.IsMobile && !ActiveDevice.Gamepad);
+            if (touch) return _textTouch;
+            return ShowPad() ? _textButton : _textKey;
+        }
 
         static bool AnyPress(out bool fromPad)
         {
@@ -105,6 +116,8 @@ namespace SortThem
                     return true;
             }
             fromPad = false;
+            var touch = Touchscreen.current;
+            if (touch != null && touch.primaryTouch.press.wasPressedThisFrame) return true;
             var kb = Keyboard.current;
             if (kb != null && kb.anyKey.wasPressedThisFrame && !kb.escapeKey.isPressed) return true;
             var mouse = Mouse.current;
@@ -145,6 +158,7 @@ namespace SortThem
             Fonts.Apply(LocalizationSettings.SelectedLocale?.Identifier.Code);
             _textButton = Localized(KeyButton, _textButton);
             _textKey = Localized(KeyKey, _textKey);
+            _textTouch = Localized(KeyTouch, _textTouch);
         }
 
         static string Localized(string key, string fallback)

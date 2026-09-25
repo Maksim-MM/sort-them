@@ -17,7 +17,7 @@ namespace SortThem.Editor
         const string AtlasMaterialPath = ArcadeMaterials + "/Arcade_Atlas.mat";
         const string LodFolder = PoolRoot + "/_LOD";
         const string DefaultMaterial = "Assets/Cars model/ARCADE - Ultimate Vehicles Pack/Materials/Color Variations/ColorVar1_Material.mat";
-        static readonly string[] LodTags = { "LOD1", "LOD2" };
+        static readonly string[] LodTags = { "LOD1", "LOD2", "LOD3" };
         const int AtlasSize = 2048, AtlasCell = 512;
         const byte BlackFloor = 0x22;
         const float TargetScale = 0.075f, MaxLength = 0.42f, MaxHeight = 0.30f;
@@ -69,6 +69,68 @@ namespace SortThem.Editor
             return m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : m.mainTexture;
         }
 
+        static List<(int cat, int index, GameObject prefab)> CollectSources()
+        {
+            var sources = new List<(int cat, int index, GameObject prefab)>();
+            for (int c = 0; c < Categories.Length; c++)
+            {
+                string folder = PoolRoot + "/" + Categories[c].Folder;
+                var prefabPaths = AssetDatabase.FindAssets("t:Prefab", new[] { folder })
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Where(p => Path.GetDirectoryName(p).Replace('\\', '/') == folder)
+                    .OrderBy(p => Path.GetFileNameWithoutExtension(p), System.StringComparer.Ordinal)
+                    .ToList();
+                int expected = Categories[c].Id == SpecialId ? 5 : 10;
+                if (prefabPaths.Count != expected) Debug.LogWarning($"SortThem: {Categories[c].Folder} has {prefabPaths.Count} prefabs, expected {expected}");
+                for (int i = 0; i < prefabPaths.Count; i++) sources.Add((c, i, AssetDatabase.LoadAssetAtPath<GameObject>(prefabPaths[i])));
+            }
+            return sources;
+        }
+
+        [MenuItem("SortThem/3h. Add Missing LODs to ARCADE Cars")]
+        public static void AddMissingLods()
+        {
+            if (EditorApplication.isPlaying) { Debug.LogError("SortThem: останови Play."); return; }
+            var sources = CollectSources();
+            var atlas = BuildAtlas(sources.Select(s => s.prefab), false);
+            int added = 0, skipped = 0, missing = 0, tris = 0;
+            try
+            {
+                foreach (var (c, i, src) in sources)
+                {
+                    var def = Categories[c];
+                    if (def.Id == SpecialId) continue;
+                    string carId = "car_" + def.Id + "_" + i.ToString("00");
+                    EditorUtility.DisplayProgressBar("Adding LODs", carId + " (" + src.name + ")", (c * 10 + i) / 150f);
+                    var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(Paths.CarPrefabs + "/" + carId + ".prefab");
+                    var inst = prefab != null ? prefab.GetComponent<CarInstance>() : null;
+                    if (inst == null || inst.Lods == null || inst.Lods.Length == 0) { missing++; continue; }
+                    if (inst.Lods.Length >= LodTags.Length + 1) { skipped++; continue; }
+                    var probe = BuildMesh(src, carId + "_root", null, (f, sub) => SubMaterial(f, sub), atlas, out var bounds, out _, out var root);
+                    Object.DestroyImmediate(probe);
+                    var parts = SourceParts(src);
+                    var subCache = new Dictionary<(Mesh, int), int>();
+                    var lods = new List<Mesh>(inst.Lods);
+                    for (int l = lods.Count - 1; l < LodTags.Length; l++)
+                    {
+                        var lodSrc = LoadLodSource(src, LodTags[l]);
+                        if (lodSrc == null) { missing++; break; }
+                        var lodMesh = BuildMesh(lodSrc, carId + "_" + LodTags[l], root, (f, sub) => LookupMaterial(parts, f, sub, subCache), atlas, out var lodBounds, out int lt, out _);
+                        tris += lt;
+                        float ratio = lodBounds.size.magnitude / Mathf.Max(0.001f, bounds.size.magnitude);
+                        if (Mathf.Abs(ratio - 1f) > 0.05f) Debug.LogWarning($"SortThem: {carId} {LodTags[l]} bounds differ from LOD0 by {ratio:0.###}x");
+                        lods.Add(SaveMesh(lodMesh, ArcadeMeshes + "/" + carId + "_" + LodTags[l] + ".asset"));
+                        added++;
+                    }
+                    inst.Lods = lods.ToArray();
+                    EditorUtility.SetDirty(prefab);
+                }
+            }
+            finally { EditorUtility.ClearProgressBar(); }
+            AssetDatabase.SaveAssets();
+            Debug.Log($"SortThem: added {added} LOD meshes (avg {(added > 0 ? tris / added : 0)} tris), skipped {skipped} complete, missing {missing}");
+        }
+
         [MenuItem("SortThem/3g. Import ARCADE Cars")]
         public static void Import()
         {
@@ -88,19 +150,7 @@ namespace SortThem.Editor
             int total = 0, tris = 0, lodTris1 = 0, lodTris2 = 0, lodMissing = 0;
             try
             {
-                var sources = new List<(int cat, int index, GameObject prefab)>();
-                for (int c = 0; c < Categories.Length; c++)
-                {
-                    string folder = PoolRoot + "/" + Categories[c].Folder;
-                    var prefabPaths = AssetDatabase.FindAssets("t:Prefab", new[] { folder })
-                        .Select(AssetDatabase.GUIDToAssetPath)
-                        .Where(p => Path.GetDirectoryName(p).Replace('\\', '/') == folder)
-                        .OrderBy(p => Path.GetFileNameWithoutExtension(p), System.StringComparer.Ordinal)
-                        .ToList();
-                    int expected = Categories[c].Id == SpecialId ? 5 : 10;
-                    if (prefabPaths.Count != expected) Debug.LogWarning($"SortThem: {Categories[c].Folder} has {prefabPaths.Count} prefabs, expected {expected}");
-                    for (int i = 0; i < prefabPaths.Count; i++) sources.Add((c, i, AssetDatabase.LoadAssetAtPath<GameObject>(prefabPaths[i])));
-                }
+                var sources = CollectSources();
 
                 EditorUtility.DisplayProgressBar("Importing ARCADE cars", "Building texture atlas", 0f);
                 var atlas = BuildAtlas(sources.Select(s => s.prefab));
@@ -140,7 +190,7 @@ namespace SortThem.Editor
                         var lodSrc = LoadLodSource(src, LodTags[l]);
                         if (lodSrc == null) { lodMissing++; break; }
                         var lodMesh = BuildMesh(lodSrc, carId + "_" + LodTags[l], root, (f, sub) => LookupMaterial(parts, f, sub, subCache), atlas, out var lodBounds, out int lt, out _);
-                        if (l == 0) lodTris1 += lt; else lodTris2 += lt;
+                        if (l == 0) lodTris1 += lt; else if (l == 1) lodTris2 += lt;
                         float ratio = lodBounds.size.magnitude / Mathf.Max(0.001f, bounds.size.magnitude);
                         if (Mathf.Abs(ratio - 1f) > 0.05f) Debug.LogWarning($"SortThem: {carId} {LodTags[l]} bounds differ from LOD0 by {ratio:0.###}x");
                         string lodPath = ArcadeMeshes + "/" + carId + "_" + LodTags[l] + ".asset";
@@ -180,7 +230,7 @@ namespace SortThem.Editor
             Debug.Log($"SortThem: imported {total} cars in {categories.Count} categories, 1 atlas material, avg {(total > 0 ? tris / total : 0)} tris, LOD1 avg {(total > 0 ? lodTris1 / total : 0)}, LOD2 avg {(total > 0 ? lodTris2 / total : 0)}, cars without LOD {lodMissing}");
         }
 
-        static Atlas BuildAtlas(IEnumerable<GameObject> sources)
+        static Atlas BuildAtlas(IEnumerable<GameObject> sources, bool write = true)
         {
             var atlas = new Atlas();
             var defaultMat = AssetDatabase.LoadAssetAtPath<Material>(DefaultMaterial);
@@ -196,6 +246,17 @@ namespace SortThem.Editor
                     }
             int perRow = AtlasSize / AtlasCell;
             if (textures.Count > perRow * perRow) throw new System.Exception($"SortThem: atlas too small for {textures.Count} textures");
+            if (!write)
+            {
+                float pad = 0.5f / AtlasSize;
+                for (int i = 0; i < textures.Count; i++)
+                {
+                    int cx = (i % perRow) * AtlasCell, cy = (i / perRow) * AtlasCell;
+                    atlas.Rects[textures[i]] = new Rect((float)cx / AtlasSize + pad, (float)cy / AtlasSize + pad, (float)AtlasCell / AtlasSize - 2f * pad, (float)AtlasCell / AtlasSize - 2f * pad);
+                }
+                atlas.Material = AssetDatabase.LoadAssetAtPath<Material>(AtlasMaterialPath);
+                return atlas;
+            }
 
             var pixels = new Texture2D(AtlasSize, AtlasSize, TextureFormat.RGB24, false, false);
             var rt = RenderTexture.GetTemporary(AtlasCell, AtlasCell, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);

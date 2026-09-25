@@ -130,6 +130,7 @@ namespace SortThem
             if (loaded) SettleCollectibles();
             RecountStats();
             _completeAnnounced = GameComplete;
+            CarProbeLight.ApplyAll(Cars);
             Ready = true;
             PileOcclusion.Init(Cars, Config);
             StatsChanged?.Invoke();
@@ -191,9 +192,11 @@ namespace SortThem
             }
             Save.Tick(Time.deltaTime);
             PileOcclusion.Tick();
+            CarProbeLight.Tick(Cars, 3, Time.frameCount);
             if (Player != null) CarLod.Tick(Cars, Player.CameraPivot != null ? Player.CameraPivot.position : Player.transform.position, Platform.LowPower ? Config.LodDistancesMobile : Config.LodDistancesDesktop, 3, Time.frameCount);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!UiBlocking && Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) Economy.Add(1000f);
+            if (UiRoot.I != null && UiRoot.I.SettingsOpen && Gamepad.current != null && Gamepad.current.rightStickButton.wasPressedThisFrame) Economy.Add(1000f);
 #endif
         }
 

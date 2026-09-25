@@ -133,6 +133,49 @@ namespace SortThem.Editor
             return name + ": не влезло в 2048² при " + pointSize + "pt";
         }
 
+        [MenuItem("SortThem/Loc/Fonts/Export Chars From Tables")]
+        public static void ExportChars()
+        {
+            var collection = UnityEditor.Localization.LocalizationEditorSettings.GetStringTableCollection(Loc.Table);
+            if (collection == null) { Debug.LogError("FontAtlasTool: нет таблицы " + Loc.Table); return; }
+            string dir = Path.Combine(Directory.GetCurrentDirectory(), CharsDir);
+            Directory.CreateDirectory(dir);
+            var latin = new System.Collections.Generic.SortedSet<int>();
+            var report = new StringBuilder("FontAtlasTool chars:\n");
+            foreach (var table in collection.StringTables)
+            {
+                string code = table.LocaleIdentifier.Code;
+                var set = new System.Collections.Generic.SortedSet<int>();
+                foreach (var entry in table.Values)
+                {
+                    string v = entry?.Value;
+                    if (string.IsNullOrEmpty(v)) continue;
+                    for (int i = 0; i < v.Length; i++)
+                    {
+                        int cp = char.ConvertToUtf32(v, i);
+                        if (char.IsHighSurrogate(v[i])) i++;
+                        if (cp >= 32) set.Add(cp);
+                    }
+                }
+                File.WriteAllText(Path.Combine(dir, code + ".txt"), CodepointsToString(set));
+                bool cjk = false;
+                foreach (var c in Cjk) if (c.Code == code) cjk = true;
+                if (!cjk) latin.UnionWith(set);
+                report.Append(code).Append(": ").Append(set.Count).Append('\n');
+            }
+            File.WriteAllText(Path.Combine(dir, "_latin_cyr_all.txt"), CodepointsToString(latin));
+            report.Append("_latin_cyr_all: ").Append(latin.Count);
+            LastReport = report.ToString();
+            Debug.Log(LastReport);
+        }
+
+        static string CodepointsToString(System.Collections.Generic.SortedSet<int> set)
+        {
+            var sb = new StringBuilder();
+            foreach (int cp in set) sb.Append(char.ConvertFromUtf32(cp));
+            return sb.ToString();
+        }
+
         static string LanguageNameChars(string code)
         {
             if (UiRoot.LanguageNames.TryGetValue(code, out var own)) return own;

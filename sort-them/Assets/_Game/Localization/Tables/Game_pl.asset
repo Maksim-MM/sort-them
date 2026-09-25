@@ -1572,6 +1572,10 @@ MonoBehaviour:
     m_Localized: "Naci\u015Bnij dowolny klawisz"
     m_Metadata:
       m_Items: []
+  - m_Id: 6766202733977600
+    m_Localized: "Dotknij, aby rozpocz\u0105\u0107"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

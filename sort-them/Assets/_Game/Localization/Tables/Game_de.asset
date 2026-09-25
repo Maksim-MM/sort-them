@@ -1567,6 +1567,10 @@ MonoBehaviour:
     m_Localized: "Beliebige Taste dr\xFCcken"
     m_Metadata:
       m_Items: []
+  - m_Id: 6766202733977600
+    m_Localized: Zum Starten tippen
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

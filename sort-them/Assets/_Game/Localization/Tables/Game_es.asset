@@ -1567,6 +1567,10 @@ MonoBehaviour:
     m_Localized: Pulsa cualquier tecla
     m_Metadata:
       m_Items: []
+  - m_Id: 6766202733977600
+    m_Localized: Toca para empezar
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

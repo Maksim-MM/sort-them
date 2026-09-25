@@ -10,6 +10,8 @@ namespace SortThem.Editor
 {
     public static class BuildTool
     {
+        const string ProjectSettingsPath = "ProjectSettings/ProjectSettings.asset";
+
         [MenuItem("SortThem/Build WebGL")]
         public static void BuildWebGL() => Build("Builds/WebGL", BuildOptions.None);
 
@@ -19,7 +21,7 @@ namespace SortThem.Editor
             var prev = PlayerSettings.insecureHttpOption;
             PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             try { Build("Builds/WebGL_Profile", BuildOptions.Development | BuildOptions.ConnectWithProfiler); }
-            finally { PlayerSettings.insecureHttpOption = prev; SavePlayerSettings(); }
+            finally { PlayerSettings.insecureHttpOption = prev; }
         }
 
         [MenuItem("SortThem/Build WebGL (Diag)")]
@@ -37,14 +39,7 @@ namespace SortThem.Editor
                 PlayerSettings.insecureHttpOption = prevHttp;
                 PlayerSettings.WebGL.exceptionSupport = prevExc;
                 PlayerSettings.WebGL.showDiagnostics = prevDiag;
-                SavePlayerSettings();
             }
-        }
-
-        static void SavePlayerSettings()
-        {
-            EditorUtility.SetDirty(Unsupported.GetSerializedAssetInterfaceSingleton("PlayerSettings"));
-            AssetDatabase.SaveAssets();
         }
 
         static void EnsureWebGLTarget()
@@ -72,10 +67,15 @@ namespace SortThem.Editor
                 target = BuildTarget.WebGL,
                 options = buildOptions
             };
+            byte[] projectSettings = File.ReadAllBytes(ProjectSettingsPath);
             bool fontsIncluded = FontAddressables.SetIncludeInBuild(false);
             BuildReport report;
             try { report = BuildPipeline.BuildPlayer(options); }
-            finally { FontAddressables.SetIncludeInBuild(fontsIncluded); }
+            finally
+            {
+                FontAddressables.SetIncludeInBuild(fontsIncluded);
+                File.WriteAllBytes(ProjectSettingsPath, projectSettings);
+            }
             var s = report.summary;
             Debug.Log($"SortThem: WebGL build {s.result}, size {s.totalSize / (1024f * 1024f):0.0} MB, time {s.totalTime.TotalSeconds:0} s, errors {s.totalErrors}, warnings {s.totalWarnings}, output {s.outputPath}");
             if (Application.isBatchMode && s.result != BuildResult.Succeeded) EditorApplication.Exit(1);

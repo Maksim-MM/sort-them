@@ -1563,6 +1563,10 @@ MonoBehaviour:
     m_Key: title.press_key
     m_Metadata:
       m_Items: []
+  - m_Id: 6766202733977600
+    m_Key: title.press_touch
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

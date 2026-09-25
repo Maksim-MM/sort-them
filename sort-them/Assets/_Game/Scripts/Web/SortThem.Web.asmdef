@@ -4,7 +4,9 @@
     "references": [
         "UpscaleSDK.Core",
         "Unity.Localization",
-        "Unity.ResourceManager"
+        "Unity.ResourceManager",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
     ],
     "includePlatforms": [
         "WebGL"
