@@ -197,6 +197,7 @@ namespace SortThem
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!UiBlocking && Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) Economy.Add(1000f);
             if (UiRoot.I != null && UiRoot.I.SettingsOpen && Gamepad.current != null && Gamepad.current.rightStickButton.wasPressedThisFrame) Economy.Add(1000f);
+            if (UiRoot.I != null && UiRoot.I.SettingsOpen && Gamepad.current != null && Gamepad.current.leftStickButton.wasPressedThisFrame) CheatFill.FillAllButOne();
 #endif
         }
 

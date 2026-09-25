@@ -35,7 +35,7 @@ namespace SortThem
             if (r == null) return;
             var pos = car.transform.position;
             car.LitPosition = pos;
-            LightProbes.GetInterpolatedProbe(r.bounds.center, r, out SphericalHarmonicsL2 sh);
+            LightProbes.GetInterpolatedProbe(r.bounds.center, r.lightProbeUsage == LightProbeUsage.Off ? null : r, out SphericalHarmonicsL2 sh);
             _block ??= new MaterialPropertyBlock();
             _block.Clear();
             _block.SetVector(ProbeR, new Vector4(sh[0, 3], sh[0, 1], sh[0, 2], sh[0, 0]));
