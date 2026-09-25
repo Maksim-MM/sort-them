@@ -21,6 +21,7 @@ namespace SortThem
         public PlayerController Player;
         public Inventory Inventory;
         public Scatterer Scatterer;
+        public bool DisableSave;
 
         public EconomyService Economy { get; private set; }
         public UpgradeService Upgrades { get; private set; }
@@ -76,7 +77,7 @@ namespace SortThem
             I = this;
             Economy = new EconomyService(EconomyConfig);
             Upgrades = new UpgradeService(UpgradeAssets, Economy);
-            Save = new SaveService(this, new UpscaleSaveStorage());
+            Save = new SaveService(this, DisableSave ? new NullSaveStorage() : new UpscaleSaveStorage());
             ApplyPlatformSettings();
         }
 
