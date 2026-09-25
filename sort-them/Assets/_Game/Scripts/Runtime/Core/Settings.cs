@@ -64,6 +64,7 @@ namespace SortThem
                 prefs.SetBool("settings.vibration", Vibration);
                 prefs.SetString("settings.locale", Locale);
                 prefs.SetInt("settings.track", MusicTrack);
+                GameManager.I?.Save?.MarkDirty();
             }
             else
             {

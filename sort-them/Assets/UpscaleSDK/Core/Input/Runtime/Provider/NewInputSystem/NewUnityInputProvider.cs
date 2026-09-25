@@ -207,9 +207,10 @@ namespace UpscaleSDK.Core.Input.Provider.NewInputSystem
             if (ActiveGamepad == null)
                 return GamepadType.None;
 
-            string name = ActiveGamepad.name.ToLower();
-            string manufacturer = ActiveGamepad.description.manufacturer.ToLower();
-            string product = ActiveGamepad.description.product.ToLower();
+            var description = ActiveGamepad.description;
+            string name = ActiveGamepad.name != null ? ActiveGamepad.name.ToLower() : string.Empty;
+            string manufacturer = description.manufacturer != null ? description.manufacturer.ToLower() : string.Empty;
+            string product = description.product != null ? description.product.ToLower() : string.Empty;
 
             if (name.Contains("nintendo") || name.Contains("switch") || manufacturer.Contains("nintendo"))
                 return GamepadType.Nintendo;

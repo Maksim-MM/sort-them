@@ -33,11 +33,17 @@ namespace SortThem
             }
         }
 
-        public void Save(byte[] data)
+        public void Stage(byte[] data)
         {
             var prefs = SavesReady.Prefs;
-            if (prefs == null) { _legacy.Save(data); return; }
+            if (prefs == null) { _legacy.Stage(data); return; }
             prefs.SetString(Key, Convert.ToBase64String(data));
+        }
+
+        public void Commit()
+        {
+            var prefs = SavesReady.Prefs;
+            if (prefs == null) { _legacy.Commit(); return; }
             prefs.TrySave();
         }
 

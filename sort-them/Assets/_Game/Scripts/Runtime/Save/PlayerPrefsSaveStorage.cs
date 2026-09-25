@@ -23,9 +23,13 @@ namespace SortThem
             }
         }
 
-        public void Save(byte[] data)
+        public void Stage(byte[] data)
         {
             PlayerPrefs.SetString(Key, Convert.ToBase64String(data));
+        }
+
+        public void Commit()
+        {
             PlayerPrefs.Save();
         }
 

@@ -194,10 +194,10 @@ namespace SortThem
             fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
             fitter.aspectRatio = Background != null ? Background.width / (float)Background.height : 16f / 9f;
 
-            _label = UiFactory.Text(root, "Press", _textButton, 44f, TextAlignmentOptions.Center, Color.white);
+            _label = UiFactory.Text(root, "Press", _textButton, 55f, TextAlignmentOptions.Center, Color.white);
             _label.fontStyle = FontStyles.Bold;
             _label.alpha = 0f;
-            UiFactory.Anchored(_label.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 80f), new Vector2(1500f, 70f));
+            UiFactory.Anchored(_label.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 80f), new Vector2(1500f, 88f));
             _label.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             _label.rectTransform.anchoredPosition = new Vector2(0f, 115f);
             UiFactory.TextGlow(_label, new Color(0f, 0f, 0f, 0.9f), 0.4f, 0.5f);

@@ -37,8 +37,12 @@ namespace SortThem
             var marqueeRoot = (RectTransform)w.Marquee.parent;
             UiFactory.Anchor(marqueeRoot, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(ArcadeSide, -(ArcadeMarqueeTop + ArcadeMarqueeHeight)), new Vector2(-ArcadeSide, -ArcadeMarqueeTop));
             UiFactory.Glow(marqueeRoot, 24f, 0.5f);
-            w.Title = Bind(UiFactory.Text(w.Marquee, "Title", "", 44f, TextAlignmentOptions.Center, ArcadeTitle), titleKey, titleFallback);
+            w.Title = Bind(UiFactory.Text(w.Marquee, "Title", "", 22f, TextAlignmentOptions.Center, ArcadeTitle), titleKey, titleFallback);
             w.Title.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+            w.Title.enableAutoSizing = true;
+            w.Title.fontSizeMin = 14f;
+            w.Title.fontSizeMax = 22f;
+            w.Title.margin = new Vector4(16f, 0f, 16f, 0f);
             w.Title.characterSpacing = 6f;
             UiFactory.TextGlow(w.Title, new Color(ArcadeTitle.r, ArcadeTitle.g, ArcadeTitle.b, 0.85f), 0.3f, 0.6f);
             UiFactory.Anchor(w.Title.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);

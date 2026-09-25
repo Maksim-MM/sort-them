@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dc38e675a464a02a5da0a8497c2df4e, type: 3}
   m_Name: SaveSettings
   m_EditorClassIdentifier: UpscaleSDK.Core::UpscaleSDK.Core.Saves.Settings.SavesSettings
-  EnableAutosaves: 1
+  EnableAutosaves: 0
   SecondsBetweenAutosaves: 300
   SaveFileExtension: txt
   ProjectFolderName: UpscaleSaves

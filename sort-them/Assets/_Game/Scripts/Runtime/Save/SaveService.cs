@@ -13,6 +13,10 @@ namespace SortThem
         readonly GameManager _gm;
         readonly ISaveStorage _storage;
         float _timer;
+        float _lastCommit = float.NegativeInfinity;
+        bool _pending;
+        byte[] _staged;
+        string _requested;
 
         public event Action<string> Saved;
         public DateTime LastSaveTime { get; private set; }
@@ -23,6 +27,20 @@ namespace SortThem
             _storage = storage;
         }
 
+        float MinCommitInterval
+        {
+            get
+            {
+#if UNITY_SWITCH
+                return _gm.Config.SaveMinIntervalSwitch;
+#elif UNITY_PS4 || UNITY_PS5 || UNITY_GAMECORE || UNITY_XBOXONE
+                return _gm.Config.SaveMinIntervalConsole;
+#else
+                return 0f;
+#endif
+            }
+        }
+
         public void Tick(float dt)
         {
             _timer += dt;
@@ -31,14 +49,44 @@ namespace SortThem
                 _timer = 0f;
                 SaveNow("autosave");
             }
+            if (_requested != null && !_gm.Shuffling)
+            {
+                string reason = _requested;
+                _requested = null;
+                Write(reason, false);
+            }
+            if (_pending && Time.unscaledTime - _lastCommit >= MinCommitInterval) Commit();
         }
 
-        public void SaveNow(string reason)
+        public void MarkDirty() => _pending = true;
+
+        public void SaveNow(string reason) => SaveNow(reason, false);
+
+        public void SaveNow(string reason, bool force)
+        {
+            if (!_gm.Ready) return;
+            if (!force)
+            {
+                _requested = reason;
+                return;
+            }
+            _requested = null;
+            Write(reason, true);
+        }
+
+        void Write(string reason, bool force)
         {
             if (!_gm.Ready || _gm.Shuffling) return;
             try
             {
-                _storage.Save(Serialize());
+                var data = Serialize();
+                if (!SameBytes(data, _staged))
+                {
+                    _storage.Stage(data);
+                    _staged = data;
+                    _pending = true;
+                }
+                if (_pending && (force || Time.unscaledTime - _lastCommit >= MinCommitInterval)) Commit();
                 _timer = 0f;
                 LastSaveTime = DateTime.Now;
                 Saved?.Invoke(reason);
@@ -49,7 +97,34 @@ namespace SortThem
             }
         }
 
-        public void ClearSave() => _storage.Clear();
+        void Commit()
+        {
+            try
+            {
+                _storage.Commit();
+                _lastCommit = Time.unscaledTime;
+                _pending = false;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("SortThem: save commit failed: " + e);
+            }
+        }
+
+        static bool SameBytes(byte[] a, byte[] b)
+        {
+            if (a == null || b == null || a.Length != b.Length) return false;
+            for (int i = 0; i < a.Length; i++) if (a[i] != b[i]) return false;
+            return true;
+        }
+
+        public void ClearSave()
+        {
+            _storage.Clear();
+            _staged = null;
+            _requested = null;
+            _pending = false;
+        }
 
         public bool Load()
         {

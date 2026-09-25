@@ -146,9 +146,8 @@ namespace SortThem
             var op = LocalizationSettings.InitializationOperation;
             float timeout = Time.realtimeSinceStartup + 10f;
             while (!op.IsDone && Time.realtimeSinceStartup < timeout) yield return null;
-            Loc.Ready = op.IsDone && op.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded;
-            if (!Loc.Ready) Debug.LogWarning("SortThem: localization not ready, using dev names");
-            else
+            bool ready = op.IsDone && op.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded;
+            if (ready)
             {
                 Settings.EnsureLoaded();
                 if (!string.IsNullOrEmpty(Settings.Locale))
@@ -161,6 +160,8 @@ namespace SortThem
                 LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
                 LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
             }
+            Loc.Ready = ready;
+            if (!ready) Debug.LogWarning("SortThem: localization not ready, using dev names");
         }
 
         static IEnumerator WaitTable()
@@ -576,12 +577,12 @@ namespace SortThem
 
         void OnApplicationFocus(bool hasFocus)
         {
-            if (!hasFocus && Ready) Save.SaveNow("focus lost");
+            if (!hasFocus && Ready) Save.SaveNow("focus lost", true);
         }
 
         void OnApplicationPause(bool paused)
         {
-            if (paused && Ready) Save.SaveNow("pause");
+            if (paused && Ready) Save.SaveNow("pause", true);
         }
     }
 }

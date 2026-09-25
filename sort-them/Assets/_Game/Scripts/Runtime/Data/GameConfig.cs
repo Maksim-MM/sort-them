@@ -147,5 +147,7 @@ namespace SortThem
 
         [Header("Save")]
         public float AutosaveInterval = 60f;
+        public float SaveMinIntervalSwitch = 60f;
+        public float SaveMinIntervalConsole = 30f;
     }
 }

@@ -72,8 +72,9 @@ namespace SortThem.Editor
         static Shape Shelves()
         {
             var s = new Shape();
-            s.Line(52, 36, 52, 224);
-            s.Line(204, 36, 204, 224);
+            s.Line(52, 28, 52, 224);
+            s.Line(204, 28, 204, 224);
+            s.Line(40, 28, 216, 28);
             s.Line(40, 84, 216, 84);
             s.Line(40, 140, 216, 140);
             s.Line(40, 196, 216, 196);

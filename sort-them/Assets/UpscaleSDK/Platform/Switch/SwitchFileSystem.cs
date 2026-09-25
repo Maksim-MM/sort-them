@@ -57,6 +57,9 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.Switch
             userId = SwitchPlatform.UserId;
             bool fileHandleCreated = false;
             FileHandle handle = default;
+#if UNITY_SWITCH
+            UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
+#endif
             try
             {
                 var mountResult = Mount(userId);
