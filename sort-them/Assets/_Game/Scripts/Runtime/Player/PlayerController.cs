@@ -15,6 +15,7 @@ namespace SortThem
         bool _crouching, _wantCrouch;
         float _stepTimer;
         Camera _cam;
+        public static float MaxHorizontalFov;
         float _baseFov = 70f, _fovVelocity;
 
         public bool IsCrouching => _crouching;
@@ -138,7 +139,9 @@ namespace SortThem
                 if (_cam == null) return;
                 _baseFov = _cam.fieldOfView;
             }
-            float target = _baseFov + (sprinting ? cfg.SprintFovBoost : 0f);
+            float baseFov = _baseFov;
+            if (MaxHorizontalFov > 0f && _cam.aspect > 0f) baseFov = Mathf.Min(baseFov, Camera.HorizontalToVerticalFieldOfView(MaxHorizontalFov, _cam.aspect));
+            float target = baseFov + (sprinting ? cfg.SprintFovBoost : 0f);
             _cam.fieldOfView = Mathf.SmoothDamp(_cam.fieldOfView, target, ref _fovVelocity, cfg.FovSmoothTime);
         }
 

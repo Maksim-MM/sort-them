@@ -132,6 +132,9 @@ MonoBehaviour:
   NoDistanceSort: 1
   FreezeSpeed: 0.35
   BuriedCulling: 0
+  FrozenBatchMobile: 1
+  ChunkShader: {fileID: 4800000, guid: b4ac9b4cb3d1c402ba6d1f26d9ba9593, type: 3}
+  ChunkDistance: 8
   BuriedRayLength: 0.5
   BuriedSideRays: 1
   BuriedNeighborRadius: 0.5

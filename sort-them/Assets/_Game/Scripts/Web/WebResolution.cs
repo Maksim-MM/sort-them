@@ -8,6 +8,7 @@ namespace SortThem.Web
     {
         const int DefaultMaxShortSide = 590;
         const int DefaultFrameRate = 30;
+        const int DefaultMaxHorizontalFov = 100;
         const float MinScale = 0.3f;
 
         int _maxShortSide;
@@ -20,6 +21,9 @@ namespace SortThem.Web
         {
             if (!Application.isMobilePlatform) return;
             Application.targetFrameRate = ReadParam("fps", DefaultFrameRate);
+            FrozenCarBatch.Allowed = ReadParam("fbatch", 1) != 0;
+            FrozenCarBatch.DistanceOverride = ReadParam("chd", -1);
+            PlayerController.MaxHorizontalFov = ReadParam("hfov", DefaultMaxHorizontalFov);
             var go = new GameObject("[WebResolution]");
             go.hideFlags = HideFlags.HideInHierarchy;
             DontDestroyOnLoad(go);

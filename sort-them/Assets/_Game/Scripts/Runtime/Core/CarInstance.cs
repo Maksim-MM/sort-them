@@ -20,11 +20,20 @@ namespace SortThem
         public int SlotIndex = -1;
         public Mesh[] Lods;
         [System.NonSerialized] public int Lod;
-        [System.NonSerialized] public bool Levitating;
+        public bool Levitating
+        {
+            get => _levitating;
+            set
+            {
+                if (value) FrozenCarBatch.Release(this);
+                _levitating = value;
+            }
+        }
         [System.NonSerialized] public float CalmSince = -1f;
         [System.NonSerialized] public Vector3 LitPosition = new Vector3(float.MaxValue, 0f, 0f);
         public bool Hidden { get; private set; }
 
+        bool _levitating;
         Rigidbody _body;
         Collider _col;
         MeshRenderer _rend;
@@ -69,6 +78,7 @@ namespace SortThem
 
         public void SetLoose(Vector3 position, Quaternion rotation, bool kinematic)
         {
+            FrozenCarBatch.Release(this);
             State = CarState.Loose;
             SetDisplayScale(1f);
             Shelf = null;
@@ -88,6 +98,7 @@ namespace SortThem
 
         public void Launch(Vector3 position, Quaternion rotation, Vector3 velocity)
         {
+            FrozenCarBatch.Release(this);
             State = CarState.Loose;
             SetDisplayScale(1f);
             Shelf = null;
@@ -104,6 +115,7 @@ namespace SortThem
 
         public void SetHeld()
         {
+            FrozenCarBatch.Release(this);
             PileOcclusion.MarkDirty(this);
             State = CarState.Held;
             SetDisplayScale(1f);
@@ -115,6 +127,7 @@ namespace SortThem
 
         public void SetPlaced(ShelfController shelf, int slot, Transform slotPoint)
         {
+            FrozenCarBatch.Release(this);
             State = CarState.Placed;
             SetDisplayScale(shelf != null && shelf.Data != null ? shelf.Data.DisplayScale : 1f);
             Shelf = shelf;
@@ -138,6 +151,7 @@ namespace SortThem
 
         public void Unfreeze()
         {
+            FrozenCarBatch.Release(this);
             if (Body.isKinematic)
             {
                 Body.isKinematic = false;
@@ -147,8 +161,12 @@ namespace SortThem
             }
         }
 
+        void OnDisable() => FrozenCarBatch.Release(this);
+
         public void SetVisible(bool visible)
         {
+            if (!visible) FrozenCarBatch.Release(this);
+            else if (FrozenCarBatch.Contains(this)) return;
             if (Hidden != !visible) Hidden = !visible;
             var r = Rend;
             if (r != null && r.enabled != visible) r.enabled = visible;

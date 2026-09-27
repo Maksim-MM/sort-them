@@ -53,6 +53,7 @@ namespace SortThem
             get { int n = 0; long m = CollectiblesMask; while (m != 0) { n += (int)(m & 1); m >>= 1; } return n; }
         }
         public bool Ready { get; private set; }
+        Vector3 EyePosition => Player == null ? Vector3.zero : Player.CameraPivot != null ? Player.CameraPivot.position : Player.transform.position;
         public bool GameComplete => TotalShelves > 0 && ClosedShelves >= TotalShelves;
         bool _uiBlocking;
         int _uiReleaseFrame = -1;
@@ -97,6 +98,7 @@ namespace SortThem
         void OnDestroy()
         {
             PileOcclusion.Shutdown();
+            FrozenCarBatch.Shutdown();
             if (I == this) I = null;
             LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
         }
@@ -134,6 +136,7 @@ namespace SortThem
             CarProbeLight.ApplyAll(Cars);
             Ready = true;
             PileOcclusion.Init(Cars, Config);
+            if (Config.FrozenBatchMobile && Platform.IsMobile) FrozenCarBatch.Init(Cars, Config.ChunkShader, Config.ChunkDistance, EyePosition);
             StatsChanged?.Invoke();
         }
 
@@ -195,6 +198,7 @@ namespace SortThem
             Save.Tick(Time.deltaTime);
             PileOcclusion.Tick();
             CarProbeLight.Tick(Cars, 3, Time.frameCount);
+            FrozenCarBatch.Tick(Cars, Shuffling, EyePosition, Time.frameCount);
             if (Player != null) CarLod.Tick(Cars, Player.CameraPivot != null ? Player.CameraPivot.position : Player.transform.position, Platform.LowPower ? Config.LodDistancesMobile : Config.LodDistancesDesktop, 3, Time.frameCount);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!UiBlocking && Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) Economy.Add(1000f);

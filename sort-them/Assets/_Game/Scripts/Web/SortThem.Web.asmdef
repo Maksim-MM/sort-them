@@ -2,6 +2,7 @@
     "name": "SortThem.Web",
     "rootNamespace": "SortThem.Web",
     "references": [
+        "SortThem.Runtime",
         "Unity.TextMeshPro",
         "UpscaleSDK.Core",
         "Unity.Localization",

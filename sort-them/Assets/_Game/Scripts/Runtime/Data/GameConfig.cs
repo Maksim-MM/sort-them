@@ -97,6 +97,9 @@ namespace SortThem
         public bool NoDistanceSort = true;
         public float FreezeSpeed = 0.35f;
         public bool BuriedCulling = false;
+        public bool FrozenBatchMobile = true;
+        public Shader ChunkShader;
+        public float ChunkDistance = 8f;
         public float BuriedRayLength = 0.35f;
         public bool BuriedSideRays = true;
         public float BuriedNeighborRadius = 0.5f;
