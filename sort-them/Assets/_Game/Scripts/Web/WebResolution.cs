@@ -24,9 +24,11 @@ namespace SortThem.Web
             go.hideFlags = HideFlags.HideInHierarchy;
             DontDestroyOnLoad(go);
             go.AddComponent<WebResolution>()._maxShortSide = ReadParam("maxh", DefaultMaxShortSide);
+            if (ReadParam("dynb", 1) == 0 && (QualitySettings.renderPipeline ?? GraphicsSettings.defaultRenderPipeline) is UniversalRenderPipelineAsset urp)
+                urp.supportsDynamicBatching = false;
         }
 
-        static int ReadParam(string name, int fallback)
+        internal static int ReadParam(string name, int fallback)
         {
             string url = Application.absoluteURL ?? "";
             int q = url.IndexOf('?');
