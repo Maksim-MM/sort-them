@@ -135,3 +135,7 @@
 ## `TextureImporterPlatformSettings`: собирать объект заново
 
 Вариант «`GetPlatformTextureSettings("WebGL")` → `CopyTo(new)` → правка полей → `SetPlatformTextureSettings` → `SaveAndReimport`» закончился `overridden: 0` в `.meta` (crunch не применился). Надёжно: новый `TextureImporterPlatformSettings` со всеми полями (`name`, `overridden`, `maxTextureSize`, `format`, `textureCompression`, `crunchedCompression`, `compressionQuality`), затем `WriteImportSettingsIfDirty` + `ImportAsset(ForceUpdate)`, и проверить `GetPlatformTextureSettings` и блок в `.meta`.
+
+## Playgama Bridge: автоустановка шаблона при первом импорте не срабатывает (29.09)
+
+`PlaygamaBridgeFirstRun` (`[InitializeOnLoad]`) на свежей установке вешает копирование шаблона и выбор `PROJECT:Bridge` на цепочку `EditorApplication.delayCall`; при импорте пакета домен перезагружается и делегаты теряются — `Assets/WebGLTemplates` не появляется, ошибок нет. Меню `Playgama → Install Template Files` или напрямую `Playgama.Editor.InstallFilesWindow.InstallAllSilently()` + `PlayerSettings.WebGL.template = "PROJECT:Bridge"`. После обновления пакета файлы шаблона в `Assets/WebGLTemplates/Bridge` сверять с `Library/PackageCache/com.playgama.bridge@*/Runtime/WebGLTemplates/Bridge` (`cmp`), кроме `playgama-bridge-config.json` — он наш.

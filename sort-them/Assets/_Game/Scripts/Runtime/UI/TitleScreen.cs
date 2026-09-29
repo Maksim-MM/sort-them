@@ -43,6 +43,7 @@ namespace SortThem
             if (_load != null) _load.allowSceneActivation = false;
             _ready = true;
             _shownAt = Time.unscaledTime;
+            Platform.RaiseGameReady();
         }
 
         void Update()

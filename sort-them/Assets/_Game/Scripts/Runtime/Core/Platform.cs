@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace SortThem
@@ -19,6 +20,9 @@ namespace SortThem
             }
             set => _mobile = value;
         }
+
+        public static event Action GameReady;
+        public static void RaiseGameReady() => GameReady?.Invoke();
 
         public const int SwitchFrameRate = 30;
 

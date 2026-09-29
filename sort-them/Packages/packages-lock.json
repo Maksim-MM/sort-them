@@ -17,6 +17,13 @@
       },
       "hash": "30d22075093d1d35dfb0091c1c7550e9ad948577"
     },
+    "com.playgama.bridge": {
+      "version": "https://github.com/playgama/bridge-unity.git#v2.2.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c7a959c4fc996b926e1eb640d303171ca37fa9ed"
+    },
     "com.unity.addressables": {
       "version": "2.9.1",
       "depth": 1,

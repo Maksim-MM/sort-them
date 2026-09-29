@@ -135,6 +135,7 @@ namespace SortThem
             _completeAnnounced = GameComplete;
             CarProbeLight.ApplyAll(Cars);
             Ready = true;
+            Platform.RaiseGameReady();
             PileOcclusion.Init(Cars, Config);
             if (Config.FrozenBatchMobile && Platform.IsMobile) FrozenCarBatch.Init(Cars, Config.ChunkShader, Config.ChunkDistance, EyePosition);
             StatsChanged?.Invoke();
