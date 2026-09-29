@@ -48,6 +48,14 @@ namespace SortThem
 
         public float DisplayScale { get; private set; } = 1f;
 
+        static float LooseScale => GameManager.I != null && GameManager.I.Config != null && GameManager.I.Config.LooseScale > 0f ? GameManager.I.Config.LooseScale : 1f;
+
+        void ApplyBodyLimits()
+        {
+            var cfg = GameManager.I != null ? GameManager.I.Config : null;
+            if (cfg != null && cfg.CarMaxDepenetrationVelocity > 0f) Body.maxDepenetrationVelocity = cfg.CarMaxDepenetrationVelocity;
+        }
+
         public Vector3 HalfExtents => BaseHalfExtents * DisplayScale;
 
         Vector3 BaseHalfExtents
@@ -80,7 +88,8 @@ namespace SortThem
         {
             FrozenCarBatch.Release(this);
             State = CarState.Loose;
-            SetDisplayScale(1f);
+            SetDisplayScale(LooseScale);
+            ApplyBodyLimits();
             Shelf = null;
             SlotIndex = -1;
             gameObject.layer = Layers.LooseItems;
@@ -100,7 +109,8 @@ namespace SortThem
         {
             FrozenCarBatch.Release(this);
             State = CarState.Loose;
-            SetDisplayScale(1f);
+            SetDisplayScale(LooseScale);
+            ApplyBodyLimits();
             Shelf = null;
             SlotIndex = -1;
             gameObject.layer = Layers.LooseItems;

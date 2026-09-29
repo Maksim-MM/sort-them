@@ -84,7 +84,8 @@ namespace SortThem
         RectTransform _abilitiesPanel;
         GameObject _touchSprint, _touchCrouch, _rotateOverlay;
         RectTransform _safe;
-        const float SlotSize = 72f, SlotGap = 12f;
+        static float SlotSize => TouchInput.Active ? 108f : 72f;
+        static float SlotGap => TouchInput.Active ? 18f : 12f;
         static readonly Color SlotColor = new Color(0.13f, 0.12f, 0.14f, 0.92f);
         static readonly Color FillActive = new Color(0.55f, 0.35f, 1f, 0.55f);
         static readonly Color FillCooldown = new Color(1f, 1f, 1f, 0.22f);
@@ -484,7 +485,7 @@ namespace SortThem
             return new AbilitySlot { Root = root.gameObject, Icon = icon, Fill = fill, Key = key };
         }
 
-        const float TouchBig = 120f, TouchMid = 100f, TouchSmall = 96f;
+        const float TouchBig = 180f, TouchMid = 150f, TouchSmall = 144f;
 
         void BuildTouchControls()
         {
@@ -522,10 +523,11 @@ namespace SortThem
             TouchButtonUi(layer, "Jump", TouchButton.Jump, TouchIcon(2), new Vector2(1f, 0f), Centered(colMiddle, rowTop, TouchMid), TouchMid);
             _touchSprint = TouchButtonUi(layer, "Sprint", TouchButton.Jump, TouchIcon(6), new Vector2(1f, 0f), Centered(colMiddle, rowBottom, TouchSmall), TouchSmall, true);
             _touchCrouch = TouchButtonUi(layer, "Crouch", TouchButton.Crouch, TouchIcon(7), new Vector2(1f, 0f), Centered(colLeft, rowBottom, TouchSmall), TouchSmall);
-            TouchButtonUi(layer, "Pause", TouchButton.Pause, TouchIcon(3), new Vector2(1f, 1f), new Vector2(-280f, -16f), 60f);
+            TouchButtonUi(layer, "Pause", TouchButton.Pause, TouchIcon(3), new Vector2(1f, 1f), new Vector2(-16f, -16f), 90f);
+            UiFactory.Anchored((RectTransform)_balanceText.rectTransform.parent, new Vector2(1f, 1f), new Vector2(-118f, -16f), new Vector2(240f, 56f));
 
             _inventoryText.gameObject.SetActive(false);
-            UiFactory.Anchored(_inventoryCountText.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 340f), new Vector2(266f, 32f));
+            UiFactory.Anchored(_inventoryCountText.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 460f), new Vector2(400f, 32f));
             _inventoryCountText.fontSize = 24f;
             BuildInventoryWheel(layer);
             UiFactory.Anchored(_abilitiesPanel, new Vector2(0.5f, 0f), new Vector2(0f, 24f), new Vector2(3f * SlotSize + 2f * SlotGap, SlotSize));
@@ -533,20 +535,21 @@ namespace SortThem
 
         void BuildInventoryWheel(Transform parent)
         {
-            const float rowH = 28f, wheelW = 266f;
+            const float rowH = 56f, wheelW = 400f;
             var wheel = UiFactory.Image(parent, "InventoryWheel", null, new Color(0f, 0f, 0f, 0.001f), Image.Type.Simple);
             wheel.raycastTarget = true;
-            UiFactory.Anchored(wheel.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 380f), new Vector2(wheelW, rowH * 5f));
+            UiFactory.Anchored(wheel.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 500f), new Vector2(wheelW, rowH * 5f));
             wheel.gameObject.AddComponent<RectMask2D>();
             var plate = UiFactory.Image(wheel.transform, "Plate", SlotFrame, new Color(0.13f, 0.12f, 0.14f, 0.7f), Image.Type.Sliced);
             plate.pixelsPerUnitMultiplier = 2.4f;
             UiFactory.Anchored(plate.rectTransform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(wheelW, rowH));
             var comp = wheel.gameObject.AddComponent<InventoryWheel>();
             comp.Counter = _inventoryCountText;
+            comp.Plate = plate;
             comp.RowHeight = rowH;
             for (int k = -2; k <= 2; k++)
             {
-                var row = UiFactory.Text(wheel.transform, "Row" + (k + 2), "", 13f, TextAlignmentOptions.Right, Color.white);
+                var row = UiFactory.Text(wheel.transform, "Row" + (k + 2), "", 26f, TextAlignmentOptions.Right, Color.white);
                 row.textWrappingMode = TextWrappingModes.NoWrap;
                 row.overflowMode = TextOverflowModes.Ellipsis;
                 UiFactory.Anchored(row.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -k * rowH), new Vector2(wheelW - 16f, rowH));

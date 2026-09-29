@@ -8,6 +8,7 @@ namespace SortThem
     {
         public Inventory Inventory;
         public TMP_Text Counter;
+        public UnityEngine.UI.Image Plate;
         public TMP_Text[] Rows = new TMP_Text[5];
         public float RowHeight = 40f;
         public float SnapSpeed = 400f;
@@ -107,6 +108,7 @@ namespace SortThem
             if (Inventory == null) return;
             int n = Inventory.Items.Count;
             if (Counter != null) Counter.text = n + "/" + Inventory.Capacity;
+            if (Plate != null && Plate.gameObject.activeSelf != n > 0) Plate.gameObject.SetActive(n > 0);
             for (int k = -2; k <= 2; k++)
             {
                 var row = Rows[k + 2];
@@ -118,7 +120,7 @@ namespace SortThem
                 var d = Inventory.Items[index].Data;
                 row.text = Loc.Get(d.DisplayName, d.DevName);
                 bool center = k == 0;
-                row.fontSize = center ? 17f : 13f;
+                row.fontSize = center ? 34f : 26f;
                 row.color = center ? Color.white : new Color(0.75f, 0.75f, 0.8f, Mathf.Abs(k) == 1 ? 0.9f : 0.55f);
             }
             Layout();

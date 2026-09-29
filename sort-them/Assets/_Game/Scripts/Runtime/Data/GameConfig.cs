@@ -106,6 +106,8 @@ namespace SortThem
         public int BuriedPerFrame = 300;
         public float FreezeDelay = 0.5f;
         public float ActivationUpdateInterval = 0.25f;
+        public float LooseScale = 1.5f;
+        public float CarMaxDepenetrationVelocity = 1f;
         [UnityEngine.Serialization.FormerlySerializedAs("LodDistances")] public float[] LodDistancesMobile = { 0f, 4f, 10f };
         public float[] LodDistancesDesktop = { 10f, 20f, 35f };
         public int ShuffleCarsPerStep = 4;

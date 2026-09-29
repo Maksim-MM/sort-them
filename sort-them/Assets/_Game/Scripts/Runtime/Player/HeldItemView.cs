@@ -53,9 +53,14 @@ namespace SortThem
         Vector3 _frontLocal;
         int _seenAddCount;
         int _seenRemoveCount;
+        Camera _cam;
+        float _designFov;
 
         void Start()
         {
+            _cam = GetComponentInParent<Camera>();
+            if (_cam == null) _cam = Camera.main;
+            _designFov = _cam != null ? _cam.fieldOfView : 0f;
             if (Inventory == null && GameManager.I != null) Inventory = GameManager.I.Inventory;
             if (Inventory != null) Inventory.Changed += OnInventoryChanged;
             if (Filter != null) Filter.transform.localScale = Vector3.zero;
@@ -170,12 +175,24 @@ namespace SortThem
             return _shown != null && _phase != 1 && t.localScale.x > 0.01f;
         }
 
-        Vector3 RestLocal(float s) => RestPosition - Quaternion.Euler(RestEuler) * (_frontLocal * s);
+        float ViewScale()
+        {
+            if (_cam == null || _designFov <= 0f || PlayerController.MaxHorizontalFov <= 0f || _cam.aspect <= 0f) return 1f;
+            float capped = Mathf.Min(_designFov, Camera.HorizontalToVerticalFieldOfView(PlayerController.MaxHorizontalFov, _cam.aspect));
+            return Mathf.Tan(capped * 0.5f * Mathf.Deg2Rad) / Mathf.Tan(_designFov * 0.5f * Mathf.Deg2Rad);
+        }
+
+        Vector3 RestLocal(float s)
+        {
+            float k = ViewScale();
+            var rest = new Vector3(RestPosition.x * k, RestPosition.y * k, RestPosition.z);
+            return rest - Quaternion.Euler(RestEuler) * (_frontLocal * s);
+        }
 
         void ApplyFrom(float k)
         {
             var t = Filter.transform;
-            float s = Scale * _fit;
+            float s = Scale * _fit * ViewScale();
             t.localPosition = Vector3.Lerp(_startPos, RestLocal(s), k);
             t.localRotation = Quaternion.Slerp(_startRot, Quaternion.Euler(RestEuler), k);
             t.localScale = Vector3.one * Mathf.Lerp(_startScale, s, k);
@@ -184,7 +201,7 @@ namespace SortThem
         void Apply(float offset, float scale)
         {
             var t = Filter.transform;
-            float s = Scale * _fit * scale;
+            float s = Scale * _fit * scale * ViewScale();
             t.localPosition = RestLocal(s) + EnterOffset * offset;
             t.localRotation = Quaternion.Euler(RestEuler + new Vector3(0f, -40f * offset, 0f));
             t.localScale = Vector3.one * s;

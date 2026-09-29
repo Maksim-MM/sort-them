@@ -60,6 +60,11 @@ namespace SortThem
                 UiFactory.Anchor(w.Panel, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(ArcadeSide, ArcadePanelBottom), new Vector2(-ArcadeSide, ArcadePanelBottom + ArcadePanelHeight));
             }
 
+            if (TouchInput.Active && Screen.height > 0 && size.y > 0f)
+            {
+                float safeH = 900f * Screen.safeArea.height / Screen.height - 24f;
+                w.Root.localScale = Vector3.one * (safeH / size.y);
+            }
             w.Root.gameObject.AddComponent<UiCrtPower>();
             return w;
         }
