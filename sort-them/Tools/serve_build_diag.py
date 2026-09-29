@@ -6,7 +6,7 @@
 печатается в терминал и дописывается в Tools/diag_log.txt (перезаписывается при запуске).
 Страница должна быть пропатчена Tools/inject_diag.py.
 """
-import http.server, json, os, socket, sys, time
+import http.server, json, os, subprocess, sys, time
 
 DIR = sys.argv[1] if len(sys.argv) > 1 else "Builds/WebGL_Diag"
 PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8000
@@ -14,15 +14,17 @@ LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "diag_log.txt")
 open(LOG, "w").close()
 
 
-def lan_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(("8.8.8.8", 80))
-        return s.getsockname()[0]
-    except OSError:
-        return "127.0.0.1"
-    finally:
-        s.close()
+def lan_ips():
+    out = subprocess.run(["ifconfig"], capture_output=True, text=True).stdout
+    ips, iface = [], None
+    for line in out.splitlines():
+        if line and not line[0].isspace():
+            iface = line.split(":")[0]
+        elif line.strip().startswith("inet ") and iface and iface.startswith("en"):
+            ip = line.split()[1]
+            if not ip.startswith("169.254."):
+                ips.append(ip)
+    return ips or ["127.0.0.1"]
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -68,5 +70,5 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             print(time.strftime("%H:%M:%S"), f"[{self.client_address[0]}] GET {self.path}", flush=True)
 
 
-print(f"Открой на телефоне: http://{lan_ip()}:{PORT}/   (папка {DIR}, лог {LOG})", flush=True)
+print("Открой на телефоне: " + "  или  ".join(f"http://{ip}:{PORT}/" for ip in lan_ips()) + f"   (папка {DIR}, лог {LOG})", flush=True)
 http.server.ThreadingHTTPServer(("", PORT), Handler).serve_forever()

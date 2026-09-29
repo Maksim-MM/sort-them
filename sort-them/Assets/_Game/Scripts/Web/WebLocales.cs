@@ -7,7 +7,7 @@ namespace SortThem.Web
 {
     public static class WebLocales
     {
-        static readonly HashSet<string> Codes = new HashSet<string> { "en", "ru" };
+        static readonly HashSet<string> Codes = new HashSet<string> { "en", "ru", "es", "de", "fr", "it", "pt-BR", "tr", "pl" };
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Init()

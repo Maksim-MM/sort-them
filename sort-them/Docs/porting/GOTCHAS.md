@@ -104,3 +104,34 @@
 ## Switch: SDK v2.1 выходит из ExitRequest-секции без входа — abort на второй записи сейва
 
 `SwitchPlatform.Initialize` вызывает `Notification.EnterExitRequestHandlingSection()` один раз, а `SwitchFileSystem.Write` на каждой записи вызывает `LeaveExitRequestHandlingSection()` в `finally`. Вторая запись сейва роняет игру: `Assertion failure: g_EnableHandlingForExitRequestCount > 0` в `LeaveExitRequestHandlingSection`. Лечение — парный `EnterExitRequestHandlingSection()` в начале `Write` (секция вложенная, счётчиковая). Применено в sort-them 25.09; при обновлении SDK проверить, исправлено ли у авторов.
+
+## Запекание света: сжатие карт сбрасывается, OptiX на Mac не работает, протечки на тонкой геометрии
+
+- При каждом запекании Unity пересоздаёт `.meta` карт освещения (`Lightmap-N_comp_light.exr`, `_dir.png`) с настройками по умолчанию: ручное `textureCompression` (например High Quality) пропадает. После запекания выставлять заново и проверять `git diff *.exr.meta`. То же с платформенными оверрайдами карт (WebGL 1024 у `Lightmap-0`, 28.09) — после бейка проверять блок `buildTarget: WebGL` в `.meta`.
+- Денойзер OptiX только для NVIDIA. В режиме фильтрации Auto Unity подбирает подходящий сам, но в Advanced со значением OptiX запекание на Mac не стартует: «Light baking could not be started because a selected denoiser is not supported on this system». Ставить OpenImageDenoise.
+- Оранжевые полосы на кромках тонких деталей при низком разрешении карты: грань тоньше тексела берёт цвет соседней освещённой грани. Лечится `Scale In Lightmap` деталям, а не общим разрешением. Мелкие пятна в полутени после этого — шум + денойзер: поднять Direct Samples (16 → 256) и выключить денойзер для прямого света. `pushoff` против такого не помогает. Разные Lightmap Parameters на объектах → отдельные карты освещения.
+- 📍 Sort Them 27.09: `Data/Config/RoomLighting.lighting`, `Data/Config/RackLightmap.giparams`, подробности в `PROGRESS.md`.
+
+## Меш, собранный кодом: порядок атрибутов вершины строгий
+
+`Mesh.SetVertexBufferParams` ожидает атрибуты в порядке Position, Normal, Tangent, Color, TexCoord0…7, BlendWeight, BlendIndices. Если в дескрипторах TexCoord0 стоит раньше Color, Unity молча переставляет раскладку, а структура в `SetVertexBufferData` остаётся в прежнем порядке — UV читаются из байтов цвета (симптом: текстура атласа «не та», пёстрые розовые машинки), ошибок нет. 📍 Sort Them: `Physics/FrozenCarBatch.cs`.
+
+## Веб-сборка правит `UniversalRenderPipelineGlobalSettings.asset`
+
+После `Build WebGL` (27.09) в `m_SettingsList` пропали три ссылки (`rid`) на ресурсы `GPUResidentDrawerResources` и SSAO (сами записи в файле остались). Для WebGL эти возможности не поддерживаются; на консоли могут понадобиться. Не коммитить, вернуть `git checkout` этого файла после веб-сборки.
+
+## Меш с позициями Float16: `RecalculateBounds` даёт нулевые bounds
+
+После `SetVertexBufferParams(Position Float16×4 …)` + `SetVertexBufferData` вызов `RecalculateBounds()` (и `SetTriangles` с `calculateBounds`) оставляет `bounds` = (0,0,0)/(0,0,0). Симптом в игре: рендерер превращается в точку, отсечение по камере и заслонение кучи прячут объекты «не по тем правилам» (куча машинок выглядит просевшей). Считать bounds из float-массива и задавать `mesh.bounds` явно. 📍 Sort Them 28.09, `ArcadeCarImporter.WriteCompact`.
+
+## `EditorApplication.delayCall` пропадает при перекомпиляции
+
+Делегат, зарегистрированный до `AssetDatabase.Refresh`/компиляции скриптов, стирается перезагрузкой домена: команда (сборка, пункт меню) молча не запускается. Через MCP: сначала дождаться конца компиляции (`EditorApplication.isCompiling == false`), потом регистрировать `delayCall`. Дважды поймано 28.09.
+
+## `AudioImporter`: платформенный оверрайд только через `BuildTargetGroup`
+
+`SetOverrideSampleSettings("WebGL", …)` (и `"Web"`) в Unity 6 возвращает `false` и ничего не пишет; работает перегрузка с `BuildTargetGroup.WebGL`. На WebGL формат всегда AAC независимо от Default (Vorbis), меняется только `quality`.
+
+## `TextureImporterPlatformSettings`: собирать объект заново
+
+Вариант «`GetPlatformTextureSettings("WebGL")` → `CopyTo(new)` → правка полей → `SetPlatformTextureSettings` → `SaveAndReimport`» закончился `overridden: 0` в `.meta` (crunch не применился). Надёжно: новый `TextureImporterPlatformSettings` со всеми полями (`name`, `overridden`, `maxTextureSize`, `format`, `textureCompression`, `crunchedCompression`, `compressionQuality`), затем `WriteImportSettingsIfDirty` + `ImportAsset(ForceUpdate)`, и проверить `GetPlatformTextureSettings` и блок в `.meta`.

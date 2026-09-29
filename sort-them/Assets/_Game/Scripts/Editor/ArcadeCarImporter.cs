@@ -483,23 +483,93 @@ namespace SortThem.Editor
         static Mesh SaveMesh(Mesh mesh, string path)
         {
             var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            var target = existing != null ? existing : new Mesh();
+            WriteCompact(target, mesh.vertices, mesh.normals, mesh.uv, mesh.triangles, mesh.indexFormat, mesh.name);
+            Object.DestroyImmediate(mesh);
             if (existing != null)
             {
-                existing.Clear(false);
-                existing.indexFormat = mesh.indexFormat;
-                existing.SetVertices(mesh.vertices);
-                existing.SetNormals(mesh.normals);
-                existing.SetUVs(0, mesh.uv);
-                existing.SetTriangles(mesh.triangles, 0);
-                existing.RecalculateBounds();
-                existing.UploadMeshData(false);
-                existing.name = mesh.name;
                 EditorUtility.SetDirty(existing);
-                Object.DestroyImmediate(mesh);
                 return existing;
             }
-            AssetDatabase.CreateAsset(mesh, path);
-            return mesh;
+            AssetDatabase.CreateAsset(target, path);
+            return target;
+        }
+
+        [MenuItem("SortThem/3i. Compact ARCADE Car Meshes")]
+        public static void CompactMeshes()
+        {
+            if (EditorApplication.isPlaying) { Debug.LogError("SortThem: останови Play."); return; }
+            var paths = Directory.GetFiles(ArcadeMeshes, "car_*.asset").Select(f => f.Replace('\\', '/')).OrderBy(f => f, System.StringComparer.Ordinal).ToList();
+            int done = 0, skipped = 0;
+            long before = 0, after = 0;
+            try
+            {
+                for (int i = 0; i < paths.Count; i++)
+                {
+                    var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(paths[i]);
+                    if (mesh == null) continue;
+                    EditorUtility.DisplayProgressBar("Compacting car meshes", mesh.name, (float)i / paths.Count);
+                    if (mesh.GetVertexAttributeFormat(VertexAttribute.Position) == VertexAttributeFormat.Float16 && mesh.bounds.size.sqrMagnitude > 0f) { skipped++; continue; }
+                    before += VertexBytes(mesh);
+                    WriteCompact(mesh, mesh.vertices, mesh.normals, mesh.uv, mesh.triangles, mesh.indexFormat, mesh.name);
+                    after += VertexBytes(mesh);
+                    EditorUtility.SetDirty(mesh);
+                    done++;
+                }
+            }
+            finally { EditorUtility.ClearProgressBar(); }
+            AssetDatabase.SaveAssets();
+            foreach (var f in paths) AssetDatabase.ImportAsset(f, ImportAssetOptions.ForceUpdate);
+            Debug.Log($"SortThem: compacted {done} car meshes, vertex data {before / 1048576f:0.#} -> {after / 1048576f:0.#} MB, skipped {skipped}");
+        }
+
+        static long VertexBytes(Mesh m)
+        {
+            long stride = 0;
+            for (int s = 0; s < m.vertexBufferCount; s++) stride += m.GetVertexBufferStride(s);
+            return stride * m.vertexCount;
+        }
+
+        struct CompactVertex
+        {
+            public ushort X, Y, Z, W;
+            public sbyte NX, NY, NZ, NW;
+            public ushort U, V;
+        }
+
+        static void WriteCompact(Mesh dst, Vector3[] v, Vector3[] n, Vector2[] uv, int[] tris, IndexFormat indexFormat, string name)
+        {
+            bool hasN = n != null && n.Length == v.Length, hasUv = uv != null && uv.Length == v.Length;
+            var data = new CompactVertex[v.Length];
+            for (int i = 0; i < v.Length; i++)
+            {
+                var p = v[i];
+                var nn = hasN ? n[i] : Vector3.up;
+                var t = hasUv ? uv[i] : Vector2.zero;
+                data[i] = new CompactVertex
+                {
+                    X = Mathf.FloatToHalf(p.x), Y = Mathf.FloatToHalf(p.y), Z = Mathf.FloatToHalf(p.z), W = Mathf.FloatToHalf(1f),
+                    NX = (sbyte)Mathf.RoundToInt(Mathf.Clamp(nn.x, -1f, 1f) * 127f),
+                    NY = (sbyte)Mathf.RoundToInt(Mathf.Clamp(nn.y, -1f, 1f) * 127f),
+                    NZ = (sbyte)Mathf.RoundToInt(Mathf.Clamp(nn.z, -1f, 1f) * 127f),
+                    NW = 0,
+                    U = (ushort)Mathf.RoundToInt(Mathf.Clamp01(t.x) * 65535f),
+                    V = (ushort)Mathf.RoundToInt(Mathf.Clamp01(t.y) * 65535f)
+                };
+            }
+            dst.Clear(false);
+            dst.name = name;
+            dst.indexFormat = indexFormat;
+            dst.SetVertexBufferParams(v.Length,
+                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float16, 4),
+                new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.SNorm8, 4),
+                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.UNorm16, 2));
+            dst.SetVertexBufferData(data, 0, 0, data.Length);
+            dst.SetTriangles(tris, 0, false);
+            var b = new Bounds(v.Length > 0 ? v[0] : Vector3.zero, Vector3.zero);
+            for (int i = 1; i < v.Length; i++) b.Encapsulate(v[i]);
+            dst.bounds = b;
+            dst.UploadMeshData(false);
         }
 
         static GameObject SavePrefab(string name, Mesh[] lods, Material mat, Bounds bounds, string path)
