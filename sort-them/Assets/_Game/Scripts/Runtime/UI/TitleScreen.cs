@@ -34,8 +34,7 @@ namespace SortThem
         IEnumerator Start()
         {
             BuildUi();
-            float timeout = Time.realtimeSinceStartup + 10f;
-            while (!SavesReady.IsReady && Time.realtimeSinceStartup < timeout) yield return null;
+            yield return Platform.WaitUntil(() => SavesReady.IsReady, 10f);
             Settings.EnsureLoaded();
             PlayMusic();
             yield return InitLocalization();
@@ -144,9 +143,8 @@ namespace SortThem
         IEnumerator InitLocalization()
         {
             if (!LocalizationSettings.HasSettings) yield break;
+            yield return Platform.WaitUntil(() => LocalizationSettings.InitializationOperation.IsDone, 10f);
             var op = LocalizationSettings.InitializationOperation;
-            float timeout = Time.realtimeSinceStartup + 10f;
-            while (!op.IsDone && Time.realtimeSinceStartup < timeout) yield return null;
             if (!op.IsDone || op.Status != UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded) yield break;
             if (!string.IsNullOrEmpty(Settings.Locale))
             {
@@ -154,8 +152,7 @@ namespace SortThem
                 if (saved != null && LocalizationSettings.SelectedLocale != saved) LocalizationSettings.SelectedLocale = saved;
             }
             var table = LocalizationSettings.StringDatabase.GetTableAsync(Loc.Table);
-            timeout = Time.realtimeSinceStartup + 5f;
-            while (!table.IsDone && Time.realtimeSinceStartup < timeout) yield return null;
+            yield return Platform.WaitUntil(() => table.IsDone, 5f);
             Fonts.Apply(LocalizationSettings.SelectedLocale?.Identifier.Code);
             _textButton = Localized(KeyButton, _textButton);
             _textKey = Localized(KeyKey, _textKey);

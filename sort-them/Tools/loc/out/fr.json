@@ -383,5 +383,8 @@
   "upg_sprint.desc": "Maintiens Maj pour courir",
   "upg_sprint.name": "Débloquer la course",
   "upg_throw.desc": "Les voitures volent plus loin",
-  "upg_throw.name": "Lancer plus puissant"
+  "upg_throw.name": "Lancer plus puissant",
+  "ui.ad_buy": "Pub -{0}%",
+  "ui.ad_spin": "Voir une pub · ${0}",
+  "ui.ad_wait": "Pub dans {0}"
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace SortThem
@@ -19,6 +20,17 @@ namespace SortThem
                 return Application.isMobilePlatform;
             }
             set => _mobile = value;
+        }
+
+        public static IEnumerator WaitUntil(Func<bool> done, float seconds, int minFrames = 300)
+        {
+            float deadline = Time.realtimeSinceStartup + seconds;
+            int frames = 0;
+            while (!done() && (Time.realtimeSinceStartup < deadline || frames < minFrames))
+            {
+                frames++;
+                yield return null;
+            }
         }
 
         public static event Action GameReady;

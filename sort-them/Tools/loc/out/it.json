@@ -383,5 +383,8 @@
   "upg_sprint.desc": "Tieni premuto Shift per correre",
   "upg_sprint.name": "Sblocca corsa",
   "upg_throw.desc": "Le auto volano più lontano",
-  "upg_throw.name": "Lancio più forte"
+  "upg_throw.name": "Lancio più forte",
+  "ui.ad_buy": "Annuncio -{0}%",
+  "ui.ad_spin": "Guarda annuncio · ${0}",
+  "ui.ad_wait": "Annuncio tra {0}"
 }

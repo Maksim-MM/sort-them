@@ -48,7 +48,9 @@ namespace SortThem
         TMP_Text _fadeText;
         TMP_Text _terminalBalance, _slotBalance, _slotResult, _slotRemaining, _spinLabel;
         Image _slotIcon;
-        Button _spinButton;
+        Button _spinButton, _spinAdButton;
+        TMP_Text _spinAdLabel;
+        float _adRefreshAt;
         readonly List<Selectable> _slotButtons = new List<Selectable>();
         UpgradeData _spinReward;
         bool _spinning, _spinBomb;
@@ -95,7 +97,8 @@ namespace SortThem
         {
             public UpgradeData Data;
             public TMP_Text Name, Desc, Level, Cost;
-            public Button Buy;
+            public Button Buy, Ad;
+            public TMP_Text AdLabel;
             public Image Icon;
             public Image[] Pips;
             public Image Frame;
@@ -226,7 +229,12 @@ namespace SortThem
             var gm = GameManager.I;
             if (gm == null) return;
             UpdateToast();
-            gm.UiBlocking = AnyOpen || !gm.Ready;
+            gm.UiBlocking = AnyOpen || !gm.Ready || Ads.Busy;
+            if ((TerminalOpen || SlotOpen) && Ads.RewardedAvailable && Time.unscaledTime >= _adRefreshAt)
+            {
+                _adRefreshAt = Time.unscaledTime + 1f;
+                if (TerminalOpen) RefreshTerminal(); else RefreshSlot();
+            }
             if (GameInput.Ui.Pause.Pressed() || TouchInput.Consume(TouchButton.Pause))
             {
                 if (TerminalOpen) CloseTerminal();
@@ -236,7 +244,7 @@ namespace SortThem
                 else if (SettingsOpen) { CloseSettings(false); }
                 else if (ControlsOpen) CloseControls(false);
                 else if (PauseOpen) ClosePause();
-                else OpenPause();
+                else { OpenPause(); Ads.TryInterstitial(); }
             }
             if (_saveText != null && _saveText.gameObject.activeSelf != Time.time < _saveTextUntil) _saveText.gameObject.SetActive(Time.time < _saveTextUntil);
             ActiveDevice.Poll();
@@ -660,6 +668,22 @@ namespace SortThem
                 var captured = data;
                 r.Buy = Bind(UiFactory.NeonButton(rowFill, "Buy", "", () => { if (gm.Upgrades.TryBuy(captured)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); } }, ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 17f), "ui.buy", "Купить");
                 UiFactory.Anchor(r.Buy.GetComponent<RectTransform>(), new Vector2(0.85f, 0.06f), new Vector2(0.995f, 0.94f), Vector2.zero, Vector2.zero);
+                if (Ads.RewardedAvailable)
+                {
+                    UiFactory.Anchor(r.Level.rectTransform, new Vector2(0.55f, 0f), new Vector2(0.63f, 1f), Vector2.zero, Vector2.zero);
+                    UiFactory.Anchor(r.Cost.rectTransform, new Vector2(0.63f, 0f), new Vector2(0.735f, 1f), Vector2.zero, new Vector2(-8f, 0f));
+                    UiFactory.Anchor(r.Buy.GetComponent<RectTransform>(), new Vector2(0.74f, 0.06f), new Vector2(0.86f, 0.94f), Vector2.zero, Vector2.zero);
+                    r.Ad = UiFactory.NeonButton(rowFill, "BuyAd", "", () => BuyWithAd(captured), ArcadeCost, ArcadeFill(ArcadeCost), ArcadeCost, 15f);
+                    UiFactory.Anchor(r.Ad.GetComponent<RectTransform>(), new Vector2(0.868f, 0.06f), new Vector2(0.995f, 0.94f), Vector2.zero, Vector2.zero);
+                    r.AdLabel = r.Ad.GetComponentInChildren<TMP_Text>();
+                    r.AdLabel.margin = new Vector4(22f, 0f, 2f, 0f);
+                    r.AdLabel.enableAutoSizing = true;
+                    r.AdLabel.fontSizeMin = 9f;
+                    r.AdLabel.fontSizeMax = 15f;
+                    r.AdLabel.textWrappingMode = TextWrappingModes.NoWrap;
+                    var play = UiFactory.PlayIcon(r.AdLabel.transform.parent, "Play", ArcadeCost, 14f);
+                    UiFactory.Anchored((RectTransform)play.transform, new Vector2(0f, 0.5f), new Vector2(6f, 0f), new Vector2(14f, 14f));
+                }
                 _rows.Add(r);
             }
 
@@ -705,6 +729,20 @@ namespace SortThem
             _slotClose = Bind(ArcadePanelButton(w, "Close", CloseSlot, ArcadeNeon, 150f, true), "ui.close", "Закрыть");
 
             _slotButtons.Add(_spinButton);
+            if (Ads.RewardedAvailable)
+            {
+                _spinAdButton = ArcadePanelButton(w, "SpinAd", SpinAd, ArcadeCost, 320f, false, 18f, true);
+                UiFactory.Anchored(_spinAdButton.GetComponent<RectTransform>(), new Vector2(0f, 0.5f), new Vector2(ArcadeButtonInset + 320f + 16f, 0f), new Vector2(320f, ArcadeButtonHeight));
+                _spinAdLabel = _spinAdButton.GetComponentInChildren<TMP_Text>();
+                _spinAdLabel.margin = new Vector4(30f, 0f, 4f, 0f);
+                _spinAdLabel.enableAutoSizing = true;
+                _spinAdLabel.fontSizeMin = 11f;
+                _spinAdLabel.fontSizeMax = 18f;
+                _spinAdLabel.textWrappingMode = TextWrappingModes.NoWrap;
+                var play = UiFactory.PlayIcon(_spinAdLabel.transform.parent, "Play", ArcadeCost, 22f);
+                UiFactory.Anchored((RectTransform)play.transform, new Vector2(0f, 0.5f), new Vector2(12f, 0f), new Vector2(22f, 22f));
+                _slotButtons.Add(_spinAdButton);
+            }
             _slotButtons.Add(_slotClose);
             _slot.gameObject.SetActive(false);
         }
@@ -712,8 +750,36 @@ namespace SortThem
         void Spin()
         {
             var gm = GameManager.I;
+            if (gm == null) return;
+            SpinWith(gm.Config.SlotSpinCost);
+        }
+
+        void SpinAd()
+        {
+            var gm = GameManager.I;
+            if (gm == null || _spinning || !Ads.Ready) return;
+            int cost = Ads.Discounted(gm.Config.SlotSpinCost);
+            if (!gm.Economy.CanAfford(cost)) return;
+            Ads.ShowRewarded(ok => { if (ok) SpinWith(cost); RefreshSlot(); });
+        }
+
+        void BuyWithAd(UpgradeData data)
+        {
+            var gm = GameManager.I;
+            if (gm == null || !Ads.Ready) return;
+            int cost = Ads.Discounted(gm.Upgrades.NextCost(data));
+            if (!gm.Upgrades.CanBuy(data, cost)) return;
+            Ads.ShowRewarded(ok =>
+            {
+                if (ok && gm.Upgrades.TryBuy(data, cost)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); }
+                RefreshTerminal();
+            });
+        }
+
+        void SpinWith(int cost)
+        {
+            var gm = GameManager.I;
             if (gm == null || _spinning) return;
-            int cost = gm.Config.SlotSpinCost;
             UpgradeData reward = null;
             bool bombsEnabled = gm.Config.BombPrefab != null;
             bool bomb = bombsEnabled && (gm.Upgrades.SlotRemaining == 0 || Random.value < gm.Config.BombChance);
@@ -781,6 +847,16 @@ namespace SortThem
                 _slotResult.text = left > 0 ? Loc.Get("ui.slot_idle", "Каждое вращение даёт награду") : "";
             _spinLabel.text = string.Format(Loc.Get("ui.spin", "Крутить · ${0}"), gm.Config.SlotSpinCost);
             _spinButton.interactable = !_spinning && gm.Economy.CanAfford(gm.Config.SlotSpinCost) && (left > 0 || bombs);
+            if (_spinAdButton != null)
+            {
+                if (_spinAdButton.gameObject.activeSelf != Ads.RewardedAvailable) _spinAdButton.gameObject.SetActive(Ads.RewardedAvailable);
+                int adCost = Ads.Discounted(gm.Config.SlotSpinCost);
+                bool ready = Ads.Ready;
+                _spinAdLabel.text = ready
+                    ? string.Format(Loc.Get("ui.ad_spin", "За рекламу · ${0}"), adCost)
+                    : string.Format(Loc.Get("ui.ad_wait", "Реклама через {0}"), Ads.RemainingText());
+                _spinAdButton.interactable = ready && !_spinning && gm.Economy.CanAfford(adCost) && (left > 0 || bombs);
+            }
             RefreshPrizes();
         }
 
@@ -1065,7 +1141,7 @@ namespace SortThem
             _focused = FirstCandidate(TerminalCandidates());
         }
 
-        public void CloseTerminal() { _terminal.gameObject.SetActive(false); ClearFocus(); }
+        public void CloseTerminal() { _terminal.gameObject.SetActive(false); ClearFocus(); Ads.TryInterstitial(); }
         public void OpenSlot()
         {
             _spinUntil = -1f;
@@ -1073,7 +1149,7 @@ namespace SortThem
             _slot.gameObject.SetActive(true);
             _focused = FirstCandidate(_slotButtons);
         }
-        public void CloseSlot() { _slot.gameObject.SetActive(false); ClearFocus(); }
+        public void CloseSlot() { _slot.gameObject.SetActive(false); ClearFocus(); Ads.TryInterstitial(); }
         public void OpenPause() { _pause.gameObject.SetActive(true); _focused = FirstCandidate(_pauseButtons); }
         public void ClosePause() { _pause.gameObject.SetActive(false); ClearFocus(); }
 
@@ -1081,7 +1157,7 @@ namespace SortThem
 
         IEnumerable<Selectable> TerminalCandidates()
         {
-            foreach (var r in _rows) yield return r.Buy;
+            foreach (var r in _rows) { yield return r.Buy; if (r.Ad != null && r.Ad.gameObject.activeSelf) yield return r.Ad; }
             if (_terminalClose != null) yield return _terminalClose;
         }
 
@@ -1288,6 +1364,15 @@ namespace SortThem
                 if (r.Icon != null) r.Icon.color = bonus != null ? Gold : Color.white;
                 r.Cost.text = maxed ? Loc.Get("ui.max", "Макс.") : "$" + gm.Upgrades.NextCost(r.Data);
                 r.Buy.interactable = gm.Upgrades.CanBuy(r.Data);
+                if (r.Ad != null)
+                {
+                    if (r.Ad.gameObject.activeSelf != Ads.RewardedAvailable) r.Ad.gameObject.SetActive(Ads.RewardedAvailable);
+                    bool ready = Ads.Ready;
+                    r.AdLabel.text = ready
+                        ? string.Format(Loc.Get("ui.ad_buy", "Реклама -{0}%"), Ads.DiscountPercent)
+                        : Ads.RemainingText();
+                    r.Ad.interactable = ready && !maxed && gm.Upgrades.CanBuy(r.Data, Ads.Discounted(gm.Upgrades.NextCost(r.Data)));
+                }
                 if (r.Pips != null)
                 {
                     float per = r.Data.MaxLevel / (float)r.Pips.Length;

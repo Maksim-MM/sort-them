@@ -39,15 +39,19 @@ namespace SortThem
 
         public int NextCost(UpgradeData data) => data != null ? data.CostOf(Level(data)) : 0;
 
-        public bool CanBuy(UpgradeData data)
+        public bool CanBuy(UpgradeData data) => data != null && CanBuy(data, NextCost(data));
+
+        public bool CanBuy(UpgradeData data, int cost)
         {
-            return data != null && !IsMaxed(data) && _economy != null && _economy.CanAfford(NextCost(data));
+            return data != null && !IsMaxed(data) && _economy != null && _economy.CanAfford(cost);
         }
 
-        public bool TryBuy(UpgradeData data)
+        public bool TryBuy(UpgradeData data) => data != null && TryBuy(data, NextCost(data));
+
+        public bool TryBuy(UpgradeData data, int cost)
         {
-            if (!CanBuy(data)) return false;
-            if (!_economy.TrySpend(NextCost(data))) return false;
+            if (!CanBuy(data, cost)) return false;
+            if (!_economy.TrySpend(cost)) return false;
             _levels[data.Kind] = Level(data) + 1;
             Changed?.Invoke(data);
             return true;

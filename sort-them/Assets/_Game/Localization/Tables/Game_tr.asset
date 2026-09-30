@@ -1575,6 +1575,18 @@ MonoBehaviour:
     m_Localized: "Ba\u015Flamak i\xE7in dokun"
     m_Metadata:
       m_Items: []
+  - m_Id: 8933045598937088
+    m_Localized: Reklam -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183296
+    m_Localized: "Reklam izle \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183297
+    m_Localized: '{0} sonra reklam'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

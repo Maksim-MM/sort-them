@@ -383,5 +383,8 @@
   "upg_sprint.desc": "Mantén Shift para correr",
   "upg_sprint.name": "Desbloquear esprint",
   "upg_throw.desc": "Los coches vuelan más lejos",
-  "upg_throw.name": "Lanzamiento más fuerte"
+  "upg_throw.name": "Lanzamiento más fuerte",
+  "ui.ad_buy": "Anuncio -{0}%",
+  "ui.ad_spin": "Ver anuncio · ${0}",
+  "ui.ad_wait": "Anuncio en {0}"
 }

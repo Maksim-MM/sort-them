@@ -383,5 +383,8 @@
   "upg_sprint.desc": "Trzymaj Shift, aby biec",
   "upg_sprint.name": "Odblokuj sprint",
   "upg_throw.desc": "Samochodziki lecą dalej",
-  "upg_throw.name": "Mocniejszy rzut"
+  "upg_throw.name": "Mocniejszy rzut",
+  "ui.ad_buy": "Reklama -{0}%",
+  "ui.ad_spin": "Obejrzyj reklamę · ${0}",
+  "ui.ad_wait": "Reklama za {0}"
 }

@@ -1567,6 +1567,18 @@ MonoBehaviour:
     m_Key: title.press_touch
     m_Metadata:
       m_Items: []
+  - m_Id: 8933045598937088
+    m_Key: ui.ad_buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183296
+    m_Key: ui.ad_spin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183297
+    m_Key: ui.ad_wait
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

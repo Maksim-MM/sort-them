@@ -383,5 +383,8 @@
   "upg_sprint.desc": "Halte Shift, um zu rennen",
   "upg_sprint.name": "Sprint freischalten",
   "upg_throw.desc": "Autos fliegen weiter",
-  "upg_throw.name": "Stärkerer Wurf"
+  "upg_throw.name": "Stärkerer Wurf",
+  "ui.ad_buy": "Werbung -{0}%",
+  "ui.ad_spin": "Werbung ansehen · ${0}",
+  "ui.ad_wait": "Werbung in {0}"
 }

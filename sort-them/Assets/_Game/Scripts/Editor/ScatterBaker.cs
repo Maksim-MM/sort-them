@@ -69,6 +69,7 @@ namespace SortThem.Editor
                     {
                         var car = CarSpawner.Spawn(catalog.Cars[order[next]], root, next);
                         PileDrop.Drop(car, gm.Config, zones[next], rng);
+                        car.SetDisplayScale(gm.Config.LooseScale);
                         spawned.Add(car);
                     }
                     Physics.Simulate(dt);
@@ -134,6 +135,7 @@ namespace SortThem.Editor
             {
                 var cars = new List<CarInstance>();
                 CarSpawner.SpawnFromLayout(layout, root, cars);
+                foreach (var c in cars) c.SetDisplayScale(gm.Config.LooseScale);
                 for (int i = 0; i < count; i++)
                 {
                     var go = (GameObject)PrefabUtility.InstantiatePrefab(layout.CollectiblePrefab, root);
@@ -223,7 +225,7 @@ namespace SortThem.Editor
                 stranded.Clear();
                 for (int i = 0; i < cars.Count; i++) if (OnRack(cars[i])) stranded.Add(i);
                 if (stranded.Count == 0) break;
-                foreach (int i in stranded) PileDrop.Drop(cars[i], gm.Config, zones[i], rng);
+                foreach (int i in stranded) { PileDrop.Drop(cars[i], gm.Config, zones[i], rng); cars[i].SetDisplayScale(gm.Config.LooseScale); }
                 Physics.SyncTransforms();
             }
             EditorUtility.ClearProgressBar();

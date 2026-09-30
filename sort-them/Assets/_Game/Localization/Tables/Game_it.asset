@@ -1570,6 +1570,18 @@ MonoBehaviour:
     m_Localized: Tocca per iniziare
     m_Metadata:
       m_Items: []
+  - m_Id: 8933045598937088
+    m_Localized: Annuncio -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183296
+    m_Localized: "Guarda annuncio \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183297
+    m_Localized: Annuncio tra {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1573,6 +1573,18 @@ MonoBehaviour:
     m_Localized: Touchez pour commencer
     m_Metadata:
       m_Items: []
+  - m_Id: 8933045598937088
+    m_Localized: Pub -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183296
+    m_Localized: "Voir une pub \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183297
+    m_Localized: Pub dans {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

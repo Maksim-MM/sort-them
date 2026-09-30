@@ -1576,6 +1576,18 @@ MonoBehaviour:
     m_Localized: "Dotknij, aby rozpocz\u0105\u0107"
     m_Metadata:
       m_Items: []
+  - m_Id: 8933045598937088
+    m_Localized: Reklama -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183296
+    m_Localized: "Obejrzyj reklam\u0119 \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183297
+    m_Localized: Reklama za {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

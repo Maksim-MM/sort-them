@@ -383,5 +383,8 @@
   "upg_sprint.desc": "Koşmak için Shift'e basılı tut",
   "upg_sprint.name": "Koşmayı aç",
   "upg_throw.desc": "Arabalar daha uzağa uçar",
-  "upg_throw.name": "Daha güçlü fırlatma"
+  "upg_throw.name": "Daha güçlü fırlatma",
+  "ui.ad_buy": "Reklam -{0}%",
+  "ui.ad_spin": "Reklam izle · ${0}",
+  "ui.ad_wait": "{0} sonra reklam"
 }

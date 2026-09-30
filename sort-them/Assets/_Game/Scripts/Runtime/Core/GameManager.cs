@@ -112,8 +112,7 @@ namespace SortThem
             Racks.AddRange(FindObjectsByType<RackController>(FindObjectsSortMode.None));
             TotalShelves = Shelves.Count;
 
-            float savesTimeout = Time.realtimeSinceStartup + 10f;
-            while (!SavesReady.IsReady && Time.realtimeSinceStartup < savesTimeout) yield return null;
+            yield return Platform.WaitUntil(() => SavesReady.IsReady, 10f);
             if (!SavesReady.IsReady) Debug.LogWarning("SortThem: SDK saves not ready, falling back to PlayerPrefs");
             Settings.Load();
 
@@ -148,9 +147,8 @@ namespace SortThem
                 Loc.Ready = false;
                 yield break;
             }
+            yield return Platform.WaitUntil(() => LocalizationSettings.InitializationOperation.IsDone, 10f);
             var op = LocalizationSettings.InitializationOperation;
-            float timeout = Time.realtimeSinceStartup + 10f;
-            while (!op.IsDone && Time.realtimeSinceStartup < timeout) yield return null;
             bool ready = op.IsDone && op.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded;
             if (ready)
             {
@@ -172,8 +170,7 @@ namespace SortThem
         static IEnumerator WaitTable()
         {
             var op = LocalizationSettings.StringDatabase.GetTableAsync(Loc.Table);
-            float timeout = Time.realtimeSinceStartup + 5f;
-            while (!op.IsDone && Time.realtimeSinceStartup < timeout) yield return null;
+            yield return Platform.WaitUntil(() => op.IsDone, 5f);
         }
 
         IEnumerator RefreshLocalization()

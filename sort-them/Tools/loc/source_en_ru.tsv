@@ -384,3 +384,6 @@ upg_sprint.desc	Hold Shift to run	Бег на Shift
 upg_sprint.name	Unlock sprint	Открыть спринт
 upg_throw.desc	Cars fly farther	Машинки летят дальше
 upg_throw.name	Stronger throw	Более сильный бросок
+ui.ad_buy	Ad -{0}%	Реклама -{0}%
+ui.ad_spin	Watch ad · ${0}	За рекламу · ${0}
+ui.ad_wait	Ad in {0}	Реклама через {0}

@@ -1571,6 +1571,18 @@ MonoBehaviour:
     m_Localized: Zum Starten tippen
     m_Metadata:
       m_Items: []
+  - m_Id: 8933045598937088
+    m_Localized: Werbung -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183296
+    m_Localized: "Werbung ansehen \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183297
+    m_Localized: Werbung in {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

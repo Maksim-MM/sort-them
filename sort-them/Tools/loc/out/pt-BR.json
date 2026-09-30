@@ -383,5 +383,8 @@
   "upg_sprint.desc": "Segure Shift para correr",
   "upg_sprint.name": "Liberar corrida",
   "upg_throw.desc": "Os carrinhos voam mais longe",
-  "upg_throw.name": "Arremesso mais forte"
+  "upg_throw.name": "Arremesso mais forte",
+  "ui.ad_buy": "Anúncio -{0}%",
+  "ui.ad_spin": "Ver anúncio · ${0}",
+  "ui.ad_wait": "Anúncio em {0}"
 }

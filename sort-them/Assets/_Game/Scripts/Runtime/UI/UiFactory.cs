@@ -59,6 +59,35 @@ namespace SortThem
             return t;
         }
 
+        static Texture2D _playTex;
+
+        public static RawImage PlayIcon(Transform parent, string name, Color color, float size)
+        {
+            if (_playTex == null)
+            {
+                const int n = 32;
+                _playTex = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear };
+                var px = new Color32[n * n];
+                for (int y = 0; y < n; y++)
+                    for (int x = 0; x < n; x++)
+                    {
+                        float fy = (y + 0.5f) / n, fx = (x + 0.5f) / n;
+                        float half = 0.5f - Mathf.Abs(fy - 0.5f);
+                        bool inside = fx >= 0.15f && fx - 0.15f <= half * 2f * 0.85f;
+                        px[y * n + x] = inside ? new Color32(255, 255, 255, 255) : new Color32(255, 255, 255, 0);
+                    }
+                _playTex.SetPixels32(px);
+                _playTex.Apply();
+            }
+            var rt = Rect(parent, name);
+            var img = rt.gameObject.AddComponent<RawImage>();
+            img.texture = _playTex;
+            img.color = color;
+            img.raycastTarget = false;
+            rt.sizeDelta = new Vector2(size, size);
+            return img;
+        }
+
         public static Image Image(Transform parent, string name, Sprite sprite, Color color, Image.Type type)
         {
             var rt = Rect(parent, name);

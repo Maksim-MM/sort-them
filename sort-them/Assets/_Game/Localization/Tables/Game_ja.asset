@@ -1573,6 +1573,18 @@ MonoBehaviour:
     m_Localized: "\u30BF\u30C3\u30D7\u3057\u3066\u30B9\u30BF\u30FC\u30C8"
     m_Metadata:
       m_Items: []
+  - m_Id: 8933045598937088
+    m_Localized: Ad -{0}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183296
+    m_Localized: "Watch ad \xB7 ${0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8933045712183297
+    m_Localized: Ad in {0}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
