@@ -139,3 +139,7 @@
 ## Playgama Bridge: автоустановка шаблона при первом импорте не срабатывает (29.09)
 
 `PlaygamaBridgeFirstRun` (`[InitializeOnLoad]`) на свежей установке вешает копирование шаблона и выбор `PROJECT:Bridge` на цепочку `EditorApplication.delayCall`; при импорте пакета домен перезагружается и делегаты теряются — `Assets/WebGLTemplates` не появляется, ошибок нет. Меню `Playgama → Install Template Files` или напрямую `Playgama.Editor.InstallFilesWindow.InstallAllSilently()` + `PlayerSettings.WebGL.template = "PROJECT:Bridge"`. После обновления пакета файлы шаблона в `Assets/WebGLTemplates/Bridge` сверять с `Library/PackageCache/com.playgama.bridge@*/Runtime/WebGLTemplates/Bridge` (`cmp`), кроме `playgama-bridge-config.json` — он наш.
+
+## Шаблон Bridge в Assets/WebGLTemplates отличается от пакетного (30.09)
+
+`index.html` дополнен защитой страницы (overflow/overscroll/touch-action/user-select, viewport, contextmenu/selectstart). `cmp` с `Library/PackageCache/com.playgama.bridge@*/Runtime/WebGLTemplates/Bridge/index.html` покажет отличие — это ожидаемо. При обновлении пакета Bridge и переустановке шаблона (`Playgama → Install Template Files`) правки затрутся: сравнить с git и вернуть. Остальные файлы шаблона (`playgama-bridge-unity.js`, `playgama-bridge.js`, `thumbnail.png`) должны совпадать с пакетом байт в байт, `playgama-bridge-config.json` — наш.
