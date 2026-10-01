@@ -28,7 +28,7 @@ namespace SortThem
         {
             var gm = GameManager.I;
             if (gm == null || !gm.Ready) return;
-            if (!_prepared) Prepare(gm);
+            if (!_prepared) Prepare(gm, HideLooseOnStart);
 
             var pad = Gamepad.current;
             if (pad != null && pad.leftShoulder.isPressed && pad.rightShoulder.isPressed && (pad.leftShoulder.wasPressedThisFrame || pad.rightShoulder.wasPressedThisFrame)) Toggle();
@@ -51,9 +51,19 @@ namespace SortThem
             _budget = 0f;
         }
 
-        void Prepare(GameManager gm)
+        public void Rearm()
+        {
+            var gm = GameManager.I;
+            if (gm == null || !gm.Ready) return;
+            Running = false;
+            Prepare(gm, true);
+        }
+
+        void Prepare(GameManager gm, bool hide)
         {
             _prepared = true;
+            _next = 0;
+            _budget = 0f;
             _queue.Clear();
             foreach (var car in gm.Cars)
                 if (car.State == CarState.Loose) _queue.Add(car);
@@ -62,7 +72,7 @@ namespace SortThem
                 int j = Random.Range(0, i + 1);
                 (_queue[i], _queue[j]) = (_queue[j], _queue[i]);
             }
-            if (HideLooseOnStart)
+            if (hide)
                 foreach (var car in _queue) car.gameObject.SetActive(false);
         }
 

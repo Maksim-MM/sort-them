@@ -702,23 +702,23 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2515659379433472
-    m_Localized: Car_01
+    m_Localized: Electra
     m_Metadata:
       m_Items: []
   - m_Id: 2515659987607552
-    m_Localized: Car_03
+    m_Localized: Hyperion
     m_Metadata:
       m_Items: []
   - m_Id: 2515661333979136
-    m_Localized: Car_07
+    m_Localized: Icarus
     m_Metadata:
       m_Items: []
   - m_Id: 2515662369972224
-    m_Localized: Car_08
+    m_Localized: Nemesis
     m_Metadata:
       m_Items: []
   - m_Id: 2515663070420992
-    m_Localized: Car_11
+    m_Localized: Orion
     m_Metadata:
       m_Items: []
   - m_Id: 1976128154624000
@@ -894,23 +894,23 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1976173818011648
-    m_Localized: Pan_Burger
+    m_Localized: Pan Burger
     m_Metadata:
       m_Items: []
   - m_Id: 1976174459740160
-    m_Localized: Pan_Donut
+    m_Localized: Pan Donut
     m_Metadata:
       m_Items: []
   - m_Id: 1976175130828800
-    m_Localized: Pan_HotDog
+    m_Localized: Pan Hot Dog
     m_Metadata:
       m_Items: []
   - m_Id: 1976175617368064
-    m_Localized: Pan_IceCream
+    m_Localized: Pan Ice Cream
     m_Metadata:
       m_Items: []
   - m_Id: 1976176108101632
-    m_Localized: Pan_Pizza
+    m_Localized: Pan Pizza
     m_Metadata:
       m_Items: []
   - m_Id: 1976176619806720

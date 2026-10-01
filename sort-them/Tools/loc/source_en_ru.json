@@ -680,24 +680,24 @@
 "ru": "Talos"
 },
 "car.car_special_00": {
-"en": "Car_01",
-"ru": "Car_01"
+"en": "Electra",
+"ru": "Electra"
 },
 "car.car_special_01": {
-"en": "Car_03",
-"ru": "Car_03"
+"en": "Hyperion",
+"ru": "Hyperion"
 },
 "car.car_special_02": {
-"en": "Car_07",
-"ru": "Car_07"
+"en": "Icarus",
+"ru": "Icarus"
 },
 "car.car_special_03": {
-"en": "Car_08",
-"ru": "Car_08"
+"en": "Nemesis",
+"ru": "Nemesis"
 },
 "car.car_special_04": {
-"en": "Car_11",
-"ru": "Car_11"
+"en": "Orion",
+"ru": "Orion"
 },
 "car.car_sportcoupe_00": {
 "en": "Benzaiten",
@@ -872,24 +872,24 @@
 "ru": "Moros"
 },
 "car.car_vans_03": {
-"en": "Pan_Burger",
-"ru": "Pan_Burger"
+"en": "Pan Burger",
+"ru": "Pan Burger"
 },
 "car.car_vans_04": {
-"en": "Pan_Donut",
-"ru": "Pan_Donut"
+"en": "Pan Donut",
+"ru": "Pan Donut"
 },
 "car.car_vans_05": {
-"en": "Pan_HotDog",
-"ru": "Pan_HotDog"
+"en": "Pan Hot Dog",
+"ru": "Pan Hot Dog"
 },
 "car.car_vans_06": {
-"en": "Pan_IceCream",
-"ru": "Pan_IceCream"
+"en": "Pan Ice Cream",
+"ru": "Pan Ice Cream"
 },
 "car.car_vans_07": {
-"en": "Pan_Pizza",
-"ru": "Pan_Pizza"
+"en": "Pan Pizza",
+"ru": "Pan Pizza"
 },
 "car.car_vans_08": {
 "en": "Peleus",

@@ -169,11 +169,11 @@ car.car_service_06	Nessus	Nessus
 car.car_service_07	Palma-372	Palma-372
 car.car_service_08	Quaoar	Quaoar
 car.car_service_09	Talos	Talos
-car.car_special_00	Car_01	Car_01
-car.car_special_01	Car_03	Car_03
-car.car_special_02	Car_07	Car_07
-car.car_special_03	Car_08	Car_08
-car.car_special_04	Car_11	Car_11
+car.car_special_00	Electra	Electra
+car.car_special_01	Hyperion	Hyperion
+car.car_special_02	Icarus	Icarus
+car.car_special_03	Nemesis	Nemesis
+car.car_special_04	Orion	Orion
 car.car_sportcoupe_00	Benzaiten	Benzaiten
 car.car_sportcoupe_01	Boar	Boar
 car.car_sportcoupe_02	Carinae	Carinae
@@ -217,11 +217,11 @@ car.car_trucks_09	Pink dump truck	Розовый самосвал
 car.car_vans_00	Hercules	Hercules
 car.car_vans_01	Limos	Limos
 car.car_vans_02	Moros	Moros
-car.car_vans_03	Pan_Burger	Pan_Burger
-car.car_vans_04	Pan_Donut	Pan_Donut
-car.car_vans_05	Pan_HotDog	Pan_HotDog
-car.car_vans_06	Pan_IceCream	Pan_IceCream
-car.car_vans_07	Pan_Pizza	Pan_Pizza
+car.car_vans_03	Pan Burger	Pan Burger
+car.car_vans_04	Pan Donut	Pan Donut
+car.car_vans_05	Pan Hot Dog	Pan Hot Dog
+car.car_vans_06	Pan Ice Cream	Pan Ice Cream
+car.car_vans_07	Pan Pizza	Pan Pizza
 car.car_vans_08	Peleus	Peleus
 car.car_vans_09	Thoth	Thoth
 cat.cat_buses	Buses	Автобусы

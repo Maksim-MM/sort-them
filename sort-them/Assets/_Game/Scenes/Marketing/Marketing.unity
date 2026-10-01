@@ -327249,7 +327249,7 @@ MonoBehaviour:
   SpawnJitter: 0.45
   Spin: 4
   MaxCars: 0
-  HideLooseOnStart: 1
+  HideLooseOnStart: 0
 --- !u!1 &1638424502
 GameObject:
   m_ObjectHideFlags: 0
