@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SortThem
@@ -9,6 +10,10 @@ namespace SortThem
         bool RewardedSupported { get; }
         void ShowInterstitial(Action<bool> onDone);
         void ShowRewarded(Action<bool> onDone);
+        bool PaymentsSupported { get; }
+        void QueryPurchases(Action<HashSet<string>> onDone);
+        void QueryProduct(string id, Action<ProductInfo> onDone);
+        void Purchase(string id, Action<bool> onDone);
     }
 
     public class NullPlatformServices : IPlatformServices
@@ -17,6 +22,10 @@ namespace SortThem
         public bool RewardedSupported => false;
         public void ShowInterstitial(Action<bool> onDone) => onDone?.Invoke(false);
         public void ShowRewarded(Action<bool> onDone) => onDone?.Invoke(false);
+        public bool PaymentsSupported => false;
+        public void QueryPurchases(Action<HashSet<string>> onDone) => onDone?.Invoke(null);
+        public void QueryProduct(string id, Action<ProductInfo> onDone) => onDone?.Invoke(null);
+        public void Purchase(string id, Action<bool> onDone) => onDone?.Invoke(false);
     }
 
     public static class Ads

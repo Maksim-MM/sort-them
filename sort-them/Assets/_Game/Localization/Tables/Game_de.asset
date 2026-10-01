@@ -1583,6 +1583,14 @@ MonoBehaviour:
     m_Localized: Werbung in {0}
     m_Metadata:
       m_Items: []
+  - m_Id: 9197275887689728
+    m_Localized: "Keine Werbung + {0}% Rabatt f\xFCr immer"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9197276021907456
+    m_Localized: Danke! Werbung entfernt, Preise halbiert
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

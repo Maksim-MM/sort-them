@@ -386,5 +386,7 @@
   "upg_throw.name": "Stärkerer Wurf",
   "ui.ad_buy": "Werbung -{0}%",
   "ui.ad_spin": "Werbung ansehen · ${0}",
-  "ui.ad_wait": "Werbung in {0}"
+  "ui.ad_wait": "Werbung in {0}",
+  "ui.premium_name": "Keine Werbung + {0}% Rabatt für immer",
+  "ui.premium_done": "Danke! Werbung entfernt, Preise halbiert"
 }

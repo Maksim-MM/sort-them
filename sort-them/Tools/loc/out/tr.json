@@ -386,5 +386,7 @@
   "upg_throw.name": "Daha güçlü fırlatma",
   "ui.ad_buy": "Reklam -{0}%",
   "ui.ad_spin": "Reklam izle · ${0}",
-  "ui.ad_wait": "{0} sonra reklam"
+  "ui.ad_wait": "{0} sonra reklam",
+  "ui.premium_name": "Reklamsız + kalıcı %{0} indirim",
+  "ui.premium_done": "Teşekkürler! Reklamlar kaldırıldı, fiyatlar yarıya indi"
 }

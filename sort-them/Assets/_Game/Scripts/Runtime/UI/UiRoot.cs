@@ -49,6 +49,10 @@ namespace SortThem
         TMP_Text _terminalBalance, _slotBalance, _slotResult, _slotRemaining, _spinLabel;
         Image _slotIcon;
         Button _spinButton, _spinAdButton;
+        RectTransform _premiumRow;
+        Button _premiumBuy;
+        TMP_Text _premiumPrice, _premiumName;
+        RawImage _premiumIcon;
         TMP_Text _spinAdLabel;
         float _adRefreshAt;
         readonly List<Selectable> _slotButtons = new List<Selectable>();
@@ -162,6 +166,7 @@ namespace SortThem
             gm.StatsChanged += RefreshStats;
             gm.Economy.Changed += _ => { RefreshStats(); RefreshTerminal(); RefreshSlot(); };
             gm.Upgrades.Changed += _ => { RefreshTerminal(); RefreshInventory(); RefreshSlot(); };
+            Premium.Changed += () => { RefreshTerminal(); RefreshSlot(); };
             gm.Inventory.Changed += RefreshInventory;
             Messages.Shown += ShowToast;
             Loc.Changed += OnLocChanged;
@@ -616,7 +621,7 @@ namespace SortThem
 
         void BuildTerminal()
         {
-            var w = BuildArcadeWindow("Terminal", new Vector2(1080f, 880f), "ui.terminal", "Терминал улучшений", true, true);
+            var w = BuildArcadeWindow("Terminal", new Vector2(1080f, Premium.Supported ? 936f : 880f), "ui.terminal", "Терминал улучшений", true, true);
             _terminal = w.Root;
             _terminalScore = BuildBalanceBox(_terminal);
 
@@ -625,6 +630,35 @@ namespace SortThem
             UiFactory.Layout(list, 3f, new RectOffset(0, 0, 0, 0));
 
             var gm = GameManager.I;
+            {
+                var fill = UiFactory.NeonBox(list, "Row_Premium", ArcadeCost, new Color(0.14f, 0.10f, 0.04f, 1f), 2f);
+                _premiumRow = (RectTransform)fill.parent;
+                UiFactory.Size(_premiumRow, 0f, 50f);
+                _premiumRow.gameObject.AddComponent<UiShimmer>();
+                var name = UiFactory.Text(fill, "Name", "", 18f, TextAlignmentOptions.Left, ArcadeCost);
+                name.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
+                name.enableAutoSizing = true;
+                name.fontSizeMin = 11f;
+                name.fontSizeMax = 18f;
+                name.textWrappingMode = TextWrappingModes.NoWrap;
+                _premiumName = name;
+                UiFactory.Anchor(name.rectTransform, new Vector2(0f, 0f), new Vector2(0.68f, 1f), new Vector2(14f, 0f), Vector2.zero);
+                _premiumBuy = UiFactory.NeonButton(fill, "PremiumBuy", "", BuyPremium, ArcadeCost, ArcadeFill(ArcadeCost), ArcadeCost, 18f);
+                UiFactory.Anchor(_premiumBuy.GetComponent<RectTransform>(), new Vector2(0.70f, 0.06f), new Vector2(0.995f, 0.94f), Vector2.zero, Vector2.zero);
+                _premiumPrice = _premiumBuy.GetComponentInChildren<TMP_Text>();
+                _premiumPrice.fontStyle = FontStyles.Bold;
+                _premiumPrice.enableAutoSizing = true;
+                _premiumPrice.fontSizeMin = 11f;
+                _premiumPrice.fontSizeMax = 18f;
+                _premiumPrice.textWrappingMode = TextWrappingModes.NoWrap;
+                _premiumPrice.margin = new Vector4(30f, 0f, 4f, 0f);
+                var iconRt = UiFactory.Rect(_premiumPrice.transform.parent, "Currency");
+                _premiumIcon = iconRt.gameObject.AddComponent<RawImage>();
+                _premiumIcon.raycastTarget = false;
+                _premiumIcon.enabled = false;
+                UiFactory.Anchored(iconRt, new Vector2(0f, 0.5f), new Vector2(8f, 0f), new Vector2(22f, 22f));
+                _premiumRow.gameObject.SetActive(false);
+            }
             foreach (var data in gm.Upgrades.All)
             {
                 if (data.Source != UpgradeSource.Terminal) continue;
@@ -751,14 +785,14 @@ namespace SortThem
         {
             var gm = GameManager.I;
             if (gm == null) return;
-            SpinWith(gm.Config.SlotSpinCost);
+            SpinWith(Premium.Price(gm.Config.SlotSpinCost));
         }
 
         void SpinAd()
         {
             var gm = GameManager.I;
             if (gm == null || _spinning || !Ads.Ready) return;
-            int cost = Ads.Discounted(gm.Config.SlotSpinCost);
+            int cost = Ads.Discounted(Premium.Price(gm.Config.SlotSpinCost));
             if (!gm.Economy.CanAfford(cost)) return;
             Ads.ShowRewarded(ok => { if (ok) SpinWith(cost); RefreshSlot(); });
         }
@@ -774,6 +808,37 @@ namespace SortThem
                 if (ok && gm.Upgrades.TryBuy(data, cost)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); }
                 RefreshTerminal();
             });
+        }
+
+        void BuyPremium()
+        {
+            if (!Premium.CanOffer) return;
+            Premium.Buy(ok =>
+            {
+                var gm = GameManager.I;
+                if (!ok || gm == null) return;
+                Sfx.PlayUi(gm.Config.PurchaseClip);
+                Messages.Show(Loc.Get("ui.premium_done", "Спасибо! Реклама отключена, цены вдвое ниже"));
+                RefreshTerminal();
+                RefreshSlot();
+            });
+        }
+
+        void RefreshPremiumRow()
+        {
+            if (_premiumRow == null) return;
+            bool show = Premium.CanOffer;
+            if (_premiumRow.gameObject.activeSelf != show) _premiumRow.gameObject.SetActive(show);
+            if (!show) return;
+            var p = Premium.Product;
+            _premiumName.text = string.Format(Loc.Get("ui.premium_name", "Без рекламы и скидка {0}% навсегда"), Premium.DiscountPercent);
+            string price = !string.IsNullOrEmpty(p.Price) ? p.Price : (p.Title ?? "");
+            _premiumPrice.text = price;
+            bool icon = p.CurrencyIcon != null;
+            if (icon) _premiumIcon.texture = p.CurrencyIcon;
+            if (_premiumIcon.enabled != icon) _premiumIcon.enabled = icon;
+            _premiumPrice.margin = new Vector4(icon ? 32f : 6f, 0f, 4f, 0f);
+            _premiumBuy.interactable = !Ads.Busy;
         }
 
         void SpinWith(int cost)
@@ -845,12 +910,13 @@ namespace SortThem
                 : bombs ? Loc.Get("ui.slot_empty_bombs", "Награды закончились. Каждый спин даёт бомбу") : Loc.Get("ui.slot_empty", "Пусто. Все награды выданы");
             if (!_spinning && _spinUntil < 0f)
                 _slotResult.text = left > 0 ? Loc.Get("ui.slot_idle", "Каждое вращение даёт награду") : "";
-            _spinLabel.text = string.Format(Loc.Get("ui.spin", "Крутить · ${0}"), gm.Config.SlotSpinCost);
-            _spinButton.interactable = !_spinning && gm.Economy.CanAfford(gm.Config.SlotSpinCost) && (left > 0 || bombs);
+            int spinCost = Premium.Price(gm.Config.SlotSpinCost);
+            _spinLabel.text = string.Format(Loc.Get("ui.spin", "Крутить · ${0}"), spinCost);
+            _spinButton.interactable = !_spinning && gm.Economy.CanAfford(spinCost) && (left > 0 || bombs);
             if (_spinAdButton != null)
             {
                 if (_spinAdButton.gameObject.activeSelf != Ads.RewardedAvailable) _spinAdButton.gameObject.SetActive(Ads.RewardedAvailable);
-                int adCost = Ads.Discounted(gm.Config.SlotSpinCost);
+                int adCost = Ads.Discounted(spinCost);
                 bool ready = Ads.Ready;
                 _spinAdLabel.text = ready
                     ? string.Format(Loc.Get("ui.ad_spin", "За рекламу · ${0}"), adCost)
@@ -1157,6 +1223,7 @@ namespace SortThem
 
         IEnumerable<Selectable> TerminalCandidates()
         {
+            if (_premiumBuy != null && _premiumRow.gameObject.activeSelf) yield return _premiumBuy;
             foreach (var r in _rows) { yield return r.Buy; if (r.Ad != null && r.Ad.gameObject.activeSelf) yield return r.Ad; }
             if (_terminalClose != null) yield return _terminalClose;
         }
@@ -1353,6 +1420,7 @@ namespace SortThem
             var gm = GameManager.I;
             if (gm == null || _terminalScore == null) return;
             _terminalScore.text = FormatMoney(gm.Economy.Balance);
+            RefreshPremiumRow();
             foreach (var r in _rows)
             {
                 int level = gm.Upgrades.Level(r.Data);

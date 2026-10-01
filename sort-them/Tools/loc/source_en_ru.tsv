@@ -387,3 +387,5 @@ upg_throw.name	Stronger throw	Более сильный бросок
 ui.ad_buy	Ad -{0}%	Реклама -{0}%
 ui.ad_spin	Watch ad · ${0}	За рекламу · ${0}
 ui.ad_wait	Ad in {0}	Реклама через {0}
+ui.premium_name	No ads + {0}% off forever	Без рекламы и скидка {0}% навсегда
+ui.premium_done	Thanks! Ads removed, prices halved	Спасибо! Реклама отключена, цены вдвое ниже

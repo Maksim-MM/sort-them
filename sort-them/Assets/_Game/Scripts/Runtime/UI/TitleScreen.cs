@@ -12,6 +12,8 @@ namespace SortThem
     public class TitleScreen : MonoBehaviour
     {
         public Texture Background;
+        public Texture LogoRu;
+        public Texture LogoEn;
         public AudioClip[] Music = System.Array.Empty<AudioClip>();
         public AudioClip Click;
         public string NextScene = "Main";
@@ -25,6 +27,7 @@ namespace SortThem
         string _textKey = "Press Any Key";
         string _textTouch = "Tap to Start";
         TMP_Text _label;
+        RawImage _logo;
         Image _fade;
         AudioSource _music;
         AsyncOperation _load;
@@ -38,6 +41,7 @@ namespace SortThem
             Settings.EnsureLoaded();
             PlayMusic();
             yield return InitLocalization();
+            ShowLogo();
             _load = SceneManager.LoadSceneAsync(NextScene, LoadSceneMode.Single);
             if (_load != null) _load.allowSceneActivation = false;
             _ready = true;
@@ -159,6 +163,19 @@ namespace SortThem
             _textTouch = Localized(KeyTouch, _textTouch);
         }
 
+        void ShowLogo()
+        {
+            if (_logo == null) return;
+            var tex = LogoEn;
+#if UNITY_WEBGL
+            string code = LocalizationSettings.HasSettings ? LocalizationSettings.SelectedLocale?.Identifier.Code : null;
+            if (!string.IsNullOrEmpty(code) && code.StartsWith("ru") && LogoRu != null) tex = LogoRu;
+#endif
+            if (tex == null) return;
+            _logo.texture = tex;
+            _logo.enabled = true;
+        }
+
         static string Localized(string key, string fallback)
         {
             try
@@ -191,6 +208,14 @@ namespace SortThem
             var fitter = bgRect.gameObject.AddComponent<AspectRatioFitter>();
             fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
             fitter.aspectRatio = Background != null ? Background.width / (float)Background.height : 16f / 9f;
+
+            var logoRect = UiFactory.Rect(root, "Logo");
+            _logo = logoRect.gameObject.AddComponent<RawImage>();
+            _logo.raycastTarget = false;
+            _logo.enabled = false;
+            UiFactory.Anchored(logoRect, new Vector2(0f, 1f), new Vector2(405f, -258f), new Vector2(740f, 740f));
+            logoRect.pivot = new Vector2(0.5f, 0.5f);
+            logoRect.anchoredPosition = new Vector2(405f, -258f);
 
             _label = UiFactory.Text(root, "Press", _textButton, 55f, TextAlignmentOptions.Center, Color.white);
             _label.fontStyle = FontStyles.Bold;

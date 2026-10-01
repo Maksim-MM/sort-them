@@ -1550,5 +1550,13 @@
 "ui.ad_wait": {
 "en": "Ad in {0}",
 "ru": "Реклама через {0}"
+},
+"ui.premium_name": {
+"en": "No ads + {0}% off forever",
+"ru": "Без рекламы и скидка {0}% навсегда"
+},
+"ui.premium_done": {
+"en": "Thanks! Ads removed, prices halved",
+"ru": "Спасибо! Реклама отключена, цены вдвое ниже"
 }
 }

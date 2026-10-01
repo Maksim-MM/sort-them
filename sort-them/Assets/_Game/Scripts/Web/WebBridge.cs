@@ -5,6 +5,7 @@ namespace SortThem.Web
 {
     public class WebBridge : MonoBehaviour
     {
+        public static WebBridge Instance { get; private set; }
         bool _readySent, _audioOff, _paused, _gameplayOn;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -17,8 +18,10 @@ namespace SortThem.Web
 
         void Awake()
         {
+            Instance = this;
             var platform = Bridge.platform;
             Ads.Services = new WebAds();
+            Premium.Refresh();
             _audioOff = !platform.isAudioEnabled;
             ApplyListener();
             platform.audioStateChanged += OnAudioState;

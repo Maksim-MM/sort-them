@@ -111,6 +111,7 @@ namespace SortThem
         public float AdCooldown = 180f;
         public float AdInitialDelay = 90f;
         public float RewardedDiscount = 0.25f;
+        public float PremiumDiscount = 0.5f;
         [UnityEngine.Serialization.FormerlySerializedAs("LodDistances")] public float[] LodDistancesMobile = { 0f, 4f, 10f };
         public float[] LodDistancesDesktop = { 10f, 20f, 35f };
         public int ShuffleCarsPerStep = 4;

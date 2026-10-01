@@ -10,7 +10,11 @@
         "useBuiltInErrorPopup": true,
         "backfillId": ""
     },
-    "payments": [],
+    "payments": [
+        {
+            "id": "no_ads_discount"
+        }
+    ],
     "leaderboards": [],
     "sendAnalyticsEvents": true
 }

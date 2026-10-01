@@ -386,5 +386,7 @@
   "upg_throw.name": "Lancio più forte",
   "ui.ad_buy": "Annuncio -{0}%",
   "ui.ad_spin": "Guarda annuncio · ${0}",
-  "ui.ad_wait": "Annuncio tra {0}"
+  "ui.ad_wait": "Annuncio tra {0}",
+  "ui.premium_name": "Niente annunci + {0}% di sconto per sempre",
+  "ui.premium_done": "Grazie! Annunci rimossi, prezzi dimezzati"
 }

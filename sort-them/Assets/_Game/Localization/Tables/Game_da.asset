@@ -1582,6 +1582,14 @@ MonoBehaviour:
     m_Localized: Ad in {0}
     m_Metadata:
       m_Items: []
+  - m_Id: 9197275887689728
+    m_Localized: No ads + {0}% off forever
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9197276021907456
+    m_Localized: Thanks! Ads removed, prices halved
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

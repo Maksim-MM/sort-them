@@ -386,5 +386,7 @@
   "upg_throw.name": "Arremesso mais forte",
   "ui.ad_buy": "Anúncio -{0}%",
   "ui.ad_spin": "Ver anúncio · ${0}",
-  "ui.ad_wait": "Anúncio em {0}"
+  "ui.ad_wait": "Anúncio em {0}",
+  "ui.premium_name": "Sem anúncios + {0}% de desconto para sempre",
+  "ui.premium_done": "Obrigado! Anúncios removidos, preços pela metade"
 }

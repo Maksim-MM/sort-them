@@ -240,7 +240,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441aaa7d1e2f34eff959488e6e0f1c59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SortThem.Runtime::SortThem.TitleScreen
-  Background: {fileID: 2800000, guid: 83c016f3820e94ffdb6ccabf6671c5ab, type: 3}
+  Background: {fileID: 2800000, guid: fcdec03bc395740ac9490e553f7815c0, type: 3}
+  LogoRu: {fileID: 2800000, guid: 80e2ac2a01f494d0f96f281f16f894b5, type: 3}
+  LogoEn: {fileID: 2800000, guid: 45b92ab8958e042a9a5d353ad8988112, type: 3}
   Music:
   - {fileID: 8300000, guid: c161949168acd47e49e4cd7ddf95f6e6, type: 3}
   - {fileID: 8300000, guid: 667625e4161b34096afa92c434249dbc, type: 3}

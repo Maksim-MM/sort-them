@@ -386,5 +386,7 @@
   "upg_throw.name": "Lanzamiento más fuerte",
   "ui.ad_buy": "Anuncio -{0}%",
   "ui.ad_spin": "Ver anuncio · ${0}",
-  "ui.ad_wait": "Anuncio en {0}"
+  "ui.ad_wait": "Anuncio en {0}",
+  "ui.premium_name": "Sin anuncios + {0}% de descuento para siempre",
+  "ui.premium_done": "¡Gracias! Sin anuncios, precios a la mitad"
 }

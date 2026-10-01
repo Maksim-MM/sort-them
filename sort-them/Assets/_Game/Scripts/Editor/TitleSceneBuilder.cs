@@ -10,7 +10,9 @@ namespace SortThem.Editor
     {
         public const string BootstrapScene = "Assets/UpscaleSDK/BootstrapScene/UPSBootstrap.unity";
         public const string TitleScene = Paths.Scenes + "/Title.unity";
-        const string BackgroundPath = Paths.Root + "/Art/Textures/Background+logo v2.png";
+        const string BackgroundPath = Paths.Root + "/Art/Textures/Background v3 clean.png";
+        const string LogoRuPath = Paths.Root + "/Art/Textures/Logo RU 1024x1024.png";
+        const string LogoEnPath = Paths.Root + "/Art/Textures/Logo EN 1024x1024.png";
         const string ConfigPath = Paths.Config + "/GameConfig.asset";
 
         [MenuItem("SortThem/Build Title Scene")]
@@ -40,6 +42,8 @@ namespace SortThem.Editor
 
             var config = AssetDatabase.LoadAssetAtPath<GameConfig>(ConfigPath);
             screen.Background = AssetDatabase.LoadAssetAtPath<Texture2D>(BackgroundPath);
+            screen.LogoRu = AssetDatabase.LoadAssetAtPath<Texture2D>(LogoRuPath);
+            screen.LogoEn = AssetDatabase.LoadAssetAtPath<Texture2D>(LogoEnPath);
             if (config != null)
             {
                 screen.Music = config.MusicClips;
@@ -50,7 +54,7 @@ namespace SortThem.Editor
 
             EditorSceneManager.SaveScene(scene, TitleScene);
             EnsureBuildScenes();
-            Debug.Log("SortThem: title scene " + (exists ? "updated" : "created") + ", background=" + (screen.Background != null) + ", music=" + screen.Music.Length + ", click=" + (screen.Click != null));
+            Debug.Log("SortThem: title scene " + (exists ? "updated" : "created") + ", background=" + (screen.Background != null) + ", logos=" + (screen.LogoRu != null) + "/" + (screen.LogoEn != null) + ", music=" + screen.Music.Length + ", click=" + (screen.Click != null));
 
             if (!string.IsNullOrEmpty(previous) && previous != TitleScene) EditorSceneManager.OpenScene(previous, OpenSceneMode.Single);
         }

@@ -37,7 +37,7 @@ namespace SortThem
 
         public bool IsMaxed(UpgradeData data) => data != null && Level(data) >= data.MaxLevel;
 
-        public int NextCost(UpgradeData data) => data != null ? data.CostOf(Level(data)) : 0;
+        public int NextCost(UpgradeData data) => data != null ? Premium.Price(data.CostOf(Level(data))) : 0;
 
         public bool CanBuy(UpgradeData data) => data != null && CanBuy(data, NextCost(data));
 

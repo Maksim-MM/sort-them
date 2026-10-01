@@ -1587,6 +1587,15 @@ MonoBehaviour:
     m_Localized: '{0} sonra reklam'
     m_Metadata:
       m_Items: []
+  - m_Id: 9197275887689728
+    m_Localized: "Reklams\u0131z + kal\u0131c\u0131 %{0} indirim"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9197276021907456
+    m_Localized: "Te\u015Fekk\xFCrler! Reklamlar kald\u0131r\u0131ld\u0131, fiyatlar
+      yar\u0131ya indi"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
