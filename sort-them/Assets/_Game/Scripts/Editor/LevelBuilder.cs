@@ -1177,24 +1177,53 @@ namespace SortThem.Editor
         {
             var beams = new GameObject("Beams").transform;
             beams.SetParent(room, false);
+            var posts = PostBounds(room);
             float y = RoomH - 0.18f;
-            var beamSize = new Vector3(WingW, BeamH, BeamT);
             int n = Mathf.RoundToInt(ArmLen / Module);
             for (int i = 0; i <= n; i++)
             {
                 float z = Min + i * (ArmLen / n);
-                RoomMesh.Box("Beam_W_" + i, beams, new Vector3(WestX, y, z), beamSize, _woodBeam, 1f);
+                float x1 = z < Inner - BeamT ? Inner - BeamT * 0.5f + BeamJoint : Inner;
+                BeamSpan("Beam_W_" + i, beams, posts, false, z, y, Min, x1);
                 if (i % 2 == 0) AddLamps(beams, new Vector3(WestX, y, z), Vector3.right, WingW, "W" + i);
             }
             float armLen = Max - Inner;
             int m = Mathf.RoundToInt(armLen / Module);
-            var beamSizeS = new Vector3(BeamT, BeamH, WingW);
             for (int i = 0; i <= m; i++)
             {
                 float x = Inner + i * (armLen / m);
-                RoomMesh.Box("Beam_S_" + i, beams, new Vector3(x, y, SouthZ), beamSizeS, _woodBeam, 1f);
+                BeamSpan("Beam_S_" + i, beams, posts, true, x, y, Min, Inner);
                 if (i % 2 == 0) AddLamps(beams, new Vector3(x, y, SouthZ), Vector3.forward, WingW, "S" + i);
             }
+        }
+
+        const float BeamJoint = 0.002f;
+
+        static List<Bounds> PostBounds(Transform room)
+        {
+            var list = new List<Bounds>();
+            foreach (var mf in room.GetComponentsInChildren<MeshFilter>())
+                if (mf.name.StartsWith("Post_") && mf.sharedMesh != null)
+                    list.Add(new Bounds(mf.transform.position + mf.sharedMesh.bounds.center, mf.sharedMesh.bounds.size));
+            return list;
+        }
+
+        static void BeamSpan(string name, Transform parent, List<Bounds> posts, bool alongZ, float cross, float y, float a, float b)
+        {
+            float c0 = cross - BeamT * 0.5f, c1 = cross + BeamT * 0.5f;
+            foreach (var p in posts)
+            {
+                float p0 = alongZ ? p.min.x : p.min.z, p1 = alongZ ? p.max.x : p.max.z;
+                bool coplanar = Mathf.Abs(p0 - c0) < 0.005f || Mathf.Abs(p1 - c1) < 0.005f;
+                if (!coplanar || p1 <= c0 || p0 >= c1) continue;
+                float s0 = alongZ ? p.min.z : p.min.x, s1 = alongZ ? p.max.z : p.max.x;
+                if (s1 <= a || s0 >= b) continue;
+                if (s0 + s1 < a + b) a = Mathf.Max(a, s1 - BeamJoint);
+                else b = Mathf.Min(b, s0 + BeamJoint);
+            }
+            var size = alongZ ? new Vector3(BeamT, BeamH, b - a) : new Vector3(b - a, BeamH, BeamT);
+            var center = alongZ ? new Vector3(cross, y, (a + b) * 0.5f) : new Vector3((a + b) * 0.5f, y, cross);
+            RoomMesh.Box(name, parent, center, size, _woodBeam, 1f);
         }
 
         static void AddLamps(Transform parent, Vector3 beamCenter, Vector3 along, float span, string tag)

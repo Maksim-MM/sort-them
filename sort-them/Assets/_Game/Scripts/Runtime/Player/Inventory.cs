@@ -40,7 +40,9 @@ namespace SortThem
                 LastAddedRotation = car.transform.rotation;
                 AddCount++;
             }
+            var from = car.transform.position;
             car.SetHeld();
+            if (GameManager.I != null) GameManager.I.WakeCollectiblesNear(from);
             Items.Add(car);
             if (takeSlot) ActiveIndex = Items.Count - 1;
             Changed?.Invoke();

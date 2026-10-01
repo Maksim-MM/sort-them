@@ -25,9 +25,11 @@ namespace SortThem
         TMP_Text _carsText, _shelvesText, _collectiblesText, _balanceText, _inventoryText, _inventoryCountText, _saveText, _toastText;
         CanvasGroup _toast;
         CanvasGroup _tutorial;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         TMP_Text _fpsText;
         int _fpsFrames;
         float _fpsTime;
+#endif
         TMP_Text _tutorialText;
         GameObject _tutorialTick;
         TutorialStep _tutorialShown = TutorialStep.Done;
@@ -255,7 +257,9 @@ namespace SortThem
             ActiveDevice.Poll();
             RefreshAbilities();
             UpdateTutorial();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             UpdateFps();
+#endif
             UpdateSpin();
             UpdateUpgrade();
             RefreshTouch();
@@ -276,9 +280,11 @@ namespace SortThem
             _shelvesText = StatRow(stats, "Shelves", 1, hudShadow);
             _collectiblesText = StatRow(stats, "Collectibles", 2, hudShadow);
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             _fpsText = UiFactory.Text(hud, "Fps", "", 24f, TextAlignmentOptions.Left, new Color(0.3f, 1f, 0.3f, 1f));
             _fpsText.fontStyle = FontStyles.Bold;
             UiFactory.Anchored(_fpsText.rectTransform, new Vector2(0f, 1f), new Vector2(28f, -164f), new Vector2(160f, 30f));
+#endif
 
             var balancePanel = UiFactory.Rect(hud, "Balance");
             UiFactory.Anchored(balancePanel, new Vector2(1f, 1f), new Vector2(-16f, -16f), new Vector2(240f, 56f));
@@ -368,6 +374,7 @@ namespace SortThem
             return null;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         void UpdateFps()
         {
             if (_fpsText == null) return;
@@ -378,6 +385,7 @@ namespace SortThem
             _fpsFrames = 0;
             _fpsTime = 0f;
         }
+#endif
 
         void UpdateTutorial()
         {

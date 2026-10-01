@@ -192,6 +192,7 @@ namespace SortThem
             {
                 _activationTimer = Config.ActivationUpdateInterval;
                 if (Player != null && !Shuffling) PhysicsActivation.Tick(Cars, Player.transform.position, Platform.LowPower ? Config.MobileActivationRadius : Config.ActivationRadius, Config.FreezeSpeed, Config.FreezeDelay, 3, Time.frameCount);
+                if (Player != null && !Shuffling) PhysicsActivation.Tick(Collectibles, Player.transform.position, Platform.LowPower ? Config.MobileActivationRadius : Config.ActivationRadius, Config.FreezeSpeed, Config.FreezeDelay);
             }
             Save.Tick(Time.deltaTime);
             PileOcclusion.Tick();
@@ -288,7 +289,22 @@ namespace SortThem
                 c.Index = i;
                 var rb = go.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = true;
+                c.Body = rb;
                 Collectibles.Add(c);
+            }
+        }
+
+        public void WakeCollectiblesNear(Vector3 position, float radius = 1f)
+        {
+            if (!Ready || Shuffling) return;
+            float r2 = radius * radius;
+            foreach (var c in Collectibles)
+            {
+                if (c == null || c.Body == null || !c.gameObject.activeSelf) continue;
+                if ((c.transform.position - position).sqrMagnitude > r2) continue;
+                c.CalmSince = -1f;
+                if (c.Body.isKinematic) c.Body.isKinematic = false;
+                c.Body.WakeUp();
             }
         }
 
@@ -500,6 +516,8 @@ namespace SortThem
             foreach (var bomb in Bombs) if (bomb != null && !bomb.Held) bodies.Add(bomb.Body);
             var rng = new System.Random(Environment.TickCount);
             for (int i = loose.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); (loose[i], loose[j]) = (loose[j], loose[i]); }
+
+            foreach (var c in Collectibles) if (c != null && c.Body != null) { c.Body.isKinematic = true; c.CalmSince = -1f; }
 
             var prevMode = Physics.simulationMode;
             Physics.simulationMode = SimulationMode.Script;
