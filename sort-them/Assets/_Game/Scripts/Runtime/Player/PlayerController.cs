@@ -12,7 +12,7 @@ namespace SortThem
         float _yaw, _pitch, _verticalVelocity, _camY, _camYVelocity;
         float _eyeY, _eyeVel, _eyeTilt;
         bool _camInit;
-        bool _crouching, _wantCrouch;
+        bool _crouching, _wantCrouch, _sprintWasHeld;
         float _stepTimer;
         Camera _cam;
         public static float MaxHorizontalFov;
@@ -69,7 +69,13 @@ namespace SortThem
             }
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
 
+            if (TouchInput.SprintToggled && !gm.Upgrades.Has(UpgradeKind.Sprint)) TouchInput.SprintToggled = false;
+            bool sprintHeld = (_input.Sprint.Held() || TouchInput.SprintToggled) && gm.Upgrades.Has(UpgradeKind.Sprint);
+            bool sprintPressed = sprintHeld && !_sprintWasHeld;
+            _sprintWasHeld = sprintHeld;
+            bool jumpPressed = !blocked && (_input.Jump.Pressed() || TouchInput.Consume(TouchButton.Jump));
             if (!blocked && (_input.Crouch.Pressed() || TouchInput.Consume(TouchButton.Crouch)) && gm.Upgrades.Has(UpgradeKind.Crouch)) _wantCrouch = !_wantCrouch;
+            if (!blocked && _wantCrouch && (sprintPressed || jumpPressed)) _wantCrouch = false;
             bool wantCrouch = _wantCrouch && gm.Upgrades.Has(UpgradeKind.Crouch);
             if (wantCrouch != _crouching)
             {
@@ -84,8 +90,7 @@ namespace SortThem
             if (CameraPivot != null) CameraPivot.localRotation = Quaternion.Euler(_pitch + _eyeTilt, 0f, 0f);
 
             Vector2 moveInput = blocked ? Vector2.zero : Vector2.ClampMagnitude(_input.Move.VectorValue + TouchInput.Move, 1f);
-            if (TouchInput.SprintToggled && !gm.Upgrades.Has(UpgradeKind.Sprint)) TouchInput.SprintToggled = false;
-            bool sprint = !blocked && (_input.Sprint.Held() || TouchInput.SprintToggled) && gm.Upgrades.Has(UpgradeKind.Sprint) && !_crouching;
+            bool sprint = !blocked && sprintHeld && !_crouching;
             float speed = Mathf.Lerp(sprint ? cfg.SprintSpeed : cfg.WalkSpeed, cfg.CrouchSpeed, crouchF);
             Vector3 dir = transform.right * moveInput.x + transform.forward * moveInput.y;
             if (dir.sqrMagnitude > 1f) dir.Normalize();
@@ -93,7 +98,7 @@ namespace SortThem
             if (_cc.isGrounded)
             {
                 if (_verticalVelocity < 0f) _verticalVelocity = -2f;
-                if (!blocked && (_input.Jump.Pressed() || TouchInput.Consume(TouchButton.Jump)) && !_crouching)
+                if (jumpPressed && !_crouching)
                     _verticalVelocity = Mathf.Sqrt(2f * -cfg.Gravity * cfg.JumpHeight);
             }
             _verticalVelocity += cfg.Gravity * Time.deltaTime;
