@@ -8,6 +8,7 @@ namespace SortThem
         public CategoryData Category;
         public ShelfController[] Shelves;
         public TMP_Text SignText;
+        public TMP_Text SignTextBack;
         public Renderer SignPlate;
         public GameObject HighlightFrame;
         public BoxCollider Zone;
@@ -48,10 +49,16 @@ namespace SortThem
         public void RefreshSign()
         {
             if (Category == null) return;
+            string name = Loc.Get(Category.DisplayName, Category.DevName);
             if (SignText != null)
             {
                 Fonts.Register(SignText);
-                SignText.text = Loc.Get(Category.DisplayName, Category.DevName);
+                SignText.text = name;
+            }
+            if (SignTextBack != null)
+            {
+                Fonts.Register(SignTextBack);
+                SignTextBack.text = name;
             }
             if (SignPlate != null) SignPlate.material.color = Category.CategoryColor;
         }

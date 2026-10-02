@@ -236,8 +236,7 @@ namespace SortThem.Editor
             sign.isStatic = false;
             rack.SignPlate = sign.GetComponent<Renderer>();
             rack.SignText = Text3D(rackGo.transform, "SignText", cat.DevName, 2.2f, new Vector3(0f, tableHeight + 1.45f, -0.03f), Quaternion.identity, new Vector2(1.3f, 0.45f), Color.white);
-            var backText = Text3D(rackGo.transform, "SignTextBack", cat.DevName, 2.2f, new Vector3(0f, tableHeight + 1.45f, 0.03f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.3f, 0.45f), Color.white);
-            backText.text = cat.DevName;
+            rack.SignTextBack = Text3D(rackGo.transform, "SignTextBack", cat.DevName, 2.2f, new Vector3(0f, tableHeight + 1.45f, 0.03f), Quaternion.Euler(0f, 180f, 0f), new Vector2(1.3f, 0.45f), Color.white);
 
             var rackZoneGo = new GameObject("RackZone");
             rackZoneGo.transform.SetParent(rackGo.transform, false);
