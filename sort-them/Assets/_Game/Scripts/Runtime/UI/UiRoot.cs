@@ -20,6 +20,8 @@ namespace SortThem
         public Sprite[] TouchIcons = new Sprite[8];
         public Sprite Circle;
         public Sprite BombIcon;
+        public Sprite Spinner;
+        public Texture2D ShuffleBackground;
 
         Canvas _canvas;
         TMP_Text _carsText, _shelvesText, _collectiblesText, _balanceText, _inventoryText, _inventoryCountText, _saveText, _toastText;
@@ -48,6 +50,7 @@ namespace SortThem
         TMP_Text _languageLabel;
         CanvasGroup _fade;
         TMP_Text _fadeText;
+        Image _fadeSpinner;
         TMP_Text _terminalBalance, _slotBalance, _slotResult, _slotRemaining, _spinLabel;
         Image _slotIcon;
         Button _spinButton, _spinAdButton;
@@ -261,6 +264,7 @@ namespace SortThem
             UpdateFps();
 #endif
             UpdateSpin();
+            UpdateFadeSpinner();
             UpdateUpgrade();
             RefreshTouch();
             if (_rotateOverlay != null) { bool portrait = Screen.height > Screen.width; if (_rotateOverlay.activeSelf != portrait) _rotateOverlay.SetActive(portrait); }
@@ -988,9 +992,31 @@ namespace SortThem
             UiFactory.Anchor(panel, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             _fade = panel.gameObject.AddComponent<CanvasGroup>();
             _fade.blocksRaycasts = true;
-            _fadeText = UiFactory.Text(panel, "Text", "", 30f, TextAlignmentOptions.Center, Color.white);
-            UiFactory.Anchor(_fadeText.rectTransform, Vector2.zero, Vector2.one, new Vector2(40f, 40f), new Vector2(-40f, -40f));
+            if (ShuffleBackground != null)
+            {
+                var bgRect = UiFactory.Rect(panel, "Background");
+                var bg = bgRect.gameObject.AddComponent<RawImage>();
+                bg.texture = ShuffleBackground;
+                bg.raycastTarget = false;
+                var fitter = bgRect.gameObject.AddComponent<AspectRatioFitter>();
+                fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+                fitter.aspectRatio = ShuffleBackground.width / (float)ShuffleBackground.height;
+            }
+            _fadeText = UiFactory.Text(panel, "Text", "", 34f, TextAlignmentOptions.Center, Color.white);
+            _fadeText.fontStyle = FontStyles.Bold;
+            UiFactory.Anchored(_fadeText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 70f), new Vector2(1400f, 60f));
+            UiFactory.TextGlow(_fadeText, new Color(0f, 0f, 0f, 0.9f), 0.4f, 0.5f);
+            _fadeSpinner = UiFactory.Image(panel, "Spinner", Spinner, Color.white, Image.Type.Simple);
+            _fadeSpinner.raycastTarget = false;
+            UiFactory.Anchored(_fadeSpinner.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -50f), new Vector2(110f, 110f));
+            _fadeSpinner.gameObject.SetActive(false);
             panel.gameObject.SetActive(false);
+        }
+
+        void UpdateFadeSpinner()
+        {
+            if (_fadeSpinner == null || !_fadeSpinner.gameObject.activeInHierarchy) return;
+            _fadeSpinner.rectTransform.Rotate(0f, 0f, -360f * Time.unscaledDeltaTime);
         }
 
         void StartShuffle()
@@ -1009,8 +1035,10 @@ namespace SortThem
             _fadeText.text = "";
             for (float t = 0f; t < 0.3f; t += Time.unscaledDeltaTime) { _fade.alpha = t / 0.3f; yield return null; }
             _fade.alpha = 1f;
-            string label = Loc.Get("ui.shuffling", "Перемешиваем кучу…");
-            yield return gm.ShuffleLoose(p => _fadeText.text = label + " " + Mathf.RoundToInt(p * 100f) + "%");
+            _fadeText.text = Loc.Get("ui.shuffling", "Перемешиваем кучу…");
+            _fadeSpinner.gameObject.SetActive(true);
+            yield return gm.ShuffleLoose();
+            _fadeSpinner.gameObject.SetActive(false);
             _fadeText.text = "";
             for (float t = 0f; t < 0.4f; t += Time.unscaledDeltaTime) { _fade.alpha = 1f - t / 0.4f; yield return null; }
             _fade.gameObject.SetActive(false);

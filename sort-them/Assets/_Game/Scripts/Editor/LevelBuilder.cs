@@ -131,6 +131,8 @@ namespace SortThem.Editor
             ui.TouchIcons = System.Array.ConvertAll(UiSpriteSetup.TouchIcons, UiSpriteSetup.Load);
             ui.Circle = UiSpriteSetup.Load(UiSpriteSetup.Circle);
             ui.BombIcon = UiSpriteSetup.Load(UiSpriteSetup.BombIcon);
+            ui.Spinner = UiSpriteSetup.Load(UiSpriteSetup.Spinner);
+            ui.ShuffleBackground = AssetDatabase.LoadAssetAtPath<Texture2D>(UiSpriteSetup.ShuffleBackground);
 
             var es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();

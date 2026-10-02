@@ -13,6 +13,8 @@ namespace SortThem.Editor
         public const string Circle = Dir + "/circle.png";
         public const string BombIcon = Dir + "/up_bomb.png";
         public const string KeyFrame = Dir + "/frame_key.png";
+        public const string Spinner = Dir + "/spinner.png";
+        public const string ShuffleBackground = Paths.Root + "/Art/Textures/Background v3 clean.png";
         static readonly (UpgradeKind Kind, string Path)[] UpgradeIcons =
         {
             (UpgradeKind.Inventory, Dir + "/up_inventory.png"),
@@ -41,6 +43,7 @@ namespace SortThem.Editor
             Import(KeyFrame, new Vector4(24f, 24f, 24f, 24f));
             Import(Circle, Vector4.zero);
             Import(BombIcon, Vector4.zero);
+            if (System.IO.File.Exists(Spinner)) Import(Spinner, Vector4.zero);
             foreach (var (_, path) in UpgradeIcons) if (System.Array.IndexOf(AbilityIcons, path) < 0) Import(path, Vector4.zero);
             AssignUpgradeIcons();
             AssetDatabase.SaveAssets();
@@ -68,7 +71,7 @@ namespace SortThem.Editor
 
         public static Sprite Load(string path) => AssetDatabase.LoadAssetAtPath<Sprite>(path);
 
-        static void Import(string path, Vector4 border)
+        public static void Import(string path, Vector4 border)
         {
             var ti = AssetImporter.GetAtPath(path) as TextureImporter;
             if (ti == null) { Debug.LogError("SortThem: no texture at " + path); return; }

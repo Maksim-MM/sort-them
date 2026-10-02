@@ -408765,6 +408765,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3ed4db278bd7049d1aaebbd4936a12e1, type: 3}
   Circle: {fileID: 21300000, guid: 1c6712e88bfb54ec1836c1d405167b8f, type: 3}
   BombIcon: {fileID: 21300000, guid: 623efb611c25445c09370403ee51b122, type: 3}
+  Spinner: {fileID: 21300000, guid: ca631630c0dbd4b6a8a5f403b770ebe6, type: 3}
+  ShuffleBackground: {fileID: 2800000, guid: fcdec03bc395740ac9490e553f7815c0, type: 3}
 --- !u!114 &2116741768
 MonoBehaviour:
   m_ObjectHideFlags: 0

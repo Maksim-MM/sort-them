@@ -52,8 +52,10 @@ namespace SortThem.Editor
             Save(UiSpriteSetup.StatIcons[0], Car());
             Save(UiSpriteSetup.StatIcons[1], Shelves());
             Save(UiSpriteSetup.StatIcons[2], Crate());
+            SaveSpinner(UiSpriteSetup.Spinner);
             AssetDatabase.Refresh();
             UiSpriteSetup.ImportStatIcons();
+            UiSpriteSetup.Import(UiSpriteSetup.Spinner, Vector4.zero);
             Debug.Log("SortThem: HUD icons generated");
         }
 
@@ -91,6 +93,36 @@ namespace SortThem.Editor
             s.Line(44, 100, 196, 216, Thin);
             s.Line(44, 216, 196, 100, Thin);
             return s;
+        }
+
+        static void SaveSpinner(string path)
+        {
+            const float outer = 112f, width = 36f, arc = 270f, head = 90f, fadeFrom = 0.75f;
+            float mid = outer - width * 0.5f;
+            var centre = new Vector2(Size * 0.5f, Size * 0.5f);
+            var cap = centre + new Vector2(Mathf.Cos(head * Mathf.Deg2Rad), Mathf.Sin(head * Mathf.Deg2Rad)) * mid;
+            var tex = new Texture2D(Size, Size, TextureFormat.RGBA32, false);
+            var px = new Color32[Size * Size];
+            for (int y = 0; y < Size; y++)
+            for (int x = 0; x < Size; x++)
+            {
+                var p = new Vector2(x + 0.5f, y + 0.5f);
+                var d = p - centre;
+                float u = Mathf.Repeat(Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg - head, 360f) / arc;
+                float a;
+                if (u <= 1f)
+                {
+                    float ring = Mathf.Abs(d.magnitude - mid) - width * 0.5f;
+                    a = Mathf.Clamp01(0.5f - ring) * Mathf.Clamp01((1f - u) / (1f - fadeFrom));
+                    a = Mathf.Max(a, Mathf.Clamp01(0.5f - (Vector2.Distance(p, cap) - width * 0.5f)));
+                }
+                else a = Mathf.Clamp01(0.5f - (Vector2.Distance(p, cap) - width * 0.5f));
+                px[y * Size + x] = new Color32(255, 255, 255, (byte)Mathf.RoundToInt(a * 255f));
+            }
+            tex.SetPixels32(px);
+            tex.Apply();
+            File.WriteAllBytes(path, tex.EncodeToPNG());
+            Object.DestroyImmediate(tex);
         }
 
         static void Save(string path, Shape shape)
