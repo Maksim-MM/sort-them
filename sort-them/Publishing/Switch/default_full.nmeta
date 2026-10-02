@@ -3,7 +3,7 @@
   <Core>
     <Name>Application</Name>
     <Is64BitInstruction>True</Is64BitInstruction>
-    <ApplicationId>0x01004b9000490011</ApplicationId>
+    <ApplicationId>0x01009ed02ac32000</ApplicationId>
     <ProgramIndex>0</ProgramIndex>
     <MainThreadStackSize>0x00100000</MainThreadStackSize>
     <ProcessAddressSpace>AddressSpace64Bit</ProcessAddressSpace>
@@ -15,21 +15,186 @@
       <Name>Sort Them Cars: Sorting Simulator</Name>
       <Publisher>Upscale Studio</Publisher>
     </Title>
+    <Title>
+      <Language>BritishEnglish</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>BrazilianPortuguese</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>Japanese</Language>
+      <Name>車を仕分けろ仕分けシミュレーター</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>SimplifiedChinese</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>TraditionalChinese</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>French</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>German</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>Italian</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>Dutch</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>Polish</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>Russian</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
+    <Title>
+      <Language>Spanish</Language>
+      <Name>Sort Them Cars: Sorting Simulator</Name>
+      <Publisher>Upscale Studio</Publisher>
+    </Title>
     <Icon>
       <Language>AmericanEnglish</Language>
-      <IconPath UseEnvironmentVariable="true">C:\Projects\sort-them\sort-them\Publishing\Switch\Logo 1024x1024.bmp</IconPath>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>BritishEnglish</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>BrazilianPortuguese</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>Japanese</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>SimplifiedChinese</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>TraditionalChinese</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>French</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>German</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>Italian</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>Dutch</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>Polish</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>Russian</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
+    </Icon>
+    <Icon>
+      <Language>Spanish</Language>
+      <IconPath>Icon-1024x1024.bmp</IconPath>
     </Icon>
     <ReleaseVersion>0</ReleaseVersion>
     <DisplayVersion>1.0.0</DisplayVersion>
     <StartupUserAccount>Required</StartupUserAccount>
     <UserAccountSwitchLock>Disable</UserAccountSwitchLock>
     <SupportedLanguage>AmericanEnglish</SupportedLanguage>
+    <SupportedLanguage>BrazilianPortuguese</SupportedLanguage>
+    <SupportedLanguage>Japanese</SupportedLanguage>
+    <SupportedLanguage>SimplifiedChinese</SupportedLanguage>
+    <SupportedLanguage>TraditionalChinese</SupportedLanguage>
+    <SupportedLanguage>BritishEnglish</SupportedLanguage>
+    <SupportedLanguage>French</SupportedLanguage>
+    <SupportedLanguage>German</SupportedLanguage>
+    <SupportedLanguage>Spanish</SupportedLanguage>
+    <SupportedLanguage>Italian</SupportedLanguage>
+    <SupportedLanguage>Dutch</SupportedLanguage>
+    <SupportedLanguage>Polish</SupportedLanguage>
+    <SupportedLanguage>Russian</SupportedLanguage>
     <Screenshot>Allow</Screenshot>
     <DataLossConfirmation>None</DataLossConfirmation>
     <UserAccountSaveDataSize>0x0000000000040000</UserAccountSaveDataSize>
     <UserAccountSaveDataJournalSize>0x0000000000040000</UserAccountSaveDataJournalSize>
     <LogoType>LicensedByNintendo</LogoType>
     <LogoHandling>Auto</LogoHandling>
+    <Rating>
+      <Organization>ACB</Organization>
+      <Age>0</Age>
+    </Rating>
+    <Rating>
+      <Organization>ClassInd</Organization>
+      <Age>0</Age>
+    </Rating>
+    <Rating>
+      <Organization>DGSC</Organization>
+      <Age>0</Age>
+    </Rating>
+    <Rating>
+      <Organization>ESRB</Organization>
+      <Age>6</Age>
+    </Rating>
+    <Rating>
+      <Organization>GRACGCRB</Organization>
+      <Age>0</Age>
+    </Rating>
+    <Rating>
+      <Organization>IARCGeneric</Organization>
+      <Age>3</Age>
+    </Rating>
+    <Rating>
+      <Organization>OFLC</Organization>
+      <Age>0</Age>
+    </Rating>
+    <Rating>
+      <Organization>PEGI</Organization>
+      <Age>3</Age>
+    </Rating>
+    <Rating>
+      <Organization>PEGIBBFC</Organization>
+      <Age>3</Age>
+    </Rating>
+    <Rating>
+      <Organization>PEGIPortugal</Organization>
+      <Age>3</Age>
+    </Rating>
+    <Rating>
+      <Organization>USK</Organization>
+      <Age>0</Age>
+    </Rating>
+    <LegalInformationFilePath>legal_info_01009ed02ac32000_fd31_hac.zip</LegalInformationFilePath>
     <VideoCapture>Enable</VideoCapture>
     <RuntimeAddOnContentInstall>Deny</RuntimeAddOnContentInstall>
     <CrashReport>Allow</CrashReport>
