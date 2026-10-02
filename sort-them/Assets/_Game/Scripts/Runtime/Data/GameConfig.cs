@@ -76,6 +76,7 @@ namespace SortThem
         public float AutoCollectDuration = 10f;
         public float AutoCollectInterval = 0.35f;
         public float AutoCollectFlightTime = 0.4f;
+        public float AutoCollectTurnTime = 0.3f;
         public float ScrollThreshold = 2f;
         public float ScrollNotchThreshold = 0.9f;
         public float ScrollMinInterval = 0.15f;

@@ -23,6 +23,8 @@ namespace SortThem
         readonly List<Vector3> _pullFrom = new List<Vector3>();
         readonly List<float> _pullStart = new List<float>();
         readonly List<Quaternion> _pullRot = new List<Quaternion>();
+        readonly List<float> _pullTime = new List<float>();
+        readonly List<float> _pullSwing = new List<float>();
         readonly List<CarInstance> _levitating = new List<CarInstance>();
         readonly List<float> _levitateY = new List<float>();
         readonly List<float> _levitateBase = new List<float>();
@@ -233,30 +235,46 @@ namespace SortThem
             rotation = c.rotation;
         }
 
+        void Polar(Vector3 world, Vector3 origin, out float angle, out float radius, out float height)
+        {
+            var d = world - origin;
+            height = d.y;
+            d.y = 0f;
+            radius = d.magnitude;
+            angle = radius > 1e-4f ? Mathf.Atan2(Vector3.Dot(d, transform.right), Vector3.Dot(d, transform.forward)) * Mathf.Rad2Deg : 0f;
+        }
+
+        Vector3 FromPolar(float angle, float radius, float height, Vector3 origin)
+        {
+            float a = angle * Mathf.Deg2Rad;
+            return origin + (transform.forward * Mathf.Cos(a) + transform.right * Mathf.Sin(a)) * radius + Vector3.up * height;
+        }
+
         void UpdateAutoCollect(GameManager gm)
         {
-            float flight = Mathf.Max(0.05f, gm.Config.AutoCollectFlightTime);
             StackTarget(out var hand, out var handRot);
+            var origin = _cam != null ? _cam.transform.position : transform.position;
+            Polar(hand, origin, out float handAngle, out float handRadius, out float handHeight);
             for (int i = _pulls.Count - 1; i >= 0; i--)
             {
                 var car = _pulls[i];
                 if (car == null || car.State != CarState.Loose)
                 {
-                    if (car != null) car.Levitating = false;
-                    RemovePull(i);
+                    FinishPull(i, false);
                     continue;
                 }
-                float t = (Time.time - _pullStart[i]) / flight;
+                float t = (Time.time - _pullStart[i]) / _pullTime[i];
                 if (t >= 1f)
                 {
-                    car.Levitating = false;
-                    if (!Inventory.Add(car, false)) car.Unfreeze();
-                    RemovePull(i);
+                    FinishPull(i, true);
                     continue;
                 }
-                var pos = Vector3.Lerp(_pullFrom[i], hand, t);
-                pos.y += Mathf.Sin(t * Mathf.PI) * 0.4f;
-                car.transform.position = pos;
+                Polar(_pullFrom[i], origin, out float angle0, out float radius0, out float height0);
+                float delta = Mathf.DeltaAngle(angle0, handAngle);
+                if (delta * _pullSwing[i] < 0f) delta += _pullSwing[i] * 360f;
+                float ta = 1f - (1f - t) * (1f - t) * (1f - t);
+                float height = Mathf.Lerp(height0, handHeight, t) + Mathf.Sin(t * Mathf.PI) * 0.4f;
+                car.transform.position = FromPolar(angle0 + delta * ta, Mathf.Lerp(radius0, handRadius, t * t), height, origin);
                 car.transform.rotation = Quaternion.Slerp(_pullRot[i], handRot, t);
             }
 
@@ -276,12 +294,29 @@ namespace SortThem
             if (best == null) { _collectNextPull = Time.time + 0.5f; return; }
             best.Levitating = true;
             best.Body.isKinematic = true;
+            if (best.Col != null) best.Col.enabled = false;
+            Polar(best.transform.position, origin, out float startAngle, out _, out _);
+            float swing = Mathf.DeltaAngle(startAngle, handAngle);
             _pulls.Add(best);
             _pullFrom.Add(best.transform.position);
             _pullRot.Add(best.transform.rotation);
             _pullStart.Add(Time.time);
+            _pullTime.Add(Mathf.Max(0.05f, gm.Config.AutoCollectFlightTime + gm.Config.AutoCollectTurnTime * Mathf.Abs(swing) / 180f));
+            _pullSwing.Add(Mathf.Abs(swing) > 120f ? Mathf.Sign(swing) : 0f);
             _collectBudget--;
             _collectNextPull = Time.time + gm.Config.AutoCollectInterval;
+        }
+
+        void FinishPull(int i, bool collect)
+        {
+            var car = _pulls[i];
+            if (car != null)
+            {
+                car.Levitating = false;
+                if (car.Col != null) car.Col.enabled = true;
+                if (collect && !Inventory.Add(car, false)) car.Unfreeze();
+            }
+            RemovePull(i);
         }
 
         void RemovePull(int i)
@@ -290,6 +325,8 @@ namespace SortThem
             _pullFrom.RemoveAt(i);
             _pullRot.RemoveAt(i);
             _pullStart.RemoveAt(i);
+            _pullTime.RemoveAt(i);
+            _pullSwing.RemoveAt(i);
         }
 
         void TryRackHighlight(GameManager gm)
