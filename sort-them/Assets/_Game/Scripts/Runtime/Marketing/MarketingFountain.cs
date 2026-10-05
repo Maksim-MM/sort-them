@@ -21,6 +21,7 @@ namespace SortThem
         int _next;
         float _budget;
         bool _prepared;
+        bool _hidden;
 
         public bool Running { get; private set; }
 
@@ -31,7 +32,7 @@ namespace SortThem
             if (!_prepared) Prepare(gm, HideLooseOnStart);
 
             var pad = Gamepad.current;
-            if (pad != null && pad.leftShoulder.isPressed && pad.rightShoulder.isPressed && (pad.leftShoulder.wasPressedThisFrame || pad.rightShoulder.wasPressedThisFrame)) Toggle();
+            if (pad != null && pad.leftShoulder.isPressed && pad.rightShoulder.isPressed && (pad.leftShoulder.wasPressedThisFrame || pad.rightShoulder.wasPressedThisFrame)) Press();
 
             if (!Running) return;
             _budget += CarsPerSecond * Time.deltaTime;
@@ -42,6 +43,13 @@ namespace SortThem
                 Launch(_queue[_next++]);
             }
             if (_next >= limit) Running = false;
+        }
+
+        public void Press()
+        {
+            if (!_prepared) return;
+            if (_next > 0 || !_hidden) Rearm();
+            else Running = true;
         }
 
         public void Toggle()
@@ -59,9 +67,18 @@ namespace SortThem
             Prepare(gm, true);
         }
 
+        public void Disarm()
+        {
+            var gm = GameManager.I;
+            if (gm == null || !gm.Ready) return;
+            Running = false;
+            Prepare(gm, false);
+        }
+
         void Prepare(GameManager gm, bool hide)
         {
             _prepared = true;
+            _hidden = hide;
             _next = 0;
             _budget = 0f;
             _queue.Clear();
@@ -72,8 +89,9 @@ namespace SortThem
                 int j = Random.Range(0, i + 1);
                 (_queue[i], _queue[j]) = (_queue[j], _queue[i]);
             }
-            if (hide)
-                foreach (var car in _queue) car.gameObject.SetActive(false);
+            if (!hide) return;
+            foreach (var car in _queue) car.gameObject.SetActive(false);
+            foreach (var crate in gm.Collectibles) if (crate != null) crate.gameObject.SetActive(false);
         }
 
         void Launch(CarInstance car)

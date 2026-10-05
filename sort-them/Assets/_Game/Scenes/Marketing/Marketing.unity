@@ -2756,6 +2756,7 @@ MonoBehaviour:
   - {fileID: 2024919553}
   - {fileID: 2104573458}
   SignText: {fileID: 1134012931}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 819995089}
   HighlightFrame: {fileID: 911655493}
   Zone: {fileID: 1318243397}
@@ -90210,6 +90211,7 @@ MonoBehaviour:
   - {fileID: 1094585344}
   - {fileID: 1544403979}
   SignText: {fileID: 153187905}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 1095661070}
   HighlightFrame: {fileID: 1439392710}
   Zone: {fileID: 1108255454}
@@ -90410,6 +90412,7 @@ MonoBehaviour:
   - {fileID: 191335594}
   - {fileID: 79134088}
   SignText: {fileID: 1003811467}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 1420127127}
   HighlightFrame: {fileID: 78887450}
   Zone: {fileID: 67241305}
@@ -98435,6 +98438,7 @@ MonoBehaviour:
   - {fileID: 580051592}
   - {fileID: 1721439516}
   SignText: {fileID: 996114651}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 815777905}
   HighlightFrame: {fileID: 2144929850}
   Zone: {fileID: 1734842495}
@@ -190616,6 +190620,7 @@ MonoBehaviour:
   - {fileID: 498704965}
   - {fileID: 1932796722}
   SignText: {fileID: 1796549045}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 678406509}
   HighlightFrame: {fileID: 684333905}
   Zone: {fileID: 268327439}
@@ -192994,6 +192999,7 @@ MonoBehaviour:
   - {fileID: 439578009}
   - {fileID: 2012668790}
   SignText: {fileID: 778292474}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 282937304}
   HighlightFrame: {fileID: 1580487801}
   Zone: {fileID: 1768901738}
@@ -252514,6 +252520,7 @@ MonoBehaviour:
   - {fileID: 1684550238}
   - {fileID: 1481721535}
   SignText: {fileID: 288099901}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 503786518}
   HighlightFrame: {fileID: 529965267}
   Zone: {fileID: 1197499274}
@@ -260462,6 +260469,7 @@ MonoBehaviour:
   - {fileID: 655987941}
   - {fileID: 7285248}
   SignText: {fileID: 2015001738}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 122385432}
   HighlightFrame: {fileID: 1738760896}
   Zone: {fileID: 1395021306}
@@ -272263,6 +272271,7 @@ MonoBehaviour:
   - {fileID: 513983678}
   - {fileID: 604563490}
   SignText: {fileID: 1373163235}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 1720101981}
   HighlightFrame: {fileID: 1290117638}
   Zone: {fileID: 274545930}
@@ -282735,6 +282744,7 @@ MonoBehaviour:
   - {fileID: 1817349067}
   - {fileID: 803588821}
   SignText: {fileID: 1135994637}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 262691768}
   HighlightFrame: {fileID: 370297268}
   Zone: {fileID: 1920747175}
@@ -290671,6 +290681,7 @@ MonoBehaviour:
   - {fileID: 1665309519}
   - {fileID: 2062374979}
   SignText: {fileID: 813542846}
+  SignTextBack: {fileID: 926873376}
   SignPlate: {fileID: 592971404}
   HighlightFrame: {fileID: 1243221012}
   Zone: {fileID: 697814725}
@@ -327249,7 +327260,7 @@ MonoBehaviour:
   SpawnJitter: 0.45
   Spin: 4
   MaxCars: 0
-  HideLooseOnStart: 0
+  HideLooseOnStart: 1
 --- !u!1 &1638424502
 GameObject:
   m_ObjectHideFlags: 0
@@ -348980,6 +348991,7 @@ MonoBehaviour:
   - {fileID: 1127965008}
   - {fileID: 1130501817}
   SignText: {fileID: 620813128}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 1307689054}
   HighlightFrame: {fileID: 1113821147}
   Zone: {fileID: 771742793}
@@ -358717,6 +358729,7 @@ MonoBehaviour:
   - {fileID: 1221862042}
   - {fileID: 2085293371}
   SignText: {fileID: 966272190}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 512415879}
   HighlightFrame: {fileID: 1789837723}
   Zone: {fileID: 2084479566}
@@ -364179,6 +364192,7 @@ MonoBehaviour:
   - {fileID: 326489637}
   - {fileID: 450469003}
   SignText: {fileID: 1304927526}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 324675315}
   HighlightFrame: {fileID: 80740459}
   Zone: {fileID: 1240045950}
@@ -383048,6 +383062,7 @@ MonoBehaviour:
   - {fileID: 1176618836}
   - {fileID: 595550714}
   SignText: {fileID: 1430147256}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 1953613810}
   HighlightFrame: {fileID: 76733426}
   Zone: {fileID: 548455301}
@@ -408826,6 +408841,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3ed4db278bd7049d1aaebbd4936a12e1, type: 3}
   Circle: {fileID: 21300000, guid: 1c6712e88bfb54ec1836c1d405167b8f, type: 3}
   BombIcon: {fileID: 21300000, guid: 623efb611c25445c09370403ee51b122, type: 3}
+  Spinner: {fileID: 0}
+  ShuffleBackground: {fileID: 0}
 --- !u!114 &2116741768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409636,6 +409653,7 @@ MonoBehaviour:
   - {fileID: 831780665}
   - {fileID: 426096624}
   SignText: {fileID: 68773623}
+  SignTextBack: {fileID: 0}
   SignPlate: {fileID: 165439202}
   HighlightFrame: {fileID: 165687990}
   Zone: {fileID: 63685233}

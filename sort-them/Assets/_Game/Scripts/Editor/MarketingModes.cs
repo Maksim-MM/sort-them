@@ -37,7 +37,6 @@ namespace SortThem.Editor
                     Debug.Log("SortThem: fountain mode, loose cars hidden, press R1+L1");
                     return;
                 }
-                if (f.Running) f.Toggle();
                 int restored = 0;
                 var entries = gm.Layout.Instances;
                 foreach (var car in gm.Cars)
@@ -47,6 +46,8 @@ namespace SortThem.Editor
                     car.SetLoose(e.Position, e.Rotation, true);
                     restored++;
                 }
+                foreach (var crate in gm.Collectibles) if (crate != null) crate.gameObject.SetActive(true);
+                f.Disarm();
                 Debug.Log("SortThem: level mode, restored " + restored + " loose cars to layout");
                 return;
             }
