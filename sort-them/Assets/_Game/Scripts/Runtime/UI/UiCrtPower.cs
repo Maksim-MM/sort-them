@@ -10,9 +10,11 @@ namespace SortThem
         public float FlashAlpha = 0.7f;
 
         Image _flash;
+        Vector3 _base = Vector3.one;
 
         void Awake()
         {
+            _base = transform.localScale;
             var rt = UiFactory.Rect(transform, "Flash");
             UiFactory.Anchor(rt, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             _flash = rt.gameObject.AddComponent<Image>();
@@ -28,7 +30,7 @@ namespace SortThem
 
         void OnDisable()
         {
-            transform.localScale = Vector3.one;
+            transform.localScale = _base;
             _flash.color = new Color(1f, 1f, 1f, 0f);
         }
 
@@ -42,12 +44,12 @@ namespace SortThem
                 float e = 1f - (1f - k) * (1f - k) * (1f - k);
                 float y = Mathf.Lerp(0.015f, 1f, e);
                 float x = Mathf.Lerp(0.85f, 1f, Mathf.Clamp01(k * 2f));
-                transform.localScale = new Vector3(x, y, 1f);
+                transform.localScale = new Vector3(_base.x * x, _base.y * y, _base.z);
                 float f = Mathf.Clamp01(t / (Duration * 1.6f));
                 _flash.color = new Color(1f, 1f, 1f, FlashAlpha * (1f - f) * (1f - f));
                 yield return null;
             }
-            transform.localScale = Vector3.one;
+            transform.localScale = _base;
             _flash.color = new Color(1f, 1f, 1f, 0f);
         }
     }

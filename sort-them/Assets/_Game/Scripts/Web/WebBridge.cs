@@ -6,7 +6,7 @@ namespace SortThem.Web
     public class WebBridge : MonoBehaviour
     {
         public static WebBridge Instance { get; private set; }
-        bool _readySent, _audioOff, _paused, _gameplayOn;
+        bool _readySent, _audioOff, _paused, _pausePending, _adOpen, _gameplayOn;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Boot()
@@ -48,16 +48,24 @@ namespace SortThem.Web
         void OnPauseState(bool paused)
         {
             _paused = paused;
+            _pausePending = paused;
             ApplyListener();
-            if (!paused || Ads.Busy) return;
+            TryOpenPause();
+        }
+
+        void TryOpenPause()
+        {
+            if (!_pausePending || Ads.Busy) return;
             var gm = GameManager.I;
             var ui = UiRoot.I;
             if (gm == null || !gm.Ready || ui == null || ui.AnyOpen) return;
+            _pausePending = false;
             ui.OpenPause();
         }
 
         void Update()
         {
+            TryOpenPause();
             var gm = GameManager.I;
             bool on = gm != null && gm.Ready && !gm.UiBlocking;
             if (on == _gameplayOn) return;
@@ -65,9 +73,16 @@ namespace SortThem.Web
             Bridge.platform.SendMessage(on ? Playgama.Modules.Platform.PlatformMessage.LevelResumed : Playgama.Modules.Platform.PlatformMessage.LevelPaused);
         }
 
+        public static void SetAdOpen(bool open)
+        {
+            if (Instance == null) return;
+            Instance._adOpen = open;
+            Instance.ApplyListener();
+        }
+
         void ApplyListener()
         {
-            AudioListener.pause = _audioOff || _paused;
+            AudioListener.pause = _audioOff || _paused || _adOpen;
         }
 
         void SendGameReady()

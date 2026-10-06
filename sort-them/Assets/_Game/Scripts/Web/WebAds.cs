@@ -21,9 +21,10 @@ namespace SortThem.Web
             Action<InterstitialState> handler = null;
             handler = state =>
             {
-                if (state == InterstitialState.Opened) { opened = true; return; }
+                if (state == InterstitialState.Opened) { opened = true; WebBridge.SetAdOpen(true); return; }
                 if (state != InterstitialState.Closed && state != InterstitialState.Failed) return;
                 adv.interstitialStateChanged -= handler;
+                WebBridge.SetAdOpen(false);
                 onDone?.Invoke(opened && state == InterstitialState.Closed);
             };
             adv.interstitialStateChanged += handler;
@@ -38,9 +39,11 @@ namespace SortThem.Web
             Action<RewardedState> handler = null;
             handler = state =>
             {
+                if (state == RewardedState.Opened) { WebBridge.SetAdOpen(true); return; }
                 if (state == RewardedState.Rewarded) { rewarded = true; return; }
                 if (state != RewardedState.Closed && state != RewardedState.Failed) return;
                 adv.rewardedStateChanged -= handler;
+                WebBridge.SetAdOpen(false);
                 onDone?.Invoke(rewarded);
             };
             adv.rewardedStateChanged += handler;
