@@ -1475,10 +1475,6 @@ MonoBehaviour:
     m_Localized: "Terminal d'am\xE9liorations"
     m_Metadata:
       m_Items: []
-  - m_Id: 426762250
-    m_Localized: "R\xE9cup\xE9rer les voitures coinc\xE9es"
-    m_Metadata:
-      m_Items: []
   - m_Id: 334677012373508
     m_Localized: Vibration
     m_Metadata:

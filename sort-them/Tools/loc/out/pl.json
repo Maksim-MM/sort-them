@@ -363,7 +363,6 @@
   "ui.special_next": "Następna część: {0}",
   "ui.spin": "Zakręć · ${0}",
   "ui.terminal": "Terminal ulepszeń",
-  "ui.unstuck": "Przywróć zablokowane samochodziki",
   "ui.vibration": "Wibracje",
   "ui.yes": "Tak, resetuj",
   "upg_autocollect.desc": "Klawisz 2: przyciąga takie same samochodziki z okolicy do ekwipunku",

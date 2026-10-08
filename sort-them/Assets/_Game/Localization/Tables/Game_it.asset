@@ -1474,10 +1474,6 @@ MonoBehaviour:
     m_Localized: Terminale potenziamenti
     m_Metadata:
       m_Items: []
-  - m_Id: 426762250
-    m_Localized: Recupera le auto incastrate
-    m_Metadata:
-      m_Items: []
   - m_Id: 334677012373508
     m_Localized: Vibrazione
     m_Metadata:

@@ -363,7 +363,6 @@
   "ui.special_next": "Næste del: {0}",
   "ui.spin": "Spin · ${0}",
   "ui.terminal": "Opgraderingsterminal",
-  "ui.unstuck": "Hent fastkørte biler tilbage",
   "ui.vibration": "Vibration",
   "ui.yes": "Ja, nulstil",
   "upg_autocollect.desc": "Tast 2: trækker ens biler i nærheden ind i dit inventar",

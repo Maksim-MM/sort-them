@@ -504,79 +504,46 @@ namespace SortThem
         }
 
         public bool Shuffling { get; private set; }
+        LevelLayoutData.Entry[] _pilePoses;
 
-        public IEnumerator ShuffleLoose(Action<float> progress = null)
+        public IEnumerator ShuffleLoose()
         {
             if (Shuffling || !Ready) yield break;
             Shuffling = true;
-            var loose = new List<CarInstance>();
-            foreach (var car in Cars)
-                if (car.State == CarState.Loose && car.gameObject.activeSelf && !car.Levitating) loose.Add(car);
-            var bodies = new List<Rigidbody>();
-            foreach (var bomb in Bombs) if (bomb != null && !bomb.Held) bodies.Add(bomb.Body);
-            var rng = new System.Random(Environment.TickCount);
-            for (int i = loose.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); (loose[i], loose[j]) = (loose[j], loose[i]); }
-
-            foreach (var c in Collectibles) if (c != null && c.Body != null) { c.Body.isKinematic = true; c.CalmSince = -1f; }
-
-            var prevMode = Physics.simulationMode;
-            Physics.simulationMode = SimulationMode.Script;
             try
             {
-                float dt = Time.fixedDeltaTime;
-                int perStep = Mathf.Max(1, Config.ShuffleCarsPerStep), perFrame = Mathf.Max(1, Config.ShuffleStepsPerFrame), maxSteps = Mathf.Max(1, Config.ShuffleMaxSteps);
-                int next = 0, steps = 0;
-                var park = new Vector3(Config.UnstuckCenter.x, Config.FloorY - 50f, Config.UnstuckCenter.z);
+                var loose = new List<CarInstance>();
+                foreach (var car in Cars)
+                    if (car.State == CarState.Loose && car.gameObject.activeSelf && !car.Levitating) loose.Add(car);
+                var rng = new System.Random(Environment.TickCount);
+                for (int i = loose.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); (loose[i], loose[j]) = (loose[j], loose[i]); }
+
+                foreach (var c in Collectibles) if (c != null && c.Body != null) { c.Body.isKinematic = true; c.CalmSince = -1f; }
+
+                var poses = PilePoses();
                 for (int i = 0; i < loose.Count; i++)
                 {
-                    loose[i].Body.isKinematic = true;
-                    loose[i].transform.position = park + new Vector3(i % 64 * 0.6f, 0f, i / 64 * 0.6f);
+                    if (i < poses.Length) loose[i].SetLoose(poses[i].Position, poses[i].Rotation, true);
+                    else loose[i].SetLoose(Config.UnstuckCenter + new Vector3((float)rng.NextDouble() * 2f - 1f, (float)rng.NextDouble(), (float)rng.NextDouble() * 2f - 1f), UnityEngine.Random.rotation, false);
                 }
-                Physics.SyncTransforms();
-                var zones = PileDrop.Assign(Config, loose.Count, rng);
-                foreach (var body in bodies) PileDrop.DropBody(body, Config, PileDrop.PickZone(Config, rng), rng);
-                while (steps < maxSteps)
-                {
-                    for (int f = 0; f < perFrame && steps < maxSteps; f++)
-                    {
-                        for (int k = 0; k < perStep && next < loose.Count; k++, next++) PileDrop.Drop(loose[next], Config, zones[next], rng);
-                        Physics.Simulate(dt);
-                        steps++;
-                    }
-                    progress?.Invoke(next < loose.Count ? 0.6f * next / Mathf.Max(1, loose.Count) : 0.6f + 0.4f * Mathf.Clamp01((steps - loose.Count / (float)perStep) / 600f));
-                    if (next >= loose.Count && steps % 25 == 0 && AllSleeping(loose)) break;
-                    yield return null;
-                }
-                foreach (var car in loose) { car.Body.isKinematic = false; car.Body.WakeUp(); }
-                for (int extra = 0; extra < 400; extra++)
-                {
-                    Physics.Simulate(dt);
-                    if (extra % 25 == 24 && AllSleeping(loose)) break;
-                    if (extra % perFrame == perFrame - 1) { progress?.Invoke(1f); yield return null; }
-                }
-                var half = Config.LevelHalfExtents;
-                foreach (var car in loose)
-                {
-                    var p = car.transform.position;
-                    if (p.y < Config.FloorY - 0.2f || Mathf.Abs(p.x) > half.x || Mathf.Abs(p.z) > half.z)
-                        car.SetLoose(Config.UnstuckCenter + new Vector3((float)rng.NextDouble() * 2f - 1f, (float)rng.NextDouble(), (float)rng.NextDouble() * 2f - 1f), UnityEngine.Random.rotation, false);
-                    else if (car.Body.IsSleeping()) car.Freeze();
-                    else car.CalmSince = -1f;
-                }
+                foreach (var bomb in Bombs) if (bomb != null && !bomb.Held) PileDrop.DropBody(bomb.Body, Config, PileDrop.PickZone(Config, rng), rng);
                 SettleCollectibles();
             }
             finally
             {
-                Physics.simulationMode = prevMode;
                 Shuffling = false;
             }
             StartCoroutine(SettleCollectiblesLater());
         }
 
-        static bool AllSleeping(List<CarInstance> cars)
+        LevelLayoutData.Entry[] PilePoses()
         {
-            foreach (var car in cars) if (!car.Body.isKinematic && !car.Body.IsSleeping()) return false;
-            return true;
+            if (_pilePoses == null)
+            {
+                _pilePoses = Layout != null ? (LevelLayoutData.Entry[])Layout.Instances.Clone() : Array.Empty<LevelLayoutData.Entry>();
+                Array.Sort(_pilePoses, (a, b) => a.Position.y.CompareTo(b.Position.y));
+            }
+            return _pilePoses;
         }
 
         public int UnstuckCars()

@@ -1038,6 +1038,7 @@ namespace SortThem
             _fadeText.text = Loc.Get("ui.shuffling", "Перемешиваем кучу…");
             _fadeSpinner.gameObject.SetActive(true);
             yield return gm.ShuffleLoose();
+            yield return new WaitForSecondsRealtime(0.6f);
             _fadeSpinner.gameObject.SetActive(false);
             _fadeText.text = "";
             for (float t = 0f; t < 0.4f; t += Time.unscaledDeltaTime) { _fade.alpha = 1f - t / 0.4f; yield return null; }

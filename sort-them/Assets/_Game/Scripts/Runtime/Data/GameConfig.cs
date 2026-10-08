@@ -115,9 +115,6 @@ namespace SortThem
         public float PremiumDiscount = 0.5f;
         [UnityEngine.Serialization.FormerlySerializedAs("LodDistances")] public float[] LodDistancesMobile = { 0f, 4f, 10f };
         public float[] LodDistancesDesktop = { 10f, 20f, 35f };
-        public int ShuffleCarsPerStep = 4;
-        public int ShuffleStepsPerFrame = 12;
-        public int ShuffleMaxSteps = 1500;
 
         [Header("Bomb")]
         public GameObject BombPrefab;

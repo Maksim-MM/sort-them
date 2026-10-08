@@ -1475,10 +1475,6 @@ MonoBehaviour:
     m_Localized: "Geli\u015Ftirme Terminali"
     m_Metadata:
       m_Items: []
-  - m_Id: 426762250
-    m_Localized: "S\u0131k\u0131\u015Fan arabalar\u0131 geri getir"
-    m_Metadata:
-      m_Items: []
   - m_Id: 334677012373508
     m_Localized: "Titre\u015Fim"
     m_Metadata:

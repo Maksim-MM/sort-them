@@ -363,7 +363,6 @@
   "ui.special_next": "다음 부품: {0}",
   "ui.spin": "돌리기 · ${0}",
   "ui.terminal": "업그레이드 터미널",
-  "ui.unstuck": "끼인 차 되돌리기",
   "ui.vibration": "진동",
   "ui.yes": "네, 초기화",
   "upg_autocollect.desc": "2번 키: 근처의 같은 차를 인벤토리로 끌어와요",

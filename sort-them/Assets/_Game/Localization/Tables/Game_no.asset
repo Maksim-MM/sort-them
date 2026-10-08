@@ -1474,10 +1474,6 @@ MonoBehaviour:
     m_Localized: Oppgraderingsterminal
     m_Metadata:
       m_Items: []
-  - m_Id: 426762250
-    m_Localized: Hent tilbake biler som sitter fast
-    m_Metadata:
-      m_Items: []
   - m_Id: 334677012373508
     m_Localized: Vibrering
     m_Metadata:

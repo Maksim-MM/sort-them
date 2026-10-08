@@ -1477,10 +1477,6 @@ MonoBehaviour:
     m_Localized: "\u5F37\u5316\u30BF\u30FC\u30DF\u30CA\u30EB"
     m_Metadata:
       m_Items: []
-  - m_Id: 426762250
-    m_Localized: "\u306F\u307E\u3063\u305F\u8ECA\u3092\u623B\u3059"
-    m_Metadata:
-      m_Items: []
   - m_Id: 334677012373508
     m_Localized: "\u632F\u52D5"
     m_Metadata:

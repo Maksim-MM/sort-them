@@ -363,7 +363,6 @@
   "ui.special_next": "Próxima peça: {0}",
   "ui.spin": "Girar · ${0}",
   "ui.terminal": "Terminal de melhorias",
-  "ui.unstuck": "Devolver carrinhos presos",
   "ui.vibration": "Vibração",
   "ui.yes": "Sim, zerar",
   "upg_autocollect.desc": "Tecla 2: puxa carrinhos iguais por perto para o inventário",

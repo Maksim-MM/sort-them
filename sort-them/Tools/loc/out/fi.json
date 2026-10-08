@@ -363,7 +363,6 @@
   "ui.special_next": "Seuraava osa: {0}",
   "ui.spin": "Pyöräytä · ${0}",
   "ui.terminal": "Päivitysterminaali",
-  "ui.unstuck": "Palauta jumittuneet autot",
   "ui.vibration": "Värinä",
   "ui.yes": "Kyllä, nollaa",
   "upg_autocollect.desc": "Näppäin 2: vetää lähellä olevat samanlaiset autot inventaarioosi",

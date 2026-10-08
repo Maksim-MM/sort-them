@@ -363,7 +363,6 @@
   "ui.special_next": "次のパーツ: {0}",
   "ui.spin": "回す · ${0}",
   "ui.terminal": "強化ターミナル",
-  "ui.unstuck": "はまった車を戻す",
   "ui.vibration": "振動",
   "ui.yes": "リセットする",
   "upg_autocollect.desc": "キー2: 近くの同じ車をインベントリに引き寄せる",

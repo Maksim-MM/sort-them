@@ -363,7 +363,6 @@ ui.special_max	Maxed out	Максимум
 ui.special_next	Next part: {0}	Следующая деталь: {0}
 ui.spin	Spin · ${0}	Крутить · ${0}
 ui.terminal	Upgrade Terminal	Терминал улучшений
-ui.unstuck	Return stuck cars	Вернуть застрявшие машинки
 ui.vibration	Vibration	Вибрация
 ui.yes	Yes, reset	Да, сбросить
 upg_autocollect.desc	Key 2: pulls the same cars nearby into your inventory	Клавиша 2: затягивает такие же машинки поблизости в инвентарь

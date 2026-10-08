@@ -363,7 +363,6 @@
   "ui.special_next": "Neste del: {0}",
   "ui.spin": "Spinn · ${0}",
   "ui.terminal": "Oppgraderingsterminal",
-  "ui.unstuck": "Hent tilbake biler som sitter fast",
   "ui.vibration": "Vibrering",
   "ui.yes": "Ja, nullstill",
   "upg_autocollect.desc": "Tast 2: trekker like biler i nærheten inn i inventaret",

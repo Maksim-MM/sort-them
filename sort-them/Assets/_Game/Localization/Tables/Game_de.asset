@@ -1475,10 +1475,6 @@ MonoBehaviour:
     m_Localized: Upgrade-Terminal
     m_Metadata:
       m_Items: []
-  - m_Id: 426762250
-    m_Localized: "H\xE4ngende Autos zur\xFCckholen"
-    m_Metadata:
-      m_Items: []
   - m_Id: 334677012373508
     m_Localized: Vibration
     m_Metadata:

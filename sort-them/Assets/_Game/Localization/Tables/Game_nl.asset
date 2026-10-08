@@ -1474,10 +1474,6 @@ MonoBehaviour:
     m_Localized: Upgradeterminal
     m_Metadata:
       m_Items: []
-  - m_Id: 426762250
-    m_Localized: Vastzittende auto's terughalen
-    m_Metadata:
-      m_Items: []
   - m_Id: 334677012373508
     m_Localized: Trilling
     m_Metadata:

@@ -363,7 +363,6 @@
   "ui.special_next": "Nästa del: {0}",
   "ui.spin": "Snurra · ${0}",
   "ui.terminal": "Uppgraderingsterminal",
-  "ui.unstuck": "Hämta tillbaka fastnade bilar",
   "ui.vibration": "Vibration",
   "ui.yes": "Ja, återställ",
   "upg_autocollect.desc": "Tangent 2: drar in likadana bilar i närheten till ditt inventarie",
