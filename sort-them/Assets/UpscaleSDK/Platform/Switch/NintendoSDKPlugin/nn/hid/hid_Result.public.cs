@@ -21,5 +21,11 @@ namespace nn.hid
     {
         public static ErrorRange ResultControllerNotConnected { get { return new ErrorRange(202, 604, 605); } }
     }
+    public static partial class SensorFusion
+    {
+        public static ErrorRange ResultNotEnabled => new ErrorRange(202, 5261, 5262);
+        public static ErrorRange ResultFirmwareUpdateRequired => new ErrorRange(202, 5262, 5263);
+        public static ErrorRange ResultDeviceNotConnected => new ErrorRange(202, 5263, 5264);
+    }
 }
 #endif
