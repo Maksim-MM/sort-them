@@ -323,8 +323,9 @@ namespace SortThem
             UiFactory.Anchor(_toastText.rectTransform, Vector2.zero, Vector2.one, new Vector2(16f, 4f), new Vector2(-16f, -4f));
             toast.gameObject.SetActive(false);
 
-            _saveText = UiFactory.Text(hud, "Saved", "", 20f, TextAlignmentOptions.Right, new Color(0.7f, 1f, 0.7f, 1f));
-            UiFactory.Anchored(_saveText.rectTransform, new Vector2(1f, 1f), new Vector2(-16f, -80f), new Vector2(240f, 30f));
+            _saveText = UiFactory.Text(hud, "Saved", "", 20f, TextAlignmentOptions.Right, Color.white);
+            UiFactory.TextGlow(_saveText, hudShadow, 0.35f, 0.45f);
+            UiFactory.Anchored(_saveText.rectTransform, new Vector2(1f, 1f), new Vector2(-28f, -80f), new Vector2(240f, 30f));
             _saveText.gameObject.SetActive(false);
 
             BuildTutorial(hud);
@@ -505,7 +506,8 @@ namespace SortThem
             UiFactory.Anchor(fill.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             var key = UiFactory.Glyph(root, "Key", 60f, GameInput.Player.Abilities[index]);
             if (TouchInput.Active) key.gameObject.SetActive(false);
-            UiFactory.Anchored(key.Image.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, 46f), new Vector2(60f, 60f));
+            UiFactory.Anchored(key.Image.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, 4f), new Vector2(60f, 60f));
+            key.Image.rectTransform.pivot = new Vector2(0.5f, 0f);
             root.gameObject.SetActive(false);
             return new AbilitySlot { Root = root.gameObject, Icon = icon, Fill = fill, Key = key };
         }
@@ -550,6 +552,7 @@ namespace SortThem
             _touchCrouch = TouchButtonUi(layer, "Crouch", TouchButton.Crouch, TouchIcon(7), new Vector2(1f, 0f), Centered(colLeft, rowBottom, TouchSmall), TouchSmall);
             TouchButtonUi(layer, "Pause", TouchButton.Pause, TouchIcon(3), new Vector2(1f, 1f), new Vector2(-16f, -16f), 90f);
             UiFactory.Anchored((RectTransform)_balanceText.rectTransform.parent, new Vector2(1f, 1f), new Vector2(-118f, -16f), new Vector2(240f, 56f));
+            UiFactory.Anchored(_saveText.rectTransform, new Vector2(1f, 1f), new Vector2(-130f, -80f), new Vector2(240f, 30f));
 
             _inventoryText.gameObject.SetActive(false);
             UiFactory.Anchored(_inventoryCountText.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 460f), new Vector2(400f, 32f));
