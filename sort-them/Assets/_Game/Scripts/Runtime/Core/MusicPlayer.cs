@@ -1,19 +1,25 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace SortThem
 {
     public class MusicPlayer : MonoBehaviour
     {
-        AudioSource _source;
-        AudioClip[] _clips = System.Array.Empty<AudioClip>();
+        static readonly AssetReferenceT<AudioClip>[] None = System.Array.Empty<AssetReferenceT<AudioClip>>();
 
-        public int TrackCount => _clips.Length;
+        AudioSource _source;
+        AssetReferenceT<AudioClip>[] _tracks = None;
+        AsyncOperationHandle<AudioClip> _handle;
+        int _request;
+
+        public int TrackCount => _tracks.Length;
         public int Current { get; private set; }
 
-        public void Play(AudioClip[] clips, int index)
+        public void Play(AssetReferenceT<AudioClip>[] tracks, int index)
         {
-            _clips = clips ?? System.Array.Empty<AudioClip>();
-            if (_clips.Length == 0) return;
+            _tracks = tracks ?? None;
+            if (_tracks.Length == 0) return;
             if (_source == null)
             {
                 _source = gameObject.AddComponent<AudioSource>();
@@ -21,21 +27,45 @@ namespace SortThem
                 _source.spatialBlend = 0f;
                 _source.playOnAwake = false;
             }
-            Current = Mathf.Clamp(index, 0, _clips.Length - 1);
-            _source.clip = _clips[Current];
+            Current = Mathf.Clamp(index, 0, _tracks.Length - 1);
             ApplyVolume();
-            if (_source.clip != null) _source.Play();
+            var track = _tracks[Current];
+            if (track == null || !track.RuntimeKeyIsValid()) return;
+            int request = ++_request;
+            var previous = _handle;
+            var handle = Addressables.LoadAssetAsync<AudioClip>(track);
+            _handle = handle;
+            handle.Completed += h =>
+            {
+                if (request != _request) return;
+                if (h.Status != AsyncOperationStatus.Succeeded || h.Result == null)
+                {
+                    Debug.LogWarning("SortThem: music track failed to load: " + track.RuntimeKey);
+                    _handle = previous;
+                    Addressables.Release(h);
+                    return;
+                }
+                _source.clip = h.Result;
+                _source.Play();
+                if (previous.IsValid()) Addressables.Release(previous);
+            };
         }
 
         public void Next()
         {
-            if (_clips.Length == 0) return;
-            Play(_clips, (Current + 1) % _clips.Length);
+            if (_tracks.Length == 0) return;
+            Play(_tracks, (Current + 1) % _tracks.Length);
             Settings.SetMusicTrack(Current);
         }
 
         void OnEnable() => Settings.Changed += ApplyVolume;
         void OnDisable() => Settings.Changed -= ApplyVolume;
+
+        void OnDestroy()
+        {
+            _request++;
+            if (_handle.IsValid()) Addressables.Release(_handle);
+        }
 
         void ApplyVolume()
         {

@@ -42,12 +42,12 @@ namespace SortThem.Editor
             cfg.AbilityClips = LoadAll(Folder, "ability_");
             foreach (var c in cfg.FootstepWalkClips.Concat(cfg.FootstepRunClips).Concat(cfg.AbilityClips)) Tune(c, false);
             var music = LoadAll(Music, "music_");
-            if (music.Length > 0) cfg.MusicClips = music;
-            foreach (var c in cfg.MusicClips) Tune(c, true);
+            if (music.Length > 0) cfg.MusicTracks = MusicAddressables.Ensure(music);
+            foreach (var c in music) Tune(c, true);
             if (cfg.SlotSpinClip != null) cfg.SlotReelClip = null;
             EditorUtility.SetDirty(cfg);
             AssetDatabase.SaveAssets();
-            Debug.Log($"SortThem audio: {assigned} slots assigned, {cfg.FootstepWalkClips.Length} walk steps, {cfg.FootstepRunClips.Length} run steps, {cfg.AbilityClips.Length} ability variants, {cfg.MusicClips.Length} music tracks; still empty: {(missing > 0 ? log.ToString() : "none")}");
+            Debug.Log($"SortThem audio: {assigned} slots assigned, {cfg.FootstepWalkClips.Length} walk steps, {cfg.FootstepRunClips.Length} run steps, {cfg.AbilityClips.Length} ability variants, {cfg.MusicTracks.Length} music tracks; still empty: {(missing > 0 ? log.ToString() : "none")}");
         }
 
         static AudioClip Load(string folder, string name)

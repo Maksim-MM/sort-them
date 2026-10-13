@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Localization;
 
 namespace SortThem
@@ -10,7 +11,7 @@ namespace SortThem
         public string DevName;
         public LocalizedString DisplayName;
         public CategoryData Category;
-        public GameObject Prefab;
+        public AssetReferenceGameObject Prefab;
         public float DisplayPrice;
 
         public string CategoryID => Category != null ? Category.CategoryID : null;

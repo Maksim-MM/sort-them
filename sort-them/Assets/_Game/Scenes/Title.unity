@@ -244,10 +244,23 @@ MonoBehaviour:
   LogoRu: {fileID: 2800000, guid: 80e2ac2a01f494d0f96f281f16f894b5, type: 3}
   LogoEn: {fileID: 2800000, guid: 45b92ab8958e042a9a5d353ad8988112, type: 3}
   Music:
-  - {fileID: 8300000, guid: c161949168acd47e49e4cd7ddf95f6e6, type: 3}
-  - {fileID: 8300000, guid: 667625e4161b34096afa92c434249dbc, type: 3}
-  - {fileID: 8300000, guid: 58ca165b37cb9409a9fda824778faf13, type: 3}
+  - m_AssetGUID: c161949168acd47e49e4cd7ddf95f6e6
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 667625e4161b34096afa92c434249dbc
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 58ca165b37cb9409a9fda824778faf13
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   Click: {fileID: 8300000, guid: 19354c05af66c44fea5347febaa20ce0, type: 3}
+  Catalog: {fileID: 11400000, guid: 00df933aabda0466f9d7f197436dfe52, type: 2}
   NextScene: Main
 --- !u!4 &1914227511
 Transform:

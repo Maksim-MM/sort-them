@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace SortThem
 {
@@ -66,7 +67,7 @@ namespace SortThem
         public float SprintFovBoost = 8f;
         public float TouchLookSpeed = 160f;
         public float FovSmoothTime = 0.2f;
-        public AudioClip[] MusicClips = System.Array.Empty<AudioClip>();
+        public AssetReferenceT<AudioClip>[] MusicTracks = System.Array.Empty<AssetReferenceT<AudioClip>>();
 
         [Header("Abilities")]
         public float RackHighlightCooldown = 60f;

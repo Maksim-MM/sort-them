@@ -206,7 +206,7 @@ namespace SortThem.Editor
                     data.CarID = carId;
                     data.DevName = src.name;
                     data.Category = categories[c];
-                    data.Prefab = prefab;
+                    data.Prefab = CarAddressables.Reference(prefab);
                     data.DisplayPrice = 2.5f + ((c * 10 + i) * 7 % 40) + (i % 2) * 0.5f;
                     LocUtil.Set("car." + carId, src.name, src.name);
                     data.DisplayName = LocUtil.Ref("car." + carId);

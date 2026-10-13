@@ -24,7 +24,12 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   Category: {fileID: 11400000, guid: 85c5259347bd140c5bde20381985ee65, type: 2}
-  Prefab: {fileID: 901238038078633263, guid: 143e8c77142b846e180af25f5c96e9dd, type: 3}
+  Prefab:
+    m_AssetGUID: 143e8c77142b846e180af25f5c96e9dd
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   DisplayPrice: 6.5
   references:
     version: 2

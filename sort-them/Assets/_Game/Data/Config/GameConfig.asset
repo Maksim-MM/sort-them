@@ -102,10 +102,22 @@ MonoBehaviour:
   SprintFovBoost: 8
   TouchLookSpeed: 160
   FovSmoothTime: 0.2
-  MusicClips:
-  - {fileID: 8300000, guid: c161949168acd47e49e4cd7ddf95f6e6, type: 3}
-  - {fileID: 8300000, guid: 667625e4161b34096afa92c434249dbc, type: 3}
-  - {fileID: 8300000, guid: 58ca165b37cb9409a9fda824778faf13, type: 3}
+  MusicTracks:
+  - m_AssetGUID: c161949168acd47e49e4cd7ddf95f6e6
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 667625e4161b34096afa92c434249dbc
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 58ca165b37cb9409a9fda824778faf13
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   RackHighlightCooldown: 60
   RackHighlightDuration: 30
   AutoCollectRadius: 8
@@ -156,9 +168,6 @@ MonoBehaviour:
   - 10
   - 20
   - 35
-  ShuffleCarsPerStep: 4
-  ShuffleStepsPerFrame: 12
-  ShuffleMaxSteps: 3000
   BombPrefab: {fileID: 3635098191875021876, guid: aa6357fcfca9a4b6a9e7853ac627be89, type: 3}
   BombChance: 0.35
   BombFuseTime: 3

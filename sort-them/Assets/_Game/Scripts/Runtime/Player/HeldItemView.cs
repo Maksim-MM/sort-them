@@ -108,7 +108,8 @@ namespace SortThem
         {
             _shown = _pending;
             _shownInstance = _pendingInstance;
-            if (_shown == null || _shown.Prefab == null)
+            var prefab = CarAssets.Prefab(_shown);
+            if (prefab == null)
             {
                 _shown = null;
                 _shownInstance = null;
@@ -116,7 +117,7 @@ namespace SortThem
                 Filter.transform.localScale = Vector3.zero;
                 return;
             }
-            var mf = _shown.Prefab.GetComponentInChildren<MeshFilter>();
+            var mf = prefab.GetComponentInChildren<MeshFilter>();
             Filter.sharedMesh = mf != null ? mf.sharedMesh : null;
             _fit = 1f;
             _frontLocal = Vector3.zero;

@@ -14,6 +14,7 @@ namespace SortThem.Editor
         const string LogoRuPath = Paths.Root + "/Art/Textures/Logo RU 1024x1024.png";
         const string LogoEnPath = Paths.Root + "/Art/Textures/Logo EN 1024x1024.png";
         const string ConfigPath = Paths.Config + "/GameConfig.asset";
+        const string CatalogPath = Paths.Data + "/CarCatalog.asset";
 
         [MenuItem("SortThem/Build Title Scene")]
         public static void Build()
@@ -46,9 +47,10 @@ namespace SortThem.Editor
             screen.LogoEn = AssetDatabase.LoadAssetAtPath<Texture2D>(LogoEnPath);
             if (config != null)
             {
-                screen.Music = config.MusicClips;
+                screen.Music = config.MusicTracks;
                 screen.Click = config.UiClickClip;
             }
+            screen.Catalog = AssetDatabase.LoadAssetAtPath<CarCatalog>(CatalogPath);
             screen.NextScene = Path.GetFileNameWithoutExtension(Paths.MainScene);
             EditorUtility.SetDirty(screen);
 

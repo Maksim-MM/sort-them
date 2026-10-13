@@ -17,7 +17,7 @@ namespace SortThem
             for (int i = 0; i < layout.Instances.Length; i++)
             {
                 var e = layout.Instances[i];
-                if (e.CarIndex < 0 || e.CarIndex >= cars.Length || cars[e.CarIndex] == null || cars[e.CarIndex].Prefab == null) continue;
+                if (e.CarIndex < 0 || e.CarIndex >= cars.Length || cars[e.CarIndex] == null || CarAssets.Prefab(cars[e.CarIndex]) == null) continue;
                 var car = Spawn(cars[e.CarIndex], root, i);
                 car.SetLoose(e.Position, e.Rotation, true);
                 into.Add(car);
@@ -26,7 +26,7 @@ namespace SortThem
 
         public static CarInstance Spawn(CarItemData data, Transform root, int instanceId)
         {
-            var go = Object.Instantiate(data.Prefab, root);
+            var go = Object.Instantiate(CarAssets.Prefab(data), root);
             go.name = data.DevName + "_" + instanceId;
             var car = go.GetComponent<CarInstance>();
             if (car == null) car = go.AddComponent<CarInstance>();

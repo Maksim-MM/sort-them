@@ -40,7 +40,7 @@ namespace SortThem.Editor
             for (int i = 0; i < catalog.Cars.Length; i++)
             {
                 var c = catalog.Cars[i];
-                if (c == null || c.Prefab == null) continue;
+                if (c == null || CarAssets.Prefab(c) == null) continue;
                 (catalog.IsSpecial(c) ? specials : regular).Add(i);
             }
 

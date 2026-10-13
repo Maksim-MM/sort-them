@@ -120,13 +120,15 @@ namespace SortThem
             foreach (var rack in Racks) rack.RefreshSign();
             foreach (var shelf in Shelves) if (shelf.Tag != null) shelf.Tag.Refresh(shelf);
 
+            CarAssets.Preload(Layout != null ? Layout.Catalog : null);
+            while (CarAssets.Total > 0 && !CarAssets.IsReady) yield return null;
             CarSpawner.SpawnFromLayout(Layout, CarsRoot, Cars);
             TotalCars = Cars.Count;
             SpawnCollectibles();
             SettleCollectibles();
 
             Music = gameObject.AddComponent<MusicPlayer>();
-            Music.Play(Config.MusicClips, Settings.MusicTrack);
+            Music.Play(Config.MusicTracks, Settings.MusicTrack);
             bool loaded = Save.Load();
             Debug.Log(loaded ? "SortThem: save loaded" : "SortThem: new game");
             if (loaded) SettleCollectibles();

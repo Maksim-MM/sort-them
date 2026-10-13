@@ -1,9 +1,11 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.Localization.Settings;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -14,8 +16,9 @@ namespace SortThem
         public Texture Background;
         public Texture LogoRu;
         public Texture LogoEn;
-        public AudioClip[] Music = System.Array.Empty<AudioClip>();
+        public AssetReferenceT<AudioClip>[] Music = System.Array.Empty<AssetReferenceT<AudioClip>>();
         public AudioClip Click;
+        public CarCatalog Catalog;
         public string NextScene = "Main";
 
         const string KeyButton = "title.press_button";
@@ -30,6 +33,7 @@ namespace SortThem
         RawImage _logo;
         Image _fade;
         AudioSource _music;
+        AsyncOperationHandle<AudioClip> _musicHandle;
         AsyncOperation _load;
         bool _ready, _started, _sawKbm, _sawTouch;
         float _shownAt;
@@ -47,6 +51,7 @@ namespace SortThem
             _ready = true;
             _shownAt = Time.unscaledTime;
             Platform.RaiseGameReady();
+            CarAssets.Preload(Catalog);
         }
 
         void Update()
@@ -133,15 +138,25 @@ namespace SortThem
         void PlayMusic()
         {
             if (Music == null || Music.Length == 0) return;
-            var clip = Music[Random.Range(0, Music.Length)];
-            if (clip == null) return;
+            var track = Music[Random.Range(0, Music.Length)];
+            if (track == null || !track.RuntimeKeyIsValid()) return;
             _music = gameObject.AddComponent<AudioSource>();
-            _music.clip = clip;
             _music.loop = true;
             _music.spatialBlend = 0f;
             _music.playOnAwake = false;
             _music.volume = Settings.MusicVolume;
-            _music.Play();
+            _musicHandle = Addressables.LoadAssetAsync<AudioClip>(track);
+            _musicHandle.Completed += h =>
+            {
+                if (h.Status != AsyncOperationStatus.Succeeded || h.Result == null || _music == null) return;
+                _music.clip = h.Result;
+                _music.Play();
+            };
+        }
+
+        void OnDestroy()
+        {
+            if (_musicHandle.IsValid()) Addressables.Release(_musicHandle);
         }
 
         IEnumerator InitLocalization()
