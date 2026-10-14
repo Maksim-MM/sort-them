@@ -1586,6 +1586,10 @@ MonoBehaviour:
     m_Localized: Thanks! Ads removed, prices halved
     m_Metadata:
       m_Items: []
+  - m_Id: 14050996888014848
+    m_Localized: "Loading\u2026"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -15,7 +15,7 @@ namespace SortThem
 
         public static void Pulse(float low, float high, float duration)
         {
-            if (!Settings.Vibration || !GameInput.GamepadConnected) return;
+            if (Platform.IsWeb || !Settings.Vibration || !GameInput.GamepadConnected) return;
             try { UPSInput.SetGamepadVibration(low, high); }
             catch { return; }
             _until = Time.unscaledTime + duration;

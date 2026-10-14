@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,13 +8,20 @@ namespace SortThem
     {
         public static void SpawnFromLayout(LevelLayoutData layout, Transform root, List<CarInstance> into)
         {
+            var it = SpawnFromLayout(layout, root, into, 0);
+            while (it.MoveNext()) { }
+        }
+
+        public static IEnumerator SpawnFromLayout(LevelLayoutData layout, Transform root, List<CarInstance> into, int perFrame)
+        {
             into.Clear();
             if (layout == null || layout.Catalog == null)
             {
                 Debug.LogWarning("SortThem: no level layout, nothing spawned");
-                return;
+                yield break;
             }
             var cars = layout.Catalog.Cars;
+            int spawned = 0;
             for (int i = 0; i < layout.Instances.Length; i++)
             {
                 var e = layout.Instances[i];
@@ -21,6 +29,7 @@ namespace SortThem
                 var car = Spawn(cars[e.CarIndex], root, i);
                 car.SetLoose(e.Position, e.Rotation, true);
                 into.Add(car);
+                if (perFrame > 0 && ++spawned % perFrame == 0) yield return null;
             }
         }
 

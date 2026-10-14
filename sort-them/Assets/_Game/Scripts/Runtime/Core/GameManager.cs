@@ -122,7 +122,7 @@ namespace SortThem
 
             CarAssets.Preload(Layout != null ? Layout.Catalog : null);
             while (CarAssets.Total > 0 && !CarAssets.IsReady) yield return null;
-            CarSpawner.SpawnFromLayout(Layout, CarsRoot, Cars);
+            yield return CarSpawner.SpawnFromLayout(Layout, CarsRoot, Cars, Config.SpawnPerFrame);
             TotalCars = Cars.Count;
             SpawnCollectibles();
             SettleCollectibles();

@@ -24,18 +24,20 @@ namespace SortThem
         const string KeyButton = "title.press_button";
         const string KeyKey = "title.press_key";
         const string KeyTouch = "title.press_touch";
+        const string KeyLoading = "title.loading";
         const float FadeTime = 0.45f;
 
         string _textButton = "Press Any Button";
         string _textKey = "Press Any Key";
         string _textTouch = "Tap to Start";
+        string _textLoading = "Loading…";
         TMP_Text _label;
         RawImage _logo;
         Image _fade;
         AudioSource _music;
         AsyncOperationHandle<AudioClip> _musicHandle;
         AsyncOperation _load;
-        bool _ready, _started, _sawKbm, _sawTouch;
+        bool _ready, _started, _loadStarted, _sawKbm, _sawTouch;
         float _shownAt;
 
         IEnumerator Start()
@@ -46,12 +48,14 @@ namespace SortThem
             PlayMusic();
             yield return InitLocalization();
             ShowLogo();
-            _load = SceneManager.LoadSceneAsync(NextScene, LoadSceneMode.Single);
-            if (_load != null) _load.allowSceneActivation = false;
             _ready = true;
             _shownAt = Time.unscaledTime;
             Platform.RaiseGameReady();
             CarAssets.Preload(Catalog);
+            while (CarAssets.Total > 0 && !CarAssets.IsReady) yield return null;
+            _load = SceneManager.LoadSceneAsync(NextScene, LoadSceneMode.Single);
+            if (_load != null) _load.allowSceneActivation = false;
+            _loadStarted = true;
         }
 
         void Update()
@@ -77,17 +81,16 @@ namespace SortThem
             _started = true;
             Sfx.PlayUi(Click);
             if (fromPad) Rumble.UiClick();
-            float startLabel = _label.alpha;
+            _label.text = _textLoading;
+            _label.rectTransform.localScale = Vector3.one;
+            _label.alpha = 1f;
+            while (!_loadStarted) yield return null;
             float startMusic = _music != null ? _music.volume : 0f;
             for (float t = 0f; t < FadeTime; t += Time.unscaledDeltaTime)
             {
-                float k = t / FadeTime;
-                _fade.color = new Color(0f, 0f, 0f, k);
-                _label.alpha = Mathf.Lerp(startLabel, 0f, k);
-                if (_music != null) _music.volume = Mathf.Lerp(startMusic, 0f, k);
+                if (_music != null) _music.volume = Mathf.Lerp(startMusic, 0f, t / FadeTime);
                 yield return null;
             }
-            _fade.color = Color.black;
             Rumble.Stop();
             if (_load == null) { SceneManager.LoadScene(NextScene); yield break; }
             while (_load.progress < 0.9f) yield return null;
@@ -176,6 +179,7 @@ namespace SortThem
             _textButton = Localized(KeyButton, _textButton);
             _textKey = Localized(KeyKey, _textKey);
             _textTouch = Localized(KeyTouch, _textTouch);
+            _textLoading = Localized(KeyLoading, _textLoading);
         }
 
         void ShowLogo()

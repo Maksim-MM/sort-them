@@ -22,6 +22,18 @@ namespace SortThem
             set => _mobile = value;
         }
 
+        public static bool IsWeb
+        {
+            get
+            {
+#if UNITY_WEBGL
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
         public static IEnumerator WaitUntil(Func<bool> done, float seconds, int minFrames = 300)
         {
             float deadline = Time.realtimeSinceStartup + seconds;

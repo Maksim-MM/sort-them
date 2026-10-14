@@ -313,6 +313,7 @@ tut.take	{0} — pick up any car	{0} — взять любую машинку
 tut.take_touch	Take button — pick up any car	Кнопка «взять» — взять любую машинку
 tut.walk	{0} — walk around	{0} — походить
 tut.walk_touch	Left stick — walk around	Стик слева — походить
+title.loading	Loading…	Загрузка…
 ui.ab1	Find	Поиск
 ui.ab2	Auto-collect	Автосбор
 ui.ab3	Rack	Стеллаж

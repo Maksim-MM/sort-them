@@ -1592,6 +1592,10 @@ MonoBehaviour:
     m_Localized: "Dzi\u0119ki! Reklamy usuni\u0119te, ceny o po\u0142ow\u0119 ni\u017Csze"
     m_Metadata:
       m_Items: []
+  - m_Id: 14050996888014848
+    m_Localized: "Wczytywanie\u2026"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

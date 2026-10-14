@@ -168,6 +168,7 @@ namespace SortThem
             BuildUpgrade();
             BuildConfirm();
             BuildFade();
+            if (!gm.Ready) StartCoroutine(FadeInWhenReady());
             gm.StatsChanged += RefreshStats;
             gm.Economy.Changed += _ => { RefreshStats(); RefreshTerminal(); RefreshSlot(); };
             gm.Upgrades.Changed += _ => { RefreshTerminal(); RefreshInventory(); RefreshSlot(); };
@@ -1016,6 +1017,24 @@ namespace SortThem
             panel.gameObject.SetActive(false);
         }
 
+        IEnumerator FadeInWhenReady()
+        {
+            var gm = GameManager.I;
+            _fade.gameObject.SetActive(true);
+            _fade.alpha = 1f;
+            _fadeText.text = Loc.Get("title.loading", "Loading…");
+            _fadeSpinner.gameObject.SetActive(true);
+            while (!gm.Ready)
+            {
+                if (Loc.Ready) _fadeText.text = Loc.Get("title.loading", "Loading…");
+                yield return null;
+            }
+            _fadeSpinner.gameObject.SetActive(false);
+            _fadeText.text = "";
+            for (float t = 0f; t < 0.4f; t += Time.unscaledDeltaTime) { _fade.alpha = 1f - t / 0.4f; yield return null; }
+            _fade.gameObject.SetActive(false);
+        }
+
         void UpdateFadeSpinner()
         {
             if (_fadeSpinner == null || !_fadeSpinner.gameObject.activeInHierarchy) return;
@@ -1051,7 +1070,7 @@ namespace SortThem
         void BuildSettings()
         {
             const float rowH = 56f, gap = 8f, pad = 20f;
-            int rows = Platform.IsMobile ? 5 : 6;
+            int rows = Platform.IsMobile || Platform.IsWeb ? 5 : 6;
             float screenH = pad * 2f + rows * rowH + (rows - 1) * gap;
             var w = BuildArcadeWindow("Settings", new Vector2(900f, ArcadeHeight(screenH, false, true)), "ui.settings", "Настройки", false, true);
             _settings = w.Root;
@@ -1220,7 +1239,7 @@ namespace SortThem
             foreach (var refresh in _settingsRefreshers) refresh();
             RefreshVibration();
             RefreshLanguage();
-            if (_vibrationRow != null) _vibrationRow.SetActive(!Platform.IsMobile);
+            if (_vibrationRow != null) _vibrationRow.SetActive(!Platform.IsMobile && !Platform.IsWeb);
             _settings.gameObject.SetActive(true);
             _focused = FirstCandidate(_settingsItems);
         }

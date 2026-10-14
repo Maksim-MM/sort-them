@@ -35,6 +35,8 @@ namespace SortThem
                 return _gm.Config.SaveMinIntervalSwitch;
 #elif UNITY_PS4 || UNITY_PS5 || UNITY_GAMECORE || UNITY_XBOXONE
                 return _gm.Config.SaveMinIntervalConsole;
+#elif UNITY_WEBGL
+                return _gm.Config.SaveMinIntervalWeb;
 #else
                 return 0f;
 #endif

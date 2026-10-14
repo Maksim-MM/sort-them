@@ -1592,6 +1592,10 @@ MonoBehaviour:
       yar\u0131ya indi"
     m_Metadata:
       m_Items: []
+  - m_Id: 14050996888014848
+    m_Localized: "Y\xFCkleniyor\u2026"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

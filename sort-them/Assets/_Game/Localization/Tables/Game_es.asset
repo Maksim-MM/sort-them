@@ -1587,6 +1587,10 @@ MonoBehaviour:
     m_Localized: "\xA1Gracias! Sin anuncios, precios a la mitad"
     m_Metadata:
       m_Items: []
+  - m_Id: 14050996888014848
+    m_Localized: "Cargando\u2026"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

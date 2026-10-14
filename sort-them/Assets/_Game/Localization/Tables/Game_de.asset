@@ -1587,6 +1587,10 @@ MonoBehaviour:
     m_Localized: Danke! Werbung entfernt, Preise halbiert
     m_Metadata:
       m_Items: []
+  - m_Id: 14050996888014848
+    m_Localized: "Wird geladen\u2026"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -192,7 +192,11 @@ namespace SortThem
         protected override void Initialize(InputSetBuilder b)
         {
             Pause = new GameAction("Pause").Press(b,
+#if UNITY_WEBGL
+                (new KeyboardButtonSource(KeyboardKey.P, ButtonTrigger.Press), "P"),
+#else
                 (new KeyboardButtonSource(KeyboardKey.Escape, ButtonTrigger.Press), "Esc"),
+#endif
                 (new GamepadButtonSource(GamepadButton.Start, ButtonTrigger.Press), "Start"));
             Navigate = new GameAction("Navigate").Vector(b, 0.5f,
                 (new Gamepad2DAxisSource(Gamepad2DAxis.DPad), "DPad"),

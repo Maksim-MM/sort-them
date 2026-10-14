@@ -43,7 +43,7 @@ namespace SortThem
         public static void SetSensitivityX(float v) { SensitivityX = Mathf.Clamp(v, SensitivityMin, SensitivityMax); Store(); }
         public static void SetSensitivityY(float v) { SensitivityY = Mathf.Clamp(v, SensitivityMin, SensitivityMax); Store(); }
         public static void SetVibration(bool on) { Vibration = on; Store(); }
-        public static void SetMusicTrack(int index) { MusicTrack = Mathf.Max(0, index); Store(); }
+        public static void SetMusicTrack(int index) { MusicTrack = Mathf.Max(0, index); Store(); GameManager.I?.Save?.MarkDirty(); }
         public static void SetLocale(string code) { Locale = code ?? ""; Store(); }
 
         public static void Flush()
@@ -64,7 +64,6 @@ namespace SortThem
                 prefs.SetBool("settings.vibration", Vibration);
                 prefs.SetString("settings.locale", Locale);
                 prefs.SetInt("settings.track", MusicTrack);
-                GameManager.I?.Save?.MarkDirty();
             }
             else
             {
