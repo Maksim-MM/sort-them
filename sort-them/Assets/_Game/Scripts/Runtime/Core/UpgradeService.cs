@@ -53,6 +53,7 @@ namespace SortThem
             if (!CanBuy(data, cost)) return false;
             if (!_economy.TrySpend(cost)) return false;
             _levels[data.Kind] = Level(data) + 1;
+            Analytics.Track("upgrade_purchased", new Dictionary<string, object> { { "upgrade_id", data.Kind.ToString() }, { "level", _levels[data.Kind] }, { "price", cost } });
             Changed?.Invoke(data);
             return true;
         }

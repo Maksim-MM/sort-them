@@ -873,6 +873,7 @@ namespace SortThem
                 reward = gm.Upgrades.TrySpin(cost);
                 if (reward == null) return;
             }
+            Analytics.Track("slot_spin", new Dictionary<string, object> { { "cost", cost }, { "won", reward != null }, { "upgrade_id", reward != null ? reward.Kind.ToString() : "bomb" } });
             _spinReward = reward;
             _spinBomb = bomb;
             _spinning = true;
@@ -1261,6 +1262,7 @@ namespace SortThem
 
         public void OpenTerminal()
         {
+            Analytics.Track("terminal_opened", Analytics.Window(Analytics.FirstTime("terminal")));
             RefreshTerminal();
             _terminal.gameObject.SetActive(true);
             _focused = FirstCandidate(TerminalCandidates());
@@ -1269,6 +1271,7 @@ namespace SortThem
         public void CloseTerminal() { _terminal.gameObject.SetActive(false); ClearFocus(); Ads.TryInterstitial(); }
         public void OpenSlot()
         {
+            Analytics.Track("slot_opened", Analytics.Window(Analytics.FirstTime("slot")));
             _spinUntil = -1f;
             RefreshSlot();
             _slot.gameObject.SetActive(true);

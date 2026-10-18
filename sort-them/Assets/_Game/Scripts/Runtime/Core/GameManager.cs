@@ -219,6 +219,7 @@ namespace SortThem
             RecountStats();
             ShelfClosed?.Invoke(shelf);
             if (!Ready) return;
+            Analytics.Track("shelf_completed", new Dictionary<string, object> { { "shelf_id", shelf.ShelfId }, { "closed", ClosedShelves }, { "total", TotalShelves }, { "seconds_played", Analytics.SecondsPlayed }, { "balance", Mathf.RoundToInt(Economy.Balance) } });
             Save.SaveNow("shelf closed");
             if (GameComplete && !_completeAnnounced)
             {

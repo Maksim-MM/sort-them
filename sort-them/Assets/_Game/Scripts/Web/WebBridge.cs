@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Playgama;
 using UnityEngine;
 
@@ -27,12 +28,14 @@ namespace SortThem.Web
             platform.audioStateChanged += OnAudioState;
             platform.pauseStateChanged += OnPauseState;
             Platform.GameReady += SendGameReady;
+            Analytics.Sent += SendAnalytics;
             Debug.Log($"SortThem: bridge platform {platform.id}, language {platform.language}, audio {platform.isAudioEnabled}");
         }
 
         void OnDestroy()
         {
             Platform.GameReady -= SendGameReady;
+            Analytics.Sent -= SendAnalytics;
             var platform = Bridge.platform;
             if (platform == null) return;
             platform.audioStateChanged -= OnAudioState;
@@ -83,6 +86,11 @@ namespace SortThem.Web
         void ApplyListener()
         {
             AudioListener.pause = _audioOff || _paused || _adOpen;
+        }
+
+        void SendAnalytics(string name, Dictionary<string, object> data)
+        {
+            if (Bridge.analytics != null) Bridge.analytics.Send(name, data);
         }
 
         void SendGameReady()

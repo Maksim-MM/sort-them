@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SortThem
@@ -29,6 +30,8 @@ namespace SortThem
         float _walked, _turned;
         int _placedAtStart;
         bool _started;
+        float _begunAt, _stepAt;
+        int _stepsSent;
 
         void Awake() { I = this; }
         void OnDestroy() { if (I == this) I = null; }
@@ -96,11 +99,15 @@ namespace SortThem
             _lastRot = _player.CameraPivot.rotation;
             Active = true;
             Step = TutorialStep.Walk;
+            _begunAt = _stepAt = Time.realtimeSinceStartup;
+            _stepsSent = 0;
+            Analytics.Track("tutorial_started", new Dictionary<string, object> { { "attempt", Analytics.NextAttempt("tutorial_attempt") } });
             Changed?.Invoke();
         }
 
         void Advance(GameManager gm)
         {
+            TrackStep(Step);
             Step++;
             if (Step == TutorialStep.Look) _lastRot = _player.CameraPivot.rotation;
             if (Step == TutorialStep.Place) _placedAtStart = CountPlaced(gm);
@@ -109,12 +116,26 @@ namespace SortThem
 
         void Finish(GameManager gm)
         {
+            TrackStep(TutorialStep.Place);
+            Analytics.Track("tutorial_completed", new Dictionary<string, object> { { "duration_sec", Mathf.RoundToInt(Time.realtimeSinceStartup - _begunAt) } });
             SetRack(null);
             Active = false;
             Step = TutorialStep.Done;
             gm.TutorialDone = true;
             if (gm.Save != null) gm.Save.SaveNow("tutorial");
             Changed?.Invoke();
+        }
+
+        void TrackStep(TutorialStep step)
+        {
+            int bit = 1 << (int)step;
+            float now = Time.realtimeSinceStartup;
+            if ((_stepsSent & bit) == 0)
+            {
+                _stepsSent |= bit;
+                Analytics.Track("tutorial_step", new Dictionary<string, object> { { "step", step.ToString().ToLowerInvariant() }, { "duration_sec", Mathf.RoundToInt(now - _stepAt) } });
+            }
+            _stepAt = now;
         }
 
         void SetRack(RackController rack)

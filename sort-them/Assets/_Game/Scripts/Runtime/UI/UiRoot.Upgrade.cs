@@ -147,6 +147,10 @@ namespace SortThem
             if (gm == null || car == null || _upgrade == null) return;
             var data = gm.Catalog != null ? gm.Catalog.SpecialFor(car.Data) : null;
             if (data == null) return;
+            var ev = Analytics.Window(Analytics.FirstTime("special"));
+            ev["car_id"] = car.Data.CarID;
+            ev["level"] = gm.SpecialLevel(car.Data);
+            Analytics.Track("special_opened", ev);
             _upgradeCar = car;
             _holdProgress = 0f;
             _holdLatched = false;

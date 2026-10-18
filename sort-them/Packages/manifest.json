@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
-    "com.playgama.bridge": "https://github.com/playgama/bridge-unity.git#v2.2.0",
+    "com.playgama.bridge": "https://github.com/playgama/bridge-unity.git#v2.3.0",
     "com.unity.ai.navigation": "2.0.14",
     "com.unity.cinemachine": "3.1.7",
     "com.unity.collab-proxy": "2.12.4",
