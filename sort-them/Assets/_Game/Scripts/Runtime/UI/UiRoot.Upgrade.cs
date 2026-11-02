@@ -281,6 +281,7 @@ namespace SortThem
                     StartCoroutine(Reveal(previewParts, podiumParts));
                     Sfx.PlayUi(gm.Config.SpecialUpgradeClip);
                     Rumble.ShelfComplete();
+                    LightBar.Purchase();
                     RefreshUpgrade();
                 }
             }

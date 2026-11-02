@@ -364,6 +364,7 @@
   "ui.special_next": "Neste del: {0}",
   "ui.spin": "Spinn · ${0}",
   "ui.terminal": "Oppgraderingsterminal",
+  "ui.lightbar": "Lyslist",
   "ui.vibration": "Vibrering",
   "ui.yes": "Ja, nullstill",
   "upg_autocollect.desc": "Tast 2: trekker like biler i nærheten inn i inventaret",

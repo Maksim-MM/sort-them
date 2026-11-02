@@ -364,6 +364,7 @@
   "ui.special_next": "Nächstes Teil: {0}",
   "ui.spin": "Drehen · ${0}",
   "ui.terminal": "Upgrade-Terminal",
+  "ui.lightbar": "Leuchtleiste",
   "ui.vibration": "Vibration",
   "ui.yes": "Ja, zurücksetzen",
   "upg_autocollect.desc": "Taste 2: zieht gleiche Autos in der Nähe in dein Inventar",

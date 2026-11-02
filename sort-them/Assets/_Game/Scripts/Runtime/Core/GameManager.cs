@@ -91,6 +91,7 @@ namespace SortThem
                 UnityEngine.Physics.defaultSolverIterations = Config.MobileSolverIterations;
             }
             else Time.maximumDeltaTime = Config.DesktopMaxStep;
+            if (Platform.HighEnd) ConsoleLook.Apply(Config);
             var cam = Camera.main;
             if (cam != null && Config.NoDistanceSort) cam.opaqueSortMode = UnityEngine.Rendering.OpaqueSortMode.NoDistanceSort;
         }
@@ -136,6 +137,7 @@ namespace SortThem
             _completeAnnounced = GameComplete;
             CarProbeLight.ApplyAll(Cars);
             Ready = true;
+            Trophies.Evaluate(this);
             Platform.RaiseGameReady();
             PileOcclusion.Init(Cars, Config);
             if (Config.FrozenBatchMobile && Platform.IsMobile) FrozenCarBatch.Init(Cars, Config.ChunkShader, Config.ChunkDistance, EyePosition);
@@ -221,11 +223,13 @@ namespace SortThem
             if (!Ready) return;
             Analytics.Track("shelf_completed", new Dictionary<string, object> { { "shelf_id", shelf.ShelfId }, { "closed", ClosedShelves }, { "total", TotalShelves }, { "seconds_played", Analytics.SecondsPlayed }, { "balance", Mathf.RoundToInt(Economy.Balance) } });
             Save.SaveNow("shelf closed");
+            Trophies.Shelves(ClosedShelves, TotalShelves);
             if (GameComplete && !_completeAnnounced)
             {
                 _completeAnnounced = true;
                 Messages.Show(Loc.Get("msg.game_complete", "Все полки закрыты. Склад в полном порядке!"));
                 Rumble.ShelfComplete();
+                LightBar.ShelfComplete();
             }
         }
 
@@ -267,6 +271,8 @@ namespace SortThem
             if (view != null) { view.Level = SpecialLevel(car.Data); view.Rebuild(newParts); }
             StatsChanged?.Invoke();
             if (Ready) Save.SaveNow("upgrade");
+            var special = Catalog != null ? Catalog.SpecialFor(car.Data) : null;
+            if (special != null && SpecialLevel(car.Data) >= special.MaxLevel) Trophies.Unlock(Trophy.MasterMechanic);
             return true;
         }
 
@@ -367,6 +373,12 @@ namespace SortThem
             if (index < 0 || index >= 31 || HasBlueprint(index)) return;
             BlueprintsMask |= 1 << index;
             if (Ready) Save.SaveNow("blueprint unlocked");
+            if (Ready && Catalog != null)
+            {
+                int unlocked = 0;
+                for (int i = 0; i < Catalog.Categories.Length; i++) if (HasBlueprint(i)) unlocked++;
+                Trophies.Blueprints(unlocked, Catalog.Categories.Length);
+            }
         }
 
         public void ApplyCollectiblesMask(long mask)
@@ -390,6 +402,7 @@ namespace SortThem
             Messages.Show(Loc.Get("msg.crate_found", "Ящик запчастей: +1"));
             StatsChanged?.Invoke();
             if (Ready) Save.SaveNow("collectible");
+            Trophies.Collectibles(CollectiblesFound, Collectibles.Count);
         }
 
         public void ClickRegister(CashRegister register)
@@ -459,6 +472,7 @@ namespace SortThem
             float mult = bomb.Held ? Config.BombHandMultiplier : 1f;
             if (bomb == HeldBomb) HeldBomb = null;
             Bombs.Remove(bomb);
+            Trophies.Unlock(Trophy.Kaboom);
             float radius = Config.BombRadius, r2 = radius * radius;
             foreach (var car in Cars)
             {

@@ -78,6 +78,9 @@ namespace SortThem
         Button _vibrationButton;
         GameObject _vibrationRow;
         TMP_Text _vibrationLabel;
+        Button _lightBarButton;
+        GameObject _lightBarRow;
+        TMP_Text _lightBarLabel;
         const float SliderStep = 0.05f;
         float _navRepeatAt;
         const float NavRepeatFirst = 0.35f, NavRepeatNext = 0.18f;
@@ -879,6 +882,8 @@ namespace SortThem
             _spinning = true;
             _spinUntil = Time.unscaledTime + SpinDuration;
             _spinTickAt = 0f;
+            LightBar.SlotSpin(SpinDuration);
+            Trophies.Unlock(Trophy.HighRoller);
             StartReels(reward != null ? reward.Icon : BombIcon);
             Sfx.PlayUi(gm.Config.SlotLeverClip);
             Sfx.PlayUi(gm.Config.SlotSpinClip != null ? gm.Config.SlotSpinClip : gm.Config.SlotReelClip);
@@ -903,6 +908,7 @@ namespace SortThem
             _slotResult.text = "<color=" + GoldHex + ">" + text + "</color>";
             Sfx.PlayUi(gm.Config.SlotWinClip);
             Rumble.ShelfComplete();
+            if (_spinBomb) LightBar.SlotBomb(); else LightBar.SlotWin();
             if (reward != null) Messages.Show(string.Format(Loc.Get("msg.slot_reward", "Выпало: {0}"), RewardText(reward)));
             if (reward != null && reward.Kind == UpgradeKind.PartsCrate) gm.AddCrates(1);
             if (_spinBomb) gm.SpawnBomb();
@@ -1071,7 +1077,7 @@ namespace SortThem
         void BuildSettings()
         {
             const float rowH = 56f, gap = 8f, pad = 20f;
-            int rows = Platform.IsMobile || Platform.IsWeb ? 5 : 6;
+            int rows = (Platform.IsMobile || Platform.IsWeb ? 5 : 6) + (Platform.HasLightBar ? 1 : 0);
             float screenH = pad * 2f + rows * rowH + (rows - 1) * gap;
             var w = BuildArcadeWindow("Settings", new Vector2(900f, ArcadeHeight(screenH, false, true)), "ui.settings", "Настройки", false, true);
             _settings = w.Root;
@@ -1098,6 +1104,14 @@ namespace SortThem
             UiFactory.Anchor(_vibrationButton.GetComponent<RectTransform>(), new Vector2(0.72f, 0.14f), new Vector2(1f, 0.86f), Vector2.zero, new Vector2(-10f, 0f));
             _settingsItems.Add(_vibrationButton);
             RefreshVibration();
+
+            var lightRow = ArcadeRow(_settingsList, "LightBar", "ui.lightbar", "Световая панель", rowH);
+            _lightBarRow = lightRow.parent.gameObject;
+            _lightBarButton = ArcadeButton(lightRow, "Toggle", () => { Settings.SetLightBar(!Settings.LightBar); RefreshLightBar(); }, ArcadeNeon, 18f);
+            _lightBarLabel = _lightBarButton.GetComponentInChildren<TMP_Text>();
+            UiFactory.Anchor(_lightBarButton.GetComponent<RectTransform>(), new Vector2(0.72f, 0.14f), new Vector2(1f, 0.86f), Vector2.zero, new Vector2(-10f, 0f));
+            _settingsItems.Add(_lightBarButton);
+            RefreshLightBar();
 
             FinishArcadeScreen(w.Screen);
             var back = Bind(ArcadePanelButton(w, "Back", () => CloseSettings(true), ArcadeNeon, 150f, true), "ui.back", "Назад");
@@ -1234,13 +1248,20 @@ namespace SortThem
             if (_vibrationLabel != null) _vibrationLabel.text = Settings.Vibration ? Loc.Get("ui.on", "Вкл") : Loc.Get("ui.off", "Выкл");
         }
 
+        void RefreshLightBar()
+        {
+            if (_lightBarLabel != null) _lightBarLabel.text = Settings.LightBar ? Loc.Get("ui.on", "Вкл") : Loc.Get("ui.off", "Выкл");
+        }
+
         void OpenSettings()
         {
             _pause.gameObject.SetActive(false);
             foreach (var refresh in _settingsRefreshers) refresh();
             RefreshVibration();
+            RefreshLightBar();
             RefreshLanguage();
             if (_vibrationRow != null) _vibrationRow.SetActive(!Platform.IsMobile && !Platform.IsWeb);
+            if (_lightBarRow != null) _lightBarRow.SetActive(Platform.HasLightBar);
             _settings.gameObject.SetActive(true);
             _focused = FirstCandidate(_settingsItems);
         }

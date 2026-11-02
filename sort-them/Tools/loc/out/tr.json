@@ -364,6 +364,7 @@
   "ui.special_next": "Sonraki parça: {0}",
   "ui.spin": "Çevir · ${0}",
   "ui.terminal": "Geliştirme Terminali",
+  "ui.lightbar": "Işıklı çubuk",
   "ui.vibration": "Titreşim",
   "ui.yes": "Evet, sıfırla",
   "upg_autocollect.desc": "Tuş 2: yakındaki aynı arabaları envanterine çeker",

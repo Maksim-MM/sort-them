@@ -311,8 +311,8 @@ namespace SortThem
                 cell.Go.AddComponent<MeshFilter>();
                 cell.Renderer = cell.Go.AddComponent<MeshRenderer>();
                 cell.Renderer.sharedMaterial = _chunkMaterial;
-                cell.Renderer.shadowCastingMode = ShadowCastingMode.Off;
-                cell.Renderer.receiveShadows = false;
+                cell.Renderer.shadowCastingMode = Platform.HighEnd ? ShadowCastingMode.On : ShadowCastingMode.Off;
+                cell.Renderer.receiveShadows = Platform.HighEnd;
                 cell.Renderer.lightProbeUsage = LightProbeUsage.Off;
                 cell.Renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
                 cell.Renderer.enabled = false;

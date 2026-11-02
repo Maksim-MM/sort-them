@@ -1587,6 +1587,10 @@ MonoBehaviour:
     m_Key: title.loading
     m_Metadata:
       m_Items: []
+  - m_Id: 20841581052420096
+    m_Key: ui.lightbar
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

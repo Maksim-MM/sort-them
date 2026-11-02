@@ -7,7 +7,9 @@ namespace SortThem
     public static class Platform
     {
         public const string EmulateMobilePref = "SortThem.EmulateMobile";
+        public const string EmulateConsolePref = "SortThem.EmulateConsole";
         static bool? _mobile;
+        static bool? _shadows;
 
         public static bool IsMobile
         {
@@ -32,6 +34,45 @@ namespace SortThem
                 return false;
 #endif
             }
+        }
+
+        public static bool IsPlayStation
+        {
+            get
+            {
+#if UNITY_PS4 || UNITY_PS5
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
+        public static bool HasLightBar => IsPlayStation || (Application.isEditor && !IsMobile);
+
+        public static bool IsConsoleHQ
+        {
+            get
+            {
+#if UNITY_PS4 || UNITY_PS5 || UNITY_GAMECORE_XBOXSERIES || UNITY_GAMECORE_XBOXONE
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
+        public static bool HighEnd
+        {
+            get
+            {
+                if (_shadows.HasValue) return _shadows.Value;
+#if UNITY_EDITOR
+                if (UnityEditor.EditorPrefs.GetBool(EmulateConsolePref, false)) return true;
+#endif
+                return IsConsoleHQ;
+            }
+            set => _shadows = value;
         }
 
         public static IEnumerator WaitUntil(Func<bool> done, float seconds, int minFrames = 300)

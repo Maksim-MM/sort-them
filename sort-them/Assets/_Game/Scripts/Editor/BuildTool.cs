@@ -69,11 +69,13 @@ namespace SortThem.Editor
             };
             byte[] projectSettings = File.ReadAllBytes(ProjectSettingsPath);
             bool fontsIncluded = FontAddressables.SetIncludeInBuild(false);
+            bool consoleTexIncluded = ConsoleTexturesAddressables.SetIncludeInBuild(false);
             BuildReport report;
             try { report = BuildPipeline.BuildPlayer(options); }
             finally
             {
                 FontAddressables.SetIncludeInBuild(fontsIncluded);
+                ConsoleTexturesAddressables.SetIncludeInBuild(consoleTexIncluded);
                 File.WriteAllBytes(ProjectSettingsPath, projectSettings);
             }
             var s = report.summary;

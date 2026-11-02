@@ -364,6 +364,7 @@
   "ui.special_next": "Pièce suivante : {0}",
   "ui.spin": "Tourner · ${0}",
   "ui.terminal": "Terminal d'améliorations",
+  "ui.lightbar": "Barre lumineuse",
   "ui.vibration": "Vibration",
   "ui.yes": "Oui, réinitialiser",
   "upg_autocollect.desc": "Touche 2 : attire les mêmes voitures à proximité dans ton inventaire",

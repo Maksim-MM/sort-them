@@ -1592,6 +1592,10 @@ MonoBehaviour:
     m_Localized: "Ladataan\u2026"
     m_Metadata:
       m_Items: []
+  - m_Id: 20841581052420096
+    m_Localized: Valopalkki
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Console-Textures
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Console-Textures
+  m_GUID: d60a9b82ff7be43dca7a6b75fa353cdc
+  m_SerializeEntries:
+  - m_GUID: 37afbd2bb267d44d893a2ce38b011f28
+    m_Address: Wood_Panel_MS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 389238e8209704ec5bc7ec547d1eb461
+    m_Address: Wood_Beam_MS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 433baf526b86c4e7b9eb1e2247c26850
+    m_Address: Wood_Slab_MS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bd4d70c736364d2d97a733bd06720e4
+    m_Address: Wood_PlanksV_N
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c61340ee89f34c5d9928ba93588e320
+    m_Address: Wood_Beam_N
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a612e1fb875a74dbe88bf6d0a244d5bc
+    m_Address: Wood_Floor_MS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad5ae2b76640d4531a779bb4c62144ba
+    m_Address: Wood_PlanksV_MS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccc31d065915d415bbbbc154bd67a8d0
+    m_Address: Wood_Slab_N
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8e12ba78a157436da9ffd36ffdef1f7
+    m_Address: Wood_Panel_N
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9d0ea1b9b8f043618dee595bb832e4b
+    m_Address: Wood_Floor_N
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d736df23ed04c40768fd5efbf77c55a3, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3d71f00bb774a4a5ab6259076c76a7f6, type: 2}
+    - {fileID: 11400000, guid: bc1336d507d684b16b8e86b43d7a6829, type: 2}

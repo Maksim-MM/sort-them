@@ -29,6 +29,16 @@ namespace SortThem
         public int Level(UpgradeData data) => data != null ? Level(data.Kind) : 0;
         public bool Has(UpgradeKind kind) => Level(kind) > 0;
 
+        public bool AllMaxed
+        {
+            get { foreach (var u in _all) if (Level(u) < u.MaxLevel) return false; return _all.Count > 0; }
+        }
+
+        public bool AnyPurchased
+        {
+            get { foreach (var u in _all) if (u.Source == UpgradeSource.Terminal && Level(u) > 0) return true; return false; }
+        }
+
         public float Value(UpgradeKind kind, float fallback)
         {
             var data = Find(kind);
@@ -55,6 +65,8 @@ namespace SortThem
             _levels[data.Kind] = Level(data) + 1;
             Analytics.Track("upgrade_purchased", new Dictionary<string, object> { { "upgrade_id", data.Kind.ToString() }, { "level", _levels[data.Kind] }, { "price", cost } });
             Changed?.Invoke(data);
+            LightBar.Purchase();
+            Trophies.Upgrades(this, data.Source == UpgradeSource.Terminal);
             return true;
         }
 

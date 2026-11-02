@@ -111,6 +111,7 @@ namespace SortThem
             _findUntil = Time.time + ActiveTotal(0);
             Sfx.PlayUi(Sfx.Pick(gm.Config.AbilityClips, gm.Config.AbilityClip));
             _cooldown[0] = CooldownTotal(0);
+            LightBar.Ability(ActiveTotal(0));
             _findModel = held.Data;
             StartLevitation(gm, held.Data);
         }
@@ -219,6 +220,7 @@ namespace SortThem
             Sfx.PlayUi(Sfx.Pick(gm.Config.AbilityClips, gm.Config.AbilityClip));
             _collectNextPull = Time.time;
             _cooldown[1] = CooldownTotal(1);
+            LightBar.Ability(gm.Config.AutoCollectDuration);
         }
 
         void StackTarget(out Vector3 position, out Quaternion rotation)
@@ -337,6 +339,7 @@ namespace SortThem
             _rackUntil = Time.time + ActiveTotal(2);
             Sfx.PlayUi(Sfx.Pick(gm.Config.AbilityClips, gm.Config.AbilityClip));
             _cooldown[2] = CooldownTotal(2);
+            LightBar.Ability(ActiveTotal(2));
         }
 
         void UpdateRackHighlight(GameManager gm)

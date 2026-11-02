@@ -12,6 +12,7 @@ namespace SortThem
         public static float SensitivityX { get; private set; } = 1f;
         public static float SensitivityY { get; private set; } = 1f;
         public static bool Vibration { get; private set; } = true;
+        public static bool LightBar { get; private set; } = true;
         public static int MusicTrack { get; private set; }
         public static string Locale { get; private set; } = "";
 
@@ -29,6 +30,7 @@ namespace SortThem
             SensitivityX = sdk ? prefs.GetFloat("settings.sens_x", 1f) : PlayerPrefs.GetFloat("settings.sens_x", 1f);
             SensitivityY = sdk ? prefs.GetFloat("settings.sens_y", 1f) : PlayerPrefs.GetFloat("settings.sens_y", 1f);
             Vibration = sdk ? prefs.GetBool("settings.vibration", true) : PlayerPrefs.GetInt("settings.vibration", 1) != 0;
+            LightBar = sdk ? prefs.GetBool("settings.lightbar", true) : PlayerPrefs.GetInt("settings.lightbar", 1) != 0;
             MusicTrack = sdk ? prefs.GetInt("settings.track", 0) : PlayerPrefs.GetInt("settings.track", 0);
             Locale = sdk ? prefs.GetString("settings.locale", "") : PlayerPrefs.GetString("settings.locale", "");
             _loaded = true;
@@ -43,6 +45,7 @@ namespace SortThem
         public static void SetSensitivityX(float v) { SensitivityX = Mathf.Clamp(v, SensitivityMin, SensitivityMax); Store(); }
         public static void SetSensitivityY(float v) { SensitivityY = Mathf.Clamp(v, SensitivityMin, SensitivityMax); Store(); }
         public static void SetVibration(bool on) { Vibration = on; Store(); }
+        public static void SetLightBar(bool on) { LightBar = on; Store(); }
         public static void SetMusicTrack(int index) { MusicTrack = Mathf.Max(0, index); Store(); GameManager.I?.Save?.MarkDirty(); }
         public static void SetLocale(string code) { Locale = code ?? ""; Store(); }
 
@@ -62,6 +65,7 @@ namespace SortThem
                 prefs.SetFloat("settings.sens_x", SensitivityX);
                 prefs.SetFloat("settings.sens_y", SensitivityY);
                 prefs.SetBool("settings.vibration", Vibration);
+                prefs.SetBool("settings.lightbar", LightBar);
                 prefs.SetString("settings.locale", Locale);
                 prefs.SetInt("settings.track", MusicTrack);
             }
@@ -72,6 +76,7 @@ namespace SortThem
                 PlayerPrefs.SetFloat("settings.sens_x", SensitivityX);
                 PlayerPrefs.SetFloat("settings.sens_y", SensitivityY);
                 PlayerPrefs.SetInt("settings.vibration", Vibration ? 1 : 0);
+                PlayerPrefs.SetInt("settings.lightbar", LightBar ? 1 : 0);
                 PlayerPrefs.SetString("settings.locale", Locale);
                 PlayerPrefs.SetInt("settings.track", MusicTrack);
             }

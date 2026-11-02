@@ -1,8 +1,20 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering;
 
 namespace SortThem
 {
+    [System.Serializable]
+    public class ConsoleWoodMap
+    {
+        public Material Material;
+        public AssetReferenceTexture2D Normal;
+        public AssetReferenceTexture2D MetallicSmooth;
+        public float BumpScale = 1.3f;
+        public float SmoothnessScale = 1f;
+        public bool EnvironmentReflections = true;
+    }
+
     [CreateAssetMenu(menuName = "SortThem/Game Config")]
     public class GameConfig : ScriptableObject
     {
@@ -116,6 +128,13 @@ namespace SortThem
         public float PremiumDiscount = 0.5f;
         [UnityEngine.Serialization.FormerlySerializedAs("LodDistances")] public float[] LodDistancesMobile = { 0f, 4f, 10f };
         public float[] LodDistancesDesktop = { 10f, 20f, 35f };
+
+        [Header("Console look")]
+        public VolumeProfile ConsoleVolume;
+        public float ConsoleSunIntensity = 0.6f;
+        public Color ConsoleFogColor = new Color(0.86f, 0.9f, 1f, 1f);
+        public float ConsoleFogDensity = 0.012f;
+        public ConsoleWoodMap[] ConsoleWood;
 
         [Header("Bomb")]
         public GameObject BombPrefab;

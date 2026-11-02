@@ -364,6 +364,7 @@
   "ui.special_next": "Volgend onderdeel: {0}",
   "ui.spin": "Draaien · ${0}",
   "ui.terminal": "Upgradeterminal",
+  "ui.lightbar": "Lichtbalk",
   "ui.vibration": "Trilling",
   "ui.yes": "Ja, wissen",
   "upg_autocollect.desc": "Toets 2: trekt dezelfde auto's in de buurt naar je inventaris",

@@ -103,6 +103,7 @@ namespace SortThem.Editor
             LocUtil.Set("ui.sens_x", "Чувствительность по горизонтали", "Horizontal sensitivity");
             LocUtil.Set("ui.sens_y", "Чувствительность по вертикали", "Vertical sensitivity");
             LocUtil.Set("ui.vibration", "Вибрация", "Vibration");
+            LocUtil.Set("ui.lightbar", "Световая панель", "Light Bar");
             LocUtil.Set("ui.on", "Вкл", "On");
             LocUtil.Set("ui.off", "Выкл", "Off");
             LocUtil.Set("ui.back", "Назад", "Back");

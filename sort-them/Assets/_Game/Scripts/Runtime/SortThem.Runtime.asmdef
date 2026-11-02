@@ -8,7 +8,11 @@
         "Unity.ResourceManager",
         "Unity.Addressables",
         "UpscaleSDK.Core",
-        "Unity.RenderPipelines.Universal.Runtime"
+        "UpscaleSDK.Platfrom.PS4",
+        "UpscaleSDK.Platfrom.PS5",
+        "UpscaleSDK.Platfrom.Xbox",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.RenderPipelines.Core.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

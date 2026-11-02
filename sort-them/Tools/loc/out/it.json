@@ -364,6 +364,7 @@
   "ui.special_next": "Prossimo pezzo: {0}",
   "ui.spin": "Gira · ${0}",
   "ui.terminal": "Terminale potenziamenti",
+  "ui.lightbar": "Barra luminosa",
   "ui.vibration": "Vibrazione",
   "ui.yes": "Sì, azzera",
   "upg_autocollect.desc": "Tasto 2: attira le auto uguali nelle vicinanze nel tuo inventario",

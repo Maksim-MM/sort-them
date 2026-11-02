@@ -41,6 +41,14 @@ namespace SortThem
             if (car == null) car = go.AddComponent<CarInstance>();
             car.InstanceId = instanceId;
             car.Data = data;
+            if (Platform.HighEnd)
+            {
+                foreach (var r in go.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+                    r.receiveShadows = true;
+                }
+            }
             return car;
         }
     }

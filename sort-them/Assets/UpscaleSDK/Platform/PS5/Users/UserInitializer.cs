@@ -44,6 +44,7 @@ namespace Plugins.UpscaleSDK.PS5.Runtime.Users
         /// Gets or sets the is initialized.
         /// </summary>
         public bool IsInitialized => _initialized;
+        public static bool IsUserRegistered { get; private set; }
         
         private UserData _userData;
         private TrophiesData _trophiesData;
@@ -161,6 +162,7 @@ namespace Plugins.UpscaleSDK.PS5.Runtime.Users
                 if (antecedent.IsSuccess())
                 {
                     SessionsManager.RegisterUserSessionEvent((int)userId);
+                    IsUserRegistered = true;
                     ParseTrophies((details, data) =>
                     {
                         for (int i = 0; i < details.NumTrophies; i++)
@@ -177,6 +179,7 @@ namespace Plugins.UpscaleSDK.PS5.Runtime.Users
 
         private void UnregisterUserSession(uint userId)
         {
+            IsUserRegistered = false;
 #if UNITY_PS5
             SessionsManager.UnregisterUserSessionEventAsync((int)userId);
 

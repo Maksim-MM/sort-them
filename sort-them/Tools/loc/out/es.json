@@ -364,6 +364,7 @@
   "ui.special_next": "Siguiente pieza: {0}",
   "ui.spin": "Tirar · ${0}",
   "ui.terminal": "Terminal de mejoras",
+  "ui.lightbar": "Barra luminosa",
   "ui.vibration": "Vibración",
   "ui.yes": "Sí, reiniciar",
   "upg_autocollect.desc": "Tecla 2: atrae los coches iguales cercanos a tu inventario",

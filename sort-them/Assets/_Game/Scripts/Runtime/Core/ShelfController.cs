@@ -197,6 +197,7 @@ namespace SortThem
                 var gm = GameManager.I;
                 if (gm != null) Sfx.Play(gm.Config.ShelfCompleteClip, transform.position);
                 Rumble.ShelfComplete();
+                LightBar.ShelfComplete();
                 return;
             }
             StartCoroutine(Pop(car));

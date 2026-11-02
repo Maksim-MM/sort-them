@@ -168,6 +168,123 @@ MonoBehaviour:
   - 10
   - 20
   - 35
+  ConsoleVolume: {fileID: 11400000, guid: b98369a797500481ca9dd7a6b26b6483, type: 2}
+  ConsoleSunIntensity: 0.6
+  ConsoleFogColor: {r: 0.86, g: 0.9, b: 1, a: 1}
+  ConsoleFogDensity: 0.012
+  ConsoleWood:
+  - Material: {fileID: 2100000, guid: 738529ad251a540788c417d3407dce9e, type: 2}
+    Normal:
+      m_AssetGUID: d9d0ea1b9b8f043618dee595bb832e4b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    MetallicSmooth:
+      m_AssetGUID: a612e1fb875a74dbe88bf6d0a244d5bc
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    BumpScale: 1.3
+    SmoothnessScale: 1
+    EnvironmentReflections: 1
+  - Material: {fileID: 2100000, guid: 72b0adb1b709d458097f005a13bd7786, type: 2}
+    Normal:
+      m_AssetGUID: ccc31d065915d415bbbbc154bd67a8d0
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    MetallicSmooth:
+      m_AssetGUID: 433baf526b86c4e7b9eb1e2247c26850
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    BumpScale: 1.3
+    SmoothnessScale: 0.5
+    EnvironmentReflections: 0
+  - Material: {fileID: 2100000, guid: 07c84678dee13483fbd91946e901be2f, type: 2}
+    Normal:
+      m_AssetGUID: ccc31d065915d415bbbbc154bd67a8d0
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    MetallicSmooth:
+      m_AssetGUID: 433baf526b86c4e7b9eb1e2247c26850
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    BumpScale: 1.3
+    SmoothnessScale: 0.5
+    EnvironmentReflections: 0
+  - Material: {fileID: 2100000, guid: 3d62aa5570b754415907aa27c0583950, type: 2}
+    Normal:
+      m_AssetGUID: 9c61340ee89f34c5d9928ba93588e320
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    MetallicSmooth:
+      m_AssetGUID: 389238e8209704ec5bc7ec547d1eb461
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    BumpScale: 1.3
+    SmoothnessScale: 0.8
+    EnvironmentReflections: 1
+  - Material: {fileID: 2100000, guid: 67086b66edeb347d99ff06dbd2e7da10, type: 2}
+    Normal:
+      m_AssetGUID: 5bd4d70c736364d2d97a733bd06720e4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    MetallicSmooth:
+      m_AssetGUID: ad5ae2b76640d4531a779bb4c62144ba
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    BumpScale: 1.3
+    SmoothnessScale: 0.45
+    EnvironmentReflections: 0
+  - Material: {fileID: 2100000, guid: 2ebc5348950e9462fb3382605a6024fb, type: 2}
+    Normal:
+      m_AssetGUID: 5bd4d70c736364d2d97a733bd06720e4
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    MetallicSmooth:
+      m_AssetGUID: ad5ae2b76640d4531a779bb4c62144ba
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    BumpScale: 1.3
+    SmoothnessScale: 0.7
+    EnvironmentReflections: 1
+  - Material: {fileID: 2100000, guid: ad5ac237b4cfd40b2a099dc534d5d3ef, type: 2}
+    Normal:
+      m_AssetGUID: d8e12ba78a157436da9ffd36ffdef1f7
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    MetallicSmooth:
+      m_AssetGUID: 37afbd2bb267d44d893a2ce38b011f28
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    BumpScale: 1.3
+    SmoothnessScale: 0.7
+    EnvironmentReflections: 1
   BombPrefab: {fileID: 3635098191875021876, guid: aa6357fcfca9a4b6a9e7853ac627be89, type: 3}
   BombChance: 0.35
   BombFuseTime: 3
@@ -235,3 +352,5 @@ MonoBehaviour:
   AutosaveInterval: 60
   SaveMinIntervalSwitch: 60
   SaveMinIntervalConsole: 30
+  SaveMinIntervalWeb: 5
+  SpawnPerFrame: 300
