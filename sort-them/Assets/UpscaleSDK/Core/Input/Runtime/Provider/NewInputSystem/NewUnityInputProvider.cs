@@ -488,7 +488,9 @@ namespace UpscaleSDK.Core.Input.Provider.NewInputSystem
         /// <param name="player">The player.</param>
         public void StopVibration(int player = 0)
         {
-
+#if UNITY_PS5
+            PlaystationInput.PadSetVibration(player, 0, 0);
+#endif
             if (ActiveGamepad != null)
                 ActiveGamepad.SetMotorSpeeds(0, 0);
         }
