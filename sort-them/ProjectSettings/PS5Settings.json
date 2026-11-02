@@ -10,7 +10,7 @@
         "enableApplicationExit": false,
         "resetTempFolder": true,
         "disableAutoHideSplash": false,
-        "playerPrefsSupport": false,
+        "playerPrefsSupport": true,
         "appType": 0,
         "restrictedAudioUsageRights": false,
         "backgroundImagePath": "",
@@ -25,7 +25,7 @@
         "useResolutionFallback": false,
         "videoOutPixelFormat": 0,
         "videoOutOutputMode": 1,
-        "paramFilePath": "",
+        "paramFilePath": "Publishing/PS5/param_full.json",
         "passcode": "LBlELiWGpFf3XyBqWb2U_UsvU8o5v-KX",
         "updateReferencePackage": "",
         "includedModules": [
@@ -38,7 +38,7 @@
         "buildCompressionType": 0,
         "buildCompressionLevel": 7,
         "keepPackageFiles": false,
-        "buildSubtarget": 0,
+        "buildSubtarget": 1,
         "hardwareTarget": 1,
         "sdkOverride": "",
         "saveDataImagePath": "",
@@ -53,6 +53,6 @@
         "psvr2HandTrackingEnabled": false,
         "highCPUFrequency": false,
         "lowEnergyModeSupport": false,
-        "enhancedNativeDebugging": false
+        "enhancedNativeDebugging": true
     }
 }
