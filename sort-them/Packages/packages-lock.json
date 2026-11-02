@@ -98,6 +98,12 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.commondialog.ps5": {
+      "version": "file:../Assets/UpscaleSDK/Platform/PS5/PS5 packages/com.unity.commondialog.ps5-1.1.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
     "com.unity.ext.nunit": {
       "version": "2.0.5",
       "depth": 1,
@@ -130,6 +136,14 @@
         "com.unity.modules.uielements": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.unity.inputsystem.ps5": {
+      "version": "file:../Assets/UpscaleSDK/Platform/PS5/PS5 packages/com.unity.inputsystem.ps5-0.3.0-preview.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.unity.inputsystem": "1.10.0"
+      }
     },
     "com.unity.inputsystem.switch": {
       "version": "file:com.unity.inputsystem.switch",
@@ -185,6 +199,12 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.playgo.ps5": {
+      "version": "file:../Assets/UpscaleSDK/Platform/PS5/PS5 packages/com.unity.playgo.ps5-1.0.6.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
     "com.unity.postprocessing": {
       "version": "3.5.4",
       "depth": 0,
@@ -214,6 +234,14 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.psn.ps5": {
+      "version": "file:../Assets/UpscaleSDK/Platform/PS5/PS5 packages/com.unity.psn.ps5-1.6.1.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
+    },
     "com.unity.recorder": {
       "version": "5.1.7",
       "depth": 0,
@@ -239,6 +267,12 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       }
     },
+    "com.unity.render-pipelines.ps5": {
+      "version": "file:../Assets/UpscaleSDK/Platform/PS5/PS5 packages/com.unity.render-pipelines.ps5-1.10.2.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
     "com.unity.render-pipelines.universal": {
       "version": "17.3.0",
       "depth": 0,
@@ -256,6 +290,12 @@
       "dependencies": {
         "com.unity.render-pipelines.core": "17.0.3"
       }
+    },
+    "com.unity.savedata.ps5": {
+      "version": "file:../Assets/UpscaleSDK/Platform/PS5/PS5 packages/com.unity.savedata.ps5-1.4.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
     },
     "com.unity.scriptablebuildpipeline": {
       "version": "2.6.1",
@@ -289,6 +329,12 @@
         "com.unity.render-pipelines.core": "17.3.0",
         "com.unity.searcher": "4.9.3"
       }
+    },
+    "com.unity.share.ps5": {
+      "version": "file:../Assets/UpscaleSDK/Platform/PS5/PS5 packages/com.unity.share.ps5-1.0.7.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
     },
     "com.unity.splines": {
       "version": "2.9.0",
