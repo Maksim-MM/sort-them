@@ -77,17 +77,52 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS5
         public void Write(string fileName, string extension, string data)
         {
 #if UNITY_PS5
+            if (_writing)
+            {
+                _pendingWrite = (fileName, extension, data);
+                return;
+            }
+            StartWrite(fileName, extension, data);
+#endif
+        }
+
+#if UNITY_PS5
+        private bool _writing;
+        private (string fileName, string extension, string data)? _pendingWrite;
+
+        private void StartWrite(string fileName, string extension, string data)
+        {
             try
             {
                 if (_userData == null) _userData = IDependency<UserData>.Instance;
-                _monoBeh.StartCoroutine(WriteCoroutine(fileName, _savesSettings.ProjectFolderName, extension, data));
+                _writing = true;
+                _monoBeh.StartCoroutine(WriteQueued(fileName, extension, data));
             }
             catch (SaveDataException ex)
             {
+                _writing = false;
                 Debug.LogError($"PS5 Write operation failed with error: {ex.ExtendedMessage}");
             }
-#endif
         }
+
+        private IEnumerator WriteQueued(string fileName, string extension, string data)
+        {
+            try
+            {
+                yield return WriteCoroutine(fileName, _savesSettings.ProjectFolderName, extension, data);
+            }
+            finally
+            {
+                _writing = false;
+            }
+            if (_pendingWrite.HasValue)
+            {
+                var next = _pendingWrite.Value;
+                _pendingWrite = null;
+                StartWrite(next.fileName, next.extension, next.data);
+            }
+        }
+#endif
 
         /// <summary>
         /// Reads data from a file in the PS5 save data system. When the read operation is complete,
@@ -391,6 +426,10 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS5
 
                             Debug.Log("PS5 SAVE ERROR FOUND: SAVE_DATA_ERROR_BROKEN. TYPE: WRITE");
                         }
+                        else
+                        {
+                            Debug.LogError($"PS5 SAVE ERROR: 0x{errorCode:X8}. TYPE: WRITE");
+                        }
                     }
                     currentState = SaveState.Exit;
                     break;
@@ -535,6 +574,10 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS5
 
                             Debug.Log("PS5 SAVE ERROR FOUND: SAVE_DATA_ERROR_BROKEN. TYPE: READ");
                         }
+                        else
+                        {
+                            Debug.LogError($"PS5 SAVE ERROR: 0x{errorCode:X8}. TYPE: READ");
+                        }
                     }
                         currentState = SaveState.Exit;
                         break;
@@ -659,12 +702,14 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS5
 
                 errorCode = 0;
             }
-            catch
+            catch (Exception e)
             {
                 if (iconResponse.ReturnCodeValue < 0)
                 {
                     errorCode = iconResponse.ReturnCodeValue;
                 }
+                Debug.LogWarning($"PS5 save icon not written ({newItem.IconPath}): 0x{errorCode:X8} {e.Message}");
+                errorCode = 0;
             }
 
             return errorCode;

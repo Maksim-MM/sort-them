@@ -66,16 +66,51 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS4
         public void Write(string fileName, string extension, string data)
         {
 #if UNITY_PS4
+            if (_writing)
+            {
+                _pendingWrite = (fileName, extension, data);
+                return;
+            }
+            StartWrite(fileName, extension, data);
+#endif
+        }
+
+#if UNITY_PS4
+        private bool _writing;
+        private (string fileName, string extension, string data)? _pendingWrite;
+
+        private void StartWrite(string fileName, string extension, string data)
+        {
             try
             {
-                _monoBeh.StartCoroutine(WriteCoroutine(fileName, _savesSettings.ProjectFolderName, extension, data));
+                _writing = true;
+                _monoBeh.StartCoroutine(WriteQueued(fileName, extension, data));
             }
             catch (SaveDataException e)
             {
+                _writing = false;
                 Debug.LogError("Exception during saving: " + e);
             }
-#endif
         }
+
+        private IEnumerator WriteQueued(string fileName, string extension, string data)
+        {
+            try
+            {
+                yield return WriteCoroutine(fileName, _savesSettings.ProjectFolderName, extension, data);
+            }
+            finally
+            {
+                _writing = false;
+            }
+            if (_pendingWrite.HasValue)
+            {
+                var next = _pendingWrite.Value;
+                _pendingWrite = null;
+                StartWrite(next.fileName, next.extension, next.data);
+            }
+        }
+#endif
 
         /// <summary>
         /// Reads data from a file in the PS4 save data system. The result will be provided via the OnFileReadFinished event.
@@ -390,6 +425,10 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS4
                             Dialogs.OpenDialog(request, response);
                             ErrorHandler.RaiseError("Save failed: The save data is corrupt.");
                         }
+                        else
+                        {
+                            Debug.LogError($"PS4 SAVE ERROR: 0x{errorCode:X8}. TYPE: WRITE");
+                        }
 
                         OnWriteError?.Invoke(errorCode, String.Empty);
                     }
@@ -526,6 +565,10 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS4
                             reqeust.IgnoreCallback = true;
                             Dialogs.OpenDialog(reqeust, response);
                             ErrorHandler.RaiseError("Load failed: The save data is corrupt.");
+                        }
+                        else
+                        {
+                            Debug.LogError($"PS4 SAVE ERROR: 0x{errorCode:X8}. TYPE: READ");
                         }
 
                         OnReadError?.Invoke(errorCode, String.Empty);
@@ -682,12 +725,14 @@ namespace Plugins.UpscaleSDK.Saves.Runtime.PS4
 
                 errorCode = 0;
             }
-            catch
+            catch (Exception e)
             {
                 if (iconResponse.ReturnCodeValue < 0)
                 {
                     errorCode = iconResponse.ReturnCodeValue;
                 }
+                Debug.LogWarning($"PS4 save icon not written ({newItem.IconPath}): 0x{errorCode:X8} {e.Message}");
+                errorCode = 0;
             }
 
             return errorCode;

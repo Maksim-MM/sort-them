@@ -113,8 +113,21 @@ namespace SortThem
             Racks.AddRange(FindObjectsByType<RackController>(FindObjectsSortMode.None));
             TotalShelves = Shelves.Count;
 
+#if UNITY_PS4 || UNITY_PS5 || UNITY_GAMECORE || UNITY_XBOXONE || UNITY_SWITCH
+            float waitStart = Time.realtimeSinceStartup;
+            while (!SavesReady.IsReady)
+            {
+                if (Time.realtimeSinceStartup - waitStart > 10f)
+                {
+                    Debug.LogWarning("SortThem: SDK saves not ready, still waiting");
+                    waitStart = Time.realtimeSinceStartup;
+                }
+                yield return null;
+            }
+#else
             yield return Platform.WaitUntil(() => SavesReady.IsReady, 10f);
             if (!SavesReady.IsReady) Debug.LogWarning("SortThem: SDK saves not ready, falling back to PlayerPrefs");
+#endif
             Settings.Load();
 
             yield return InitLocalization();
@@ -588,6 +601,11 @@ namespace SortThem
         void OnApplicationPause(bool paused)
         {
             if (paused && Ready) Save.SaveNow("pause", true);
+        }
+
+        void OnApplicationQuit()
+        {
+            if (Ready) Save.SaveNow("quit", true);
         }
     }
 }
