@@ -41,6 +41,14 @@ namespace SortThem
                 _gm.UnlockBlueprint(bit);
                 Show(i, true);
             }
+            if (!_gm.Ready) return;
+            int unlocked = 0;
+            for (int i = 0; i < Categories.Length; i++)
+            {
+                int bit = Array.IndexOf(_gm.Catalog.Categories, Categories[i]);
+                if (bit >= 0 && _gm.HasBlueprint(bit)) unlocked++;
+            }
+            Trophies.Blueprints(unlocked, Categories.Length);
         }
 
         bool IsCategoryClosed(CategoryData category)

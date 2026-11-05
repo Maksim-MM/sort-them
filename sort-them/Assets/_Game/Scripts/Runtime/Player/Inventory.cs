@@ -45,7 +45,6 @@ namespace SortThem
             if (GameManager.I != null) GameManager.I.WakeCollectiblesNear(from);
             Items.Add(car);
             if (takeSlot) ActiveIndex = Items.Count - 1;
-            Trophies.Hands(Items);
             Changed?.Invoke();
             return true;
         }

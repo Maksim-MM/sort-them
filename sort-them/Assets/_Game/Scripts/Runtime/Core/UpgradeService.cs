@@ -34,6 +34,11 @@ namespace SortThem
             get { foreach (var u in _all) if (Level(u) < u.MaxLevel) return false; return _all.Count > 0; }
         }
 
+        public bool TerminalMaxed
+        {
+            get { int n = 0; foreach (var u in _all) if (u.Source == UpgradeSource.Terminal) { if (Level(u) < u.MaxLevel) return false; n++; } return n > 0; }
+        }
+
         public bool AnyPurchased
         {
             get { foreach (var u in _all) if (u.Source == UpgradeSource.Terminal && Level(u) > 0) return true; return false; }

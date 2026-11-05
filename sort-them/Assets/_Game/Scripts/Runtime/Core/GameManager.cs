@@ -151,6 +151,7 @@ namespace SortThem
             CarProbeLight.ApplyAll(Cars);
             Ready = true;
             Trophies.Evaluate(this);
+            if (GameComplete) Activities.GameCompleted();
             Platform.RaiseGameReady();
             PileOcclusion.Init(Cars, Config);
             if (Config.FrozenBatchMobile && Platform.IsMobile) FrozenCarBatch.Init(Cars, Config.ChunkShader, Config.ChunkDistance, EyePosition);
@@ -237,6 +238,7 @@ namespace SortThem
             Analytics.Track("shelf_completed", new Dictionary<string, object> { { "shelf_id", shelf.ShelfId }, { "closed", ClosedShelves }, { "total", TotalShelves }, { "seconds_played", Analytics.SecondsPlayed }, { "balance", Mathf.RoundToInt(Economy.Balance) } });
             Save.SaveNow("shelf closed");
             Trophies.Shelves(ClosedShelves, TotalShelves);
+            if (GameComplete) Activities.GameCompleted();
             if (GameComplete && !_completeAnnounced)
             {
                 _completeAnnounced = true;
@@ -284,8 +286,7 @@ namespace SortThem
             if (view != null) { view.Level = SpecialLevel(car.Data); view.Rebuild(newParts); }
             StatsChanged?.Invoke();
             if (Ready) Save.SaveNow("upgrade");
-            var special = Catalog != null ? Catalog.SpecialFor(car.Data) : null;
-            if (special != null && SpecialLevel(car.Data) >= special.MaxLevel) Trophies.Unlock(Trophy.MasterMechanic);
+            Trophies.Specials(this);
             return true;
         }
 
@@ -386,12 +387,6 @@ namespace SortThem
             if (index < 0 || index >= 31 || HasBlueprint(index)) return;
             BlueprintsMask |= 1 << index;
             if (Ready) Save.SaveNow("blueprint unlocked");
-            if (Ready && Catalog != null)
-            {
-                int unlocked = 0;
-                for (int i = 0; i < Catalog.Categories.Length; i++) if (HasBlueprint(i)) unlocked++;
-                Trophies.Blueprints(unlocked, Catalog.Categories.Length);
-            }
         }
 
         public void ApplyCollectiblesMask(long mask)
@@ -415,7 +410,6 @@ namespace SortThem
             Messages.Show(Loc.Get("msg.crate_found", "Ящик запчастей: +1"));
             StatsChanged?.Invoke();
             if (Ready) Save.SaveNow("collectible");
-            Trophies.Collectibles(CollectiblesFound, Collectibles.Count);
         }
 
         public void ClickRegister(CashRegister register)
@@ -485,7 +479,6 @@ namespace SortThem
             float mult = bomb.Held ? Config.BombHandMultiplier : 1f;
             if (bomb == HeldBomb) HeldBomb = null;
             Bombs.Remove(bomb);
-            Trophies.Unlock(Trophy.Kaboom);
             float radius = Config.BombRadius, r2 = radius * radius;
             foreach (var car in Cars)
             {
@@ -530,6 +523,7 @@ namespace SortThem
             }
             PlacedValid = placed;
             ClosedShelves = closed;
+            if (Ready) Trophies.Cars(PlacedValid);
             StatsChanged?.Invoke();
         }
 

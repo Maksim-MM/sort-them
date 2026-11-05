@@ -6,19 +6,20 @@ namespace SortThem
 {
     public enum Trophy
     {
-        FiveOfAKind = 1,
+        FirstSort = 1,
         ShelfLife = 2,
-        FiftyShelves = 3,
-        HalfwayThere = 4,
-        WarehouseInOrder = 5,
-        CategoryClosed = 6,
-        BlueprintCollector = 7,
-        RetailTherapy = 8,
-        MaxedOut = 9,
-        HighRoller = 10,
-        Kaboom = 11,
-        TreasureHunter = 12,
-        MasterMechanic = 13,
+        CategoryClosed = 3,
+        RetailTherapy = 4,
+        HighRoller = 5,
+        FiftyShelves = 6,
+        HundredCars = 7,
+        HalfwayThere = 8,
+        ThousandCars = 9,
+        BlueprintCollector = 10,
+        MaxedOut = 11,
+        MasterMechanic = 12,
+        Collector = 13,
+        WarehouseInOrder = 14,
     }
 
     public static class Trophies
@@ -89,8 +90,16 @@ namespace SortThem
             if (!Enabled || total <= 0) return;
             if (closed >= 1) Unlock(Trophy.ShelfLife);
             if (closed >= 50) Unlock(Trophy.FiftyShelves);
-            if (closed * 2 >= total) Unlock(Trophy.HalfwayThere);
+            if (closed >= 150) Unlock(Trophy.HalfwayThere);
             if (closed >= total) Unlock(Trophy.WarehouseInOrder);
+        }
+
+        public static void Cars(int placed)
+        {
+            if (!Enabled) return;
+            if (placed >= 1) Unlock(Trophy.FirstSort);
+            if (placed >= 100) Unlock(Trophy.HundredCars);
+            if (placed >= 1000) Unlock(Trophy.ThousandCars);
         }
 
         public static void Blueprints(int unlocked, int total)
@@ -104,36 +113,30 @@ namespace SortThem
         {
             if (!Enabled || upgrades == null) return;
             if (purchased) Unlock(Trophy.RetailTherapy);
-            if (upgrades.AllMaxed) Unlock(Trophy.MaxedOut);
+            if (upgrades.TerminalMaxed) Unlock(Trophy.MaxedOut);
         }
 
-        public static void Collectibles(int found, int total)
+        public static void Specials(GameManager gm)
         {
-            if (!Enabled || total <= 0) return;
-            if (found >= total) Unlock(Trophy.TreasureHunter);
-        }
-
-        public static void Hands(IReadOnlyList<CarInstance> items)
-        {
-            if (!Enabled || items == null || items.Count < 5) return;
-            var first = items[0] != null ? items[0].Data : null;
-            if (first == null) return;
-            foreach (var car in items) if (car == null || car.Data != first) return;
-            Unlock(Trophy.FiveOfAKind);
+            if (!Enabled || gm == null || gm.Catalog == null) return;
+            int total = 0, maxed = 0;
+            foreach (var special in gm.Catalog.Specials)
+            {
+                if (special == null || special.Car == null || special.MaxLevel <= 0) continue;
+                total++;
+                if (gm.SpecialLevel(special.Car) >= special.MaxLevel) maxed++;
+            }
+            if (maxed >= 1) Unlock(Trophy.MasterMechanic);
+            if (total > 0 && maxed >= total) Unlock(Trophy.Collector);
         }
 
         public static void Evaluate(GameManager gm)
         {
             if (!Enabled || gm == null) return;
             Shelves(gm.ClosedShelves, gm.TotalShelves);
-            int blueprints = 0, categories = gm.Catalog != null ? gm.Catalog.Categories.Length : 0;
-            for (int i = 0; i < categories; i++) if (gm.HasBlueprint(i)) blueprints++;
-            Blueprints(blueprints, categories);
+            Cars(gm.PlacedValid);
             Upgrades(gm.Upgrades, gm.Upgrades != null && gm.Upgrades.AnyPurchased);
-            Collectibles(gm.CollectiblesFound, gm.Collectibles.Count);
-            if (gm.Catalog != null)
-                foreach (var special in gm.Catalog.Specials)
-                    if (special != null && special.Car != null && special.MaxLevel > 0 && gm.SpecialLevel(special.Car) >= special.MaxLevel) Unlock(Trophy.MasterMechanic);
+            Specials(gm);
         }
 
         static string Key(Trophy trophy) => "trophy." + (int)trophy;

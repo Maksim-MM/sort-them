@@ -24,21 +24,22 @@ namespace SortThem
 #endif
         }
 
+        static bool _completed, _started;
+
+        public static void GameCompleted()
+        {
+            _completed = true;
+            if (_started && !Done) Finish();
+        }
+
         static IEnumerator Run()
         {
             yield return new WaitUntil(() => SavesReady.IsReady);
             if (Done) yield break;
             yield return new WaitUntil(UserRegistered);
-            if (Trophies.AllUnlocked) { Finish(); yield break; }
+            if (_completed) { Finish(); yield break; }
             Start();
-            Trophies.Unlocked += OnTrophy;
-        }
-
-        static void OnTrophy(Trophy trophy)
-        {
-            if (!Trophies.AllUnlocked || Done) return;
-            Trophies.Unlocked -= OnTrophy;
-            Finish();
+            _started = true;
         }
 
         static bool UserRegistered()
