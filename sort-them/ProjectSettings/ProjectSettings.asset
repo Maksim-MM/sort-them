@@ -148,9 +148,7 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 01.000.000
-  preloadedAssets:
-  - {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  - {fileID: 11400000, guid: df87f956bc43e411e9f48204e4f111a4, type: 2}
+  preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -745,34 +743,34 @@ PlayerSettings:
   switchMicroSleepForYieldTime: 25
   switchRamDiskSpaceSize: 12
   switchUpgradedPlayerSettingsToNMETA: 1
-  ps4NPAgeRating: 12
+  ps4NPAgeRating: 2
   ps4NPTitleSecret: 
-  ps4NPTrophyPackPath: 
+  ps4NPTrophyPackPath: Publishing/PS4/CUSA60381_00.trp
   ps4ParentalLevel: 11
   ps4ContentID: ED1633-NPXX51362_00-0000000000000000
   ps4Category: 0
   ps4MasterVersion: 01.00
   ps4AppVersion: 01.00
   ps4AppType: 0
-  ps4ParamSfxPath: 
+  ps4ParamSfxPath: Publishing/PS4/param_full.sfx
   ps4VideoOutPixelFormat: 0
   ps4VideoOutInitialWidth: 1920
   ps4VideoOutBaseModeInitialWidth: 1920
   ps4VideoOutReprojectionRate: 60
   ps4PronunciationXMLPath: 
   ps4PronunciationSIGPath: 
-  ps4BackgroundImagePath: 
-  ps4StartupImagePath: 
+  ps4BackgroundImagePath: Publishing/PS4/Background Image - 1920x1080.png
+  ps4StartupImagePath: Publishing/PS4/Start-up Image - 1920x1080.png
   ps4StartupImagesFolder: 
   ps4IconImagesFolder: 
-  ps4SaveDataImagePath: 
+  ps4SaveDataImagePath: Publishing/PS4/Save Data Image - 228x128.png
   ps4SdkOverride: 
   ps4BGMPath: 
-  ps4ShareFilePath: 
+  ps4ShareFilePath: Publishing/PS4/shareparam.json
   ps4ShareOverlayImagePath: 
   ps4PrivacyGuardImagePath: 
   ps4ExtraSceSysFile: 
-  ps4NPtitleDatPath: 
+  ps4NPtitleDatPath: Publishing/PS4/nptitle.dat
   ps4RemotePlayKeyAssignment: -1
   ps4RemotePlayKeyMappingDir: 
   ps4PlayTogetherPlayerCount: 0
@@ -790,7 +788,7 @@ PlayerSettings:
   ps4pnPresence: 1
   ps4pnFriends: 1
   ps4pnGameCustomData: 1
-  playerPrefsSupport: 0
+  playerPrefsSupport: 1
   enableApplicationExit: 0
   resetTempFolder: 1
   restrictedAudioUsageRights: 0

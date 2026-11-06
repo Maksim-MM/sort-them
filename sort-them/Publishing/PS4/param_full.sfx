@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<paramsfo>
+ <param key="APP_TYPE">0</param>
+ <param key="APP_VER">01.00</param>
+ <param key="ATTRIBUTE">8388640</param>
+ <param key="ATTRIBUTE2">75497472</param>
+ <param key="CATEGORY">gd</param>
+ <param key="CONTENT_ID">HB2226-CUSA60381_00-0764869680693427</param>
+ <param key="DOWNLOAD_DATA_SIZE">0</param>
+ <param key="FORMAT">obs</param>
+ <param key="PARENTAL_LEVEL">1</param>
+ <param key="REMOTE_PLAY_KEY_ASSIGN">1</param>
+ <param key="SERVICE_ID_ADDCONT_ADD_1"></param>
+ <param key="SERVICE_ID_ADDCONT_ADD_2"></param>
+ <param key="SERVICE_ID_ADDCONT_ADD_3"></param>
+ <param key="SERVICE_ID_ADDCONT_ADD_4"></param>
+ <param key="SERVICE_ID_ADDCONT_ADD_5"></param>
+ <param key="SERVICE_ID_ADDCONT_ADD_6"></param>
+ <param key="SERVICE_ID_ADDCONT_ADD_7"></param>
+ <param key="SYSTEM_VER">0</param>
+ <param key="TITLE">Sort Them Cars: Sorting Simulator</param>
+ <param key="TITLE_00">車を仕分けろ仕分けシミュレーター</param>
+ <param key="TITLE_ID">CUSA60381</param>
+ <param key="VERSION">01.00</param>
+</paramsfo>
