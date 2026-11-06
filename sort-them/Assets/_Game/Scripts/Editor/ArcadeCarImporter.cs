@@ -509,7 +509,7 @@ namespace SortThem.Editor
                     var mesh = AssetDatabase.LoadAssetAtPath<Mesh>(paths[i]);
                     if (mesh == null) continue;
                     EditorUtility.DisplayProgressBar("Compacting car meshes", mesh.name, (float)i / paths.Count);
-                    if (mesh.GetVertexAttributeFormat(VertexAttribute.Position) == VertexAttributeFormat.Float16 && mesh.bounds.size.sqrMagnitude > 0f) { skipped++; continue; }
+                    if (mesh.GetVertexAttributeFormat(VertexAttribute.TexCoord0) == VertexAttributeFormat.Float16 && mesh.bounds.size.sqrMagnitude > 0f) { skipped++; continue; }
                     before += VertexBytes(mesh);
                     WriteCompact(mesh, mesh.vertices, mesh.normals, mesh.uv, mesh.triangles, mesh.indexFormat, mesh.name);
                     after += VertexBytes(mesh);
@@ -553,8 +553,8 @@ namespace SortThem.Editor
                     NY = (sbyte)Mathf.RoundToInt(Mathf.Clamp(nn.y, -1f, 1f) * 127f),
                     NZ = (sbyte)Mathf.RoundToInt(Mathf.Clamp(nn.z, -1f, 1f) * 127f),
                     NW = 0,
-                    U = (ushort)Mathf.RoundToInt(Mathf.Clamp01(t.x) * 65535f),
-                    V = (ushort)Mathf.RoundToInt(Mathf.Clamp01(t.y) * 65535f)
+                    U = Mathf.FloatToHalf(t.x),
+                    V = Mathf.FloatToHalf(t.y)
                 };
             }
             dst.Clear(false);
@@ -563,7 +563,7 @@ namespace SortThem.Editor
             dst.SetVertexBufferParams(v.Length,
                 new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float16, 4),
                 new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.SNorm8, 4),
-                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.UNorm16, 2));
+                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float16, 2));
             dst.SetVertexBufferData(data, 0, 0, data.Length);
             dst.SetTriangles(tris, 0, false);
             var b = new Bounds(v.Length > 0 ? v[0] : Vector3.zero, Vector3.zero);

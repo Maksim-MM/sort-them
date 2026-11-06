@@ -29,7 +29,7 @@ namespace SortThem
             new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float16, 4),
             new VertexAttributeDescriptor(VertexAttribute.Normal, VertexAttributeFormat.SNorm8, 4),
             new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4),
-            new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.UNorm16, 2)
+            new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float16, 2)
         };
 
         class Source
@@ -353,7 +353,7 @@ namespace SortThem
             {
                 s.U = new ushort[uv.Length];
                 s.V2 = new ushort[uv.Length];
-                for (int i = 0; i < uv.Length; i++) { s.U[i] = UNorm16(uv[i].x); s.V2[i] = UNorm16(uv[i].y); }
+                for (int i = 0; i < uv.Length; i++) { s.U[i] = Half(uv[i].x); s.V2[i] = Half(uv[i].y); }
             }
             _sources[mesh] = s;
             return s;
@@ -361,7 +361,6 @@ namespace SortThem
 
         static sbyte SNorm(float v) => (sbyte)Mathf.Clamp(Mathf.RoundToInt(v * 127f), -127, 127);
 
-        static ushort UNorm16(float v) => (ushort)Mathf.Clamp(Mathf.RoundToInt(v * 65535f), 0, 65535);
 
         static byte Ambient(float v) => v <= 0f ? (byte)0 : v >= 2f ? (byte)255 : (byte)(v * 127.5f + 0.5f);
 
