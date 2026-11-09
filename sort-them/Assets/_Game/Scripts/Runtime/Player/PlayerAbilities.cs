@@ -11,6 +11,7 @@ namespace SortThem
         public Material LevitateOutlineMaterial;
 
         GameAction[] _actions;
+        public static bool InstantCooldown;
         readonly float[] _cooldown = new float[3];
         float _findUntil, _rackUntil, _collectUntil, _collectNextPull;
         bool _rackActive;
@@ -74,6 +75,7 @@ namespace SortThem
             if (gm == null || !gm.Ready || _actions == null) return;
             for (int i = 0; i < 3; i++)
             {
+                if (InstantCooldown) _cooldown[i] = 0f;
                 bool wasCooling = _cooldown[i] > 0f;
                 _cooldown[i] -= Time.deltaTime;
                 if (wasCooling && _cooldown[i] <= 0f && IsUnlocked(i))

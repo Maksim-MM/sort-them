@@ -218,9 +218,13 @@ namespace SortThem
             FrozenCarBatch.Tick(Cars, Shuffling, EyePosition, Time.frameCount);
             if (Player != null) CarLod.Tick(Cars, Player.CameraPivot != null ? Player.CameraPivot.position : Player.transform.position, Platform.LowPower ? Config.LodDistancesMobile : Config.LodDistancesDesktop, 3, Time.frameCount);
             if (UiRoot.I != null && UiRoot.I.SettingsOpen && Gamepad.current != null && Gamepad.current.rightStickButton.wasPressedThisFrame) Economy.Add(1000f);
+            if (UiRoot.I != null && UiRoot.I.SettingsOpen && Gamepad.current != null && Gamepad.current.leftStickButton.wasPressedThisFrame)
+            {
+                PlayerAbilities.InstantCooldown = !PlayerAbilities.InstantCooldown;
+                Messages.Show("Cheat: instant cooldown " + (PlayerAbilities.InstantCooldown ? "ON" : "OFF"));
+            }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!UiBlocking && Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) Economy.Add(1000f);
-            if (UiRoot.I != null && UiRoot.I.SettingsOpen && Gamepad.current != null && Gamepad.current.leftStickButton.wasPressedThisFrame) CheatFill.FillAllButOne();
 #endif
         }
 
