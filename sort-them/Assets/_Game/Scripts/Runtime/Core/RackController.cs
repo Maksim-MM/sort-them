@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -38,9 +39,29 @@ namespace SortThem
             return empty;
         }
 
+        public float HighlightPulseAmount = 0.06f;
+        public float HighlightPulseHz = 1.5f;
+        Coroutine _pulse;
+
         public void SetHighlight(bool on)
         {
-            if (HighlightFrame != null && HighlightFrame.activeSelf != on) HighlightFrame.SetActive(on);
+            if (HighlightFrame == null) return;
+            if (HighlightFrame.activeSelf != on) HighlightFrame.SetActive(on);
+            if (_pulse != null) { StopCoroutine(_pulse); _pulse = null; }
+            HighlightFrame.transform.localScale = Vector3.one;
+            if (on && isActiveAndEnabled) _pulse = StartCoroutine(Pulse());
+        }
+
+        IEnumerator Pulse()
+        {
+            float t = 0f;
+            while (true)
+            {
+                t += Time.deltaTime * HighlightPulseHz * Mathf.PI * 2f;
+                float s = 1f + HighlightPulseAmount * (0.5f + 0.5f * Mathf.Sin(t));
+                HighlightFrame.transform.localScale = Vector3.one * s;
+                yield return null;
+            }
         }
 
         void OnEnable() => Loc.Changed += RefreshSign;

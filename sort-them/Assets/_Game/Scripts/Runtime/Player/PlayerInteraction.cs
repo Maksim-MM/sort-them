@@ -355,6 +355,7 @@ namespace SortThem
                 if (!HoverShelf.TryPlaceAnimated(car, HoverSlot, fromPos, fromRot, GameManager.I.Config.PlaceFlightDuration)) Inventory.Add(car);
                 return;
             }
+            if (Tutorial.BlocksThrow) return;
             Throw(car);
         }
 

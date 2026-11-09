@@ -12,6 +12,7 @@ namespace SortThem
 
         public float WalkDistance = 2f;
         public float LookDegrees = 90f;
+        public float TurnDuration = 0.6f;
         public bool ForceRun;
 
         public bool Active { get; private set; }
@@ -21,6 +22,7 @@ namespace SortThem
         public static bool Running => I != null && I.Active;
         public static bool BlocksInteract => Running && I.Step < TutorialStep.Take;
         public static bool BlocksPlace => Running && I.Step < TutorialStep.Place;
+        public static bool BlocksThrow => Running && I.Step == TutorialStep.Place;
 
         PlayerController _player;
         Inventory _inventory;
@@ -143,7 +145,11 @@ namespace SortThem
             if (_rack == rack) return;
             if (_rack != null) _rack.SetHighlight(false);
             _rack = rack;
-            if (_rack != null) _rack.SetHighlight(true);
+            if (_rack == null) return;
+            _rack.SetHighlight(true);
+            if (_player == null) return;
+            var target = _rack.HighlightFrame != null ? _rack.HighlightFrame.transform.position : _rack.transform.position;
+            _player.TurnTowards(target, TurnDuration);
         }
 
         static int CountPlaced(GameManager gm)

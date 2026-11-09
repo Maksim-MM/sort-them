@@ -19,6 +19,25 @@ namespace SortThem
         float _baseFov = 70f, _fovVelocity;
 
         public bool IsCrouching => _crouching;
+        public bool Turning => _turning;
+
+        bool _turning;
+        float _turnT, _turnDuration, _turnFromYaw, _turnFromPitch, _turnToYaw, _turnToPitch;
+
+        public void TurnTowards(Vector3 point, float duration)
+        {
+            Vector3 eye = CameraPivot != null ? CameraPivot.position : transform.position;
+            Vector3 d = point - eye;
+            float flat = new Vector2(d.x, d.z).magnitude;
+            if (flat < 0.01f) return;
+            _turnFromYaw = _yaw;
+            _turnFromPitch = _pitch;
+            _turnToYaw = _yaw + Mathf.DeltaAngle(_yaw, Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg);
+            _turnToPitch = Mathf.Clamp(-Mathf.Atan2(d.y, flat) * Mathf.Rad2Deg, -89f, 89f);
+            _turnT = 0f;
+            _turnDuration = Mathf.Max(0.05f, duration);
+            _turning = true;
+        }
 
         void Awake()
         {
@@ -58,7 +77,16 @@ namespace SortThem
             Cursor.lockState = blocked || touch ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = blocked || touch;
 
-            if (!blocked)
+            if (_turning)
+            {
+                if (touch) TouchInput.ConsumeLook();
+                _turnT += Time.deltaTime / _turnDuration;
+                float s = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(_turnT));
+                _yaw = Mathf.Lerp(_turnFromYaw, _turnToYaw, s);
+                _pitch = Mathf.Lerp(_turnFromPitch, _turnToPitch, s);
+                if (_turnT >= 1f) _turning = false;
+            }
+            else if (!blocked)
             {
                 Vector2 look = touch ? Vector2.zero : _input.Look.VectorValue * (cfg.GamepadLookSpeed * Time.deltaTime) + _input.LookMouse.VectorValue * cfg.MouseSensitivity;
                 if (touch) look += TouchInput.ConsumeLook();
@@ -89,7 +117,7 @@ namespace SortThem
             float crouchF = UpdateEye(cfg);
             if (CameraPivot != null) CameraPivot.localRotation = Quaternion.Euler(_pitch + _eyeTilt, 0f, 0f);
 
-            Vector2 moveInput = blocked ? Vector2.zero : Vector2.ClampMagnitude(_input.Move.VectorValue + TouchInput.Move, 1f);
+            Vector2 moveInput = blocked || _turning ? Vector2.zero : Vector2.ClampMagnitude(_input.Move.VectorValue + TouchInput.Move, 1f);
             bool sprint = !blocked && sprintHeld && !_crouching;
             float speed = Mathf.Lerp(sprint ? cfg.SprintSpeed : cfg.WalkSpeed, cfg.CrouchSpeed, crouchF);
             Vector3 dir = transform.right * moveInput.x + transform.forward * moveInput.y;

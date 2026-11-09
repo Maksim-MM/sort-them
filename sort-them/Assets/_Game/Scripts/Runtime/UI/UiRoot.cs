@@ -337,19 +337,21 @@ namespace SortThem
 
         void BuildTutorial(Transform hud)
         {
+            float k = TouchInput.Active ? 2f : 1f;
             var panel = UiFactory.Panel(hud, "Tutorial", new Color(0f, 0f, 0f, 0.45f));
-            UiFactory.Anchored(panel, new Vector2(1f, 1f), new Vector2(-16f, -116f), new Vector2(500f, 52f));
+            UiFactory.Anchored(panel, new Vector2(1f, 1f), new Vector2(-16f, -116f), new Vector2(500f * k, 52f * k));
             _tutorial = panel.gameObject.AddComponent<CanvasGroup>();
             _tutorial.alpha = 0f;
             _tutorial.blocksRaycasts = false;
             var box = UiFactory.Image(panel, "Box", SlotFrame, new Color(1f, 1f, 1f, 0.9f), Image.Type.Sliced);
-            box.pixelsPerUnitMultiplier = 2.4f * 72f / 30f;
-            UiFactory.Anchored(box.rectTransform, new Vector2(0f, 0.5f), new Vector2(12f, 0f), new Vector2(30f, 30f));
+            box.pixelsPerUnitMultiplier = 2.4f * 72f / 30f / k;
+            UiFactory.Anchored(box.rectTransform, new Vector2(0f, 0.5f), new Vector2(12f * k, 0f), new Vector2(30f * k, 30f * k));
             box.rectTransform.pivot = new Vector2(0f, 0.5f);
             _tutorialTick = new GameObject("Tick", typeof(RectTransform));
             var tick = (RectTransform)_tutorialTick.transform;
             tick.SetParent(box.transform, false);
             UiFactory.Anchor(tick, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            tick.localScale = Vector3.one * k;
             var green = new Color(0.45f, 1f, 0.5f, 1f);
             var shortBar = UiFactory.Image(tick, "Short", null, green, Image.Type.Simple);
             UiFactory.Anchored(shortBar.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-5.5f, -3f), new Vector2(4f, 11f));
@@ -361,11 +363,11 @@ namespace SortThem
             _tutorialGlyph = UiFactory.Glyph(panel, "Glyph", 60f);
             _tutorialGlyph.HideWhenEmpty = false;
             UiFactory.Anchored(_tutorialGlyph.Image.rectTransform, new Vector2(0f, 0.5f), new Vector2(44f, 0f), new Vector2(60f, 60f));
-            _tutorialText = UiFactory.Text(panel, "Text", "", 22f, TextAlignmentOptions.Left, Color.white);
+            _tutorialText = UiFactory.Text(panel, "Text", "", 22f * k, TextAlignmentOptions.Left, Color.white);
             _tutorialText.enableAutoSizing = true;
-            _tutorialText.fontSizeMin = 15f;
-            _tutorialText.fontSizeMax = 22f;
-            UiFactory.Anchor(_tutorialText.rectTransform, Vector2.zero, Vector2.one, new Vector2(104f, 0f), new Vector2(-12f, 0f));
+            _tutorialText.fontSizeMin = 15f * k;
+            _tutorialText.fontSizeMax = 22f * k;
+            UiFactory.Anchor(_tutorialText.rectTransform, Vector2.zero, Vector2.one, new Vector2(104f, 0f), new Vector2(-12f * k, 0f));
             panel.gameObject.SetActive(false);
         }
 
@@ -437,7 +439,7 @@ namespace SortThem
             _tutorialGlyph.Set(TutorialAction(step));
             bool glyph = TutorialAction(step) != null;
             _tutorialGlyph.gameObject.SetActive(glyph);
-            _tutorialText.rectTransform.offsetMin = new Vector2(glyph ? 104f : 54f, 0f);
+            _tutorialText.rectTransform.offsetMin = new Vector2(glyph ? 104f : 54f * (TouchInput.Active ? 2f : 1f), 0f);
             go.SetActive(true);
             for (float a = 0f; a < 1f; a += Time.unscaledDeltaTime / TutorialFade) { _tutorial.alpha = a; yield return null; }
             _tutorial.alpha = 1f;
@@ -559,7 +561,7 @@ namespace SortThem
             UiFactory.Anchored(_saveText.rectTransform, new Vector2(1f, 1f), new Vector2(-130f, -80f), new Vector2(240f, 30f));
 
             _inventoryText.gameObject.SetActive(false);
-            UiFactory.Anchored(_inventoryCountText.rectTransform, new Vector2(1f, 0f), new Vector2(-28f, 460f), new Vector2(400f, 32f));
+            UiFactory.Anchored(_inventoryCountText.rectTransform, new Vector2(1f, 0f), new Vector2(-36f, 444f), new Vector2(384f, 32f));
             _inventoryCountText.fontSize = 24f;
             BuildInventoryWheel(layer);
             UiFactory.Anchored(_abilitiesPanel, new Vector2(0.5f, 0f), new Vector2(0f, 24f), new Vector2(3f * SlotSize + 2f * SlotGap, SlotSize));
@@ -579,6 +581,14 @@ namespace SortThem
             comp.Counter = _inventoryCountText;
             comp.Plate = plate;
             comp.RowHeight = rowH;
+            var arrows = UiFactory.Rect(plate.transform, "ScrollArrows");
+            UiFactory.Anchored(arrows, new Vector2(0f, 0.5f), new Vector2(16f, 0f), new Vector2(32f, 32f));
+            var diamond = UiFactory.Image(arrows, "Diamond", null, new Color(1f, 1f, 1f, 0.85f), Image.Type.Simple);
+            UiFactory.Anchored(diamond.rectTransform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(20f, 20f));
+            diamond.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+            var split = UiFactory.Image(arrows, "Split", null, new Color(0.13f, 0.12f, 0.14f, 1f), Image.Type.Simple);
+            UiFactory.Anchored(split.rectTransform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(32f, 4f));
+            comp.Arrows = arrows.gameObject;
             for (int k = -2; k <= 2; k++)
             {
                 var row = UiFactory.Text(wheel.transform, "Row" + (k + 2), "", 26f, TextAlignmentOptions.Right, Color.white);

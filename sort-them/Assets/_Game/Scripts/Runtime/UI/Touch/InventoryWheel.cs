@@ -9,6 +9,7 @@ namespace SortThem
         public Inventory Inventory;
         public TMP_Text Counter;
         public UnityEngine.UI.Image Plate;
+        public GameObject Arrows;
         public TMP_Text[] Rows = new TMP_Text[5];
         public float RowHeight = 40f;
         public float SnapSpeed = 400f;
@@ -109,6 +110,7 @@ namespace SortThem
             int n = Inventory.Items.Count;
             if (Counter != null) Counter.text = n + "/" + Inventory.Capacity;
             if (Plate != null && Plate.gameObject.activeSelf != n > 0) Plate.gameObject.SetActive(n > 0);
+            if (Arrows != null && Arrows.activeSelf != n > 1) Arrows.SetActive(n > 1);
             for (int k = -2; k <= 2; k++)
             {
                 var row = Rows[k + 2];
