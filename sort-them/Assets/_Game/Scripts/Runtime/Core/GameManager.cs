@@ -33,6 +33,7 @@ namespace SortThem
         public readonly List<RackController> Racks = new List<RackController>();
         public readonly List<Collectible> Collectibles = new List<Collectible>();
         public readonly List<Bomb> Bombs = new List<Bomb>();
+        readonly System.Random _bombRng = new System.Random();
         public Bomb HeldBomb { get; private set; }
         public int PendingBombs => Bombs.Count;
 
@@ -225,6 +226,13 @@ namespace SortThem
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!UiBlocking && Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame) Economy.Add(1000f);
+            if (!UiBlocking && Keyboard.current != null && Keyboard.current.bKey.wasPressedThisFrame) SpawnBomb();
+            if (!UiBlocking && Keyboard.current != null && Keyboard.current.nKey.wasPressedThisFrame && HeldBomb == null && Player != null)
+            {
+                var testBomb = SpawnBomb(false);
+                var testCam = Player.GetComponent<PlayerInteraction>();
+                if (testBomb != null && testCam != null && testCam.Cam != null) PickBomb(testBomb, testCam.Cam.transform);
+            }
 #endif
         }
 
@@ -439,15 +447,11 @@ namespace SortThem
         public Bomb SpawnBomb(bool announce = true)
         {
             if (Config.BombPrefab == null) return null;
-            Vector3 pos = Config.UnstuckCenter;
-            var candidates = new List<CarInstance>();
-            foreach (var c in Cars)
-                if (c.State == CarState.Loose && c.gameObject.activeSelf && c.transform.position.y < Config.FloorY + 1.5f) candidates.Add(c);
-            if (candidates.Count > 0) pos = candidates[UnityEngine.Random.Range(0, candidates.Count)].transform.position + Vector3.up * 1.5f;
-            var go = Instantiate(Config.BombPrefab, pos, UnityEngine.Random.rotation, CarsRoot);
+            var go = Instantiate(Config.BombPrefab, CarsRoot);
             go.name = "Bomb";
             var bomb = go.GetComponent<Bomb>();
             if (bomb == null) bomb = go.AddComponent<Bomb>();
+            PileDrop.DropBody(bomb.Body, Config, PileDrop.PickZone(Config, _bombRng), _bombRng);
             Bombs.Add(bomb);
             if (announce) Messages.Show(Loc.Get("msg.bomb_spawned", "Из автомата выпала бомба, ищи в куче"));
             return bomb;

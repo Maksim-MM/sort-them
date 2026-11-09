@@ -188,6 +188,7 @@ namespace SortThem
         public GameAction Submit { get; private set; }
         public GameAction Cancel { get; private set; }
         public GameAction Pause { get; private set; }
+        public GameAction HoldHint { get; private set; }
 
         protected override void Initialize(InputSetBuilder b)
         {
@@ -209,6 +210,9 @@ namespace SortThem
                 (new KeyboardButtonSource(KeyboardKey.Enter, ButtonTrigger.Hold), "Enter"),
                 (new GamepadActionSource(GamepadAction.Apply, ButtonTrigger.Hold), "A"));
             Cancel = new GameAction("Cancel").Press(b, (new GamepadActionSource(GamepadAction.Cancel, ButtonTrigger.Press), "B"));
+            HoldHint = new GameAction("HoldHint")
+                .Glyph(new MouseButtonSource(MouseButton.Left, ButtonTrigger.Hold), "LMB")
+                .Glyph(new GamepadActionSource(GamepadAction.Apply, ButtonTrigger.Hold), "A");
         }
     }
 

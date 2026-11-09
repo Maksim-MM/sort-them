@@ -14,6 +14,7 @@ namespace SortThem
         UiDragArea _upgradeDrag;
         TMP_Text _upgradeTitle, _upgradeLevel, _upgradeNext, _upgradeCrates, _holdLabel, _hoverText;
         UiHoldButton _holdButton;
+        GlyphImage _holdGlyph;
         Image _holdFill;
         readonly List<Selectable> _upgradeButtons = new List<Selectable>();
         readonly List<Selectable> _confirmButtons = new List<Selectable>();
@@ -75,7 +76,7 @@ namespace SortThem
             _upgradeButtons.Add(close);
 
             var hold = UiFactory.Panel(_upgrade, "Hold", ArcadeCost);
-            UiFactory.Anchored(hold, new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(360f, 72f));
+            UiFactory.Anchored(hold, new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(480f, 72f));
             var holdInner = UiFactory.Panel(hold, "Fill", ArcadeFill(ArcadeCost));
             UiFactory.Anchor(holdInner, Vector2.zero, Vector2.one, new Vector2(2f, 2f), new Vector2(-2f, -2f));
             holdInner.GetComponent<Image>().raycastTarget = false;
@@ -96,7 +97,9 @@ namespace SortThem
             _holdLabel = UiFactory.Text(holdInner, "Label", "", 22f, TextAlignmentOptions.Center, ArcadeCost);
             _holdLabel.fontStyle = FontStyles.Bold | FontStyles.UpperCase;
             UiFactory.TextGlow(_holdLabel, new Color(ArcadeCost.r, ArcadeCost.g, ArcadeCost.b, 0.6f), 0.2f, 0.5f);
-            UiFactory.Anchor(_holdLabel.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+            UiFactory.Anchor(_holdLabel.rectTransform, Vector2.zero, Vector2.one, new Vector2(64f, 0f), new Vector2(-12f, 0f));
+            _holdGlyph = UiFactory.Glyph(holdInner, "Glyph", 44f, GameInput.Ui.HoldHint, 0, ArcadeCost);
+            UiFactory.Anchored(_holdGlyph.Image.rectTransform, new Vector2(0f, 0.5f), new Vector2(34f, 0f), new Vector2(44f, 44f));
             UiFactory.Glow(hold, 16f, 0.55f);
             _arcadeIdle[_holdButton] = ArcadeCost;
             _upgradeButtons.Insert(0, _holdButton);
@@ -350,6 +353,8 @@ namespace SortThem
             _upgradeCrates.text = Loc.Get("ui.crates", "Ящики запчастей") + ": " + gm.Crates;
             _holdLabel.text = maxed ? Loc.Get("ui.special_max", "Максимум") : Loc.Get("ui.special_hold", "Удерживай, чтобы улучшить");
             _holdButton.interactable = !maxed;
+            _holdGlyph.gameObject.SetActive(!maxed);
+            _holdLabel.rectTransform.offsetMin = new Vector2(maxed ? 12f : 64f, 0f);
         }
     }
 }
