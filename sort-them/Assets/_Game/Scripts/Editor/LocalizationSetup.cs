@@ -109,6 +109,7 @@ namespace SortThem.Editor
             LocUtil.Set("ui.back", "Назад", "Back");
             LocUtil.Set("ui.language", "Язык", "Language");
             LocUtil.Set("ui.controls", "Управление", "Controls");
+            LocUtil.Set("ui.credits", "Авторы", "Credits");
             LocUtil.Set("ctl.move", "Передвижение", "Move");
             LocUtil.Set("ctl.look", "Обзор", "Look around");
             LocUtil.Set("ctl.jump", "Прыжок", "Jump");

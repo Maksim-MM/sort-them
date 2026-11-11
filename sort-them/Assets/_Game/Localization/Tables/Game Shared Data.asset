@@ -1591,6 +1591,14 @@ MonoBehaviour:
     m_Key: ui.lightbar
     m_Metadata:
       m_Items: []
+  - m_Id: 24230639447302144
+    m_Key: ui.credits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24230639464079360
+    m_Key: ui.credits_body
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items:
     - rid: 5306512629804826721

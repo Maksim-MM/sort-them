@@ -1600,6 +1600,35 @@ MonoBehaviour:
     m_Localized: "I\u015F\u0131kl\u0131 \xE7ubuk"
     m_Metadata:
       m_Items: []
+  - m_Id: 24230639447302144
+    m_Localized: "Eme\u011Fi Ge\xE7enler"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24230639464079360
+    m_Localized: '<align=center><color=#FFD138>CREATED BY</color></align>
+
+      <align=center>Maksim
+      Mullin</align>
+
+
+      <align=center><color=#FFD138>PUBLISHING SUPPORT</color></align>
+
+      <indent=7%>Kyrylo
+      Diemkov<pos=57%><color=#B8B8B8>Executive Producer</color></indent>
+
+      <indent=7%>Yulia
+      Mironenko<pos=57%><color=#B8B8B8>Release Manager</color></indent>
+
+      <indent=7%>Anton
+      Barbatiuk<pos=57%><color=#B8B8B8>Quality Assurance</color></indent>
+
+      <indent=7%>Dmytro
+      Kovbas<pos=57%><color=#B8B8B8>Console SDK</color></indent>
+
+      <indent=7%>Anna
+      Kovalenko<pos=57%><color=#B8B8B8>Key Art & Icons</color></indent>'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

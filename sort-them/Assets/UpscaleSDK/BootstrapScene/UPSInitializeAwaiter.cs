@@ -50,6 +50,12 @@ namespace UpscaleSDK.BootstrapScene
 
         private IEnumerator PlaySplashAnimations()
         {
+#if UNITY_PS4 || UNITY_PS5
+            _background.color = Color.black;
+            foreach (var logo in _logos) logo.gameObject.SetActive(false);
+            _isSplashCompleted = true;
+            yield break;
+#else
             for (var i = 0; i < _logos.Length; i++)
             {
                 _logos[i].gameObject.SetActive(true);
@@ -68,6 +74,7 @@ namespace UpscaleSDK.BootstrapScene
             _background.gameObject.SetActive(false);
 
             _isSplashCompleted = true;
+#endif
         }
 
         private IEnumerator FadeIn(CanvasGroup logo)

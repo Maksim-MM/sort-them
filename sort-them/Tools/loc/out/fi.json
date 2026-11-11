@@ -384,5 +384,7 @@
   "upg_sprint.desc": "Pidä Shift pohjassa juostaksesi",
   "upg_sprint.name": "Avaa juoksu",
   "upg_throw.desc": "Autot lentävät kauemmas",
-  "upg_throw.name": "Voimakkaampi heitto"
+  "upg_throw.name": "Voimakkaampi heitto",
+  "ui.credits": "Tekijät",
+  "ui.credits_body": "<align=center><color=#FFD138>CREATED BY</color></align>\n<align=center>Maksim Mullin</align>\n\n<align=center><color=#FFD138>PUBLISHING SUPPORT</color></align>\n<indent=7%>Kyrylo Diemkov<pos=57%><color=#B8B8B8>Executive Producer</color></indent>\n<indent=7%>Yulia Mironenko<pos=57%><color=#B8B8B8>Release Manager</color></indent>\n<indent=7%>Anton Barbatiuk<pos=57%><color=#B8B8B8>Quality Assurance</color></indent>\n<indent=7%>Dmytro Kovbas<pos=57%><color=#B8B8B8>Console SDK</color></indent>\n<indent=7%>Anna Kovalenko<pos=57%><color=#B8B8B8>Key Art & Icons</color></indent>"
 }

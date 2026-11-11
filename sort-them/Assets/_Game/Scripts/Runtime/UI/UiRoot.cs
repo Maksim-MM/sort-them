@@ -41,7 +41,13 @@ namespace SortThem
         const float TutorialTickHold = 1f, TutorialFade = 0.3f;
         float _toastShownAt = -10f;
         const float ToastFadeIn = 0.15f, ToastHold = 2f, ToastFadeOut = 0.4f;
-        RectTransform _terminal, _pause, _settings, _slot, _controls;
+        RectTransform _terminal, _pause, _settings, _slot, _controls, _credits;
+        readonly List<Selectable> _creditsItems = new List<Selectable>();
+#if UNITY_PS4 || UNITY_PS5 || UNITY_GAMECORE || UNITY_SWITCH || UNITY_EDITOR
+        static readonly bool ShowCredits = true;
+#else
+        static readonly bool ShowCredits = false;
+#endif
         RectTransform _controlsList;
         readonly List<Selectable> _controlsItems = new List<Selectable>();
         readonly List<TMP_Text> _controlsDescs = new List<TMP_Text>();
@@ -132,8 +138,9 @@ namespace SortThem
         public bool PauseOpen => _pause != null && _pause.gameObject.activeSelf;
         public bool SettingsOpen => _settings != null && _settings.gameObject.activeSelf;
         public bool ControlsOpen => _controls != null && _controls.gameObject.activeSelf;
+        public bool CreditsOpen => _credits != null && _credits.gameObject.activeSelf;
         public bool Fading => _fade != null && _fade.gameObject.activeSelf;
-        public bool AnyOpen => TerminalOpen || SlotOpen || PauseOpen || SettingsOpen || ControlsOpen || UpgradeOpen || ConfirmOpen || Fading;
+        public bool AnyOpen => TerminalOpen || SlotOpen || PauseOpen || SettingsOpen || ControlsOpen || CreditsOpen || UpgradeOpen || ConfirmOpen || Fading;
 
         void Awake()
         {
@@ -168,6 +175,7 @@ namespace SortThem
             BuildPause();
             BuildSettings();
             BuildControls();
+            if (ShowCredits) BuildCredits();
             BuildUpgrade();
             BuildConfirm();
             BuildFade();
@@ -257,6 +265,7 @@ namespace SortThem
                 else if (ConfirmOpen) CloseConfirm();
                 else if (SettingsOpen) { CloseSettings(false); }
                 else if (ControlsOpen) CloseControls(false);
+                else if (CreditsOpen) CloseCredits(false);
                 else if (PauseOpen) ClosePause();
                 else { OpenPause(); Ads.TryInterstitial(); }
             }
@@ -986,7 +995,7 @@ namespace SortThem
         void BuildPause()
         {
             const float buttonH = 56f, spacing = 14f, pad = 24f;
-            int count = TouchInput.Active ? 5 : 6;
+            int count = (TouchInput.Active ? 5 : 6) + (ShowCredits ? 1 : 0);
             float screenH = pad * 2f + count * buttonH + (count - 1) * spacing;
             var w = BuildArcadeWindow("Pause", new Vector2(520f, ArcadeHeight(screenH, false, false)), "ui.pause", "Пауза", false, false);
             _pause = w.Root;
@@ -1001,6 +1010,7 @@ namespace SortThem
             _controlsButton.SetActive(!TouchInput.Active);
             _pauseButtons.Add(controlsButton);
             _pauseButtons.Add(Bind(ArcadeButton(list, "Shuffle", StartShuffle, ArcadeNeon, 20f), "ui.shuffle", "Перемешать кучу"));
+            if (ShowCredits) _pauseButtons.Add(Bind(ArcadeButton(list, "Credits", OpenCredits, ArcadeNeon, 20f), "ui.credits", "Авторы"));
             _pauseButtons.Add(Bind(ArcadeButton(list, "NewGame", OpenConfirm, ArcadeRed, 20f), "ui.newgame", "Сбросить прогресс"));
             foreach (var b in _pauseButtons) UiFactory.Size(b, 0f, buttonH);
             FinishArcadeScreen(w.Screen);
@@ -1253,6 +1263,49 @@ namespace SortThem
             if (backToPause) OpenPause();
         }
 
+        const string CreditsText =
+            "<align=center><color=#FFD138>CREATED BY</color></align>\n" +
+            "<align=center>Maksim Mullin</align>\n" +
+            "\n" +
+            "<align=center><color=#FFD138>PUBLISHING SUPPORT</color></align>\n" +
+            "<indent=7%>Kyrylo Diemkov<pos=57%><color=#B8B8B8>Executive Producer</color></indent>\n" +
+            "<indent=7%>Yulia Mironenko<pos=57%><color=#B8B8B8>Release Manager</color></indent>\n" +
+            "<indent=7%>Anton Barbatiuk<pos=57%><color=#B8B8B8>Quality Assurance</color></indent>\n" +
+            "<indent=7%>Dmytro Kovbas<pos=57%><color=#B8B8B8>Console SDK</color></indent>\n" +
+            "<indent=7%>Anna Kovalenko<pos=57%><color=#B8B8B8>Key Art & Icons</color></indent>";
+
+        void BuildCredits()
+        {
+            const float pad = 32f, lineH = 42f;
+            const int lines = 9;
+            float screenH = pad * 2f + lines * lineH;
+            var w = BuildArcadeWindow("Credits", new Vector2(820f, ArcadeHeight(screenH, false, true)), "ui.credits", "Авторы", false, true);
+            _credits = w.Root;
+            var text = UiFactory.Text(w.Screen, "Text", "", 26f, TextAlignmentOptions.Left, Color.white);
+            text.richText = true;
+            text.lineSpacing = 40f;
+            UiFactory.Anchor(text.rectTransform, Vector2.zero, Vector2.one, new Vector2(48f, pad), new Vector2(-48f, -pad));
+            Bind(text, "ui.credits_body", CreditsText);
+            FinishArcadeScreen(w.Screen);
+            var back = Bind(ArcadePanelButton(w, "Back", () => CloseCredits(true), ArcadeNeon, 150f, true), "ui.back", "Назад");
+            _creditsItems.Add(back);
+            _credits.gameObject.SetActive(false);
+        }
+
+        void OpenCredits()
+        {
+            _pause.gameObject.SetActive(false);
+            _credits.gameObject.SetActive(true);
+            _focused = FirstCandidate(_creditsItems);
+        }
+
+        void CloseCredits(bool backToPause)
+        {
+            _credits.gameObject.SetActive(false);
+            ClearFocus();
+            if (backToPause) OpenPause();
+        }
+
         void RefreshVibration()
         {
             if (_vibrationLabel != null) _vibrationLabel.text = Settings.Vibration ? Loc.Get("ui.on", "Вкл") : Loc.Get("ui.off", "Выкл");
@@ -1339,13 +1392,13 @@ namespace SortThem
         {
             if (!AnyOpen) return;
             var gm = GameManager.I;
-            var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SlotOpen ? _slotButtons : UpgradeOpen ? _upgradeButtons : ConfirmOpen ? _confirmButtons : SettingsOpen ? _settingsItems : ControlsOpen ? _controlsItems : _pauseButtons);
+            var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SlotOpen ? _slotButtons : UpgradeOpen ? _upgradeButtons : ConfirmOpen ? _confirmButtons : SettingsOpen ? _settingsItems : ControlsOpen ? _controlsItems : CreditsOpen ? _creditsItems : _pauseButtons);
             if (_focused != null && !Selectable_(_focused)) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
             if (_focused == null) _focused = FirstCandidate(list);
 
             if (GameInput.Ui.Cancel.Pressed())
             {
-                if (TerminalOpen) CloseTerminal(); else if (SlotOpen) CloseSlot(); else if (UpgradeOpen) CloseUpgrade(); else if (ConfirmOpen) CloseConfirm(); else if (SettingsOpen) CloseSettings(true); else if (ControlsOpen) CloseControls(true); else ClosePause();
+                if (TerminalOpen) CloseTerminal(); else if (SlotOpen) CloseSlot(); else if (UpgradeOpen) CloseUpgrade(); else if (ConfirmOpen) CloseConfirm(); else if (SettingsOpen) CloseSettings(true); else if (ControlsOpen) CloseControls(true); else if (CreditsOpen) CloseCredits(true); else ClosePause();
                 return;
             }
             {

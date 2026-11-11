@@ -384,5 +384,7 @@
   "upg_sprint.desc": "Houd Shift vast om te rennen",
   "upg_sprint.name": "Sprinten ontgrendelen",
   "upg_throw.desc": "Auto's vliegen verder",
-  "upg_throw.name": "Sterkere worp"
+  "upg_throw.name": "Sterkere worp",
+  "ui.credits": "Credits",
+  "ui.credits_body": "<align=center><color=#FFD138>CREATED BY</color></align>\n<align=center>Maksim Mullin</align>\n\n<align=center><color=#FFD138>PUBLISHING SUPPORT</color></align>\n<indent=7%>Kyrylo Diemkov<pos=57%><color=#B8B8B8>Executive Producer</color></indent>\n<indent=7%>Yulia Mironenko<pos=57%><color=#B8B8B8>Release Manager</color></indent>\n<indent=7%>Anton Barbatiuk<pos=57%><color=#B8B8B8>Quality Assurance</color></indent>\n<indent=7%>Dmytro Kovbas<pos=57%><color=#B8B8B8>Console SDK</color></indent>\n<indent=7%>Anna Kovalenko<pos=57%><color=#B8B8B8>Key Art & Icons</color></indent>"
 }
