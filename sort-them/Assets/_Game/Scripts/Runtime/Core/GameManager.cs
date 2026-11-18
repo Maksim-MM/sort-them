@@ -30,6 +30,7 @@ namespace SortThem
 
         public readonly List<CarInstance> Cars = new List<CarInstance>();
         public readonly List<ShelfController> Shelves = new List<ShelfController>();
+        public readonly HashSet<int> GiftClaimed = new HashSet<int>();
         public readonly List<RackController> Racks = new List<RackController>();
         public readonly List<Collectible> Collectibles = new List<Collectible>();
         public readonly List<Bomb> Bombs = new List<Bomb>();

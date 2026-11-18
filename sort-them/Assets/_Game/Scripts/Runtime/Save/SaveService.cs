@@ -194,6 +194,10 @@ namespace SortThem
             w.Write((byte)((_gm.RegisterPaid ? 1 : 0) | (_gm.TutorialDone ? 2 : 0)));
             w.Write((byte)Mathf.Min(255, _gm.PendingBombs));
             w.Write(_gm.BlueprintsMask);
+#if UNITY_WEBGL
+            w.Write((ushort)_gm.GiftClaimed.Count);
+            foreach (int id in _gm.GiftClaimed) w.Write((ushort)id);
+#endif
             w.Flush();
             return ms.ToArray();
         }
@@ -277,6 +281,11 @@ namespace SortThem
             int flags = r.BaseStream.Position < r.BaseStream.Length ? r.ReadByte() : 0;
             int bombs = r.BaseStream.Position < r.BaseStream.Length ? r.ReadByte() : 0;
             _gm.ApplyBlueprintsMask(r.BaseStream.Position + 4 <= r.BaseStream.Length ? r.ReadInt32() : 0);
+#if UNITY_WEBGL
+            _gm.GiftClaimed.Clear();
+            int gifts = r.BaseStream.Position + 2 <= r.BaseStream.Length ? r.ReadUInt16() : 0;
+            for (int i = 0; i < gifts && r.BaseStream.Position + 2 <= r.BaseStream.Length; i++) _gm.GiftClaimed.Add(r.ReadUInt16());
+#endif
 
             var inv = _gm.Inventory;
             if (inv != null)

@@ -38,6 +38,13 @@ namespace SortThem
         public float FitHeight = 0.24f;
         public float ExitDuration = 0.08f;
         public float EnterDuration = 0.28f;
+        public float SwayPerDegree = 0.000175f;
+        public float SwayMax = 0.035f;
+        public float SwayTiltPerDegree = 0f;
+        public float SwayTiltMax = 4.2f;
+        public float SwayPerMeter = 0.0085f;
+        public float SwayFrequency = 14f;
+        public float SwayDamping = 0.9f;
 
         CarItemData _shown;
         CarItemData _pending;
@@ -51,10 +58,17 @@ namespace SortThem
         float _startScale;
         float _fit = 1f;
         Vector3 _frontLocal;
+        Vector3 _centerLocal;
         int _seenAddCount;
         int _seenRemoveCount;
         Camera _cam;
         float _designFov;
+        Vector3 _basePos;
+        Quaternion _baseRot = Quaternion.identity;
+        Vector3 _sway, _swayVel;
+        Quaternion _prevCamRot;
+        float _prevCamY;
+        bool _swayInit;
 
         void Start()
         {
@@ -121,11 +135,13 @@ namespace SortThem
             Filter.sharedMesh = mf != null ? mf.sharedMesh : null;
             _fit = 1f;
             _frontLocal = Vector3.zero;
+            _centerLocal = Vector3.zero;
             if (Filter.sharedMesh != null)
             {
                 var b = Filter.sharedMesh.bounds;
                 _fit = Mathf.Min(1f, FitHeight / Mathf.Max(0.01f, b.size.y));
                 _frontLocal = new Vector3(b.center.x, b.min.y, b.max.z);
+                _centerLocal = new Vector3(b.center.x, b.min.y, b.center.z);
             }
             var srcRend = mf != null ? mf.GetComponent<MeshRenderer>() : null;
             if (Renderer != null && srcRend != null) Renderer.sharedMaterials = HeldMaterials(srcRend.sharedMaterials);
@@ -168,6 +184,52 @@ namespace SortThem
             }
         }
 
+        void LateUpdate()
+        {
+            if (Filter == null) return;
+            var cam = transform;
+            float dt = Mathf.Min(Time.deltaTime, 0.05f);
+            if (!_swayInit || dt <= 0f)
+            {
+                _prevCamRot = cam.rotation;
+                _prevCamY = cam.position.y;
+                _swayInit = true;
+                return;
+            }
+            var delta = (Quaternion.Inverse(_prevCamRot) * cam.rotation).eulerAngles;
+            float yawRate = Mathf.DeltaAngle(0f, delta.y) / dt;
+            float pitchRate = Mathf.DeltaAngle(0f, delta.x) / dt;
+            float rise = (cam.position.y - _prevCamY) / dt;
+            _prevCamRot = cam.rotation;
+            _prevCamY = cam.position.y;
+            var target = new Vector3(
+                Mathf.Clamp(-yawRate * SwayPerDegree, -SwayMax, SwayMax),
+                Mathf.Clamp(pitchRate * SwayPerDegree - rise * SwayPerMeter, -SwayMax, SwayMax),
+                0f);
+            int steps = Mathf.Max(1, Mathf.CeilToInt(dt / 0.008f));
+            float h = dt / steps;
+            float w = SwayFrequency;
+            for (int i = 0; i < steps; i++)
+            {
+                _swayVel += (w * w * (target - _sway) - 2f * SwayDamping * w * _swayVel) * h;
+                _sway += _swayVel * h;
+            }
+            _sway = Vector3.ClampMagnitude(_sway, SwayMax * 1.5f);
+            Compose();
+        }
+
+        void Compose()
+        {
+            var t = Filter.transform;
+            float tilt = SwayPerDegree > 0f ? SwayTiltPerDegree / SwayPerDegree : 0f;
+            float yaw = Mathf.Clamp(_sway.x * tilt, -SwayTiltMax, SwayTiltMax);
+            float pitch = Mathf.Clamp(-_sway.y * tilt, -SwayTiltMax, SwayTiltMax);
+            var tiltRot = Quaternion.Euler(pitch, yaw, 0f);
+            var pivot = _baseRot * (_centerLocal * t.localScale.x);
+            t.localPosition = _basePos + _sway + pivot - tiltRot * pivot;
+            t.localRotation = tiltRot * _baseRot;
+        }
+
         public bool TryGetModelWorldPose(out Vector3 position, out Quaternion rotation)
         {
             var t = Filter.transform;
@@ -194,18 +256,20 @@ namespace SortThem
         {
             var t = Filter.transform;
             float s = Scale * _fit * ViewScale();
-            t.localPosition = Vector3.Lerp(_startPos, RestLocal(s), k);
-            t.localRotation = Quaternion.Slerp(_startRot, Quaternion.Euler(RestEuler), k);
+            _basePos = Vector3.Lerp(_startPos, RestLocal(s), k);
+            _baseRot = Quaternion.Slerp(_startRot, Quaternion.Euler(RestEuler), k);
             t.localScale = Vector3.one * Mathf.Lerp(_startScale, s, k);
+            Compose();
         }
 
         void Apply(float offset, float scale)
         {
             var t = Filter.transform;
             float s = Scale * _fit * scale * ViewScale();
-            t.localPosition = RestLocal(s) + EnterOffset * offset;
-            t.localRotation = Quaternion.Euler(RestEuler + new Vector3(0f, -40f * offset, 0f));
+            _basePos = RestLocal(s) + EnterOffset * offset;
+            _baseRot = Quaternion.Euler(RestEuler + new Vector3(0f, -40f * offset, 0f));
             t.localScale = Vector3.one * s;
+            Compose();
         }
     }
 }

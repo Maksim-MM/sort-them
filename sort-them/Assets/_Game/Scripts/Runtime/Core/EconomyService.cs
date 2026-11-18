@@ -28,7 +28,7 @@ namespace SortThem
             Changed?.Invoke(Balance);
         }
 
-        public bool CanAfford(int cost) => Balance >= cost;
+        public bool CanAfford(int cost) => cost <= 0 || Balance >= cost;
 
         public bool TrySpend(int cost)
         {

@@ -15,6 +15,16 @@
             "id": "no_ads_discount"
         }
     ],
-    "leaderboards": [],
+    "saas": {
+        "publicToken": "cmuwrzhuv02dpjo0hqhl7qchk",
+        "leaderboards": {
+            "platforms": ["playgama", "qa_tool"]
+        }
+    },
+    "leaderboards": [
+        {
+            "id": "cars_sorted"
+        }
+    ],
     "sendAnalyticsEvents": true
 }

@@ -19,6 +19,7 @@ namespace SortThem
         public CashRegister HoverRegister { get; private set; }
         public Bomb HoverBomb { get; private set; }
         public CarInstance HoverSpecial { get; private set; }
+        public ShelfGift HoverGift { get; private set; }
         public bool CanPlace { get; private set; }
         public float Range { get; private set; }
 
@@ -101,6 +102,7 @@ namespace SortThem
             HoverRegister = null;
             HoverBomb = null;
             HoverSpecial = null;
+            HoverGift = null;
             CanPlace = false;
             if (Outline != null) Outline.Hide();
             if (Ghost != null) Ghost.Hide();
@@ -119,6 +121,7 @@ namespace SortThem
             HoverRegister = null;
             HoverBomb = null;
             HoverSpecial = null;
+            HoverGift = null;
             CanPlace = false;
 
             var ray = new Ray(Cam.transform.position, Cam.transform.forward);
@@ -142,6 +145,17 @@ namespace SortThem
                 var col = _hits[i].collider;
                 if (col.isTrigger)
                 {
+                    var gift = col.GetComponent<ShelfGift>();
+                    if (gift != null)
+                    {
+                        if (gift.Shown && _hits[i].distance <= solidDistance)
+                        {
+                            HoverGift = gift;
+                            zoneShelf = null;
+                            break;
+                        }
+                        continue;
+                    }
                     if (zoneShelf == null)
                     {
                         var zone = col.GetComponent<ShelfZone>();
@@ -228,11 +242,14 @@ namespace SortThem
                 HoverRegister = null;
                 HoverBomb = null;
                 HoverSpecial = null;
+                HoverGift = null;
             }
 
             if (Outline != null)
             {
-                if (HoverCar != null && HoverCar.Filter != null)
+                if (HoverGift != null && HoverGift.MainMesh != null)
+                    ShowOutline(HoverGift.MainMesh);
+                else if (HoverCar != null && HoverCar.Filter != null)
                     Outline.Show(HoverCar.Filter.sharedMesh, HoverCar.transform.position, HoverCar.transform.rotation, HoverCar.transform.lossyScale);
                 else if (HoverSpecial != null && HoverSpecial.Filter != null)
                     Outline.Show(HoverSpecial.Filter.sharedMesh, HoverSpecial.transform.position, HoverSpecial.transform.rotation, HoverSpecial.transform.lossyScale);
@@ -287,6 +304,11 @@ namespace SortThem
 
         void Interact()
         {
+            if (HoverGift != null)
+            {
+                HoverGift.Claim();
+                return;
+            }
             if (HoverBomb != null && GameManager.I.HeldBomb == null)
             {
                 GameManager.I.PickBomb(HoverBomb, Cam.transform);

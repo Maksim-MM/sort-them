@@ -156,7 +156,7 @@ MonoBehaviour:
   ActivationUpdateInterval: 0.25
   LooseScale: 1.5
   CarMaxDepenetrationVelocity: 1
-  AdCooldown: 180
+  AdCooldown: 60
   AdInitialDelay: 90
   RewardedDiscount: 0.25
   PremiumDiscount: 0.5

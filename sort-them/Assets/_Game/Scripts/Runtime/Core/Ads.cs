@@ -59,6 +59,8 @@ namespace SortThem
 
         public static bool Ready => !Busy && Remaining <= 0f;
 
+        public static float Progress => Busy ? 0f : Mathf.Clamp01(1f - Remaining / Mathf.Max(1f, Cooldown));
+
         public static int Discounted(int cost) => Mathf.Max(0, Mathf.CeilToInt(cost * (1f - Discount)));
 
         public static string RemainingText()

@@ -140,7 +140,7 @@ namespace SortThem
         public bool ControlsOpen => _controls != null && _controls.gameObject.activeSelf;
         public bool CreditsOpen => _credits != null && _credits.gameObject.activeSelf;
         public bool Fading => _fade != null && _fade.gameObject.activeSelf;
-        public bool AnyOpen => TerminalOpen || SlotOpen || PauseOpen || SettingsOpen || ControlsOpen || CreditsOpen || UpgradeOpen || ConfirmOpen || Fading;
+        public bool AnyOpen => TerminalOpen || SlotOpen || PauseOpen || SettingsOpen || ControlsOpen || CreditsOpen || UpgradeOpen || ConfirmOpen || DailyOpen || Fading;
 
         void Awake()
         {
@@ -178,6 +178,7 @@ namespace SortThem
             if (ShowCredits) BuildCredits();
             BuildUpgrade();
             BuildConfirm();
+            if (Platform.IsWeb) BuildDaily();
             BuildFade();
             if (!gm.Ready) StartCoroutine(FadeInWhenReady());
             gm.StatsChanged += RefreshStats;
@@ -259,7 +260,8 @@ namespace SortThem
             }
             if (GameInput.Ui.Pause.Pressed() || TouchInput.Consume(TouchButton.Pause))
             {
-                if (TerminalOpen) CloseTerminal();
+                if (DailyOpen) ClaimDaily();
+                else if (TerminalOpen) CloseTerminal();
                 else if (SlotOpen) CloseSlot();
                 else if (UpgradeOpen) CloseUpgrade();
                 else if (ConfirmOpen) CloseConfirm();
@@ -273,6 +275,8 @@ namespace SortThem
             ActiveDevice.Poll();
             RefreshAbilities();
             UpdateTutorial();
+            UpdateKeyHints();
+            UpdateDaily();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             UpdateFps();
 #endif
@@ -342,6 +346,67 @@ namespace SortThem
             _saveText.gameObject.SetActive(false);
 
             BuildTutorial(hud);
+            if (Platform.IsWeb && !TouchInput.Active) BuildKeyHints(hud);
+        }
+
+        GameObject _keyHints, _hintPlace, _hintSprint, _hintCrouch;
+
+        void BuildKeyHints(Transform hud)
+        {
+            var bar = UiFactory.Rect(hud, "KeyHints");
+            UiFactory.Anchored(bar, new Vector2(0.5f, 0f), new Vector2(0f, 18f), new Vector2(1000f, 46f));
+            HintRow(bar, 24f);
+            _keyHints = bar.gameObject;
+            var p = GameInput.Player;
+            KeyHint(bar, p.Interact, "ctl.interact", "Взять");
+            _hintPlace = KeyHint(bar, p.Place, "ctl.place", "Поставить на полку или бросить");
+            KeyHint(bar, p.Jump, "ctl.jump", "Прыжок");
+            _hintSprint = KeyHint(bar, p.Sprint, "ctl.sprint", "Бег");
+            _hintCrouch = KeyHint(bar, p.Crouch, "ctl.crouch", "Присед");
+            KeyHint(bar, GameInput.Ui.Pause, "ui.pause", "Пауза");
+            UpdateKeyHints();
+        }
+
+        static void HintRow(RectTransform rt, float spacing)
+        {
+            var g = rt.gameObject.AddComponent<HorizontalLayoutGroup>();
+            g.spacing = spacing;
+            g.childAlignment = TextAnchor.MiddleCenter;
+            g.childForceExpandWidth = false;
+            g.childForceExpandHeight = false;
+            g.childControlWidth = true;
+            g.childControlHeight = true;
+        }
+
+        GameObject KeyHint(Transform parent, GameAction action, string key, string fallback)
+        {
+            var item = UiFactory.Rect(parent, "Hint_" + action.Id);
+            HintRow(item, 8f);
+            UiFactory.Glyph(item, "Glyph", 46f, action);
+            var text = UiFactory.Text(item, "Text", "", 20f, TextAlignmentOptions.Left, Color.white);
+            UiFactory.TextGlow(text, new Color(0f, 0f, 0f, 0.8f), 0.35f, 0.45f);
+            Bind(text, key, fallback);
+            return item.gameObject;
+        }
+
+        void UpdateKeyHints()
+        {
+            if (_keyHints == null) return;
+            var gm = GameManager.I;
+            bool show = gm != null && gm.Ready && !AnyOpen;
+            if (_keyHints.activeSelf != show) _keyHints.SetActive(show);
+            if (!show) return;
+            bool holding = gm.Inventory != null && gm.Inventory.Active != null;
+            if (_hintPlace.activeSelf != holding) _hintPlace.SetActive(holding);
+            bool sprint = gm.Upgrades.Has(UpgradeKind.Sprint);
+            if (_hintSprint.activeSelf != sprint) _hintSprint.SetActive(sprint);
+            bool crouch = gm.Upgrades.Has(UpgradeKind.Crouch);
+            if (_hintCrouch.activeSelf != crouch) _hintCrouch.SetActive(crouch);
+            var bar = (RectTransform)_keyHints.transform;
+            float need = LayoutUtility.GetPreferredWidth(bar);
+            float room = ((RectTransform)bar.parent).rect.width - 600f;
+            float k = need > room && need > 0f ? Mathf.Max(0.6f, room / need) : 1f;
+            if (!Mathf.Approximately(bar.localScale.x, k)) bar.localScale = Vector3.one * k;
         }
 
         void BuildTutorial(Transform hud)
@@ -738,7 +803,7 @@ namespace SortThem
                 UiFactory.Anchor(r.Cost.rectTransform, new Vector2(0.69f, 0f), new Vector2(0.845f, 1f), Vector2.zero, new Vector2(-10f, 0f));
 
                 var captured = data;
-                r.Buy = Bind(UiFactory.NeonButton(rowFill, "Buy", "", () => { if (gm.Upgrades.TryBuy(captured)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); } }, ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 17f), "ui.buy", "Купить");
+                r.Buy = Bind(UiFactory.NeonButton(rowFill, "Buy", "", () => BuyUpgrade(captured), ArcadeNeon, new Color(0.06f, 0.12f, 0.16f, 1f), ArcadeNeon, 17f), "ui.buy", "Купить");
                 UiFactory.Anchor(r.Buy.GetComponent<RectTransform>(), new Vector2(0.85f, 0.06f), new Vector2(0.995f, 0.94f), Vector2.zero, Vector2.zero);
                 if (Ads.RewardedAvailable)
                 {
@@ -823,6 +888,13 @@ namespace SortThem
         {
             var gm = GameManager.I;
             if (gm == null) return;
+            if (DailyRewards.FreeSpins > 0)
+            {
+                bool was = _spinning;
+                SpinWith(0);
+                if (!was && _spinning) DailyRewards.UseSpin();
+                return;
+            }
             SpinWith(Premium.Price(gm.Config.SlotSpinCost));
         }
 
@@ -830,20 +902,24 @@ namespace SortThem
         {
             var gm = GameManager.I;
             if (gm == null || _spinning || !Ads.Ready) return;
-            int cost = Ads.Discounted(Premium.Price(gm.Config.SlotSpinCost));
-            if (!gm.Economy.CanAfford(cost)) return;
-            Ads.ShowRewarded(ok => { if (ok) SpinWith(cost); RefreshSlot(); });
+            Ads.ShowRewarded(ok => { if (ok) SpinWith(0); RefreshSlot(); });
         }
 
         void BuyWithAd(UpgradeData data)
         {
             var gm = GameManager.I;
             if (gm == null || !Ads.Ready) return;
-            int cost = Ads.Discounted(gm.Upgrades.NextCost(data));
+            bool daily = DailyRewards.Discount;
+            int cost = Ads.Discounted(TerminalCost(data));
             if (!gm.Upgrades.CanBuy(data, cost)) return;
             Ads.ShowRewarded(ok =>
             {
-                if (ok && gm.Upgrades.TryBuy(data, cost)) { Sfx.PlayUi(gm.Config.PurchaseClip); gm.Save.SaveNow("purchase"); }
+                if (ok && gm.Upgrades.TryBuy(data, cost))
+                {
+                    if (daily) DailyRewards.UseDiscount();
+                    Sfx.PlayUi(gm.Config.PurchaseClip);
+                    gm.Save.SaveNow("purchase");
+                }
                 RefreshTerminal();
             });
         }
@@ -952,13 +1028,13 @@ namespace SortThem
                 : bombs ? Loc.Get("ui.slot_empty_bombs", "Награды закончились. Каждый спин даёт бомбу") : Loc.Get("ui.slot_empty", "Пусто. Все награды выданы");
             if (!_spinning && _spinUntil < 0f)
                 _slotResult.text = left > 0 ? Loc.Get("ui.slot_idle", "Каждое вращение даёт награду") : "";
-            int spinCost = Premium.Price(gm.Config.SlotSpinCost);
+            int spinCost = DailyRewards.FreeSpins > 0 ? 0 : Premium.Price(gm.Config.SlotSpinCost);
             _spinLabel.text = string.Format(Loc.Get("ui.spin", "Крутить · ${0}"), spinCost);
             _spinButton.interactable = !_spinning && gm.Economy.CanAfford(spinCost) && (left > 0 || bombs);
             if (_spinAdButton != null)
             {
                 if (_spinAdButton.gameObject.activeSelf != Ads.RewardedAvailable) _spinAdButton.gameObject.SetActive(Ads.RewardedAvailable);
-                int adCost = Ads.Discounted(spinCost);
+                int adCost = 0;
                 bool ready = Ads.Ready;
                 _spinAdLabel.text = ready
                     ? string.Format(Loc.Get("ui.ad_spin", "За рекламу · ${0}"), adCost)
@@ -1392,13 +1468,13 @@ namespace SortThem
         {
             if (!AnyOpen) return;
             var gm = GameManager.I;
-            var list = new List<Selectable>(TerminalOpen ? TerminalCandidates() : SlotOpen ? _slotButtons : UpgradeOpen ? _upgradeButtons : ConfirmOpen ? _confirmButtons : SettingsOpen ? _settingsItems : ControlsOpen ? _controlsItems : CreditsOpen ? _creditsItems : _pauseButtons);
+            var list = new List<Selectable>(DailyOpen ? _dailyButtons : TerminalOpen ? TerminalCandidates() : SlotOpen ? _slotButtons : UpgradeOpen ? _upgradeButtons : ConfirmOpen ? _confirmButtons : SettingsOpen ? _settingsItems : ControlsOpen ? _controlsItems : CreditsOpen ? _creditsItems : _pauseButtons);
             if (_focused != null && !Selectable_(_focused)) _focused = Step(list, _focused, 1) ?? FirstCandidate(list);
             if (_focused == null) _focused = FirstCandidate(list);
 
             if (GameInput.Ui.Cancel.Pressed())
             {
-                if (TerminalOpen) CloseTerminal(); else if (SlotOpen) CloseSlot(); else if (UpgradeOpen) CloseUpgrade(); else if (ConfirmOpen) CloseConfirm(); else if (SettingsOpen) CloseSettings(true); else if (ControlsOpen) CloseControls(true); else if (CreditsOpen) CloseCredits(true); else ClosePause();
+                if (DailyOpen) ClaimDaily(); else if (TerminalOpen) CloseTerminal(); else if (SlotOpen) CloseSlot(); else if (UpgradeOpen) CloseUpgrade(); else if (ConfirmOpen) CloseConfirm(); else if (SettingsOpen) CloseSettings(true); else if (ControlsOpen) CloseControls(true); else if (CreditsOpen) CloseCredits(true); else ClosePause();
                 return;
             }
             {
@@ -1565,6 +1641,7 @@ namespace SortThem
         {
             var gm = GameManager.I;
             if (gm == null || _terminalScore == null) return;
+            if (_coupon != null) _coupon.Set(DailyRewards.Discount);
             _terminalScore.text = FormatMoney(gm.Economy.Balance);
             RefreshPremiumRow();
             foreach (var r in _rows)
@@ -1576,8 +1653,8 @@ namespace SortThem
                 string bonus = SlotBonusText(r.Data.Kind);
                 r.Level.text = level + "/" + r.Data.MaxLevel + (bonus != null ? "\n<size=13><color=" + GoldHex + ">" + bonus + "</color></size>" : "");
                 if (r.Icon != null) r.Icon.color = bonus != null ? Gold : Color.white;
-                r.Cost.text = maxed ? Loc.Get("ui.max", "Макс.") : "$" + gm.Upgrades.NextCost(r.Data);
-                r.Buy.interactable = gm.Upgrades.CanBuy(r.Data);
+                r.Cost.text = maxed ? Loc.Get("ui.max", "Макс.") : "$" + TerminalCost(r.Data);
+                r.Buy.interactable = gm.Upgrades.CanBuy(r.Data, TerminalCost(r.Data));
                 if (r.Ad != null)
                 {
                     if (r.Ad.gameObject.activeSelf != Ads.RewardedAvailable) r.Ad.gameObject.SetActive(Ads.RewardedAvailable);
@@ -1585,7 +1662,7 @@ namespace SortThem
                     r.AdLabel.text = ready
                         ? string.Format(Loc.Get("ui.ad_buy", "Реклама -{0}%"), Ads.DiscountPercent)
                         : Ads.RemainingText();
-                    r.Ad.interactable = ready && !maxed && gm.Upgrades.CanBuy(r.Data, Ads.Discounted(gm.Upgrades.NextCost(r.Data)));
+                    r.Ad.interactable = ready && !maxed && gm.Upgrades.CanBuy(r.Data, Ads.Discounted(TerminalCost(r.Data)));
                 }
                 if (r.Pips != null)
                 {
