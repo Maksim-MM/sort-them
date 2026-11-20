@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Playgama;
 using UnityEngine;
 
@@ -7,7 +8,11 @@ namespace SortThem.Web
     public class WebBridge : MonoBehaviour
     {
         public static WebBridge Instance { get; private set; }
-        bool _readySent, _audioOff, _paused, _pausePending, _adOpen, _gameplayOn;
+        bool _readySent, _audioOff, _paused, _pausePending, _adOpen, _adWasOpen, _gameplayOn;
+        int _adCheckFrame = -1;
+
+        [DllImport("__Internal")]
+        static extern void SortThemRestoreFocus();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Boot()
@@ -51,7 +56,7 @@ namespace SortThem.Web
         void OnPauseState(bool paused)
         {
             _paused = paused;
-            _pausePending = paused;
+            _pausePending = paused && !_adOpen && !Ads.Busy;
             ApplyListener();
             TryOpenPause();
         }
@@ -68,6 +73,13 @@ namespace SortThem.Web
 
         void Update()
         {
+            if (_adCheckFrame >= 0 && Time.frameCount >= _adCheckFrame)
+            {
+                _adCheckFrame = -1;
+                var ui = UiRoot.I;
+                if ((_adWasOpen || _paused) && ui != null && !ui.AnyOpen) _pausePending = true;
+                _adWasOpen = false;
+            }
             TryOpenPause();
             var gm = GameManager.I;
             bool on = gm != null && gm.Ready && !gm.UiBlocking;
@@ -80,6 +92,13 @@ namespace SortThem.Web
         {
             if (Instance == null) return;
             Instance._adOpen = open;
+            if (open) Instance._adWasOpen = true;
+            else
+            {
+                Instance._pausePending = false;
+                Instance._adCheckFrame = Time.frameCount + 3;
+                SortThemRestoreFocus();
+            }
             Instance.ApplyListener();
         }
 

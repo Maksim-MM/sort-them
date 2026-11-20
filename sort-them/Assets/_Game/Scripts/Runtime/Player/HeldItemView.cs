@@ -40,8 +40,6 @@ namespace SortThem
         public float EnterDuration = 0.28f;
         public float SwayPerDegree = 0.000175f;
         public float SwayMax = 0.035f;
-        public float SwayTiltPerDegree = 0f;
-        public float SwayTiltMax = 4.2f;
         public float SwayPerMeter = 0.0085f;
         public float SwayFrequency = 14f;
         public float SwayDamping = 0.9f;
@@ -58,7 +56,6 @@ namespace SortThem
         float _startScale;
         float _fit = 1f;
         Vector3 _frontLocal;
-        Vector3 _centerLocal;
         int _seenAddCount;
         int _seenRemoveCount;
         Camera _cam;
@@ -135,13 +132,11 @@ namespace SortThem
             Filter.sharedMesh = mf != null ? mf.sharedMesh : null;
             _fit = 1f;
             _frontLocal = Vector3.zero;
-            _centerLocal = Vector3.zero;
             if (Filter.sharedMesh != null)
             {
                 var b = Filter.sharedMesh.bounds;
                 _fit = Mathf.Min(1f, FitHeight / Mathf.Max(0.01f, b.size.y));
                 _frontLocal = new Vector3(b.center.x, b.min.y, b.max.z);
-                _centerLocal = new Vector3(b.center.x, b.min.y, b.center.z);
             }
             var srcRend = mf != null ? mf.GetComponent<MeshRenderer>() : null;
             if (Renderer != null && srcRend != null) Renderer.sharedMaterials = HeldMaterials(srcRend.sharedMaterials);
@@ -221,13 +216,10 @@ namespace SortThem
         void Compose()
         {
             var t = Filter.transform;
-            float tilt = SwayPerDegree > 0f ? SwayTiltPerDegree / SwayPerDegree : 0f;
-            float yaw = Mathf.Clamp(_sway.x * tilt, -SwayTiltMax, SwayTiltMax);
-            float pitch = Mathf.Clamp(-_sway.y * tilt, -SwayTiltMax, SwayTiltMax);
-            var tiltRot = Quaternion.Euler(pitch, yaw, 0f);
-            var pivot = _baseRot * (_centerLocal * t.localScale.x);
-            t.localPosition = _basePos + _sway + pivot - tiltRot * pivot;
-            t.localRotation = tiltRot * _baseRot;
+            float distance = Mathf.Max(0.1f, RestPosition.z);
+            var lag = Quaternion.Euler(-_sway.y / distance * Mathf.Rad2Deg, _sway.x / distance * Mathf.Rad2Deg, 0f);
+            t.localPosition = lag * _basePos;
+            t.localRotation = lag * _baseRot;
         }
 
         public bool TryGetModelWorldPose(out Vector3 position, out Quaternion rotation)
